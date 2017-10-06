@@ -3,6 +3,7 @@ package org.usfirst.frc.team6027.robot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.wpi.first.wpilibj.NamedSendable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -13,8 +14,14 @@ public class OperatorDisplaySmartDashboardImpl implements OperatorDisplay {
     @SuppressWarnings("unused")
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    @Override
     public void setNumericFieldValue(String fieldName, Double value) {
         SmartDashboard.putNumber(fieldName, value);
+    }
+    
+    @Override
+    public void putData(NamedSendable sendable) {
+        SmartDashboard.putData(sendable);
     }
 
 }

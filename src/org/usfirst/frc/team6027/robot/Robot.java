@@ -42,6 +42,7 @@ public class Robot extends IterativeRobot {
         this.setDrivetrain(new DrivetrainSubsystem(this.getOperatorInterface()));
         
         this.getDrivetrain().setDefaultCommand(new StickDriveCommand(this.getDrivetrain(), this.getOperatorInterface()));
+        this.getOperatorDisplay().putData(Scheduler.getInstance()) ;
         this.encoderDriveCommand = new EncoderDriveCommand(this.getDrivetrain(), this.getOperatorDisplay());
     }
 

@@ -35,6 +35,11 @@ public class EncoderDriveCommand extends Command {
 
     @Override
     protected void initialize() {
+        // TODO: define as constants
+        rightEncoder.setMaxPeriod(.1);
+        rightEncoder.setMinRate(10);
+        rightEncoder.setReverseDirection(true);
+        rightEncoder.setSamplesToAverage(7);
         rightEncoder.setDistancePerPulse(DISTANCE_PER_PULSE);
         rightEncoder.reset();
     }

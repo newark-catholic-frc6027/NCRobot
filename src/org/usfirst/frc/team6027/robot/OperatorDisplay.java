@@ -1,5 +1,7 @@
 package org.usfirst.frc.team6027.robot;
 
+import edu.wpi.first.wpilibj.NamedSendable;
+
 /**
  * An interface used to define the operations necessary for displaying information and feedback to the robot human 
  * driver.  Using this interface allows us to change the underlying implementation of how information is displayed
@@ -18,4 +20,7 @@ public interface OperatorDisplay {
      * @param value The new field value.
      */
     public void setNumericFieldValue(String fieldName, Double value);
+    
+    public void putData(NamedSendable sendable);
+
 }
