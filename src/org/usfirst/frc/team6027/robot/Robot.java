@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.commands.EncoderDriveCommand;
@@ -27,7 +26,6 @@ public class Robot extends IterativeRobot {
     private OperatorDisplay operatorDisplay;
 
     private Command autonomousCommand;
-    @SuppressWarnings("unused")
     private EncoderDriveCommand encoderDriveCommand;
     private DrivetrainSubsystem drivetrain;
 
@@ -40,10 +38,9 @@ public class Robot extends IterativeRobot {
         this.setOperatorDisplay(new OperatorDisplaySmartDashboardImpl());
         this.setOperatorInterface(new OperatorInterface(this.getOperatorDisplay()));
         this.setDrivetrain(new DrivetrainSubsystem(this.getOperatorInterface()));
-        
+
         this.getDrivetrain().setDefaultCommand(new StickDriveCommand(this.getDrivetrain(), this.getOperatorInterface()));
-        this.getOperatorDisplay().putData(Scheduler.getInstance()) ;
-        this.encoderDriveCommand = new EncoderDriveCommand(this.getDrivetrain(), this.getOperatorDisplay());
+        this.encoderDriveCommand = new EncoderDriveCommand(this.getDrivetrain());
     }
 
     /**
@@ -86,6 +83,7 @@ public class Robot extends IterativeRobot {
     @Override
     public void autonomousPeriodic() {
         Scheduler.getInstance().run();
+
     }
 
     @Override
@@ -107,7 +105,7 @@ public class Robot extends IterativeRobot {
     @Override
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
-
+        updateOperatorDisplay();
     }
 
     /**
@@ -140,5 +138,11 @@ public class Robot extends IterativeRobot {
 
     public void setDrivetrain(DrivetrainSubsystem drivetrain) {
         this.drivetrain = drivetrain;
+    }
+    public void updateOperatorDisplay(){
+        getOperatorDisplay().setNumericFieldValue("rightEncoder Raw Values", this.encoderDriveCommand.getRightEncoder().getRaw());
+        getOperatorDisplay().setNumericFieldValue("rightEncoder Distance", this.encoderDriveCommand.getRightEncoder().getDistance());
+        getOperatorDisplay().setNumericFieldValue("Hello", 2);
+
     }
 }

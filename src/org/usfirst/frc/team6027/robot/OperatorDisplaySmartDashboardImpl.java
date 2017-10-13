@@ -18,10 +18,16 @@ public class OperatorDisplaySmartDashboardImpl implements OperatorDisplay {
     public void setNumericFieldValue(String fieldName, Double value) {
         SmartDashboard.putNumber(fieldName, value);
     }
-    
+
     @Override
-    public void putData(NamedSendable sendable) {
+    public void setData(NamedSendable sendable) {
         SmartDashboard.putData(sendable);
+    }
+
+    @Override
+    public void setNumericFieldValue(String fieldName, int numValue) {
+        // TODO Auto-generated method stub
+        SmartDashboard.putNumber(fieldName, numValue);
     }
 
 }

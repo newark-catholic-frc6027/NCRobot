@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.OperatorInterface;
 import org.usfirst.frc.team6027.robot.RobotConfigConstants;
-
 import com.ctre.CANTalon;
 
 import edu.wpi.first.wpilibj.RobotDrive;

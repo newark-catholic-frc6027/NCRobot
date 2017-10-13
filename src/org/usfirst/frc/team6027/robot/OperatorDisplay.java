@@ -19,8 +19,12 @@ public interface OperatorDisplay {
      * @param fieldName The name of the field whose value should be changed.
      * @param value The new field value.
      */
-    public void setNumericFieldValue(String fieldName, Double value);
-    
-    public void putData(NamedSendable sendable);
+    public void setNumericFieldValue(String fieldName, Double numValue);
+
+    public void setNumericFieldValue(String fieldName, int numValue);
+
+    public void setData(NamedSendable sendable);
+
+
 
 }
