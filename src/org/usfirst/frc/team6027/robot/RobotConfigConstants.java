@@ -33,5 +33,10 @@ public class RobotConfigConstants {
      * The seconde DIO channel that the right optical encoder is assigned to.
      */
     public static final int RIGHT_OPTICAL_ENCODER_DIO_CHANNEL_B = 1;
-
+    /**The identifier of the left analog joystick on the Xbox controller used for ArcadeDrive
+     */ 
+    public static final int LEFT_ANALOG_STICK = 1;
+    /**The identifier of the right analog joystick on the Xbox controller used for ArcadeDrive
+     */ 
+    public static final int RIGHT_ANALOG_STICK = 4;
 }

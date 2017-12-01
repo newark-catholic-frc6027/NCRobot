@@ -3,6 +3,7 @@ package org.usfirst.frc.team6027.robot.commands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.OperatorInterface;
+import org.usfirst.frc.team6027.robot.RobotConfigConstants;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
 
 import edu.wpi.first.wpilibj.command.Command;
@@ -33,8 +34,8 @@ public class StickDriveCommand extends Command {
 
     protected void execute() {
         this.getDrivetrain().startArcadeDrive(
-            this.getOperatorInterface().getJoystick().getRawAxis(1), 
-            this.getOperatorInterface().getJoystick().getRawAxis(4)
+            (-1) * this.getOperatorInterface().getJoystick().getRawAxis(RobotConfigConstants.LEFT_ANALOG_STICK), 
+            (-1) * this.getOperatorInterface().getJoystick().getRawAxis(RobotConfigConstants.RIGHT_ANALOG_STICK)
         );
     }
 
