@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.commands.EncoderDriveCommand;
+import org.usfirst.frc.team6027.robot.commands.MoveCommand;
 import org.usfirst.frc.team6027.robot.commands.StickDriveCommand;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
 
@@ -71,6 +72,7 @@ public class Robot extends IterativeRobot {
      */
     @Override
     public void autonomousInit() {
+    	autonomousCommand = new MoveCommand();
         // schedule the autonomous command (example)
         if (autonomousCommand != null) {
             autonomousCommand.start();
