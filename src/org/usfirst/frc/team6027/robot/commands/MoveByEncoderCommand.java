@@ -7,27 +7,29 @@ import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.command.Command;
 
-public class MoveCommand extends Command {
+public class MoveByEncoderCommand extends Command {
 
 	 private CANTalon frontRight = new CANTalon(RobotConfigConstants.FRONT_RIGHT_CANTALON_DRIVE_ID);
 	 private CANTalon backRight = new CANTalon(RobotConfigConstants.REAR_RIGHT_CANTALON_DRIVE_ID);
 	 private CANTalon frontLeft = new CANTalon(RobotConfigConstants.FRONT_LEFT_CANTALON_DRIVE_ID);
 	 private CANTalon backLeft = new CANTalon(RobotConfigConstants.REAR_LEFT_CANTALON_DRIVE_ID);
 
+	 private EncoderDriveCommand encoderDriveCommand;
 	 private RobotDrive robotDrive = new RobotDrive(frontLeft,backLeft,frontRight,backRight);
-	 private long startTimeMillis;
-	 public MoveCommand() {
-		 startTimeMillis = System.currentTimeMillis();		
+	 public MoveByEncoderCommand(EncoderDriveCommand encoderDriveCommand2) {
+		 	this.encoderDriveCommand = encoderDriveCommand2;
+		 	this.encoderDriveCommand.initialize();
 	 }
 	 
 	@Override
 	protected boolean isFinished() {
 		// TODO Auto-generated method stub
-		long timeElapsed = System.currentTimeMillis()-startTimeMillis;
-		if (timeElapsed >= 2000) {
+		if(this.encoderDriveCommand.getRightEncoder().getDistance()>=20) {
 			return true;
 		}
-		return false;
+		else {
+			return false;
+		}
 	}
 	
 	@Override 
