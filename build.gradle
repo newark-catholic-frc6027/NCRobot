@@ -2,7 +2,7 @@ plugins {
     id "java"
     id "eclipse"
     id "idea"
-    id "jaci.openrio.gradle.GradleRIO" version "2018.01.06b"
+    id "jaci.openrio.gradle.GradleRIO" version "2017.1.5"
 }
 configurations.all {
    exclude group: "commons-logging", module: "commons-logging"
@@ -33,7 +33,7 @@ jar {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.4'
+    gradleVersion = '3.2.1'
 }
 task finalize (type: Copy) {
     from configurations.compile
