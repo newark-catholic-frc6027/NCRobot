@@ -9,12 +9,12 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public class MoveByTimeCommand extends Command {
 
-	 private CANTalon frontRight = new CANTalon(RobotConfigConstants.FRONT_RIGHT_CANTALON_DRIVE_ID);
-	 private CANTalon backRight = new CANTalon(RobotConfigConstants.REAR_RIGHT_CANTALON_DRIVE_ID);
-	 private CANTalon frontLeft = new CANTalon(RobotConfigConstants.FRONT_LEFT_CANTALON_DRIVE_ID);
-	 private CANTalon backLeft = new CANTalon(RobotConfigConstants.REAR_LEFT_CANTALON_DRIVE_ID);
+//	 private CANTalon frontRight = new CANTalon(RobotConfigConstants.FRONT_RIGHT_CANTALON_DRIVE_ID);
+//	 private CANTalon backRight = new CANTalon(RobotConfigConstants.REAR_RIGHT_CANTALON_DRIVE_ID);
+//	 private CANTalon frontLeft = new CANTalon(RobotConfigConstants.FRONT_LEFT_CANTALON_DRIVE_ID);
+//	 private CANTalon backLeft = new CANTalon(RobotConfigConstants.REAR_LEFT_CANTALON_DRIVE_ID);
 
-	 private RobotDrive robotDrive = new RobotDrive(frontLeft,backLeft,frontRight,backRight);
+//	 private RobotDrive robotDrive = new RobotDrive(frontLeft,backLeft,frontRight,backRight);
 	 private long startTimeMillis;
 	 public MoveByTimeCommand() {
 		 startTimeMillis = System.currentTimeMillis();		
@@ -32,7 +32,7 @@ public class MoveByTimeCommand extends Command {
 	
 	@Override 
 	protected void execute() {
-		this.robotDrive.drive(0.5, 0);
+//		this.robotDrive.drive(0.5, 0);
 	}
 	 
 }
