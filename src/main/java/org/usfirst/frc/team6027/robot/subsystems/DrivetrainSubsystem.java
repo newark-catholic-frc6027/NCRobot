@@ -4,7 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.OperatorInterface;
 import org.usfirst.frc.team6027.robot.RobotConfigConstants;
-import com.ctre.CANTalon;
+// import com.ctre.CANTalon;
+
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.command.Command;
@@ -14,12 +16,13 @@ public class DrivetrainSubsystem extends Subsystem {
     @SuppressWarnings("unused")
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private CANTalon frontRight = new CANTalon(RobotConfigConstants.FRONT_RIGHT_CANTALON_DRIVE_ID);
-    private CANTalon backRight = new CANTalon(RobotConfigConstants.REAR_RIGHT_CANTALON_DRIVE_ID);
-    private CANTalon frontLeft = new CANTalon(RobotConfigConstants.FRONT_LEFT_CANTALON_DRIVE_ID);
-    private CANTalon backLeft = new CANTalon(RobotConfigConstants.REAR_LEFT_CANTALON_DRIVE_ID);
+    private WPI_TalonSRX frontRight = new WPI_TalonSRX(RobotConfigConstants.FRONT_RIGHT_CANTALON_DRIVE_ID);
+    private WPI_TalonSRX backRight = new WPI_TalonSRX(RobotConfigConstants.REAR_RIGHT_CANTALON_DRIVE_ID);
+    private WPI_TalonSRX frontLeft = new WPI_TalonSRX(RobotConfigConstants.FRONT_LEFT_CANTALON_DRIVE_ID);
+    private WPI_TalonSRX backLeft = new WPI_TalonSRX(RobotConfigConstants.REAR_LEFT_CANTALON_DRIVE_ID);
 
     private RobotDrive robotDrive = new RobotDrive(frontLeft,backLeft,frontRight,backRight);
+//    private RobotDrive robotDrive = new RobotDrive(0,0,0,0);
 
     private OperatorInterface operatorInterface;
 
@@ -62,5 +65,6 @@ public class DrivetrainSubsystem extends Subsystem {
 
     public void setRobotDrive(RobotDrive robotDrive) {
         this.robotDrive = robotDrive;
+        
     }
 }
