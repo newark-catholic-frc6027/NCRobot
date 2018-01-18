@@ -2,6 +2,7 @@
 package org.usfirst.frc.team6027.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -30,12 +31,16 @@ public class Robot extends IterativeRobot {
     private EncoderDriveCommand encoderDriveCommand;
     private DrivetrainSubsystem drivetrain;
 
+    Preferences prefs = Preferences.getInstance();
+    double motorPower;
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
     @Override
     public void robotInit() {
+    	
+    	motorPower = prefs.getDouble("motorPower", 1.0);
         this.setOperatorDisplay(new OperatorDisplaySmartDashboardImpl());
         this.setOperatorInterface(new OperatorInterface(this.getOperatorDisplay()));
         this.setDrivetrain(new DrivetrainSubsystem(this.getOperatorInterface()));

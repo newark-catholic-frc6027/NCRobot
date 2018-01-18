@@ -6,6 +6,7 @@ import org.usfirst.frc.team6027.robot.OperatorInterface;
 import org.usfirst.frc.team6027.robot.RobotConfigConstants;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
 
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
@@ -32,11 +33,16 @@ public class StickDriveCommand extends Command {
         logger.info("Using stick drive");
     }
 
+    Preferences prefs = Preferences.getInstance();
+    double motorPower;
+    
     protected void execute() {
+    	motorPower = prefs.getDouble("motorPower", 1.0);
         this.getDrivetrain().startArcadeDrive(
-            (-1) * this.getOperatorInterface().getJoystick().getRawAxis(RobotConfigConstants.LEFT_ANALOG_STICK), 
+            (motorPower) * this.getOperatorInterface().getJoystick().getRawAxis(RobotConfigConstants.LEFT_ANALOG_STICK), 
             (-1) * this.getOperatorInterface().getJoystick().getRawAxis(RobotConfigConstants.RIGHT_ANALOG_STICK)
         );
+
     }
 
     protected boolean isFinished() {
