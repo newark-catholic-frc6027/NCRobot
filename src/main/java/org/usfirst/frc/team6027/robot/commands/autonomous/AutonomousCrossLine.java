@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class AutonomousCrossLine extends CommandGroup {
     
     public AutonomousCrossLine(EncoderSensors encoderSensors, DrivetrainSubsystem drivetrainSubsystem) {
-        DriveStraightCommand driveStraightCmd = new DriveStraightCommand(encoderSensors, drivetrainSubsystem, 40);
+        DriveStraightCommand driveStraightCmd = new DriveStraightCommand(encoderSensors, drivetrainSubsystem, 100);
         this.addSequential(driveStraightCmd);
     }
 
