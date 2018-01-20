@@ -79,7 +79,7 @@ public class Robot extends IterativeRobot {
      */
     @Override
     public void autonomousInit() {
-    	this.autonomousCommand = new AutonomousCrossLine(this.encoderSensors,this.drivetrain);
+    	this.autonomousCommand = new AutonomousCrossLine(this.encoderSensors,this.drivetrain, this.operatorDisplay);
         // schedule the autonomous command (example)
         if (autonomousCommand != null) {
             autonomousCommand.start();

@@ -40,8 +40,8 @@ public class StickDriveCommand extends Command {
     protected void execute() {
     	motorPower = prefs.getDouble("motorPower", 1.0);
         this.getDrivetrain().startArcadeDrive(
-            (motorPower) * this.getOperatorInterface().getJoystick().getRawAxis(RobotConfigConstants.LEFT_ANALOG_STICK), 
-            (-1) * this.getOperatorInterface().getJoystick().getRawAxis(RobotConfigConstants.RIGHT_ANALOG_STICK)
+            (-1) * (motorPower) * this.getOperatorInterface().getJoystick().getRawAxis(RobotConfigConstants.LEFT_ANALOG_STICK), 
+            (-1) *  this.getOperatorInterface().getJoystick().getRawAxis(RobotConfigConstants.RIGHT_ANALOG_STICK)
         );
 
     }

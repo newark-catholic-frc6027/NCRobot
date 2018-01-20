@@ -16,10 +16,10 @@ public class RobotConfigConstants {
     public static final int REAR_LEFT_CANTALON_DRIVE_ID = 2;
     /** The device identifier for the Cantalon speed controller which controls the front right
      * drive motor.  */
-    public static final int FRONT_RIGHT_CANTALON_DRIVE_ID = 7;
+    public static final int FRONT_RIGHT_CANTALON_DRIVE_ID = 6;
     /** The device identifier for the Cantalon speed controller which controls the rear right
      * drive motor.  */
-    public static final int REAR_RIGHT_CANTALON_DRIVE_ID = 6;
+    public static final int REAR_RIGHT_CANTALON_DRIVE_ID = 7;
 
     /** The joystick port number corresponds to the 'USB Order' serial number on the
      * FRC Driver Station.  It is used on construction of a new Joystick object. */
