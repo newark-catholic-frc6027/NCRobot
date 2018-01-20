@@ -18,7 +18,9 @@ public class StickDriveCommand extends Command {
 
     private DrivetrainSubsystem drivetrain;
     private OperatorInterface operatorInterface;
-
+    Preferences prefs = Preferences.getInstance();
+    double motorPower;
+    
     /**
      * Requires DriveTrain
      */
@@ -26,15 +28,14 @@ public class StickDriveCommand extends Command {
         this.drivetrain = drivetrain;
         this.operatorInterface = operatorInterface;
         requires(this.drivetrain);
-
+        
     }
 
     protected void initialize() {
         logger.info("Using stick drive");
     }
 
-    Preferences prefs = Preferences.getInstance();
-    double motorPower;
+    
     
     protected void execute() {
     	motorPower = prefs.getDouble("motorPower", 1.0);

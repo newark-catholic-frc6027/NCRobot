@@ -8,9 +8,9 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.usfirst.frc.team6027.robot.commands.EncoderDriveCommand;
-import org.usfirst.frc.team6027.robot.commands.MoveByEncoderCommand;
 import org.usfirst.frc.team6027.robot.commands.StickDriveCommand;
+import org.usfirst.frc.team6027.robot.commands.autonomous.AutonomousCrossLine;
+import org.usfirst.frc.team6027.robot.sensors.EncoderSensors;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
 
 /**
@@ -28,8 +28,9 @@ public class Robot extends IterativeRobot {
     private OperatorDisplay operatorDisplay;
 
     private Command autonomousCommand;
-    private EncoderDriveCommand encoderDriveCommand;
+    
     private DrivetrainSubsystem drivetrain;
+    private EncoderSensors encoderSensors;
 
     Preferences prefs = Preferences.getInstance();
     double motorPower;
@@ -40,13 +41,14 @@ public class Robot extends IterativeRobot {
     @Override
     public void robotInit() {
     	
+        this.encoderSensors = new EncoderSensors();
     	motorPower = prefs.getDouble("motorPower", 1.0);
         this.setOperatorDisplay(new OperatorDisplaySmartDashboardImpl());
         this.setOperatorInterface(new OperatorInterface(this.getOperatorDisplay()));
         this.setDrivetrain(new DrivetrainSubsystem(this.getOperatorInterface()));
-
+        
         this.getDrivetrain().setDefaultCommand(new StickDriveCommand(this.getDrivetrain(), this.getOperatorInterface()));
-        this.encoderDriveCommand = new EncoderDriveCommand(this.getDrivetrain());
+        
     }
 
     /**
@@ -77,7 +79,7 @@ public class Robot extends IterativeRobot {
      */
     @Override
     public void autonomousInit() {
-    	autonomousCommand = new MoveByEncoderCommand(encoderDriveCommand);
+    	this.autonomousCommand = new AutonomousCrossLine(this.encoderSensors,this.drivetrain);
         // schedule the autonomous command (example)
         if (autonomousCommand != null) {
             autonomousCommand.start();
@@ -89,8 +91,8 @@ public class Robot extends IterativeRobot {
      */
     @Override
     public void autonomousPeriodic() {
-        Scheduler.getInstance().run();
-
+        Scheduler.getInstance().run();       
+        updateOperatorDisplay();
     }
 
     @Override
@@ -147,8 +149,10 @@ public class Robot extends IterativeRobot {
         this.drivetrain = drivetrain;
     }
     public void updateOperatorDisplay(){
-        getOperatorDisplay().setNumericFieldValue("rightEncoder Raw Values", this.encoderDriveCommand.getRightEncoder().getRaw());
-        getOperatorDisplay().setNumericFieldValue("rightEncoder Distance", this.encoderDriveCommand.getRightEncoder().getDistance());
+        getOperatorDisplay().setNumericFieldValue("rightEncoder Raw Values", this.encoderSensors.getRightEncoder().getRaw());
+        getOperatorDisplay().setNumericFieldValue("rightEncoder Distance", this.encoderSensors.getRightEncoder().getDistance());
+        getOperatorDisplay().setNumericFieldValue("leftEncoder Raw Values", this.encoderSensors.getLeftEncoder().getRaw());
+        getOperatorDisplay().setNumericFieldValue("leftEncoder Distance", this.encoderSensors.getLeftEncoder().getDistance());
         
 
     }
