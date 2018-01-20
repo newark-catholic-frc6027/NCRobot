@@ -149,7 +149,7 @@ public class Robot extends IterativeRobot {
     public void updateOperatorDisplay(){
         getOperatorDisplay().setNumericFieldValue("rightEncoder Raw Values", this.encoderDriveCommand.getRightEncoder().getRaw());
         getOperatorDisplay().setNumericFieldValue("rightEncoder Distance", this.encoderDriveCommand.getRightEncoder().getDistance());
-        getOperatorDisplay().setNumericFieldValue("Hello", 2);
+        
 
     }
 }
