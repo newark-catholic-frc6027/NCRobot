@@ -45,7 +45,10 @@ jar {
     from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     manifest jaci.openrio.gradle.GradleRIOPlugin.javaManifest(ROBOT_CLASS)
 }
-
+task wpilibcopy (type: Copy) {
+    from configurations.compile
+    into "${System.properties['user.home']}/wpilib/user/java/lib"
+}
 task wrapper(type: Wrapper) {
     gradleVersion = '4.4'
 }
