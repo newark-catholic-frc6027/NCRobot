@@ -12,6 +12,7 @@ import org.usfirst.frc.team6027.robot.commands.StickDriveCommand;
 import org.usfirst.frc.team6027.robot.commands.autonomous.AutonomousCrossLine;
 import org.usfirst.frc.team6027.robot.sensors.EncoderSensors;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
+import org.usfirst.frc.team6027.robot.subsystems.NavxSubsystem;
 
 /**
  * The Virtual Machine is configured to automatically run this class, and to call the
@@ -31,6 +32,7 @@ public class Robot extends IterativeRobot {
     
     private DrivetrainSubsystem drivetrain;
     private EncoderSensors encoderSensors;
+    private NavxSubsystem navxSubsystem;
 
     Preferences prefs = Preferences.getInstance();
     double motorPower;
@@ -153,7 +155,6 @@ public class Robot extends IterativeRobot {
         getOperatorDisplay().setNumericFieldValue("rightEncoder Distance", this.encoderSensors.getRightEncoder().getDistance());
         getOperatorDisplay().setNumericFieldValue("leftEncoder Raw Values", this.encoderSensors.getLeftEncoder().getRaw());
         getOperatorDisplay().setNumericFieldValue("leftEncoder Distance", this.encoderSensors.getLeftEncoder().getDistance());
-        
-
+        getOperatorDisplay().setNumericFieldValue("Raw yaw", this.navxSubsystem.getYawRateRadiansPerSec());
     }
 }

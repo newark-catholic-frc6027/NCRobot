@@ -4,9 +4,13 @@ import org.usfirst.frc.team6027.robot.OperatorDisplay;
 import org.usfirst.frc.team6027.robot.sensors.EncoderSensors;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
 
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.wpilibj.command.Command;
 
 public class DriveStraightCommand extends Command {
+    
+   
     
     private EncoderSensors encoderSensors;
     private DrivetrainSubsystem drivetrainSubsystem;
@@ -30,46 +34,46 @@ public class DriveStraightCommand extends Command {
     @Override
     protected boolean isFinished() {
         // TODO Auto-generated method stub
+        return true;
         
-        
-        if(Math.abs(totalDistance)>= this.driveDistance) {
-            this.encoderSensors.getRightEncoder().reset();
-            this.encoderSensors.getLeftEncoder().reset();
-            return true;
-        } else {
-            return false;
-        }
+//        if(Math.abs(totalDistance)>= this.driveDistance) {
+//            this.encoderSensors.getRightEncoder().reset();
+//            this.encoderSensors.getLeftEncoder().reset();
+//            return true;
+//        } else {
+//            return false;
+//        }
     }
     
     @Override 
     protected void execute() {
-        double diff=this.encoderSensors.getRightEncoder().getDistance() - this.encoderSensors.getLeftEncoder().getDistance();
-        totalDistance = totalDistance +  this.encoderSensors.getRightEncoder().getDistance();
-        /*
-        if(this.encoderSensors.getRightEncoder().getDistance()<=1 || this.encoderSensors.getRightEncoder().getDistance()>=-5) {
-            this.drivetrainSubsystem.getRobotDrive().drive(-0.3, 0);
-        }*/
-        
-       
-        if(diff>0.05) {
-            rightcount = rightcount + 1;
-            this.drivetrainSubsystem.getRobotDrive().drive(-0.3, 0);
-        } else if(diff<-0.05) {
-            leftcount++;
-            if(leftcount % 4 == 0) {  
-                this.drivetrainSubsystem.getRobotDrive().drive(-0.3, -0.01); 
-                
-            }
-          
-        } else if (diff<=0.05 || diff>=-0.05) {
-            this.encoderSensors.getRightEncoder().reset();
-            this.encoderSensors.getLeftEncoder().reset();
-            centercount++;
-            this.drivetrainSubsystem.getRobotDrive().drive(-0.3, 0);
-        }
-   this.operatorDisplay.setNumericFieldValue("leftcount",leftcount);
-   this.operatorDisplay.setNumericFieldValue("rightcount",rightcount);
-   this.operatorDisplay.setNumericFieldValue("centercount", centercount);
+//        double diff=this.encoderSensors.getRightEncoder().getDistance() - this.encoderSensors.getLeftEncoder().getDistance();
+//        totalDistance = totalDistance +  this.encoderSensors.getRightEncoder().getDistance();
+//        /*
+//        if(this.encoderSensors.getRightEncoder().getDistance()<=1 || this.encoderSensors.getRightEncoder().getDistance()>=-5) {
+//            this.drivetrainSubsystem.getRobotDrive().drive(-0.3, 0);
+//        }*/
+//        
+//       
+//        if(diff>0.05) {
+//            rightcount = rightcount + 1;
+//            this.drivetrainSubsystem.getRobotDrive().drive(-0.3, 0);
+//        } else if(diff<-0.05) {
+//            leftcount++;
+//            if(leftcount % 4 == 0) {  
+//                this.drivetrainSubsystem.getRobotDrive().drive(-0.3, -0.01); 
+//                
+//            }
+//          
+//        } else if (diff<=0.05 || diff>=-0.05) {
+//            this.encoderSensors.getRightEncoder().reset();
+//            this.encoderSensors.getLeftEncoder().reset();
+//            centercount++;
+//            this.drivetrainSubsystem.getRobotDrive().drive(-0.3, 0);
+//        }
+//   this.operatorDisplay.setNumericFieldValue("leftcount",leftcount);
+//   this.operatorDisplay.setNumericFieldValue("rightcount",rightcount);
+//   this.operatorDisplay.setNumericFieldValue("centercount", centercount);
    
     }
     
