@@ -1,5 +1,8 @@
 package org.usfirst.frc.team6027.robot;
 
+import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.SerialPort.Port;
+
 /**
  * The RobotConfigConstants class maps the various robot sensors and actuator ports into
  * a constant. This provides flexibility changing wiring, makes checking
@@ -47,4 +50,9 @@ public class RobotConfigConstants {
     /**The identifier of the right analog joystick on the Xbox controller used for ArcadeDrive
      */ 
     public static final int RIGHT_ANALOG_STICK = 4;
+    
+    /**The port that the gyro sensor connects to
+     */
+    public static final Port GYRO_I2C_PORT = SerialPort.Port.kUSB;
+    
 }

@@ -30,13 +30,14 @@ public class NavxSubsystem {
     protected AHRS mAHRS;
 
     //protected Rotation2d mAngleAdjustment = Rotation2d.identity();
+    protected double mAngle;
     protected double mYawDegrees;
     protected double mYawRateDegreesPerSecond;
     protected final long kInvalidTimestamp = -1;
     protected long mLastSensorTimestampMs;
 
     public NavxSubsystem(SPI.Port spi_port_id) {
-        mAHRS = new AHRS(spi_port_id);
+        mAHRS = new AHRS(spi_port_id, (byte) 200);
         resetState();
         mAHRS.registerCallback(new Callback(), null);
     }
@@ -61,13 +62,10 @@ public class NavxSubsystem {
 //        mAngleAdjustment = adjustment;
 //    }
 
-//    protected synchronized double getRawYawDegrees() {
-//        return mYawDegrees;
-//    }
-
-    public double getRawYawDegrees() {
+    protected synchronized double getRawYawDegrees() {
         return mYawDegrees;
     }
+    
 //    public Rotation2d getYaw() {
 //        return mAngleAdjustment.rotateBy(Rotation2d.fromDegrees(getRawYawDegrees()));
 //    }
@@ -82,5 +80,8 @@ public class NavxSubsystem {
 
     public double getRawAccelX() {
         return mAHRS.getRawAccelX();
+    }
+    public double getAngle() {
+        return mAHRS.getAngle();
     }
 }

@@ -1,16 +1,22 @@
 
 package org.usfirst.frc.team6027.robot;
 
+import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.wpilibj.SerialPort;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.commands.StickDriveCommand;
 import org.usfirst.frc.team6027.robot.commands.autonomous.AutonomousCrossLine;
 import org.usfirst.frc.team6027.robot.sensors.EncoderSensors;
+import org.usfirst.frc.team6027.robot.sensors.NavxGyroSensor;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import org.usfirst.frc.team6027.robot.subsystems.NavxSubsystem;
 
@@ -23,6 +29,8 @@ import org.usfirst.frc.team6027.robot.subsystems.NavxSubsystem;
  */
 public class Robot extends IterativeRobot {
     @SuppressWarnings("unused")
+    //AHRS ahrs;
+    
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private OperatorInterface operatorInterface;
@@ -32,7 +40,8 @@ public class Robot extends IterativeRobot {
     
     private DrivetrainSubsystem drivetrain;
     private EncoderSensors encoderSensors;
-    private NavxSubsystem navxSubsystem;
+    //private NavxSubsystem navxSubsystem;
+    private Gyro gyroSensor;
 
     Preferences prefs = Preferences.getInstance();
     double motorPower;
@@ -42,7 +51,8 @@ public class Robot extends IterativeRobot {
      */
     @Override
     public void robotInit() {
-    	
+        //ahrs = new AHRS(SerialPort.Port.kUSB);
+        this.gyroSensor = new NavxGyroSensor();
         this.encoderSensors = new EncoderSensors();
     	motorPower = prefs.getDouble("motorPower", 1.0);
         this.setOperatorDisplay(new OperatorDisplaySmartDashboardImpl());
@@ -81,7 +91,7 @@ public class Robot extends IterativeRobot {
      */
     @Override
     public void autonomousInit() {
-    	this.autonomousCommand = new AutonomousCrossLine(this.encoderSensors,this.drivetrain, this.operatorDisplay);
+    	this.autonomousCommand = new AutonomousCrossLine(this.encoderSensors,this.drivetrain, this.operatorDisplay, this.gyroSensor);
         // schedule the autonomous command (example)
         if (autonomousCommand != null) {
             autonomousCommand.start();
@@ -151,10 +161,13 @@ public class Robot extends IterativeRobot {
         this.drivetrain = drivetrain;
     }
     public void updateOperatorDisplay(){
+        
+        
         getOperatorDisplay().setNumericFieldValue("rightEncoder Raw Values", this.encoderSensors.getRightEncoder().getRaw());
         getOperatorDisplay().setNumericFieldValue("rightEncoder Distance", this.encoderSensors.getRightEncoder().getDistance());
         getOperatorDisplay().setNumericFieldValue("leftEncoder Raw Values", this.encoderSensors.getLeftEncoder().getRaw());
         getOperatorDisplay().setNumericFieldValue("leftEncoder Distance", this.encoderSensors.getLeftEncoder().getDistance());
-        getOperatorDisplay().setNumericFieldValue("Raw yaw", this.navxSubsystem.getYawRateRadiansPerSec());
+        getOperatorDisplay().setNumericFieldValue("Gyro Angle", this.gyroSensor.getAngle());
+        
     }
 }
