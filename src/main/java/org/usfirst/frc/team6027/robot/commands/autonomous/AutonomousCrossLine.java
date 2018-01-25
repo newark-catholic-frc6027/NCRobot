@@ -14,12 +14,12 @@ public class AutonomousCrossLine extends CommandGroup {
     public AutonomousCrossLine(EncoderSensors encoderSensors, DrivetrainSubsystem drivetrainSubsystem, OperatorDisplay operatorDisplay, Gyro gyro) {
         requires(drivetrainSubsystem);
         
-        DriveStraightCommand driveStraightCmd = new DriveStraightCommand(encoderSensors, drivetrainSubsystem, operatorDisplay, 100);
+        DriveStraightCommand driveStraightCmd = new DriveStraightCommand(encoderSensors, drivetrainSubsystem, operatorDisplay, 42, gyro);
         this.addSequential(driveStraightCmd);
         
         //TODO Remove after experimentation
-        TurnCommand turnCommand = new TurnCommand(gyro, drivetrainSubsystem, 90);
-        this.addSequential(turnCommand);
+//        TurnCommand turnCommand = new TurnCommand(gyro, drivetrainSubsystem, 90);
+//        this.addSequential(turnCommand);
     }
 
     
