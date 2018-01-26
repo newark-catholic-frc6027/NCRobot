@@ -3,43 +3,44 @@ package org.usfirst.frc.team6027.robot.sensors;
 import org.usfirst.frc.team6027.robot.RobotConfigConstants;
 
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 
-public class NavxGyroSensor implements Gyro {
+import edu.wpi.first.wpilibj.PIDSource;
+
+public class NavxGyroSensor implements PIDCapableGyro {
     
-    protected AHRS mAHRS;
+    protected AHRS ahrs;
 
     //protected Rotation2d mAngleAdjustment = Rotation2d.identity();
-    protected double mAngle;
-    protected double mYawDegrees;
-    protected double mYawRateDegreesPerSecond;
-    protected final long kInvalidTimestamp = -1;
-    protected long mLastSensorTimestampMs;
+    protected double angle;
+    protected double yawDegrees;
+    protected double yawRateDegreesPerSecond;
+    protected final long invalidTimestamp = -1;
+    protected long lastSensorTimestampMs;
     
     
     public NavxGyroSensor() {
         initialize();
     }
-
+    
     @Override
     public void calibrate() {
        // mAHRS.registerCallback(new Callback(), null);
     }
 
     protected void initialize() {
-        mAHRS = new AHRS(RobotConfigConstants.GYRO_I2C_PORT);
+        ahrs = new AHRS(RobotConfigConstants.GYRO_PORT);
         reset();
     }
     @Override
     public void reset() {
-        mLastSensorTimestampMs = kInvalidTimestamp;
-        mYawDegrees = 0.0;
-        mYawRateDegreesPerSecond = 0.0;
+        lastSensorTimestampMs = invalidTimestamp;
+        yawDegrees = 0.0;
+        yawRateDegreesPerSecond = 0.0;
     }
 
     @Override
     public double getAngle() {
-         return mAHRS.getAngle();
+         return ahrs.getAngle();
     }
 
     @Override
@@ -51,6 +52,12 @@ public class NavxGyroSensor implements Gyro {
     public void free() {
         
     }
+
+    @Override
+    public PIDSource getPIDSource() {
+        return this.ahrs;
+    }
+
 
 
 }

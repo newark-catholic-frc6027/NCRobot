@@ -1,15 +1,11 @@
 
 package org.usfirst.frc.team6027.robot;
 
-import com.kauailabs.navx.frc.AHRS;
-
-import edu.wpi.first.wpilibj.SerialPort;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +13,8 @@ import org.usfirst.frc.team6027.robot.commands.StickDriveCommand;
 import org.usfirst.frc.team6027.robot.commands.autonomous.AutonomousCrossLine;
 import org.usfirst.frc.team6027.robot.sensors.EncoderSensors;
 import org.usfirst.frc.team6027.robot.sensors.NavxGyroSensor;
+import org.usfirst.frc.team6027.robot.sensors.PIDCapableGyro;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
-import org.usfirst.frc.team6027.robot.subsystems.NavxSubsystem;
 
 /**
  * The Virtual Machine is configured to automatically run this class, and to call the
@@ -41,7 +37,7 @@ public class Robot extends IterativeRobot {
     private DrivetrainSubsystem drivetrain;
     private EncoderSensors encoderSensors;
     //private NavxSubsystem navxSubsystem;
-    private Gyro gyroSensor;
+    private PIDCapableGyro gyroSensor;
 
     Preferences prefs = Preferences.getInstance();
     double motorPower;

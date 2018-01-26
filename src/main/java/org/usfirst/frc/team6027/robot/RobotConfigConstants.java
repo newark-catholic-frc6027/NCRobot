@@ -51,8 +51,13 @@ public class RobotConfigConstants {
      */ 
     public static final int RIGHT_ANALOG_STICK = 4;
     
+    /** ********************************************************************
+     * GYRO constants
+     * ******************************************************************* */
+    
     /**The port that the gyro sensor connects to
      */
-    public static final Port GYRO_I2C_PORT = SerialPort.Port.kUSB;
+    public static final Port GYRO_PORT = SerialPort.Port.kUSB;
+    
     
 }
