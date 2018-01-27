@@ -14,6 +14,7 @@ import org.usfirst.frc.team6027.robot.commands.autonomous.AutonomousCrossLine;
 import org.usfirst.frc.team6027.robot.sensors.EncoderSensors;
 import org.usfirst.frc.team6027.robot.sensors.NavxGyroSensor;
 import org.usfirst.frc.team6027.robot.sensors.PIDCapableGyro;
+import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
 
 /**
@@ -35,9 +36,10 @@ public class Robot extends IterativeRobot {
     private Command autonomousCommand;
     
     private DrivetrainSubsystem drivetrain;
-    private EncoderSensors encoderSensors;
-    //private NavxSubsystem navxSubsystem;
-    private PIDCapableGyro gyroSensor;
+    private SensorService sensorService;
+//    private EncoderSensors encoderSensors;
+//    private NavxSubsystem navxSubsystem;
+//    private PIDCapableGyro gyroSensor;
 
     Preferences prefs = Preferences.getInstance();
     double motorPower;
@@ -48,8 +50,9 @@ public class Robot extends IterativeRobot {
     @Override
     public void robotInit() {
         //ahrs = new AHRS(SerialPort.Port.kUSB);
-        this.gyroSensor = new NavxGyroSensor();
-        this.encoderSensors = new EncoderSensors();
+//        this.gyroSensor = new NavxGyroSensor();
+//        this.encoderSensors = new EncoderSensors();
+        this.sensorService = new SensorService(new EncoderSensors(),new NavxGyroSensor());
     	motorPower = prefs.getDouble("motorPower", 1.0);
         this.setOperatorDisplay(new OperatorDisplaySmartDashboardImpl());
         this.setOperatorInterface(new OperatorInterface(this.getOperatorDisplay()));
@@ -87,7 +90,7 @@ public class Robot extends IterativeRobot {
      */
     @Override
     public void autonomousInit() {
-    	this.autonomousCommand = new AutonomousCrossLine(this.encoderSensors,this.drivetrain, this.operatorDisplay, this.gyroSensor);
+    	this.autonomousCommand = new AutonomousCrossLine(this.sensorService,this.drivetrain, this.operatorDisplay);
         // schedule the autonomous command (example)
         if (autonomousCommand != null) {
             autonomousCommand.start();
@@ -159,11 +162,11 @@ public class Robot extends IterativeRobot {
     public void updateOperatorDisplay(){
         
         
-        getOperatorDisplay().setNumericFieldValue("rightEncoder Raw Values", this.encoderSensors.getRightEncoder().getRaw());
-        getOperatorDisplay().setNumericFieldValue("rightEncoder Distance", this.encoderSensors.getRightEncoder().getDistance());
-        getOperatorDisplay().setNumericFieldValue("leftEncoder Raw Values", this.encoderSensors.getLeftEncoder().getRaw());
-        getOperatorDisplay().setNumericFieldValue("leftEncoder Distance", this.encoderSensors.getLeftEncoder().getDistance());
-        getOperatorDisplay().setNumericFieldValue("Gyro Angle", this.gyroSensor.getAngle());
+        getOperatorDisplay().setNumericFieldValue("rightEncoder Raw Values", this.sensorService.getEncoderSensors().getRightEncoder().getRaw());
+        getOperatorDisplay().setNumericFieldValue("rightEncoder Distance", this.sensorService.getEncoderSensors().getRightEncoder().getDistance());
+        getOperatorDisplay().setNumericFieldValue("leftEncoder Raw Values", this.sensorService.getEncoderSensors().getLeftEncoder().getRaw());
+        getOperatorDisplay().setNumericFieldValue("leftEncoder Distance", this.sensorService.getEncoderSensors().getLeftEncoder().getDistance());
+        getOperatorDisplay().setNumericFieldValue("Gyro Angle", this.sensorService.getGyroSensor().getAngle());
         
     }
 }
