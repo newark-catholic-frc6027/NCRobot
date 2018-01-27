@@ -1,5 +1,7 @@
 package org.usfirst.frc.team6027.robot.commands;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.OperatorDisplay;
 import org.usfirst.frc.team6027.robot.sensors.PIDCapableGyro;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
@@ -11,11 +13,11 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class TurnCommand extends Command implements PIDOutput {
-    
+	private final Logger logger = LoggerFactory.getLogger(getClass());
     protected static final double PROPORTIONAL_COEFFICIENT = 0.08;
     protected static final double INTEGRAL_COEFFICIENT = 0.00;
     protected static final double DERIVATIVE_COEFFICIENT = 0.00;
-    protected static final double FEED_FORWARD_TERM = 0.00;
+    protected static final double FEED_FORWARD_TERM = 0.3;
     /* This tuning parameter indicates how close to "on target" the    */
     /* PID Controller will attempt to get.                             */
     protected static final double TOLERANCE_DEGREES = 2.0;
@@ -49,7 +51,8 @@ public class TurnCommand extends Command implements PIDOutput {
     		   this.prefs.getDouble("turnCommand.pCoeff", PROPORTIONAL_COEFFICIENT), 
     		   this.prefs.getDouble("turnCommand.iCoeff", INTEGRAL_COEFFICIENT),
     		   this.prefs.getDouble("turnCommand.dCoeff", DERIVATIVE_COEFFICIENT),
-    		   FEED_FORWARD_TERM, this.sensorService.getGyroSensor().getPIDSource(), this);
+    		   this.prefs.getDouble("turnCommand.feedForward", FEED_FORWARD_TERM),
+    		   this.sensorService.getGyroSensor().getPIDSource(), this);
        pidController.setInputRange(-180.0,  180.0);
        pidController.setOutputRange(-1.0, 1.0);
        pidController.setAbsoluteTolerance(TOLERANCE_DEGREES);
@@ -62,15 +65,19 @@ public class TurnCommand extends Command implements PIDOutput {
     protected boolean isFinished() {
        if (Math.abs(this.sensorService.getGyroSensor().getAngle() - this.targetAngle)<=0.5) {
            pidController.disable();
-           this.drivetrain.getRobotDrive().drive (0, 0);
+//           this.drivetrain.getRobotDrive().drive (0, 0);
+           this.drivetrain.getRobotDrive().stopMotor();
+           logger.info("Turn done, angle={}",this.sensorService.getGyroSensor().getAngle());
            return true;
        }
         return false;
     }
     protected void execute() {
         
-        this.drivetrain.getRobotDrive().drive (0.2, pidLoopCalculationOutput);
-        
+//        this.drivetrain.getRobotDrive().drive (0.2, pidLoopCalculationOutput);
+    	double pidPower=pidLoopCalculationOutput/this.prefs.getDouble("turnCommand.pidPowerDivisor", 4.0);
+        this.drivetrain.getRobotDrive().tankDrive(pidPower, -1*pidPower);
+    	
     }
 
     @Override
