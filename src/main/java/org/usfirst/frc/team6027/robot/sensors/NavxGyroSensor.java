@@ -46,7 +46,8 @@ public class NavxGyroSensor implements PIDCapableGyro {
 
     @Override
     public double getRate() {
-        return 0;
+    	return this.ahrs.getRate();
+    	//return 0;
     }
 
     @Override

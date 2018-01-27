@@ -22,27 +22,37 @@ public class TurnCommand extends Command implements PIDOutput {
     /* PID Controller will attempt to get.                             */
     protected static final double TOLERANCE_DEGREES = 2.0;
     private Preferences prefs = Preferences.getInstance();
+    private long executionStartThreshold=this.prefs.getLong("turnCommand.execStartThreshold", 500);
+    private double pidAngleStopThreshold=this.prefs.getDouble("turnCommand.pidAngleStopThreshold", 0.1);
     private PIDController pidController;
     
     private SensorService sensorService;
+    private PIDCapableGyro gyro;
     
     private DrivetrainSubsystem drivetrain;
     private double targetAngle;
     
     private double pidLoopCalculationOutput;
     private OperatorDisplay operatorDisplay;
+    private long startTime;
+    private double initialGyroAngle;
     
    public TurnCommand (double angle, SensorService sensorService, DrivetrainSubsystem drivetrain, OperatorDisplay operatorDisplay) {
        this.sensorService = sensorService;
+       this.gyro = this.sensorService.getGyroSensor();
        this.drivetrain = drivetrain;
        this.targetAngle = angle;
        this.operatorDisplay = operatorDisplay;
+	   this.gyro.reset();
+	   this.initialGyroAngle=this.gyro.getAngle();
+	   this.startTime=System.currentTimeMillis();
        
        initPIDController();
    }
    @Override
    protected void initialize() {
-	   this.sensorService.getGyroSensor().reset();
+       logger.info("Current Angle, PID Loop Output, Yaw Rate, Right Motor Power");
+
    }
     
    protected void initPIDController() {
@@ -63,7 +73,7 @@ public class TurnCommand extends Command implements PIDOutput {
    
     @Override
     protected boolean isFinished() {
-       if (Math.abs(this.sensorService.getGyroSensor().getAngle() - this.targetAngle)<=0.5) {
+       if (Math.abs(this.gyro.getAngle() - this.targetAngle)<=0.5 && Math.abs(this.gyro.getRate()) <= pidAngleStopThreshold) {
            pidController.disable();
 //           this.drivetrain.getRobotDrive().drive (0, 0);
            this.drivetrain.getRobotDrive().stopMotor();
@@ -73,11 +83,24 @@ public class TurnCommand extends Command implements PIDOutput {
         return false;
     }
     protected void execute() {
-        
 //        this.drivetrain.getRobotDrive().drive (0.2, pidLoopCalculationOutput);
-    	double pidPower=pidLoopCalculationOutput/this.prefs.getDouble("turnCommand.pidPowerDivisor", 4.0);
-        this.drivetrain.getRobotDrive().tankDrive(pidPower, -1*pidPower);
+    	long currentElapsedExecutionMs=System.currentTimeMillis()-this.startTime;
+    	if(currentElapsedExecutionMs < this.executionStartThreshold && this.gyro.getAngle() == this.initialGyroAngle ) {
+    		logger.info("Gyro not reset yet. Skipping");
+    	}
+    	else {
+	    	double pidPower=pidLoopCalculationOutput/this.prefs.getDouble("turnCommand.pidPowerDivisor", 4.0);
+	
+	        logger.info("{},{},{},{}", 
+	        		this.gyro.getAngle(),
+	        		this.pidLoopCalculationOutput,
+	        		this.gyro.getRate(),
+	        		pidPower);
+	        this.drivetrain.getRobotDrive().tankDrive(pidPower, -1*pidPower);
+	        
+	        logger.trace("Current Angle: {}", this.sensorService.getGyroSensor().getAngle());
     	
+    	}
     }
 
     @Override
