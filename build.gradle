@@ -2,7 +2,7 @@ plugins {
     id "java"
     id "eclipse"
     id "idea"
-    id "jaci.openrio.gradle.GradleRIO" version "2018.01.15"
+    id "jaci.openrio.gradle.GradleRIO" version "2018.01.22"
 }
 
 def TEAM = 6027
@@ -34,8 +34,8 @@ dependencies {
     compile ctre()
     compile navx()
     compile openrio.powerup.matchData()
-    compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
-    compile 'ch.qos.logback:logback-classic:1.1.3'
+    compile 'org.apache.logging.log4j:log4j:2.10.0'
+    compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.10.0'
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
@@ -45,10 +45,48 @@ jar {
     from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     manifest jaci.openrio.gradle.GradleRIOPlugin.javaManifest(ROBOT_CLASS)
 }
+
+/* Doesn't work
+task wpilibbackup(type: Copy) {
+    //def srcDir = "${System.properties['user.home']}/wpilib/user/java/lib"
+    // println "srcDir = $srcDir"
+    //doLast {
+    //  println "srcDir = $srcDir"
+   // }
+    from file("${System.properties['user.home']}/wpilib/user/java/lib")
+    //include '*'
+    into file("${System.properties['user.home']}/wpilib/user/java/lib-backup")
+}
+*/
+
+/* Deletes the contents of the wpilib/user/java/lib directory so that we can start from a clean slate.
+   wpilibcopy should be run after this task.
+*/
+task wpilibclean(type: Delete) {
+    def wpilibdir = "${System.properties['user.home']}/wpilib/user/java/lib" 
+    file( wpilibdir ).list().each {
+        f -> delete "${wpilibdir}/${f}"
+    }
+}
+
+/* Copies the dependencies required for deployment as determined by gradle to the wpilib/user/java/lib
+   directory.
+*/
 task wpilibcopy (type: Copy) {
     from configurations.compile
     into "${System.properties['user.home']}/wpilib/user/java/lib"
 }
+
+/* Copies our version of the WPI ant build to the user wpilib dir.  This is not needed as long
+   as we specify in the build.xml file to use the wpi-build.xml in our project instead of the
+   default version found at $user.home/wpilib/java/current/ant 
+*/
+task wpibuildcopy (type: Copy) {
+    from 'wpi-build.xml'
+    into "${System.properties['user.home']}/wpilib/java/current/ant"
+    rename ('wpi-build.xml', 'build.xml')
+}
+
 task wrapper(type: Wrapper) {
     gradleVersion = '4.4'
 }
