@@ -16,20 +16,35 @@ public class DrivetrainSubsystem extends Subsystem {
     @SuppressWarnings("unused")
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private WPI_TalonSRX frontRight = new WPI_TalonSRX(RobotConfigConstants.FRONT_RIGHT_CANTALON_DRIVE_ID);
-    private WPI_TalonSRX backRight = new WPI_TalonSRX(RobotConfigConstants.REAR_RIGHT_CANTALON_DRIVE_ID);
-    private WPI_TalonSRX frontLeft = new WPI_TalonSRX(RobotConfigConstants.FRONT_LEFT_CANTALON_DRIVE_ID);
-    private WPI_TalonSRX backLeft = new WPI_TalonSRX(RobotConfigConstants.REAR_LEFT_CANTALON_DRIVE_ID);
-
-    private RobotDrive robotDrive = new RobotDrive(frontLeft,backLeft,frontRight,backRight);
+//    private WPI_TalonSRX frontRight = new WPI_TalonSRX(RobotConfigConstants.FRONT_RIGHT_CANTALON_DRIVE_ID);
+//    private WPI_TalonSRX backRight = new WPI_TalonSRX(RobotConfigConstants.REAR_RIGHT_CANTALON_DRIVE_ID);
+//    private WPI_TalonSRX frontLeft = new WPI_TalonSRX(RobotConfigConstants.FRONT_LEFT_CANTALON_DRIVE_ID);
+//    private WPI_TalonSRX backLeft = new WPI_TalonSRX(RobotConfigConstants.REAR_LEFT_CANTALON_DRIVE_ID);
+    private WPI_TalonSRX rightGearBox = new WPI_TalonSRX(RobotConfigConstants.RIGHT_GEARBOX_CIM_1_ID);
+    private WPI_TalonSRX leftGearBox = new WPI_TalonSRX(RobotConfigConstants.LEFT_GEARBOX_CIM_1_ID);
+    private WPI_TalonSRX rightGearBoxSlave1 = new WPI_TalonSRX(RobotConfigConstants.RIGHT_GEARBOX_CIM_2_ID);
+    private WPI_TalonSRX leftGearBoxSlave1 = new WPI_TalonSRX(RobotConfigConstants.LEFT_GEARBOX_CIM_2_ID);
+    private WPI_TalonSRX rightGearBoxSlave2 = new WPI_TalonSRX(RobotConfigConstants.RIGHT_GEARBOX_CIM_3_ID);
+    private WPI_TalonSRX leftGearBoxSlave2 = new WPI_TalonSRX(RobotConfigConstants.LEFT_GEARBOX_CIM_3_ID);
+    
+    //private RobotDrive robotDrive = new RobotDrive(frontLeft,backLeft,frontRight,backRight);
+    
+    private RobotDrive robotDrive = new RobotDrive(rightGearBox, leftGearBox);
 //    private RobotDrive robotDrive = new RobotDrive(0,0,0,0);
 
     private OperatorInterface operatorInterface;
 
     public DrivetrainSubsystem(OperatorInterface operatorInterface){
         this.operatorInterface = operatorInterface;
+        this.initialize();
     }
 
+    protected void initialize () {
+    	this.rightGearBoxSlave1.follow(rightGearBox);
+    	this.leftGearBoxSlave1.follow(leftGearBox);
+    	this.rightGearBoxSlave2.follow(rightGearBox);
+    	this.leftGearBoxSlave2.follow(leftGearBox);
+    }
     @Override
     protected void initDefaultCommand() {
     }

@@ -16,7 +16,7 @@ public class AutonomousCrossLine extends CommandGroup {
 //        this.addSequential(driveStraightCmd);
         
         //TODO Remove after experimentation
-        TurnCommand turnCommand = new TurnCommand(90, sensorService, drivetrainSubsystem, operatorDisplay);
+        TurnCommand turnCommand = new TurnCommand(160, sensorService, drivetrainSubsystem, operatorDisplay);
         this.addSequential(turnCommand);
     }
 

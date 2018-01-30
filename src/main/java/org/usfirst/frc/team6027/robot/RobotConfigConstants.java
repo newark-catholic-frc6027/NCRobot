@@ -11,19 +11,69 @@ import edu.wpi.first.wpilibj.SerialPort.Port;
  */
 public class RobotConfigConstants {
 
-    /** The device identifier for the Cantalon speed controller which controls the front left
-     * drive motor.  */
-    public static final int FRONT_LEFT_CANTALON_DRIVE_ID = 5;
-    /** The device identifier for the Cantalon speed controller which controls the rear left
-     * drive motor.  */
-    public static final int REAR_LEFT_CANTALON_DRIVE_ID = 2;
-    /** The device identifier for the Cantalon speed controller which controls the front right
-     * drive motor.  */
-    public static final int FRONT_RIGHT_CANTALON_DRIVE_ID = 6;
-    /** The device identifier for the Cantalon speed controller which controls the rear right
-     * drive motor.  */
-    public static final int REAR_RIGHT_CANTALON_DRIVE_ID = 7;
+//    /** The device identifier for the Cantalon speed controller which controls the front left
+//     * drive motor.  */
+//    public static final int FRONT_LEFT_CANTALON_DRIVE_ID = 5;
+//    /** The device identifier for the Cantalon speed controller which controls the rear left
+//     * drive motor.  */
+//    public static final int REAR_LEFT_CANTALON_DRIVE_ID = 2;
+//    /** The device identifier for the Cantalon speed controller which controls the front right
+//     * drive motor.  */
+//    public static final int FRONT_RIGHT_CANTALON_DRIVE_ID = 6;
+//    /** The device identifier for the Cantalon speed controller which controls the rear right
+//     * drive motor.  */
+//    public static final int REAR_RIGHT_CANTALON_DRIVE_ID = 7;
 
+	/** The device identifier for the Talon SRX speed controller right gear box drive motor 1
+	 * <pre>
+	 *      3
+	 *     1 2
+	 * </pre>    
+	 */
+	public static final int RIGHT_GEARBOX_CIM_1_ID = 5;
+	
+	/** The device identifier for the Talon SRX speed controller right gear box drive motor 2
+	 * <pre>
+	 *      3
+	 *     1 2
+	 * </pre>    
+	 */
+	public static final int RIGHT_GEARBOX_CIM_2_ID = 2;
+	
+	/** The device identifier for the Talon SRX speed controller right gear box drive motor 3
+	 * <pre>
+	 *      3
+	 *     1 2
+	 * </pre>    
+	 */
+	public static final int RIGHT_GEARBOX_CIM_3_ID = 3;
+	
+	/** The device identifier for the Talon SRX speed controller left gear box drive motor 1
+	 * <pre>
+	 *      3
+	 *     1 2
+	 * </pre>    
+	 */
+	public static final int LEFT_GEARBOX_CIM_1_ID = 1;
+	
+	/** The device identifier for the Talon SRX speed controller left gear box drive motor 2
+	 * <pre>
+	 *      3
+	 *     1 2
+	 * </pre>    
+	 */
+	public static final int LEFT_GEARBOX_CIM_2_ID = 4;
+	
+	/** The device identifier for the Talon SRX speed controller left gear box drive motor 3
+	 * <pre>
+	 *      3
+	 *     1 2
+	 * </pre>    
+	 */
+	public static final int LEFT_GEARBOX_CIM_3_ID = 0;
+	
+	
+	 
     /** The joystick port number corresponds to the 'USB Order' serial number on the
      * FRC Driver Station.  It is used on construction of a new Joystick object. */
     public static final int JOYSTICK_PORT_NUMBER = 0;

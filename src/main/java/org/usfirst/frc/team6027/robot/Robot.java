@@ -52,6 +52,8 @@ public class Robot extends IterativeRobot {
         //ahrs = new AHRS(SerialPort.Port.kUSB);
 //        this.gyroSensor = new NavxGyroSensor();
 //        this.encoderSensors = new EncoderSensors();
+    	
+    	
         this.sensorService = new SensorService(new EncoderSensors(),new NavxGyroSensor());
     	motorPower = prefs.getDouble("motorPower", 1.0);
         this.setOperatorDisplay(new OperatorDisplaySmartDashboardImpl());
