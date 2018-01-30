@@ -24,7 +24,11 @@
   <property file="${user.home}/wpilib/wpilib.properties"/>
   <property file="build.properties"/>
   <property file="${user.home}/wpilib/java/${version}/ant/build.properties"/>
-
-  <import file="${wpilib.ant.dir}/build.xml"/>
+  
+  <!-- Replace the default Ant WPI ant build with our modified copy of their build
+       so that we can add extra items into our jar file, such as custom logging configuration
+       from src/main/resources/log4j2.xml -->
+  <!-- import file="${wpilib.ant.dir}/build.xml"/ -->
+  <import file="wpi-build.xml"/>
 
 </project>

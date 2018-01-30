@@ -49,6 +49,7 @@ public class Robot extends IterativeRobot {
      */
     @Override
     public void robotInit() {
+        logger.debug(">>>>>>>>>>>>>>>>> Team 6027 Robot started!");
         //ahrs = new AHRS(SerialPort.Port.kUSB);
 //        this.gyroSensor = new NavxGyroSensor();
 //        this.encoderSensors = new EncoderSensors();
