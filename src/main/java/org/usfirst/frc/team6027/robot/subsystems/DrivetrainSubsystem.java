@@ -45,6 +45,15 @@ public class DrivetrainSubsystem extends Subsystem {
     	this.rightGearBoxSlave2.follow(rightGearBox);
     	this.leftGearBoxSlave2.follow(leftGearBox);
     }
+
+    /**
+     * When the run method of the scheduler is called this method will be called.
+     */
+    @Override
+    public void periodic() {
+    }
+    
+    
     @Override
     protected void initDefaultCommand() {
     }

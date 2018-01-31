@@ -38,6 +38,7 @@ public class TurnCommand extends Command implements PIDOutput {
     private double initialGyroAngle;
     
    public TurnCommand (double angle, SensorService sensorService, DrivetrainSubsystem drivetrain, OperatorDisplay operatorDisplay) {
+       requires(drivetrain);
        this.sensorService = sensorService;
        this.gyro = this.sensorService.getGyroSensor();
        this.drivetrain = drivetrain;
@@ -106,7 +107,7 @@ public class TurnCommand extends Command implements PIDOutput {
     @Override
     public void pidWrite(double output) {
         this.pidLoopCalculationOutput = output;
-        this.operatorDisplay.setNumericFieldValue("PID Loop Output Value", this.pidLoopCalculationOutput);
+        this.operatorDisplay.setFieldValue("PID Loop Output Value", this.pidLoopCalculationOutput);
         
     }
 }

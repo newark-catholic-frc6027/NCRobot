@@ -152,11 +152,11 @@ public class Robot extends IterativeRobot {
     public void updateOperatorDisplay(){
         
         
-        getOperatorDisplay().setNumericFieldValue("rightEncoder Raw Values", this.sensorService.getEncoderSensors().getRightEncoder().getRaw());
-        getOperatorDisplay().setNumericFieldValue("rightEncoder Distance", this.sensorService.getEncoderSensors().getRightEncoder().getDistance());
-        getOperatorDisplay().setNumericFieldValue("leftEncoder Raw Values", this.sensorService.getEncoderSensors().getLeftEncoder().getRaw());
-        getOperatorDisplay().setNumericFieldValue("leftEncoder Distance", this.sensorService.getEncoderSensors().getLeftEncoder().getDistance());
-        getOperatorDisplay().setNumericFieldValue("Gyro Angle", this.sensorService.getGyroSensor().getAngle());
+        getOperatorDisplay().setFieldValue("rightEncoder Raw Values", this.sensorService.getEncoderSensors().getRightEncoder().getRaw());
+        getOperatorDisplay().setFieldValue("rightEncoder Distance", this.sensorService.getEncoderSensors().getRightEncoder().getDistance());
+        getOperatorDisplay().setFieldValue("leftEncoder Raw Values", this.sensorService.getEncoderSensors().getLeftEncoder().getRaw());
+        getOperatorDisplay().setFieldValue("leftEncoder Distance", this.sensorService.getEncoderSensors().getLeftEncoder().getDistance());
+        getOperatorDisplay().setFieldValue("Gyro Angle", this.sensorService.getGyroSensor().getAngle());
         
     }
 }

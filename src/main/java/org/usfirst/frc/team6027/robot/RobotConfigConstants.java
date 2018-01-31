@@ -110,4 +110,11 @@ public class RobotConfigConstants {
     public static final Port GYRO_PORT = SerialPort.Port.kUSB;
     
     
+    /** ********************************************************************
+     * SOLENOID constants
+     * ******************************************************************* */
+    public static final int SOLENOID_1_PORT_A = 0;
+    public static final int SOLENOID_1_PORT_B = 1;
+    
+    
 }

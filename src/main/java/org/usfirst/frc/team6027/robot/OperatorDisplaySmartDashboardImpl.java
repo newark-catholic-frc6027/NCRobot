@@ -14,10 +14,6 @@ public class OperatorDisplaySmartDashboardImpl implements OperatorDisplay {
     @SuppressWarnings("unused")
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Override
-    public void setNumericFieldValue(String fieldName, Double value) {
-        SmartDashboard.putNumber(fieldName, value);
-    }
 
     @Override
     public void setData(NamedSendable sendable) {
@@ -25,9 +21,23 @@ public class OperatorDisplaySmartDashboardImpl implements OperatorDisplay {
     }
 
     @Override
-    public void setNumericFieldValue(String fieldName, int numValue) {
-        // TODO Auto-generated method stub
+    public void setFieldValue(String fieldName, Double numValue) {
         SmartDashboard.putNumber(fieldName, numValue);
     }
-
+        
+    @Override
+    public void setFieldValue(String fieldName, int numValue) {
+        SmartDashboard.putNumber(fieldName, numValue);
+    }
+    
+    @Override
+    public void setFieldValue(String fieldName, String value) {
+        SmartDashboard.putString(fieldName, value);
+    }
+    
+    @Override
+    public void setFieldValue(String fieldName, boolean value) {
+        SmartDashboard.putBoolean(fieldName, value);
+    }
+    
 }

@@ -4,7 +4,6 @@ import org.usfirst.frc.team6027.robot.OperatorDisplay;
 import org.usfirst.frc.team6027.robot.sensors.EncoderSensors;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
 
-import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
@@ -25,6 +24,7 @@ public class DriveStraightCommand extends Command {
     int centercount = 0;
     
     public DriveStraightCommand(EncoderSensors encoderSensors, DrivetrainSubsystem drivetrainSubsystem, OperatorDisplay operatorDisplay, double driveDistance, Gyro gyro) {
+        requires(drivetrainSubsystem);
         this.encoderSensors = encoderSensors;
         this.gyro = gyro;
         this.drivetrainSubsystem = drivetrainSubsystem;
