@@ -13,6 +13,7 @@ import org.usfirst.frc.team6027.robot.commands.StickDriveCommand;
 import org.usfirst.frc.team6027.robot.commands.autonomous.AutonomousCrossLine;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
+import org.usfirst.frc.team6027.robot.subsystems.PneumaticSubsystem;
 
 /**
  * The Virtual Machine is configured to automatically run this class, and to call the
@@ -30,6 +31,7 @@ public class Robot extends IterativeRobot {
     private Command autonomousCommand;
     
     private DrivetrainSubsystem drivetrain;
+    private PneumaticSubsystem pneumaticSubsystem;
     private SensorService sensorService;
 
     Preferences prefs = Preferences.getInstance();
@@ -47,6 +49,7 @@ public class Robot extends IterativeRobot {
         this.setOperatorDisplay(new OperatorDisplaySmartDashboardImpl());
         this.setOperatorInterface(new OperatorInterface(this.getOperatorDisplay()));
         this.setDrivetrain(new DrivetrainSubsystem(this.getOperatorInterface()));
+        this.pneumaticSubsystem = new PneumaticSubsystem();
         
         this.getDrivetrain().setDefaultCommand(new StickDriveCommand(this.getDrivetrain(), this.getOperatorInterface()));
         
@@ -107,6 +110,7 @@ public class Robot extends IterativeRobot {
         }
 
 
+        this.pneumaticSubsystem.toggleSolenoid();
     }
 
     /**
@@ -149,6 +153,14 @@ public class Robot extends IterativeRobot {
     public void setDrivetrain(DrivetrainSubsystem drivetrain) {
         this.drivetrain = drivetrain;
     }
+    public PneumaticSubsystem getPneumaticSubsystem() {
+        return pneumaticSubsystem;
+    }
+
+    public void setPneumaticSubsystem(PneumaticSubsystem pneumaticSubsystem) {
+        this.pneumaticSubsystem = pneumaticSubsystem;
+    }
+
     public void updateOperatorDisplay(){
         
         

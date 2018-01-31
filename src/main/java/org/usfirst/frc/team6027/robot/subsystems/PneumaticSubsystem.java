@@ -11,7 +11,7 @@ public class PneumaticSubsystem extends Subsystem {
     private DoubleSolenoid solenoid;
     
     public PneumaticSubsystem() {
-        this.solenoid = new DoubleSolenoid(RobotConfigConstants.SOLENOID_1_PORT_A, RobotConfigConstants.SOLENOID_1_PORT_B);
+        this.solenoid = new DoubleSolenoid(RobotConfigConstants.SOLENOID_1_MODULE_NUMBER, RobotConfigConstants.SOLENOID_1_PORT_A, RobotConfigConstants.SOLENOID_1_PORT_B);
     }
     
     @Override
@@ -33,6 +33,10 @@ public class PneumaticSubsystem extends Subsystem {
 
     public void setSolenoid(DoubleSolenoid solenoid) {
         this.solenoid = solenoid;
+    }
+    
+    public void toggleSolenoid() {
+        this.solenoid.set(DoubleSolenoid.Value.kReverse);
     }
 
 }
