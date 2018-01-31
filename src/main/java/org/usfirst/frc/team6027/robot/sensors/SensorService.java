@@ -1,13 +1,15 @@
 package org.usfirst.frc.team6027.robot.sensors;
 
 public class SensorService {
-    public SensorService(EncoderSensors encoderSensors, PIDCapableGyro gyroSensor) {
-		super();
-		this.encoderSensors = encoderSensors;
-		this.gyroSensor = gyroSensor;
-	}
-	private EncoderSensors encoderSensors;
+    
+    private EncoderSensors encoderSensors;
     private PIDCapableGyro gyroSensor;
+    
+    public SensorService() {
+		this.encoderSensors = new EncoderSensors();
+		this.gyroSensor = new NavxGyroSensor();
+	}
+    
 	public EncoderSensors getEncoderSensors() {
 		return encoderSensors;
 	}

@@ -11,9 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.commands.StickDriveCommand;
 import org.usfirst.frc.team6027.robot.commands.autonomous.AutonomousCrossLine;
-import org.usfirst.frc.team6027.robot.sensors.EncoderSensors;
-import org.usfirst.frc.team6027.robot.sensors.NavxGyroSensor;
-import org.usfirst.frc.team6027.robot.sensors.PIDCapableGyro;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
 
@@ -24,10 +21,7 @@ import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
  * creating this project, you must also update the manifest file in the resource
  * directory.
  */
-public class Robot extends IterativeRobot {
-    @SuppressWarnings("unused")
-    //AHRS ahrs;
-    
+public class Robot extends IterativeRobot {    
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private OperatorInterface operatorInterface;
@@ -37,9 +31,6 @@ public class Robot extends IterativeRobot {
     
     private DrivetrainSubsystem drivetrain;
     private SensorService sensorService;
-//    private EncoderSensors encoderSensors;
-//    private NavxSubsystem navxSubsystem;
-//    private PIDCapableGyro gyroSensor;
 
     Preferences prefs = Preferences.getInstance();
     double motorPower;
@@ -49,13 +40,9 @@ public class Robot extends IterativeRobot {
      */
     @Override
     public void robotInit() {
-        logger.debug(">>>>>>>>>>>>>>>>> Team 6027 Robot started!");
-        //ahrs = new AHRS(SerialPort.Port.kUSB);
-//        this.gyroSensor = new NavxGyroSensor();
-//        this.encoderSensors = new EncoderSensors();
+        logger.debug(">>>>>>>>>>>>>>>>> Team 6027 Robot started!");    	
     	
-    	
-        this.sensorService = new SensorService(new EncoderSensors(),new NavxGyroSensor());
+        this.sensorService = new SensorService();
     	motorPower = prefs.getDouble("motorPower", 1.0);
         this.setOperatorDisplay(new OperatorDisplaySmartDashboardImpl());
         this.setOperatorInterface(new OperatorInterface(this.getOperatorDisplay()));
