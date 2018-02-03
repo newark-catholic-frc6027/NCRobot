@@ -35,8 +35,16 @@ public class PneumaticSubsystem extends Subsystem {
         this.solenoid = solenoid;
     }
     
-    public void toggleSolenoid() {
+    public void toggleSolenoidReverse() {
         this.solenoid.set(DoubleSolenoid.Value.kReverse);
+        
+    }
+    public void toggleSolenoidForward() {
+        this.solenoid.set(DoubleSolenoid.Value.kForward);
+        
+    }
+    public void toggleSolenoidOff() {
+        this.solenoid.set(DoubleSolenoid.Value.kOff);
     }
 
 }
