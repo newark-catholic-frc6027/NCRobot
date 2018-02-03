@@ -2,8 +2,8 @@ package org.usfirst.frc.team6027.robot;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.usfirst.frc.team6027.robot.controls.XBoxJoystick;
 
-import edu.wpi.first.wpilibj.Joystick;
 
 /**
  * Represents and holds the human interfaces to control the robot.  Here we retain and configure the control device
@@ -13,18 +13,18 @@ public class OperatorInterface {
     @SuppressWarnings("unused")
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private Joystick joystick = new Joystick(RobotConfigConstants.JOYSTICK_PORT_NUMBER);
+    private XBoxJoystick joystick = new XBoxJoystick();
     private OperatorDisplay operatorDisplay;
 
     public OperatorInterface(OperatorDisplay operatorDisplay) {
         this.operatorDisplay = operatorDisplay;
     }
 
-    public Joystick getJoystick(){
+    public XBoxJoystick getJoystick(){
         return joystick;
     }
 
-    public void setJoystick(Joystick joystick) {
+    public void setJoystick(XBoxJoystick joystick) {
         this.joystick = joystick;
     }
 

@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.usfirst.frc.team6027.robot.commands.StickDriveCommand;
+import org.usfirst.frc.team6027.robot.commands.TeleopManager;
 import org.usfirst.frc.team6027.robot.commands.autonomous.AutonomousCrossLine;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
@@ -35,23 +35,23 @@ public class Robot extends IterativeRobot {
     private SensorService sensorService;
 
     Preferences prefs = Preferences.getInstance();
-    double motorPower;
+    
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
     @Override
     public void robotInit() {
-        logger.debug(">>>>>>>>>>>>>>>>> Team 6027 Robot started!");    	
+        logger.debug(">>>>>>>>>>>>>>>>> Newark Catholic Team 6027 Robot started!");    	
     	
         this.sensorService = new SensorService();
-    	motorPower = prefs.getDouble("motorPower", 1.0);
         this.setOperatorDisplay(new OperatorDisplaySmartDashboardImpl());
         this.setOperatorInterface(new OperatorInterface(this.getOperatorDisplay()));
         this.setDrivetrain(new DrivetrainSubsystem(this.getOperatorInterface()));
-        this.pneumaticSubsystem = new PneumaticSubsystem();
+        this.pneumaticSubsystem = new PneumaticSubsystem(this.getOperatorDisplay());
         
-        this.getDrivetrain().setDefaultCommand(new StickDriveCommand(this.getDrivetrain(), this.getOperatorInterface()));
+        // This ensures that the Teleop command is running whenever we are not in autonomous mode
+        this.getDrivetrain().setDefaultCommand(new TeleopManager(this.operatorInterface, this.sensorService, this.getDrivetrain(), this.pneumaticSubsystem));
         
     }
 
@@ -109,8 +109,6 @@ public class Robot extends IterativeRobot {
             autonomousCommand.cancel();
         }
 
-
-        this.pneumaticSubsystem.toggleSolenoid();
     }
 
     /**
@@ -119,7 +117,6 @@ public class Robot extends IterativeRobot {
     @Override
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
-        updateOperatorDisplay();
     }
 
     /**
