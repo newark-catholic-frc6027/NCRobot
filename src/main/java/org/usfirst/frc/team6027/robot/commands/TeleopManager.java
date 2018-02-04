@@ -95,7 +95,7 @@ public class TeleopManager extends Command {
 		getOperatorDisplay().setFieldValue("leftEncoder Distance",
 				this.sensorService.getEncoderSensors().getLeftEncoder().getDistance());
 		getOperatorDisplay().setFieldValue("Gyro Angle", this.sensorService.getGyroSensor().getAngle());
-		getOperatorDisplay().setFieldValue("Air Pressure", this.sensorService.getAirPressurePsi());
+		getOperatorDisplay().setFieldValue("Air Pressure", this.sensorService.getAirPressureSensor().getAirPressurePsi());
 
 	}
 
