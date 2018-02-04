@@ -41,7 +41,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-		logger.debug(">>>>>>>>>>>>>>>>> Newark Catholic Team 6027 Robot started!");
+	    outputBanner();
 
 		this.sensorService = new SensorService();
 		this.setOperatorDisplay(new OperatorDisplaySmartDashboardImpl());
@@ -56,7 +56,17 @@ public class Robot extends IterativeRobot {
 
 	}
 
-	/**
+	protected void outputBanner() {
+	    logger.info(">>>>> Newark Catholic Team 6027 Robot started! <<<<<");
+	    logger.info("	     ________.____    ._____________      ___ ___  ");
+	    logger.info("	    /  _____/|    |   |__\\__    ___/___  /   |   \\ ");
+	    logger.info("	   /   \\  ___|    |   |  | |    |_/ ___\\/    ~    \\");
+	    logger.info("	   \\    \\_\\  \\    |___|  | |    |\\  \\___\\    Y    /");
+	    logger.info("	    \\______  /_______ \\__| |____| \\___  >\\___|_  / ");
+	    logger.info("	           \\/        \\/               \\/       \\/ "); 
+    }
+
+    /**
 	 * This function is called once each time the robot enters Disabled mode. You
 	 * can use it to reset any subsystem information you want to clear when the
 	 * robot is disabled.

@@ -6,6 +6,9 @@ import org.usfirst.frc.team6027.robot.subsystems.PneumaticSubsystem;
 
 import edu.wpi.first.wpilibj.command.Command;
 
+/**
+ * Toggles the drivetain shifter from HIGH to LOW or LOW to HIGH.
+ */
 public class ShiftGearCommand extends Command {
     /** The delay in milliseconds before we allow the command to finish.  This builds in a small delay to allow the
      * solenoid to finish toggling before we turn it back off. */

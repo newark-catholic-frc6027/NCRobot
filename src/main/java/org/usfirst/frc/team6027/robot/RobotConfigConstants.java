@@ -137,16 +137,22 @@ public class RobotConfigConstants {
 	 */
 	public static final Port GYRO_PORT = SerialPort.Port.kUSB;
 
-	/**
+	/*
 	 * SOLENOID constants
 	 */
 	public static final int SOLENOID_1_MODULE_NUMBER = 10;
 	public static final int SOLENOID_1_PORT_A = 0;
 	public static final int SOLENOID_1_PORT_B = 1;
 
-    /**
+    /*
      * Pressure sensor constants
      */
     public static final int PRESSURE_SENSOR_PORT = 0;
+
+    /*
+     * Ultrasonic sensor constants
+     */
+    public static final int ULTRASONOIC_PING_CHANNEL = 8;
+    public static final int ULTRASONIC_ECHO_CHANNEL = 9;
 
 }
