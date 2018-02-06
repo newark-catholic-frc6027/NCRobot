@@ -5,13 +5,13 @@ import org.usfirst.frc.team6027.robot.RobotConfigConstants;
 import edu.wpi.first.wpilibj.XboxController;
 
 
-public class XBoxJoystick extends XboxController {
+public class XboxJoystick extends XboxController {
     
-    public XBoxJoystick() {
+    public XboxJoystick() {
         this(RobotConfigConstants.JOYSTICK_PORT_NUMBER);
     }
     
-    public XBoxJoystick(int port) {
+    public XboxJoystick(int port) {
         super(port);
     }
 
@@ -19,7 +19,7 @@ public class XBoxJoystick extends XboxController {
         return this.getBumper(Hand.kLeft);
     }
 
-    public int getLeftBumberButtonNumber() {
+    public int getLeftBumperButtonNumber() {
         return 5;
     }
     
@@ -43,7 +43,7 @@ public class XBoxJoystick extends XboxController {
         return this.getBButton();
     }
 
-    public int geBButtonNumber() {
+    public int getBButtonNumber() {
         return 2;
     }
     

@@ -2,7 +2,7 @@ package org.usfirst.frc.team6027.robot;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.usfirst.frc.team6027.robot.controls.XBoxJoystick;
+import org.usfirst.frc.team6027.robot.controls.XboxJoystick;
 
 /**
  * Represents and holds the human interfaces to control the robot. Here we
@@ -13,18 +13,18 @@ public class OperatorInterface {
 	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private XBoxJoystick joystick = new XBoxJoystick();
+	private XboxJoystick joystick = new XboxJoystick();
 	private OperatorDisplay operatorDisplay;
 
 	public OperatorInterface(OperatorDisplay operatorDisplay) {
 		this.operatorDisplay = operatorDisplay;
 	}
 
-	public XBoxJoystick getJoystick() {
+	public XboxJoystick getJoystick() {
 		return joystick;
 	}
 
-	public void setJoystick(XBoxJoystick joystick) {
+	public void setJoystick(XboxJoystick joystick) {
 		this.joystick = joystick;
 	}
 

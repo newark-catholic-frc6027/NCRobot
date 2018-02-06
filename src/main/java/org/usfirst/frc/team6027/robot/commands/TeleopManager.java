@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.OperatorDisplay;
 import org.usfirst.frc.team6027.robot.OperatorInterface;
-import org.usfirst.frc.team6027.robot.controls.XBoxJoystick;
+import org.usfirst.frc.team6027.robot.controls.XboxJoystick;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import org.usfirst.frc.team6027.robot.subsystems.PneumaticSubsystem;
@@ -18,7 +18,7 @@ public class TeleopManager extends Command {
 
 	private OperatorInterface operatorInterface;
 	private SensorService sensorService;
-	private XBoxJoystick joystick;
+	private XboxJoystick joystick;
 	private DrivetrainSubsystem drivetrain;
 	private Preferences prefs = Preferences.getInstance();
 	private PneumaticSubsystem pneumaticSubsystem;
