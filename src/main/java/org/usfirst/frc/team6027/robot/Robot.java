@@ -1,6 +1,7 @@
 
 package org.usfirst.frc.team6027.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.commands.TeleopManager;
 import org.usfirst.frc.team6027.robot.commands.autonomous.AutonomousCrossLine;
+import org.usfirst.frc.team6027.robot.field.Field;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import org.usfirst.frc.team6027.robot.subsystems.PneumaticSubsystem;
@@ -32,6 +34,8 @@ public class Robot extends IterativeRobot {
 	private DrivetrainSubsystem drivetrain;
 	private PneumaticSubsystem pneumaticSubsystem;
 	private SensorService sensorService;
+	
+	private Field field = new Field();
 
 	Preferences prefs = Preferences.getInstance();
 
@@ -94,7 +98,11 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		this.autonomousCommand = new AutonomousCrossLine(this.sensorService, this.drivetrain, this.operatorDisplay);
+		this.autonomousCommand = null;//new AutonomousCrossLine(this.sensorService, this.drivetrain, this.operatorDisplay);
+		String gameData = DriverStation.getInstance().getGameSpecificMessage();
+		
+		this.field.doFieldAssignments(gameData);
+        
 		// schedule the autonomous command (example)
 		if (autonomousCommand != null) {
 			autonomousCommand.start();
@@ -106,6 +114,11 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
+        String gameData = DriverStation.getInstance().getGameSpecificMessage();
+        if (this.field.getAssignmentData() == null) {
+            this.field.doFieldAssignments(gameData);
+        }
+        
 		Scheduler.getInstance().run();
 		updateOperatorDisplay();
 	}
