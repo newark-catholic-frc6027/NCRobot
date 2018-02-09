@@ -24,6 +24,9 @@ import org.usfirst.frc.team6027.robot.subsystems.PneumaticSubsystem;
  * in the resource directory.
  */
 public class Robot extends IterativeRobot {
+    public static final double ROBOT_WIDTH_INCHES = 27.75;
+    public static final double ROBOT_LENGTH_INCHES = 32.0;
+    
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private OperatorInterface operatorInterface;

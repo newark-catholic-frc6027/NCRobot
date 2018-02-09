@@ -17,6 +17,8 @@ public class Field {
         TheirSwitchRight
     }
 
+    public static final double DISTANCE_FROM_OUR_WALL_TO_AUTOLINE_INCHES = 120.0;
+    
     protected static final int OUR_SWITCH_POS = 0;
     protected static final int OUR_SWITCH_LEFT_PLATE = 0;
     protected static final int OUR_SWITCH_RIGHT_PLATE = 1;
