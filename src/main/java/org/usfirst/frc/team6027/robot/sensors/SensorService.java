@@ -7,14 +7,14 @@ public class SensorService {
 	private PIDCapableGyro gyroSensor;
 	private AirPressureSensor airPressureSensor;
 	private UltrasonicSensor ultrasonicSensor;
-	private CameraSensor cameraSensor;
+	private CameraSensors cameraSensor;
 
 	public SensorService() {
 		this.encoderSensors = new EncoderSensors();
 		this.gyroSensor = new NavxGyroSensor();
 		this.airPressureSensor = new AirPressureSensor();
 		this.ultrasonicSensor = new UltrasonicSensor();
-		this.cameraSensor = new CameraSensor();
+		this.cameraSensor = new CameraSensors();
 	}
 
 
@@ -55,12 +55,12 @@ public class SensorService {
     }
 
 
-    public CameraSensor getCameraSensor() {
+    public CameraSensors getCameraSensor() {
         return cameraSensor;
     }
 
 
-    public void setCameraSensor(CameraSensor cameraSensor) {
+    public void setCameraSensor(CameraSensors cameraSensor) {
         this.cameraSensor = cameraSensor;
     }
 }
