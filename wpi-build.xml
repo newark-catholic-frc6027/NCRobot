@@ -71,11 +71,13 @@
       <fileset dir="${userLibs.dir}"
                includes="*.jar"
                excludes="*-sources.jar,*-javadoc.jar" />
+    	<!-- JRM  removing these jars since gradle build handles
       <fileset file="${wpilib.jar}" />
       <fileset file="${ntcore.jar}" />
       <fileset file="${opencv.jar}" />
       <fileset file="${cscore.jar}" />
       <fileset file="${wpiutil.jar}" />
+      -->
       <fileset dir="${userLibs}"
                erroronmissingdir="false" />
     </path>
