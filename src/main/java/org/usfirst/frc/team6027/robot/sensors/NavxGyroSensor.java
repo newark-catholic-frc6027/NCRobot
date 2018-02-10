@@ -43,6 +43,7 @@ public class NavxGyroSensor implements PIDCapableGyro {
     public double getAngle() {
          return ahrs.getAngle();
     }
+    
 
     @Override
     public double getRate() {
@@ -58,6 +59,11 @@ public class NavxGyroSensor implements PIDCapableGyro {
     @Override
     public PIDSource getPIDSource() {
         return this.ahrs;
+    }
+
+    @Override
+    public double getYawAngle() {
+        return this.ahrs.getYaw();
     }
 
 

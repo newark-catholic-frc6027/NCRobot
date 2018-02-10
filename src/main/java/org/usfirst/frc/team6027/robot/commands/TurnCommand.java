@@ -46,7 +46,7 @@ public class TurnCommand extends Command implements PIDOutput {
 		this.targetAngle = angle;
 		this.operatorDisplay = operatorDisplay;
 		this.gyro.reset();
-		this.initialGyroAngle = this.gyro.getAngle();
+		this.initialGyroAngle = this.gyro.getYawAngle();
 		this.startTime = System.currentTimeMillis();
 
 		initPIDController();
@@ -78,12 +78,12 @@ public class TurnCommand extends Command implements PIDOutput {
 	@Override
 	protected boolean isFinished() {
 	    // TODO: see if we can use the onTarget() method of the PID controller here
-		if (Math.abs(this.gyro.getAngle() - this.targetAngle) <= 0.5
+		if (Math.abs(this.gyro.getYawAngle() - this.targetAngle) <= 0.5
 				&& Math.abs(this.gyro.getRate()) <= pidAngleStopThreshold) {
 			pidController.disable();
 			// this.drivetrain.drive (0, 0);
 			this.drivetrain.stopMotor();
-			logger.info("Turn done, angle={}", this.sensorService.getGyroSensor().getAngle());
+			logger.info("Turn done, angle={}", this.sensorService.getGyroSensor().getYawAngle());
 			return true;
 		}
 		return false;
@@ -92,16 +92,16 @@ public class TurnCommand extends Command implements PIDOutput {
 	protected void execute() {
 		// this.drivetrain.drive (0.2, pidLoopCalculationOutput);
 		long currentElapsedExecutionMs = System.currentTimeMillis() - this.startTime;
-		if (currentElapsedExecutionMs < this.executionStartThreshold && this.gyro.getAngle() == this.initialGyroAngle) {
+		if (currentElapsedExecutionMs < this.executionStartThreshold && this.gyro.getYawAngle() == this.initialGyroAngle) {
 			logger.info("Gyro not reset yet. Skipping");
 		} else {
 			double pidPower = pidLoopCalculationOutput / this.prefs.getDouble("turnCommand.pidPowerDivisor", 4.0);
 
-			logger.info("{},{},{},{}", this.gyro.getAngle(), this.pidLoopCalculationOutput, this.gyro.getRate(),
+			logger.info("{},{},{},{}", this.gyro.getYawAngle(), this.pidLoopCalculationOutput, this.gyro.getRate(),
 					pidPower);
 			this.drivetrain.tankDrive(pidPower, -1 * pidPower);
 
-			logger.trace("Current Angle: {}", this.sensorService.getGyroSensor().getAngle());
+			logger.trace("Current Angle: {}", this.sensorService.getGyroSensor().getYawAngle());
 
 		}
 	}

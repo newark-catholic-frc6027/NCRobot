@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.OperatorDisplay;
 import org.usfirst.frc.team6027.robot.sensors.EncoderSensors;
+import org.usfirst.frc.team6027.robot.sensors.PIDCapableGyro;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.sensors.UltrasonicSensor;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
@@ -30,7 +31,7 @@ public class DriveStraightCommand extends Command implements PIDOutput {
     private SensorService sensorService;
     private EncoderSensors encoderSensors;
     private UltrasonicSensor ultrasonicSensor;
-    private Gyro gyro;
+    private PIDCapableGyro gyro;
     private DrivetrainSubsystem drivetrainSubsystem;
     private OperatorDisplay operatorDisplay;
     private double driveDistance;
@@ -109,14 +110,14 @@ public class DriveStraightCommand extends Command implements PIDOutput {
     @Override
     protected void execute() {
         logger.trace("Gyro angle: {}, left-enc: {}, right-enc: {}", 
-                this.gyro.getAngle(), this.encoderSensors.getLeftEncoder().getDistance(), 
+                this.gyro.getYawAngle(), this.encoderSensors.getLeftEncoder().getDistance(), 
                 this.encoderSensors.getRightEncoder().getDistance()
         );
         this.drivetrainSubsystem.drive(0.2, 0);
 /*        
-        if (gyro.getAngle() <= 2.0) {
+        if (gyro.getYawAngle() <= 2.0) {
             this.drivetrainSubsystem.drive(0.2, -0.2);
-        } else if (gyro.getAngle() >= -2.0) {
+        } else if (gyro.getYawAngle() >= -2.0) {
             this.drivetrainSubsystem.drive(0.2, 0.2);
         } else {
             this.drivetrainSubsystem.drive(0.2, 0);

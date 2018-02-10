@@ -199,7 +199,7 @@ public class Robot extends IterativeRobot {
 				this.sensorService.getEncoderSensors().getLeftEncoder().getRaw());
 		getOperatorDisplay().setFieldValue("leftEncoder Distance",
 				this.sensorService.getEncoderSensors().getLeftEncoder().getDistance());
-		getOperatorDisplay().setFieldValue("Gyro Angle", this.sensorService.getGyroSensor().getAngle());
+		getOperatorDisplay().setFieldValue("Gyro Angle", this.sensorService.getGyroSensor().getYawAngle());
 		getOperatorDisplay().setFieldValue("Ultrasonic Distance (in)", this.sensorService.getUltrasonicSensor().getDistanceInches());
 
 	}

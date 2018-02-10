@@ -5,4 +5,5 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 public interface PIDCapableGyro extends Gyro {
     PIDSource getPIDSource();
+    double getYawAngle();
 }
