@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj.command.Command;
  * to the robot driver.
  */
 public interface OperatorDisplay {
+    public static final String PID_LOOP_OUPUT_LABEL = "PID Loop Output Value";
+    
     public enum ChooserName {
         Position,
         Scenario("Auto Scenario");

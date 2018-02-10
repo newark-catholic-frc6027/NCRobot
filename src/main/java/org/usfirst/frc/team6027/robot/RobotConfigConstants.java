@@ -147,7 +147,7 @@ public class RobotConfigConstants {
     /*
      * Pressure sensor constants
      */
-    public static final int PRESSURE_SENSOR_PORT = 6;
+    public static final int PRESSURE_SENSOR_PORT = 7;
 
     /*
      * Ultrasonic sensor constants
@@ -155,4 +155,19 @@ public class RobotConfigConstants {
     public static final int ULTRASONIC_PING_CHANNEL = 4;
     public static final int ULTRASONIC_ECHO_CHANNEL = 5;
 
+    
+    /* set to 1 if inversion is not needed, -1 if inversion is needed */
+    public final static int OPTIONAL_LEFT_JOYSTICK_INVERSION = -1;
+    /* set to 1 if inversion is not needed, -1 if inversion is needed */
+    public final static int OPTIONAL_RIGHT_JOYSTICK_INVERSION = -1;
+    
+    
+    /* set to 1 if inversion is not needed, -1 if inversion is needed */
+    public final static int OPTIONAL_DRIVETRAIN_DIRECTION_INVERSION = -1;
+
+    /* set to 1 if inversion is not needed, -1 if inversion is needed */
+    public final static int OPTIONAL_LEFT_ENCODER_INVERSION = -1;
+    /* set to 1 if inversion is not needed, -1 if inversion is needed */
+    public final static int OPTIONAL_RIGHT_ENCODER_INVERSION = -1;
+            
 }

@@ -20,8 +20,8 @@ public class DrivetrainSubsystem extends Subsystem {
 //    private WPI_TalonSRX backRight = new WPI_TalonSRX(RobotConfigConstants.REAR_RIGHT_CANTALON_DRIVE_ID);
 //    private WPI_TalonSRX frontLeft = new WPI_TalonSRX(RobotConfigConstants.FRONT_LEFT_CANTALON_DRIVE_ID);
 //    private WPI_TalonSRX backLeft = new WPI_TalonSRX(RobotConfigConstants.REAR_LEFT_CANTALON_DRIVE_ID);
-    private WPI_TalonSRX rightGearBox = new WPI_TalonSRX(RobotConfigConstants.RIGHT_GEARBOX_CIM_1_ID);
-    private WPI_TalonSRX leftGearBox = new WPI_TalonSRX(RobotConfigConstants.LEFT_GEARBOX_CIM_1_ID);
+    private WPI_TalonSRX rightGearBoxMaster = new WPI_TalonSRX(RobotConfigConstants.RIGHT_GEARBOX_CIM_1_ID);
+    private WPI_TalonSRX leftGearBoxMaster = new WPI_TalonSRX(RobotConfigConstants.LEFT_GEARBOX_CIM_1_ID);
     private WPI_TalonSRX rightGearBoxSlave1 = new WPI_TalonSRX(RobotConfigConstants.RIGHT_GEARBOX_CIM_2_ID);
     private WPI_TalonSRX leftGearBoxSlave1 = new WPI_TalonSRX(RobotConfigConstants.LEFT_GEARBOX_CIM_2_ID);
     private WPI_TalonSRX rightGearBoxSlave2 = new WPI_TalonSRX(RobotConfigConstants.RIGHT_GEARBOX_CIM_3_ID);
@@ -29,7 +29,7 @@ public class DrivetrainSubsystem extends Subsystem {
     
     //private RobotDrive robotDrive = new RobotDrive(frontLeft,backLeft,frontRight,backRight);
     
-    private RobotDrive robotDrive = new RobotDrive(rightGearBox, leftGearBox);
+    private RobotDrive robotDrive = new RobotDrive(rightGearBoxMaster, leftGearBoxMaster);
 //    private RobotDrive robotDrive = new RobotDrive(0,0,0,0);
 
     private OperatorInterface operatorInterface;
@@ -40,10 +40,10 @@ public class DrivetrainSubsystem extends Subsystem {
     }
 
     protected void initialize () {
-    	this.rightGearBoxSlave1.follow(rightGearBox);
-    	this.leftGearBoxSlave1.follow(leftGearBox);
-    	this.rightGearBoxSlave2.follow(rightGearBox);
-    	this.leftGearBoxSlave2.follow(leftGearBox);
+    	this.rightGearBoxSlave1.follow(rightGearBoxMaster);
+    	this.leftGearBoxSlave1.follow(leftGearBoxMaster);
+    	this.rightGearBoxSlave2.follow(rightGearBoxMaster);
+    	this.leftGearBoxSlave2.follow(leftGearBoxMaster);
     }
 
     /**
@@ -75,6 +75,10 @@ public class DrivetrainSubsystem extends Subsystem {
         getRobotDrive().arcadeDrive(0,0);
     }
 
+    public void drive(double outputMagnitude, double curve) {
+        getRobotDrive().drive(RobotConfigConstants.OPTIONAL_DRIVETRAIN_DIRECTION_INVERSION * outputMagnitude, curve);
+    }
+    
     public OperatorInterface getOperatorInterface() {
         return operatorInterface;
     }
@@ -83,12 +87,22 @@ public class DrivetrainSubsystem extends Subsystem {
         this.operatorInterface = operatorInterface;
     }
 
-    public RobotDrive getRobotDrive() {
+    protected RobotDrive getRobotDrive() {
         return robotDrive;
     }
 
     public void setRobotDrive(RobotDrive robotDrive) {
         this.robotDrive = robotDrive;
+        
+    }
+
+    public void tankDrive(double leftValue, double rightValue) {
+        getRobotDrive().tankDrive(leftValue, rightValue);
+        
+    }
+
+    public void stopMotor() {
+        getRobotDrive().stopMotor();
         
     }
 }

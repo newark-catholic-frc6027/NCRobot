@@ -4,7 +4,7 @@ import org.usfirst.frc.team6027.robot.RobotConfigConstants;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 
-public class EncoderSensors {
+public class EncoderSensors {    
     public static final double DISTANCE_PER_REVOLUTION = 18.84;//Math.PI * 6;
     public static final double PULSE_PER_REVOLUTION = 1024;
     public static final double DISTANCE_PER_PULSE = DISTANCE_PER_REVOLUTION / PULSE_PER_REVOLUTION;
@@ -47,6 +47,8 @@ public class EncoderSensors {
     public Encoder getRightEncoder() {      
         return rightEncoder;
     }
+    
+    
     public void setLeftEncoder(Encoder leftEncoder) {
         this.leftEncoder = leftEncoder;
     }

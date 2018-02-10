@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.OperatorDisplay;
 import org.usfirst.frc.team6027.robot.OperatorInterface;
+import org.usfirst.frc.team6027.robot.RobotConfigConstants;
 import org.usfirst.frc.team6027.robot.controls.XboxJoystick;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
@@ -15,7 +16,7 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public class TeleopManager extends Command {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-
+	
 	private OperatorInterface operatorInterface;
 	private SensorService sensorService;
 	private XboxJoystick joystick;
@@ -76,8 +77,8 @@ public class TeleopManager extends Command {
 		updateOperatorDisplay();
 
 		double motorPower = prefs.getDouble("motorPower", 1.0);
-		this.drivetrain.startArcadeDrive((1) * (motorPower) * this.joystick.getLeftAxis(),
-				(-1) * this.joystick.getRightAxis());
+		this.drivetrain.startArcadeDrive((RobotConfigConstants.OPTIONAL_LEFT_JOYSTICK_INVERSION) * (motorPower) * this.joystick.getLeftAxis(),
+				(RobotConfigConstants.OPTIONAL_RIGHT_JOYSTICK_INVERSION) * this.joystick.getRightAxis());
 
 	}
 
