@@ -22,25 +22,30 @@ public class OperatorDisplaySmartDashboardImpl implements OperatorDisplay {
 
     private SendableChooser<Integer> positionChooser = new SendableChooser<>();
     private SendableChooser<Command> scenarioChooser = new SendableChooser<>();
+    
     @SuppressWarnings("rawtypes")
     private Map<ChooserName, SendableChooser> chooserCache = new HashMap<>();
     
     public OperatorDisplaySmartDashboardImpl() {
-        initPositionChooser();
-        initScenarioChooser();
+       initPositionChooser();
+       initScenarioChooser();
     }
 
     protected void initScenarioChooser() {
-        this.chooserCache.put(ChooserName.Scenario, scenarioChooser);
-        SmartDashboard.putData(ChooserName.Scenario.displayName(), scenarioChooser);
+        this.chooserCache.put(ChooserName.Scenario, this.scenarioChooser);
+        DefaultNoOpCommand noOpCommand = new DefaultNoOpCommand();
+        this.registerAutoCommand(noOpCommand, true);
+        SmartDashboard.putData(ChooserName.Scenario.displayName(), this.scenarioChooser);
     }
     
     protected void initPositionChooser() {
         this.chooserCache.put(ChooserName.Position, this.positionChooser);
+        
+        this.positionChooser.addDefault("Pos 1", new Integer(1));
+        this.positionChooser.addObject("Pos 2", new Integer(2));
+        this.positionChooser.addObject("Pos 3", new Integer(3));
+        
         SmartDashboard.putData(ChooserName.Position.displayName(), this.positionChooser);
-        this.positionChooser.addObject("Pos 1", 1);
-        this.positionChooser.addObject("Pos 2", 2);
-        this.positionChooser.addObject("Pos 3", 3);
     }
 
     @Override
@@ -68,16 +73,28 @@ public class OperatorDisplaySmartDashboardImpl implements OperatorDisplay {
         SmartDashboard.putBoolean(fieldName, value);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void registerAutoCommand(Command command) {
         this.registerAutoCommand(command.getName(), command);
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
+    public void registerAutoCommand(Command command, boolean isDefaultCommand) {
+        this.registerAutoCommand(command.getName(), command, isDefaultCommand);
+    }
+    
     @Override
     public void registerAutoCommand(String displayName, Command command) {
-        this.scenarioChooser.addObject(displayName, command);
+        this.registerAutoCommand(displayName, command, false);
+    }
+    
+    @Override
+    public void registerAutoCommand(String displayName, Command command, boolean isDefaultCommand) {
+        if (isDefaultCommand) {
+            this.scenarioChooser.addDefault(displayName, command);
+        } else {
+            this.scenarioChooser.addObject(displayName, command);
+        }
     }
     
     @Override
@@ -90,5 +107,17 @@ public class OperatorDisplaySmartDashboardImpl implements OperatorDisplay {
         return (Integer) this.positionChooser.getSelected();
     }
 
+    
+    private class DefaultNoOpCommand extends Command {
+        public DefaultNoOpCommand() {
+            this.setName("Do Nothing");
+        }
+        
+        @Override
+        protected boolean isFinished() {
+            return true;
+        }
+        
+    }
     
 }

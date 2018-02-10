@@ -58,6 +58,8 @@ public interface OperatorDisplay {
 
     void registerAutoCommand(Command command);
     void registerAutoCommand(String displayName, Command command);
+    void registerAutoCommand(Command command, boolean isDefaultCommand);
+    void registerAutoCommand(String displayName, Command command, boolean isDefaultCommand);
     
     Command getSelectedAutoCommand();
     
