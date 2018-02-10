@@ -1,6 +1,7 @@
 package org.usfirst.frc.team6027.robot;
 
 import edu.wpi.first.wpilibj.NamedSendable;
+import edu.wpi.first.wpilibj.command.Command;
 
 /**
  * An interface used to define the operations necessary for displaying information and feedback to the robot human 
@@ -8,6 +9,28 @@ import edu.wpi.first.wpilibj.NamedSendable;
  * to the robot driver.
  */
 public interface OperatorDisplay {
+    public enum ChooserName {
+        Position,
+        Scenario("Auto Scenario");
+        
+        private String displayName;
+        
+        private ChooserName() {
+        }
+        
+        private ChooserName(String displayName) {
+            this.displayName = displayName;
+        }
+        
+        public String displayName() {
+            if (this.displayName == null ) {
+                return this.name();
+            } else {
+                return this.displayName;
+            }
+        }
+        
+    }
 
     /**
      * The name of the field representing how far the robot has traveled.
@@ -33,6 +56,11 @@ public interface OperatorDisplay {
 
     void setFieldValue(String fieldName, boolean value);
 
-
-
+    void registerAutoCommand(Command command);
+    void registerAutoCommand(String displayName, Command command);
+    
+    Command getSelectedAutoCommand();
+    
+    Integer getSelectedPosition();
+    
 }
