@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.usfirst.frc.team6027.robot.commands.DriveStraightCommand;
 import org.usfirst.frc.team6027.robot.commands.TeleopManager;
-import org.usfirst.frc.team6027.robot.commands.autonomous.AutoLineStraight;
 import org.usfirst.frc.team6027.robot.field.Field;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
@@ -101,7 +101,8 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		this.autonomousCommand = new AutoLineStraight(this.sensorService, this.drivetrain, this.operatorDisplay);
+		//this.autonomousCommand = new AutoLineStraight(this.sensorService, this.drivetrain, this.operatorDisplay);
+		this.autonomousCommand = new DriveStraightCommand(this.sensorService, this.drivetrain, this.operatorDisplay, 12.0);
 		String gameData = DriverStation.getInstance().getGameSpecificMessage();
 		
 		this.field.doFieldAssignments(gameData);
@@ -198,6 +199,7 @@ public class Robot extends IterativeRobot {
 		getOperatorDisplay().setFieldValue("leftEncoder Distance",
 				this.sensorService.getEncoderSensors().getLeftEncoder().getDistance());
 		getOperatorDisplay().setFieldValue("Gyro Angle", this.sensorService.getGyroSensor().getAngle());
+		getOperatorDisplay().setFieldValue("Ultrasonic Distance (in)", this.sensorService.getUltrasonicSensor().getDistanceInches());
 
 	}
 }

@@ -2,6 +2,7 @@ package org.usfirst.frc.team6027.robot.commands;
 
 import org.usfirst.frc.team6027.robot.OperatorDisplay;
 import org.usfirst.frc.team6027.robot.sensors.EncoderSensors;
+import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
 
 
@@ -12,21 +13,24 @@ public class DriveStraightCommand extends Command {
     
    
     
+    private SensorService sensorService;
     private EncoderSensors encoderSensors;
     private Gyro gyro;
     private DrivetrainSubsystem drivetrainSubsystem;
     private OperatorDisplay operatorDisplay;
     private double driveDistance;
     private double currentDistance = 0;
+    //private double targetDistance = 
     double diff = 0; //Creating variable for the difference between right encoder distance and left encoder distance
     int leftcount = 0;
     int rightcount = 0;
     int centercount = 0;
     
-    public DriveStraightCommand(EncoderSensors encoderSensors, DrivetrainSubsystem drivetrainSubsystem, OperatorDisplay operatorDisplay, double driveDistance, Gyro gyro) {
+    public DriveStraightCommand(SensorService sensorService, DrivetrainSubsystem drivetrainSubsystem, OperatorDisplay operatorDisplay, double driveDistance) {
         requires(drivetrainSubsystem);
-        this.encoderSensors = encoderSensors;
-        this.gyro = gyro;
+        this.sensorService = sensorService;
+        this.encoderSensors = this.sensorService.getEncoderSensors();
+        this.gyro = this.sensorService.getGyroSensor();
         this.drivetrainSubsystem = drivetrainSubsystem;
         this.driveDistance = driveDistance;
         this.operatorDisplay = operatorDisplay;
@@ -37,7 +41,8 @@ public class DriveStraightCommand extends Command {
     protected boolean isFinished() {
         // TODO Auto-generated method stub
         if(Math.abs(this.encoderSensors.getRightEncoder().getDistance())>= this.driveDistance) {
-            this.encoderSensors.getRightEncoder().reset();
+            this.drivetrainSubsystem.stopArcadeDrive();
+        	this.encoderSensors.getRightEncoder().reset();
             this.encoderSensors.getLeftEncoder().reset();
             this.gyro.reset();
             return true;
@@ -49,15 +54,18 @@ public class DriveStraightCommand extends Command {
     @Override 
     protected void execute() {
     	if(gyro.getAngle()<= -2.0) {
-    		this.drivetrainSubsystem.getRobotDrive().drive (-0.2, -0.2);	
+    		this.drivetrainSubsystem.getRobotDrive().drive (0.2, 0.2);	
     	}
     	else if(gyro.getAngle()>=2.0) {
-    		this.drivetrainSubsystem.getRobotDrive().drive (-0.2, 0.2);
+    		this.drivetrainSubsystem.getRobotDrive().drive (0.2, -0.2);
     	}	
     	else {
-    		this.drivetrainSubsystem.getRobotDrive().drive (-0.2, 0);
+    		this.drivetrainSubsystem.getRobotDrive().drive (0.2, 0);
     	}
-    		
+//    	if (this.sensorService.getUltrasonicSensor().getDistanceInches() == driveDistance) {
+//    		this.drivetrainSubsystem.stopArcadeDrive();
+//    	}
+
     		
 //        double diff=this.encoderSensors.getRightEncoder().getDistance() - this.encoderSensors.getLeftEncoder().getDistance();
 //        /*
