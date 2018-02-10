@@ -147,12 +147,12 @@ public class RobotConfigConstants {
     /*
      * Pressure sensor constants
      */
-    public static final int PRESSURE_SENSOR_PORT = 0;
+    public static final int PRESSURE_SENSOR_PORT = 6;
 
     /*
      * Ultrasonic sensor constants
      */
-    public static final int ULTRASONOIC_PING_CHANNEL = 8;
-    public static final int ULTRASONIC_ECHO_CHANNEL = 9;
+    public static final int ULTRASONIC_PING_CHANNEL = 4;
+    public static final int ULTRASONIC_ECHO_CHANNEL = 5;
 
 }

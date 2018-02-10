@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.commands.TeleopManager;
-import org.usfirst.frc.team6027.robot.commands.autonomous.AutonomousCrossLine;
+import org.usfirst.frc.team6027.robot.commands.autonomous.AutoLineStraight;
 import org.usfirst.frc.team6027.robot.field.Field;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
@@ -101,7 +101,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		this.autonomousCommand = null;//new AutonomousCrossLine(this.sensorService, this.drivetrain, this.operatorDisplay);
+		this.autonomousCommand = new AutoLineStraight(this.sensorService, this.drivetrain, this.operatorDisplay);
 		String gameData = DriverStation.getInstance().getGameSpecificMessage();
 		
 		this.field.doFieldAssignments(gameData);
@@ -110,6 +110,7 @@ public class Robot extends IterativeRobot {
 		if (autonomousCommand != null) {
 			autonomousCommand.start();
 		}
+		
 	}
 
 	/**

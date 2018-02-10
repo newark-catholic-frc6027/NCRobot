@@ -12,7 +12,7 @@ public class UltrasonicSensor {
     private Ultrasonic ultrasonic;
     
     public UltrasonicSensor() {
-        this(RobotConfigConstants.ULTRASONOIC_PING_CHANNEL, RobotConfigConstants.ULTRASONIC_ECHO_CHANNEL);
+        this(RobotConfigConstants.ULTRASONIC_PING_CHANNEL, RobotConfigConstants.ULTRASONIC_ECHO_CHANNEL);
     }
     
     public UltrasonicSensor(int pingChannel, int echoChannel) {
