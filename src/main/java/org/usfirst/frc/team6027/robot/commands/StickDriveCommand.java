@@ -2,6 +2,7 @@ package org.usfirst.frc.team6027.robot.commands;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.usfirst.frc.team6027.robot.OperatorDisplay;
 import org.usfirst.frc.team6027.robot.OperatorInterface;
 import org.usfirst.frc.team6027.robot.RobotConfigConstants;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
@@ -37,13 +38,12 @@ public class StickDriveCommand extends Command {
 	}
 
 	protected void execute() {
-		motorPower = prefs.getDouble("motorPower", 1.0);
-		this.getDrivetrain().startArcadeDrive(
-				(1) * (motorPower) * this.getOperatorInterface().getJoystick().getLeftAxis(),
-				(-1) * this.getOperatorInterface().getJoystick().getRightAxis()
-
+		motorPower = prefs.getDouble(OperatorDisplay.TELEOP_MOTOR_POWER_PREF, 1.0);
+//		this.getDrivetrain().tankDrive(this.getOperatorInterface().getJoystick().getLeftAxis(), this.getOperatorInterface().getJoystick().getRightAxis());
+		this.getDrivetrain().doArcadeDrive(
+		        motorPower * this.getOperatorInterface().getJoystick().getLeftAxis(),
+				this.getOperatorInterface().getJoystick().getRightAxis()
 		);
-
 	}
 
 	protected boolean isFinished() {

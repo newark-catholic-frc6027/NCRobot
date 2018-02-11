@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.command.Command;
  */
 public interface OperatorDisplay {
     public static final String PID_LOOP_OUPUT_LABEL = "PID Loop Output Value";
+    public static final String TELEOP_MOTOR_POWER_PREF = "teleopMotorPower";
     
     public enum ChooserName {
         Position,

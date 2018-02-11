@@ -77,6 +77,17 @@ public class TurnCommand extends Command implements PIDOutput {
 
 	@Override
 	protected boolean isFinished() {
+	    
+	    if (this.pidController.onTarget()) {
+            pidController.disable();
+            //this.drivetrain.stopMotor();
+            this.drivetrain.differentialStopMotor();
+            logger.info("Turn done, angle={}", this.sensorService.getGyroSensor().getYawAngle());
+            return true;
+	    } else {
+	        return false;
+	    }
+	    /*
 	    // TODO: see if we can use the onTarget() method of the PID controller here
 		if (Math.abs(this.gyro.getYawAngle() - this.targetAngle) <= 0.5
 				&& Math.abs(this.gyro.getRate()) <= pidAngleStopThreshold) {
@@ -87,6 +98,7 @@ public class TurnCommand extends Command implements PIDOutput {
 			return true;
 		}
 		return false;
+		*/
 	}
 
 	protected void execute() {
@@ -97,10 +109,18 @@ public class TurnCommand extends Command implements PIDOutput {
 		} else {
 			double pidPower = pidLoopCalculationOutput / this.prefs.getDouble("turnCommand.pidPowerDivisor", 4.0);
 
-			logger.info("{},{},{},{}", this.gyro.getYawAngle(), this.pidLoopCalculationOutput, this.gyro.getRate(),
+			
+			logger.info("yaw: {}, pid: {}, gyro rate: {}, pidPower: {}", this.gyro.getYawAngle(), this.pidLoopCalculationOutput, this.gyro.getRate(),
 					pidPower);
-			this.drivetrain.tankDrive(pidPower, -1 * pidPower);
-
+			
+			this.drivetrain.differentialDrive(pidPower, -1 * pidPower);
+			/*
+			if (this.pidLoopCalculationOutput > 0) {
+	            this.drivetrain.tankDrive(-1 * pidPower, 0);
+			} else {
+	            this.drivetrain.tankDrive(-1 * pidPower, pidPower);
+			}
+*/
 			logger.trace("Current Angle: {}", this.sensorService.getGyroSensor().getYawAngle());
 
 		}

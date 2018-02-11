@@ -1,0 +1,1 @@
+Log file location on RIO: /var/local/natinst/log/FRC_UserProgram.log

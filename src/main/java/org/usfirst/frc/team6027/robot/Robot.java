@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.commands.DriveStraightCommand;
 import org.usfirst.frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
 import org.usfirst.frc.team6027.robot.commands.TeleopManager;
+import org.usfirst.frc.team6027.robot.commands.TurnCommand;
 import org.usfirst.frc.team6027.robot.field.Field;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
@@ -103,7 +104,8 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousInit() {
 		//this.autonomousCommand = new AutoLineStraight(this.sensorService, this.drivetrain, this.operatorDisplay);
-		this.autonomousCommand = new DriveStraightCommand(this.sensorService, this.drivetrain, this.operatorDisplay, this.prefs.getDouble("driveStraightCommand.driveDistance", 12.0), DriveDistanceMode.DistanceReadingOnEncoder);
+//		this.autonomousCommand = new DriveStraightCommand(this.sensorService, this.drivetrain, this.operatorDisplay, this.prefs.getDouble("driveStraightCommand.driveDistance", 12.0), DriveDistanceMode.DistanceReadingOnEncoder);
+        this.autonomousCommand = new TurnCommand(90.0, this.sensorService, this.drivetrain, this.operatorDisplay);
 		String gameData = DriverStation.getInstance().getGameSpecificMessage();
 		
 		this.field.doFieldAssignments(gameData);

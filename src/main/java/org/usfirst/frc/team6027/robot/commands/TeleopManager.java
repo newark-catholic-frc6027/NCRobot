@@ -87,9 +87,10 @@ public class TeleopManager extends Command {
 
 	@Override
 	protected void execute() {
-		double motorPower = prefs.getDouble("motorPower", 1.0);
-		this.drivetrain.startArcadeDrive((RobotConfigConstants.OPTIONAL_LEFT_JOYSTICK_INVERSION) * (motorPower) * this.joystick.getLeftAxis(),
-				(RobotConfigConstants.OPTIONAL_RIGHT_JOYSTICK_INVERSION) * this.joystick.getRightAxis());
+//	       this.drivetrain.tankDrive(this.operatorInterface.getJoystick().getLeftAxis(), this.operatorInterface.getJoystick().getRightAxis());
+
+	    logger.trace("leftaxis: {}, rightaxis: {}", this.joystick.getLeftAxis(), this.joystick.getRightAxis() );
+		this.drivetrain.doArcadeDrive(this.joystick.getLeftAxis(), this.joystick.getRightAxis());
 
 	}
 

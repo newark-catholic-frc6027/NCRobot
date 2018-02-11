@@ -161,13 +161,7 @@ public class RobotConfigConstants {
     /* set to 1 if inversion is not needed, -1 if inversion is needed */
     public final static int OPTIONAL_RIGHT_JOYSTICK_INVERSION = -1;
     
-    
     /* set to 1 if inversion is not needed, -1 if inversion is needed */
-    public final static int OPTIONAL_DRIVETRAIN_DIRECTION_INVERSION = -1;
-
-    /* set to 1 if inversion is not needed, -1 if inversion is needed */
-    public final static int OPTIONAL_LEFT_ENCODER_INVERSION = -1;
-    /* set to 1 if inversion is not needed, -1 if inversion is needed */
-    public final static int OPTIONAL_RIGHT_ENCODER_INVERSION = -1;
+    public final static int OPTIONAL_DRIVETRAIN_DIRECTION_INVERSION = 1;
             
 }

@@ -17,11 +17,13 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 public class DriveStraightCommand extends Command implements PIDOutput {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    protected static final double PID_PROPORTIONAL_COEFFICIENT = 0.08;
-    protected static final double PID_INTEGRAL_COEFFICIENT = 0.00;
+    protected static final double PID_PROPORTIONAL_COEFFICIENT = 0.005;
+    protected static final double PID_INTEGRAL_COEFFICIENT = 0.000;
     protected static final double PID_DERIVATIVE_COEFFICIENT = 0.00;
     protected static final double PID_FEED_FORWARD_TERM = 0.3;
-    protected static final double PID_TOLERANCE = 0.5;
+    protected static final double PID_TOLERANCE = 1.0;  // degrees
+    
+    protected static final double DRIVE_POWER = 0.4;
 
     public enum DriveDistanceMode {
         DistanceReadingOnEncoder,
@@ -37,7 +39,7 @@ public class DriveStraightCommand extends Command implements PIDOutput {
     private double driveDistance;
     private double currentDistance = 0;
     private DriveDistanceMode driveUntil = DriveDistanceMode.DistanceReadingOnEncoder;
-    private PIDController pidController;
+    private PIDController gyroPidController;
     private Preferences prefs = Preferences.getInstance();
     private double pidLoopCalculationOutput;
 
@@ -76,20 +78,21 @@ public class DriveStraightCommand extends Command implements PIDOutput {
         // pidController = new PIDController(this.prefs.getDouble("turnCommand.pCoeff",
         // PROPORTIONAL_COEFFICIENT), INTEGRAL_COEFFICIENT, DERIVATIVE_COEFFICIENT,
         // FEED_FORWARD_TERM, this.gyro.getPIDSource(), this);
-        pidController = new PIDController(this.prefs.getDouble("driveStraightCommand.pCoeff", PID_PROPORTIONAL_COEFFICIENT),
+        gyroPidController = new PIDController(this.prefs.getDouble("driveStraightCommand.pCoeff", PID_PROPORTIONAL_COEFFICIENT),
                 this.prefs.getDouble("driveStraightCommand.iCoeff", PID_INTEGRAL_COEFFICIENT),
                 this.prefs.getDouble("driveStraightCommand.dCoeff", PID_DERIVATIVE_COEFFICIENT),
                 this.prefs.getDouble("driveStraightCommand.feedForward", PID_FEED_FORWARD_TERM),
-                this.sensorService.getEncoderSensors().getLeftEncoder(), this);
+                this.sensorService.getGyroSensor().getPIDSource(), this);
+        
+        double currentAngleHeading = this.gyro.getYawAngle();
+        gyroPidController.setSetpoint(currentAngleHeading);
+        gyroPidController.setInputRange(-180.0, 180.0);
+        gyroPidController.setContinuous(true);
         
         // TODO: change input and output ranges
-        pidController.setInputRange(-180.0, 180.0);
-        pidController.setOutputRange(-1.0, 1.0);
-        pidController.setAbsoluteTolerance(PID_TOLERANCE);
-        pidController.setContinuous(true);
-        pidController.setSetpoint(this.driveDistance); // sets the angle to which we want to turn to
-        pidController.enable();
-
+        gyroPidController.setOutputRange(-1* DRIVE_POWER, DRIVE_POWER);
+        gyroPidController.setAbsoluteTolerance(PID_TOLERANCE);
+        gyroPidController.enable();
     }
     
     
@@ -97,7 +100,9 @@ public class DriveStraightCommand extends Command implements PIDOutput {
     protected boolean isFinished() {
         // TODO: use the PIDController to determine when we are done
         if (this.driveUntil == DriveDistanceMode.DistanceReadingOnEncoder) {
-            if (Math.abs(this.encoderSensors.getLeftEncoder().getDistance()) >= this.driveDistance) {
+            if (   Math.abs(this.encoderSensors.getLeftEncoder().getDistance()) >= this.driveDistance 
+                || Math.abs(this.encoderSensors.getLeftEncoder().getDistance()) >= this.driveDistance) {
+                
                 this.drivetrainSubsystem.stopArcadeDrive();
                 return true;
             } else {
@@ -117,13 +122,33 @@ public class DriveStraightCommand extends Command implements PIDOutput {
 
     @Override
     protected void execute() {
-        logger.trace("Gyro angles (yaw,raw): ({},{}) left-enc: {}, right-enc: {}", 
+        logger.trace("Gyro angles (yaw,raw): ({},{}) left-enc: {}, right-enc: {}, pidOutput: {}", 
                 String.format("%.3f",this.gyro.getYawAngle()),  
                 String.format("%.3f",this.gyro.getAngle()),  
                 String.format("%.3f",this.encoderSensors.getLeftEncoder().getDistance()),  
-                String.format("%.3f",this.encoderSensors.getRightEncoder().getDistance())
+                String.format("%.3f",this.encoderSensors.getRightEncoder().getDistance()),
+                String.format("%.3f",this.pidLoopCalculationOutput)
+                
         );
 //        this.drivetrainSubsystem.drive(0.2, 0);
+
+//        this.drivetrainSubsystem.tankDrive(DRIVE_POWER, DRIVE_POWER);
+
+        if (this.gyroPidController.onTarget()) {
+            this.drivetrainSubsystem.tankDrive(DRIVE_POWER, DRIVE_POWER);
+            logger.trace("onTarget, pidOutput: {}", this.pidLoopCalculationOutput);
+        } else {
+            double leftPower = DRIVE_POWER + this.pidLoopCalculationOutput;
+            double rightPower = DRIVE_POWER - this.pidLoopCalculationOutput;
+            logger.trace("adjustTo{}, pidOutput: {}, leftPower: {}, rightPower: {}", this.pidLoopCalculationOutput > 0 ? "Right" : "Left", this.pidLoopCalculationOutput, leftPower, rightPower);
+            this.drivetrainSubsystem.tankDrive(leftPower, rightPower);
+        }
+        
+//        this.drivetrainSubsystem.tankDrive(leftValue, rightValue);
+        
+        
+        /*
+        this.drivetrainSubsystem.drive(0.2, this.pidLoopCalculationOutput);
         
         if (gyro.getYawAngle() <= 2.0) {
             this.drivetrainSubsystem.drive(0.2, -0.2);
@@ -132,6 +157,7 @@ public class DriveStraightCommand extends Command implements PIDOutput {
         } else {
             this.drivetrainSubsystem.drive(0.2, 0);
         }
+        */
         
         // if (this.sensorService.getUltrasonicSensor().getDistanceInches() ==
         // driveDistance) {
