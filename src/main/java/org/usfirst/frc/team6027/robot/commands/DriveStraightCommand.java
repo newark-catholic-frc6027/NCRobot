@@ -117,12 +117,14 @@ public class DriveStraightCommand extends Command implements PIDOutput {
 
     @Override
     protected void execute() {
-        logger.trace("Gyro angle: {}, left-enc: {}, right-enc: {}", 
-                this.gyro.getYawAngle(), this.encoderSensors.getLeftEncoder().getDistance(), 
-                this.encoderSensors.getRightEncoder().getDistance()
+        logger.trace("Gyro angles (yaw,raw): ({},{}) left-enc: {}, right-enc: {}", 
+                String.format("%.3f",this.gyro.getYawAngle()),  
+                String.format("%.3f",this.gyro.getAngle()),  
+                String.format("%.3f",this.encoderSensors.getLeftEncoder().getDistance()),  
+                String.format("%.3f",this.encoderSensors.getRightEncoder().getDistance())
         );
-        this.drivetrainSubsystem.drive(0.2, 0);
-/*        
+//        this.drivetrainSubsystem.drive(0.2, 0);
+        
         if (gyro.getYawAngle() <= 2.0) {
             this.drivetrainSubsystem.drive(0.2, -0.2);
         } else if (gyro.getYawAngle() >= -2.0) {
@@ -130,7 +132,7 @@ public class DriveStraightCommand extends Command implements PIDOutput {
         } else {
             this.drivetrainSubsystem.drive(0.2, 0);
         }
-        */
+        
         // if (this.sensorService.getUltrasonicSensor().getDistanceInches() ==
         // driveDistance) {
         // this.drivetrainSubsystem.stopArcadeDrive();

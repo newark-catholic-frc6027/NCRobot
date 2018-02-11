@@ -25,6 +25,7 @@ public class TeleopManager extends Command {
 	private PneumaticSubsystem pneumaticSubsystem;
 
 	private JoystickButton shiftGearButton;
+	private JoystickButton leftBumperButton;
 
 	private ShiftGearCommand shiftGearCommand;
 
@@ -53,6 +54,18 @@ public class TeleopManager extends Command {
 		this.shiftGearButton = new JoystickButton(this.joystick, this.joystick.getRightBumperButtonNumber());
 		shiftGearButton.whenPressed(this.shiftGearCommand);
 
+		this.leftBumperButton = new JoystickButton(this.joystick, this.joystick.getLeftBumperButtonNumber());
+		this.leftBumperButton.whenPressed(new Command() {
+            @Override
+            protected boolean isFinished() {
+                return true;
+            }
+		    
+            protected void execute() {
+                sensorService.getGyroSensor().reset(); 
+                sensorService.getEncoderSensors().reset();
+            }
+		});
 		// Add new button assignments here
 	}
 
