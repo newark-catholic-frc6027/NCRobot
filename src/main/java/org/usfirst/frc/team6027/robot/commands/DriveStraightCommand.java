@@ -63,9 +63,15 @@ public class DriveStraightCommand extends Command implements PIDOutput {
             this.driveUntil = driveUntil;
         }
         
-        initPIDController();
     }
 
+    @Override
+    protected void initialize() {
+        this.encoderSensors.reset();
+        
+        initPIDController();
+    }
+    
     protected void initPIDController() {
         // pidController = new PIDController(this.prefs.getDouble("turnCommand.pCoeff",
         // PROPORTIONAL_COEFFICIENT), INTEGRAL_COEFFICIENT, DERIVATIVE_COEFFICIENT,
@@ -85,6 +91,8 @@ public class DriveStraightCommand extends Command implements PIDOutput {
         pidController.enable();
 
     }
+    
+    
     @Override
     protected boolean isFinished() {
         // TODO: use the PIDController to determine when we are done

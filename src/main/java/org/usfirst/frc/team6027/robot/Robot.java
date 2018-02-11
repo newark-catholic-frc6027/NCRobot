@@ -103,7 +103,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousInit() {
 		//this.autonomousCommand = new AutoLineStraight(this.sensorService, this.drivetrain, this.operatorDisplay);
-		this.autonomousCommand = new DriveStraightCommand(this.sensorService, this.drivetrain, this.operatorDisplay, 3.0, DriveDistanceMode.DistanceReadingOnEncoder);
+		this.autonomousCommand = new DriveStraightCommand(this.sensorService, this.drivetrain, this.operatorDisplay, this.prefs.getDouble("driveStraightCommand.driveDistance", 12.0), DriveDistanceMode.DistanceReadingOnEncoder);
 		String gameData = DriverStation.getInstance().getGameSpecificMessage();
 		
 		this.field.doFieldAssignments(gameData);
@@ -146,6 +146,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+	    this.updateOperatorDisplay();
 		Scheduler.getInstance().run();
 	}
 
@@ -190,17 +191,22 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void updateOperatorDisplay() {
-
-		getOperatorDisplay().setFieldValue("rightEncoder Raw Values",
-				this.sensorService.getEncoderSensors().getRightEncoder().getRaw());
-		getOperatorDisplay().setFieldValue("rightEncoder Distance",
-				this.sensorService.getEncoderSensors().getRightEncoder().getDistance());
-		getOperatorDisplay().setFieldValue("leftEncoder Raw Values",
-				this.sensorService.getEncoderSensors().getLeftEncoder().getRaw());
-		getOperatorDisplay().setFieldValue("leftEncoder Distance",
-				this.sensorService.getEncoderSensors().getLeftEncoder().getDistance());
-		getOperatorDisplay().setFieldValue("Gyro Angle", this.sensorService.getGyroSensor().getYawAngle());
-		getOperatorDisplay().setFieldValue("Ultrasonic Distance (in)", this.sensorService.getUltrasonicSensor().getDistanceInches());
+        getOperatorDisplay().setFieldValue("rightEncoder Raw Values",
+                this.sensorService.getEncoderSensors().getRightEncoder().getRaw());
+        getOperatorDisplay().setFieldValue("rightEncoder Distance",
+                this.sensorService.getEncoderSensors().getRightEncoder().getDistance());
+        getOperatorDisplay().setFieldValue("leftEncoder Raw Values",
+                this.sensorService.getEncoderSensors().getLeftEncoder().getRaw());
+        getOperatorDisplay().setFieldValue("leftEncoder Distance",
+                this.sensorService.getEncoderSensors().getLeftEncoder().getDistance());
+        getOperatorDisplay().setFieldValue("leftEncoder Raw",
+                this.sensorService.getEncoderSensors().getLeftEncoder().getRaw());
+        getOperatorDisplay().setFieldValue("rightEncoder Raw",
+                this.sensorService.getEncoderSensors().getRightEncoder().getRaw());
+        getOperatorDisplay().setFieldValue("Gyro Angle", this.sensorService.getGyroSensor().getAngle());
+        getOperatorDisplay().setFieldValue("Gyro Yaw Angle", this.sensorService.getGyroSensor().getYawAngle());
+        getOperatorDisplay().setFieldValue("Air Pressure", this.sensorService.getAirPressureSensor().getAirPressurePsi());
+        getOperatorDisplay().setFieldValue("Ultrasonic Distance (in)", this.sensorService.getUltrasonicSensor().getDistanceInches());
 
 	}
 }

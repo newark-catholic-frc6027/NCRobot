@@ -49,7 +49,7 @@ public class Field {
     public void doFieldAssignments(String assignmentData) {
         if (null != assignmentData && assignmentData.length() == 3) {
             this.assignmentData = assignmentData;
-            logger.trace("Assignment data received.  Value: {}", this.assignmentData);
+            logger.info("Assignment data received.  Value: {}", this.assignmentData);
             String ourSwitchAssignment = new String(assignmentData.substring(0, 1));
             String scaleAssignment = new String(assignmentData.substring(1, 2));
             String theirSwitchAssignment = new String(assignmentData.substring(2));
@@ -83,17 +83,17 @@ public class Field {
         logger.info("|                            |");
         logger.info("|                            |");
         logger.info("|                            |");
-        logger.info("|    {}                 {}     |", this.isPlateAssignedToUs(PlatePosition.TheirSwitchLeft) ? "X" : "-", this.isPlateAssignedToUs(PlatePosition.TheirSwitchRight) ?  "X" : "-");
+        logger.info("|        {}        {}          |", this.isPlateAssignedToUs(PlatePosition.TheirSwitchLeft) ? "X" : "-", this.isPlateAssignedToUs(PlatePosition.TheirSwitchRight) ?  "X" : "-");
         logger.info("|                            |");
         logger.info("|                            |");
         logger.info("|                            |");
         logger.info("|                            |");
-        logger.info("|    {}                 {}     |", this.isPlateAssignedToUs(PlatePosition.ScaleLeft) ? "X" : "-", this.isPlateAssignedToUs(PlatePosition.ScaleRight) ?  "X" : "-");
+        logger.info("|        {}        {}          |", this.isPlateAssignedToUs(PlatePosition.ScaleLeft) ? "X" : "-", this.isPlateAssignedToUs(PlatePosition.ScaleRight) ?  "X" : "-");
         logger.info("|                            |");
         logger.info("|                            |");
         logger.info("|                            |");
         logger.info("|                            |");
-        logger.info("|    {}                 {}     |", this.isPlateAssignedToUs(PlatePosition.OurSwitchLeft) ? "X" : "-", this.isPlateAssignedToUs(PlatePosition.OurSwitchRight) ?  "X" : "-");
+        logger.info("|        {}        {}          |", this.isPlateAssignedToUs(PlatePosition.OurSwitchLeft) ? "X" : "-", this.isPlateAssignedToUs(PlatePosition.OurSwitchRight) ?  "X" : "-");
         logger.info("|                            |");
         logger.info("|                            |");
         logger.info("|                            |");

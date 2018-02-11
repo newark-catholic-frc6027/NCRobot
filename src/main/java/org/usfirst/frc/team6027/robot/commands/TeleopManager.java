@@ -74,8 +74,6 @@ public class TeleopManager extends Command {
 
 	@Override
 	protected void execute() {
-		updateOperatorDisplay();
-
 		double motorPower = prefs.getDouble("motorPower", 1.0);
 		this.drivetrain.startArcadeDrive((RobotConfigConstants.OPTIONAL_LEFT_JOYSTICK_INVERSION) * (motorPower) * this.joystick.getLeftAxis(),
 				(RobotConfigConstants.OPTIONAL_RIGHT_JOYSTICK_INVERSION) * this.joystick.getRightAxis());
@@ -86,19 +84,5 @@ public class TeleopManager extends Command {
 		return this.operatorInterface.getOperatorDisplay();
 	}
 
-	public void updateOperatorDisplay() {
-		getOperatorDisplay().setFieldValue("rightEncoder Raw Values",
-				this.sensorService.getEncoderSensors().getRightEncoder().getRaw());
-		getOperatorDisplay().setFieldValue("rightEncoder Distance",
-				this.sensorService.getEncoderSensors().getRightEncoder().getDistance());
-		getOperatorDisplay().setFieldValue("leftEncoder Raw Values",
-				this.sensorService.getEncoderSensors().getLeftEncoder().getRaw());
-		getOperatorDisplay().setFieldValue("leftEncoder Distance",
-				this.sensorService.getEncoderSensors().getLeftEncoder().getDistance());
-		getOperatorDisplay().setFieldValue("Gyro Angle", this.sensorService.getGyroSensor().getYawAngle());
-		getOperatorDisplay().setFieldValue("Air Pressure", this.sensorService.getAirPressureSensor().getAirPressurePsi());
-		getOperatorDisplay().setFieldValue("Ultrasonic Distance (in)", this.sensorService.getUltrasonicSensor().getDistanceInches());
-
-	}
 
 }
