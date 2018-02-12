@@ -33,7 +33,7 @@ public class DrivetrainSubsystem extends Subsystem {
 //    private RobotDrive robotDrive = new RobotDrive(rightGearBoxMaster, leftGearBoxMaster);
     private RobotDrive robotDrive = new RobotDrive(leftGearBoxMaster, rightGearBoxMaster);
     
-    private DifferentialDrive differentialDrive = new DifferentialDrive(leftGearBoxMaster, rightGearBoxMaster);
+//    private DifferentialDrive differentialDrive = new DifferentialDrive(leftGearBoxMaster, rightGearBoxMaster);
 //    private RobotDrive robotDrive = new RobotDrive(0,0,0,0);
 
     private OperatorInterface operatorInterface;
@@ -105,7 +105,7 @@ public class DrivetrainSubsystem extends Subsystem {
         this.robotDrive = robotDrive;
         
     }
-
+/*
     public void differentialDrive(double leftSpeed, double rightSpeed) {
         this.differentialDrive.tankDrive(leftSpeed, rightSpeed);
     }
@@ -113,7 +113,7 @@ public class DrivetrainSubsystem extends Subsystem {
     public void differentialStopMotor() {
         this.differentialDrive.stopMotor();
     }
-    
+    */
     public void tankDrive(double leftValue, double rightValue) {
         getRobotDrive().tankDrive(leftValue, rightValue);
         

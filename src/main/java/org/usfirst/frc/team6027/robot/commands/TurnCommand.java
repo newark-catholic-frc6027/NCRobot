@@ -78,10 +78,13 @@ public class TurnCommand extends Command implements PIDOutput {
 	@Override
 	protected boolean isFinished() {
 	    
-	    if (this.pidController.onTarget()) {
+//	    if (this.pidController.onTarget()) {
+        if (Math.abs(this.gyro.getYawAngle() - this.targetAngle) <= 0.5
+                && Math.abs(this.gyro.getRate()) <= pidAngleStopThreshold) {
+	        
             pidController.disable();
-            //this.drivetrain.stopMotor();
-            this.drivetrain.differentialStopMotor();
+            this.drivetrain.stopMotor();
+            //this.drivetrain.differentialStopMotor();
             logger.info("Turn done, angle={}", this.sensorService.getGyroSensor().getYawAngle());
             return true;
 	    } else {
@@ -113,7 +116,7 @@ public class TurnCommand extends Command implements PIDOutput {
 			logger.info("yaw: {}, pid: {}, gyro rate: {}, pidPower: {}", this.gyro.getYawAngle(), this.pidLoopCalculationOutput, this.gyro.getRate(),
 					pidPower);
 			
-			this.drivetrain.differentialDrive(pidPower, -1 * pidPower);
+			this.drivetrain.tankDrive(pidPower, -1 * pidPower);
 			/*
 			if (this.pidLoopCalculationOutput > 0) {
 	            this.drivetrain.tankDrive(-1 * pidPower, 0);
