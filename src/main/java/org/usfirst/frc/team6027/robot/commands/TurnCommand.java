@@ -14,13 +14,15 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public class TurnCommand extends Command implements PIDOutput {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-	protected static final double PID_PROPORTIONAL_COEFFICIENT = 0.08;
+	protected static final double PID_PROPORTIONAL_COEFFICIENT = 0.005;
 	protected static final double PID_INTEGRAL_COEFFICIENT = 0.00;
 	protected static final double PID_DERIVATIVE_COEFFICIENT = 0.00;
 	protected static final double PID_FEED_FORWARD_TERM = 0.3;
 	/* This tuning parameter indicates how close to "on target" the */
 	/* PID Controller will attempt to get. */
 	protected static final double PID_TOLERANCE_DEGREES = 2.0;
+	protected static final double DRIVE_POWER = 0.3;
+	
 	private Preferences prefs = Preferences.getInstance();
 	private long executionStartThreshold = this.prefs.getLong("turnCommand.execStartThreshold", 500);
 	private double pidAngleStopThreshold = this.prefs.getDouble("turnCommand.pidAngleStopThreshold", 0.1);
@@ -68,7 +70,7 @@ public class TurnCommand extends Command implements PIDOutput {
 				this.prefs.getDouble("turnCommand.feedForward", PID_FEED_FORWARD_TERM),
 				this.sensorService.getGyroSensor().getPIDSource(), this);
 		pidController.setInputRange(-180.0, 180.0);
-		pidController.setOutputRange(-1.0, 1.0);
+		pidController.setOutputRange(-1* DRIVE_POWER, DRIVE_POWER);
 		pidController.setAbsoluteTolerance(PID_TOLERANCE_DEGREES);
 		pidController.setContinuous(true);
 		pidController.setSetpoint(this.targetAngle); // sets the angle to which we want to turn to
@@ -112,11 +114,25 @@ public class TurnCommand extends Command implements PIDOutput {
 		} else {
 			double pidPower = pidLoopCalculationOutput / this.prefs.getDouble("turnCommand.pidPowerDivisor", 4.0);
 
+			double clockwiseTurnPower = DRIVE_POWER + this.pidLoopCalculationOutput;
+			double counterClockwiseTurnPower = Math.abs(DRIVE_POWER - this.pidLoopCalculationOutput);
 			
-			logger.info("yaw: {}, pid: {}, gyro rate: {}, pidPower: {}", this.gyro.getYawAngle(), this.pidLoopCalculationOutput, this.gyro.getRate(),
-					pidPower);
+			double leftPower = DRIVE_POWER + this.pidLoopCalculationOutput;
+			double rightPower = DRIVE_POWER - this.pidLoopCalculationOutput;
 			
-			this.drivetrain.tankDrive(pidPower, -1 * pidPower);
+			logger.info("yaw: {}, pid: {}, gyro rate: {}, leftPower: {}, rightPower: {}", this.gyro.getYawAngle(), this.pidLoopCalculationOutput, this.gyro.getRate(),
+					leftPower, rightPower);
+			
+			//this.drivetrain.tankDrive(pidPower, -1 * pidPower);
+			
+			
+			if(this.pidLoopCalculationOutput >0) {
+			    this.drivetrain.tankDrive(clockwiseTurnPower, -1 * clockwiseTurnPower);			
+			}
+			else {
+				this.drivetrain.tankDrive(-1 * counterClockwiseTurnPower, -1 * counterClockwiseTurnPower);
+			}
+			
 			/*
 			if (this.pidLoopCalculationOutput > 0) {
 	            this.drivetrain.tankDrive(-1 * pidPower, 0);
