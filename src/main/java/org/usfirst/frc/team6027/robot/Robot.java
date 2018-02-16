@@ -9,8 +9,6 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.usfirst.frc.team6027.robot.commands.DriveStraightCommand;
-import org.usfirst.frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
 import org.usfirst.frc.team6027.robot.commands.TeleopManager;
 import org.usfirst.frc.team6027.robot.commands.TurnCommand;
 import org.usfirst.frc.team6027.robot.field.Field;

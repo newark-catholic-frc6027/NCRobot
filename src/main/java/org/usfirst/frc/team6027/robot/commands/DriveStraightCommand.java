@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 public class DriveStraightCommand extends Command implements PIDOutput {
     private final Logger logger = LoggerFactory.getLogger(getClass());
