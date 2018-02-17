@@ -8,11 +8,15 @@ import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class AutoLineStraight extends CommandGroup {
+public class AutoCrossLineStraightAhead extends CommandGroup {
 
-	public AutoLineStraight(SensorService sensorService, DrivetrainSubsystem drivetrainSubsystem,
+    public static final String COMMAND_NAME = "Charge!";
+    
+	public AutoCrossLineStraightAhead(SensorService sensorService, DrivetrainSubsystem drivetrainSubsystem,
 			OperatorDisplay operatorDisplay) {
 		requires(drivetrainSubsystem);
+		
+		this.setName(COMMAND_NAME);
 
 		// DriveStraightCommand driveStraightCmd = new
 		// DriveStraightCommand(encoderSensors, drivetrainSubsystem, operatorDisplay,

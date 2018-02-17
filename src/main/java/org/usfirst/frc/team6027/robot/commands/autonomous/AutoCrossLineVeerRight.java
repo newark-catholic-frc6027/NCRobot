@@ -6,11 +6,17 @@ import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class AutoLineCurveLeft extends CommandGroup {
+public class AutoCrossLineVeerRight extends CommandGroup {
+    public static final String COMMAND_NAME = "Charge Right";
 
-	public AutoLineCurveLeft(SensorService sensorService, DrivetrainSubsystem drivetrainSubsystem,
+	public AutoCrossLineVeerRight(SensorService sensorService, DrivetrainSubsystem drivetrainSubsystem,
 			OperatorDisplay operatorDisplay) {
-		requires(drivetrainSubsystem);	
-	}
+	    this.setName(COMMAND_NAME);
+
+	    requires(drivetrainSubsystem);
+		
+	      // Add sequential steps here
+
+	}	
 	
 }

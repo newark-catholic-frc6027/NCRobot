@@ -114,6 +114,14 @@ public class Field {
         return ! isPlateAssignedToUs(platePosition);
     }
 
+    public void clearAssignmentData() {
+        this.assignmentData = null;
+    }
+
+    public boolean hasAssignmentData() {
+        return this.assignmentData != null && this.assignmentData.length() > 0;
+    }
+    
     protected int[] platePositionToArrayIndices(PlatePosition platePosition) {
         switch (platePosition) {
             case OurSwitchLeft:
@@ -204,5 +212,7 @@ public class Field {
         testAssignment("RLR");
         testAssignment("RLL");
     }
+
+
     
 }

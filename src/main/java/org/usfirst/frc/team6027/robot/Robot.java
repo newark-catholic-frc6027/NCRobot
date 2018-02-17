@@ -11,6 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.commands.TeleopManager;
 import org.usfirst.frc.team6027.robot.commands.TurnCommand;
+import org.usfirst.frc.team6027.robot.commands.autonomous.AutoCrossLineStraightAhead;
+import org.usfirst.frc.team6027.robot.commands.autonomous.AutoCrossLineVeerLeft;
+import org.usfirst.frc.team6027.robot.commands.autonomous.AutoCrossLineVeerRight;
 import org.usfirst.frc.team6027.robot.field.Field;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
@@ -39,7 +42,8 @@ public class Robot extends IterativeRobot {
 	private SensorService sensorService;
 	
 	private Field field = new Field();
-
+	private int gameDataPollCount = 0;
+	
 	Preferences prefs = Preferences.getInstance();
 
 	/**
@@ -60,9 +64,25 @@ public class Robot extends IterativeRobot {
 		// autonomous mode
 		this.getDrivetrain().setDefaultCommand(new TeleopManager(this.operatorInterface, this.sensorService,
 				this.getDrivetrain(), this.pneumaticSubsystem));
+		
+		// Create and populate the list of autonomous commands on the Dashboard for each autonomous scenario
+		createAutonomousCommands();
 
 	}
 
+	protected void createAutonomousCommands() {
+	    Command autoCrossStraight = new AutoCrossLineStraightAhead(this.getSensorService(), this.getDrivetrain(), this.getOperatorDisplay());
+	    this.getOperatorDisplay().registerAutoCommand(autoCrossStraight);
+	    
+	    Command autoDriveLeft = new AutoCrossLineVeerLeft(this.getSensorService(), this.getDrivetrain(), this.getOperatorDisplay());
+        this.getOperatorDisplay().registerAutoCommand(autoDriveLeft);
+        
+        Command autoDriveRight = new AutoCrossLineVeerRight(this.getSensorService(), this.getDrivetrain(), this.getOperatorDisplay());
+        this.getOperatorDisplay().registerAutoCommand(autoDriveRight);
+        
+	    
+	}
+	
 	protected void outputBanner() {
 	    logger.info(">>>>> Newark Catholic Team 6027 Robot started! <<<<<");
 	    logger.info("	     ________.____    ._____________      ___ ___  ");
@@ -80,27 +100,43 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void disabledInit() {
+	    this.getField().clearAssignmentData();
+	    this.gameDataPollCount = 0;
 
 	}
 
 	@Override
 	public void disabledPeriodic() {
+	    // Query for game data until we get something.
+	    // Make sure that there is no test data configured on the Driver Station!
+	    pollForGameData();
 		Scheduler.getInstance().run();
 	}
 
-	/**
-	 * This autonomous (along with the chooser code above) shows how to select
-	 * between different autonomous modes using the dashboard. The sendable chooser
-	 * code works with the Java SmartDashboard. If you prefer the LabVIEW Dashboard,
-	 * remove all of the chooser code and uncomment the getString code to get the
-	 * auto name from the text box below the Gyro
-	 *
-	 * You can add additional auto modes by adding additional commands to the
-	 * chooser code above (like the commented example) or additional comparisons to
-	 * the switch structure below with additional strings & commands.
-	 */
+	protected void pollForGameData() {
+	    
+	    if (! this.getField().hasAssignmentData()) {
+	        String gameData = DriverStation.getInstance().getGameSpecificMessage();
+	        if (gameData != null && gameData.length() > 0) {
+	            this.getField().doFieldAssignments(gameData);
+	        } else {
+	            // Only output every 10 time we poll, don't need to do every time.
+	            if (this.gameDataPollCount % 10 == 0) {
+	                logger.info("No field assignment data received yet");
+	            }
+	        }
+	    }
+        this.gameDataPollCount++;
+	}
+	
 	@Override
 	public void autonomousInit() {
+	    // Make sure we have the game data, even though we should already have it from disabledPeriodic method
+	    pollForGameData();
+	    
+	    // TODO: If for some reason we don't have the game data, just drive to cross line.  Don't try to deliver anything
+	    
+	    
 		//this.autonomousCommand = new AutoLineStraight(this.sensorService, this.drivetrain, this.operatorDisplay);
 //		this.autonomousCommand = new DriveStraightCommand(this.sensorService, this.drivetrain, this.operatorDisplay, this.prefs.getDouble("driveStraightCommand.driveDistance", 12.0), DriveDistanceMode.DistanceReadingOnEncoder);
         this.autonomousCommand = new TurnCommand(90.0, this.sensorService, this.drivetrain, this.operatorDisplay);
@@ -190,7 +226,23 @@ public class Robot extends IterativeRobot {
 		this.pneumaticSubsystem = pneumaticSubsystem;
 	}
 
-	public void updateOperatorDisplay() {
+	public SensorService getSensorService() {
+        return sensorService;
+    }
+
+    public void setSensorService(SensorService sensorService) {
+        this.sensorService = sensorService;
+    }
+
+    public Field getField() {
+        return field;
+    }
+
+    public void setField(Field field) {
+        this.field = field;
+    }
+
+    public void updateOperatorDisplay() {
         getOperatorDisplay().setFieldValue("rightEncoder Raw Values",
                 this.sensorService.getEncoderSensors().getRightEncoder().getRaw());
         getOperatorDisplay().setFieldValue("rightEncoder Distance",

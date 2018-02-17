@@ -16,24 +16,17 @@ public class DrivetrainSubsystem extends Subsystem {
     @SuppressWarnings("unused")
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-//    private WPI_TalonSRX frontRight = new WPI_TalonSRX(RobotConfigConstants.FRONT_RIGHT_CANTALON_DRIVE_ID);
-//    private WPI_TalonSRX backRight = new WPI_TalonSRX(RobotConfigConstants.REAR_RIGHT_CANTALON_DRIVE_ID);
-//    private WPI_TalonSRX frontLeft = new WPI_TalonSRX(RobotConfigConstants.FRONT_LEFT_CANTALON_DRIVE_ID);
-//    private WPI_TalonSRX backLeft = new WPI_TalonSRX(RobotConfigConstants.REAR_LEFT_CANTALON_DRIVE_ID);
     private WPI_TalonSRX rightGearBoxMaster = new WPI_TalonSRX(RobotConfigConstants.RIGHT_GEARBOX_CIM_1_ID);
     private WPI_TalonSRX leftGearBoxMaster = new WPI_TalonSRX(RobotConfigConstants.LEFT_GEARBOX_CIM_1_ID);
     private WPI_TalonSRX rightGearBoxSlave1 = new WPI_TalonSRX(RobotConfigConstants.RIGHT_GEARBOX_CIM_2_ID);
     private WPI_TalonSRX leftGearBoxSlave1 = new WPI_TalonSRX(RobotConfigConstants.LEFT_GEARBOX_CIM_2_ID);
+    /* Removing this since we only have two motors for this build 
     private WPI_TalonSRX rightGearBoxSlave2 = new WPI_TalonSRX(RobotConfigConstants.RIGHT_GEARBOX_CIM_3_ID);
     private WPI_TalonSRX leftGearBoxSlave2 = new WPI_TalonSRX(RobotConfigConstants.LEFT_GEARBOX_CIM_3_ID);
+    */
     
-    //private RobotDrive robotDrive = new RobotDrive(frontLeft,backLeft,frontRight,backRight);
-    
-//    private RobotDrive robotDrive = new RobotDrive(rightGearBoxMaster, leftGearBoxMaster);
     private RobotDrive robotDrive = new RobotDrive(leftGearBoxMaster, rightGearBoxMaster);
     
-//    private DifferentialDrive differentialDrive = new DifferentialDrive(leftGearBoxMaster, rightGearBoxMaster);
-//    private RobotDrive robotDrive = new RobotDrive(0,0,0,0);
 
     private OperatorInterface operatorInterface;
 
@@ -45,18 +38,14 @@ public class DrivetrainSubsystem extends Subsystem {
     protected void initialize () {
     	this.rightGearBoxSlave1.follow(rightGearBoxMaster);
     	this.leftGearBoxSlave1.follow(leftGearBoxMaster);
-    	this.rightGearBoxSlave2.follow(rightGearBoxMaster);
-    	this.leftGearBoxSlave2.follow(leftGearBoxMaster);
 
     	// Setting the speed controllers forward for our drivetrain
     	boolean invert = RobotConfigConstants.OPTIONAL_DRIVETRAIN_DIRECTION_INVERSION == -1;
     	
     	this.rightGearBoxMaster.setInverted(invert);
         this.rightGearBoxSlave1.setInverted(invert);
-        this.rightGearBoxSlave2.setInverted(invert);
         this.leftGearBoxMaster.setInverted(invert);
         this.leftGearBoxSlave1.setInverted(invert);
-        this.leftGearBoxSlave2.setInverted(invert);
     }
 
     /**
