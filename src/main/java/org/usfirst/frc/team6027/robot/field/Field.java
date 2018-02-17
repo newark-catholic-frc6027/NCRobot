@@ -37,6 +37,7 @@ public class Field {
     protected Plate[][] plates = new Plate[3][2]; // 3 rows, 2 cols
 
     private String assignmentData = null;
+    private int ourStationPosition = -1;
 
     public Field() {
 
@@ -100,6 +101,30 @@ public class Field {
         logger.info("|                            |");
         logger.info("|    1        2        3     |");
         logger.info("|____________________________|");
+    }
+    
+    public int getOurStationPosition() {
+        return ourStationPosition;
+    }
+
+    public void setOurStationPosition(int stationPosition) {
+        this.ourStationPosition = stationPosition;
+    }
+
+    public boolean isOurStationLeft() {
+        return  this.ourStationPosition == 1;
+    }
+
+    public boolean isOurStationRight() {
+        return  this.ourStationPosition == 3;
+    }
+
+    public boolean isOurStationCenter() {
+        return  this.ourStationPosition == 2;
+    }
+    
+    public boolean isOurStationOnEnd() {
+        return this.isOurStationLeft() || this.isOurStationRight();
     }
     
     public boolean isPlateAssignedToUs(PlatePosition platePosition) {

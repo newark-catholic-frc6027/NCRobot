@@ -29,204 +29,204 @@ import org.usfirst.frc.team6027.robot.subsystems.PneumaticSubsystem;
 public class Robot extends IterativeRobot {
     public static final double ROBOT_WIDTH_INCHES = 27.75;
     public static final double ROBOT_LENGTH_INCHES = 32.0;
-    
-	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private OperatorInterface operatorInterface;
-	private OperatorDisplay operatorDisplay;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private Command autonomousCommand;
+    private OperatorInterface operatorInterface;
+    private OperatorDisplay operatorDisplay;
 
-	private DrivetrainSubsystem drivetrain;
-	private PneumaticSubsystem pneumaticSubsystem;
-	private SensorService sensorService;
-	
-	private Field field = new Field();
-	private int gameDataPollCount = 0;
-	
-	Preferences prefs = Preferences.getInstance();
+    private Command autonomousCommand;
 
-	/**
-	 * This function is run when the robot is first started up and should be used
-	 * for any initialization code.
-	 */
-	@Override
-	public void robotInit() {
-	    outputBanner();
+    private DrivetrainSubsystem drivetrain;
+    private PneumaticSubsystem pneumaticSubsystem;
+    private SensorService sensorService;
 
-		this.sensorService = new SensorService();
-		this.setOperatorDisplay(new OperatorDisplaySmartDashboardImpl());
-		this.setOperatorInterface(new OperatorInterface(this.getOperatorDisplay()));
-		this.setDrivetrain(new DrivetrainSubsystem(this.getOperatorInterface()));
-		this.pneumaticSubsystem = new PneumaticSubsystem(this.getOperatorDisplay());
+    private Field field = new Field();
+    private int gameDataPollCount = 0;
 
-		// This ensures that the Teleop command is running whenever we are not in
-		// autonomous mode
-		this.getDrivetrain().setDefaultCommand(new TeleopManager(this.operatorInterface, this.sensorService,
-				this.getDrivetrain(), this.pneumaticSubsystem));
-		
-		// Create and populate the list of autonomous commands on the Dashboard for each autonomous scenario
-		createAutonomousCommands();
+    Preferences prefs = Preferences.getInstance();
 
-	}
+    /**
+     * This function is run when the robot is first started up and should be used
+     * for any initialization code.
+     */
+    @Override
+    public void robotInit() {
+        outputBanner();
 
-	protected void createAutonomousCommands() {
-	    Command autoCrossStraight = new AutoCrossLineStraightAhead(this.getSensorService(), this.getDrivetrain(), this.getOperatorDisplay());
-	    this.getOperatorDisplay().registerAutoCommand(autoCrossStraight);
-	    
-	    Command autoDriveLeft = new AutoCrossLineVeerLeft(this.getSensorService(), this.getDrivetrain(), this.getOperatorDisplay());
+        this.sensorService = new SensorService();
+        this.setOperatorDisplay(new OperatorDisplaySmartDashboardImpl());
+        this.setOperatorInterface(new OperatorInterface(this.getOperatorDisplay()));
+        this.setDrivetrain(new DrivetrainSubsystem(this.getOperatorInterface()));
+        this.pneumaticSubsystem = new PneumaticSubsystem(this.getOperatorDisplay());
+
+        // This ensures that the Teleop command is running whenever we are not in
+        // autonomous mode
+        this.getDrivetrain().setDefaultCommand(new TeleopManager(this.operatorInterface, this.sensorService,
+                this.getDrivetrain(), this.pneumaticSubsystem));
+
+        // Create and populate the list of autonomous commands on the Dashboard for each autonomous scenario
+        createAutonomousCommands();
+
+    }
+
+    protected void createAutonomousCommands() {
+        Command autoCrossStraight = new AutoCrossLineStraightAhead(this.getSensorService(), this.getDrivetrain(), this.getOperatorDisplay());
+        this.getOperatorDisplay().registerAutoCommand(autoCrossStraight);
+
+        Command autoDriveLeft = new AutoCrossLineVeerLeft(this.getSensorService(), this.getDrivetrain(), this.getOperatorDisplay());
         this.getOperatorDisplay().registerAutoCommand(autoDriveLeft);
-        
+
         Command autoDriveRight = new AutoCrossLineVeerRight(this.getSensorService(), this.getDrivetrain(), this.getOperatorDisplay());
         this.getOperatorDisplay().registerAutoCommand(autoDriveRight);
-        
-	    
-	}
-	
-	protected void outputBanner() {
-	    logger.info(">>>>> Newark Catholic Team 6027 Robot started! <<<<<");
-	    logger.info("	     ________.____    ._____________      ___ ___  ");
-	    logger.info("	    /  _____/|    |   |__\\__    ___/___  /   |   \\ ");
-	    logger.info("	   /   \\  ___|    |   |  | |    |_/ ___\\/    ~    \\");
-	    logger.info("	   \\    \\_\\  \\    |___|  | |    |\\  \\___\\    Y    /");
-	    logger.info("	    \\______  /_______ \\__| |____| \\___  >\\___|_  / ");
-	    logger.info("	           \\/        \\/               \\/       \\/ "); 
+
+
+    }
+
+    protected void outputBanner() {
+        logger.info(">>>>> Newark Catholic Team 6027 Robot started! <<<<<");
+        logger.info("	     ________.____    ._____________      ___ ___  ");
+        logger.info("	    /  _____/|    |   |__\\__    ___/___  /   |   \\ ");
+        logger.info("	   /   \\  ___|    |   |  | |    |_/ ___\\/    ~    \\");
+        logger.info("	   \\    \\_\\  \\    |___|  | |    |\\  \\___\\    Y    /");
+        logger.info("	    \\______  /_______ \\__| |____| \\___  >\\___|_  / ");
+        logger.info("	           \\/        \\/               \\/       \\/ "); 
     }
 
     /**
-	 * This function is called once each time the robot enters Disabled mode. You
-	 * can use it to reset any subsystem information you want to clear when the
-	 * robot is disabled.
-	 */
-	@Override
-	public void disabledInit() {
-	    this.getField().clearAssignmentData();
-	    this.gameDataPollCount = 0;
+     * This function is called once each time the robot enters Disabled mode. You
+     * can use it to reset any subsystem information you want to clear when the
+     * robot is disabled.
+     */
+    @Override
+    public void disabledInit() {
+        // FIXME: remove gyro reset
+        // this.getSensorService().getGyroSensor().reset();
 
-	}
+        this.getField().clearAssignmentData();
+        this.gameDataPollCount = 0;
 
-	@Override
-	public void disabledPeriodic() {
-	    // Query for game data until we get something.
-	    // Make sure that there is no test data configured on the Driver Station!
-	    pollForGameData();
-		Scheduler.getInstance().run();
-	}
+    }
 
-	protected void pollForGameData() {
-	    
-	    if (! this.getField().hasAssignmentData()) {
-	        String gameData = DriverStation.getInstance().getGameSpecificMessage();
-	        if (gameData != null && gameData.length() > 0) {
-	            this.getField().doFieldAssignments(gameData);
-	        } else {
-	            // Only output every 10 time we poll, don't need to do every time.
-	            if (this.gameDataPollCount % 10 == 0) {
-	                logger.info("No field assignment data received yet");
-	            }
-	        }
-	    }
-        this.gameDataPollCount++;
-	}
-	
-	@Override
-	public void autonomousInit() {
-	    // Make sure we have the game data, even though we should already have it from disabledPeriodic method
-	    pollForGameData();
-	    
-	    // TODO: If for some reason we don't have the game data, just drive to cross line.  Don't try to deliver anything
-	    
-	    
-		//this.autonomousCommand = new AutoLineStraight(this.sensorService, this.drivetrain, this.operatorDisplay);
-//		this.autonomousCommand = new DriveStraightCommand(this.sensorService, this.drivetrain, this.operatorDisplay, this.prefs.getDouble("driveStraightCommand.driveDistance", 12.0), DriveDistanceMode.DistanceReadingOnEncoder);
-        this.autonomousCommand = new TurnCommand(90.0, this.sensorService, this.drivetrain, this.operatorDisplay);
-		String gameData = DriverStation.getInstance().getGameSpecificMessage();
-		
-		this.field.doFieldAssignments(gameData);
-        
-		// schedule the autonomous command (example)
-		if (autonomousCommand != null) {
-			autonomousCommand.start();
-		}
-		
-	}
+    @Override
+    public void disabledPeriodic() {
+        // Query for game data until we get something.
+        // Make sure that there is no test data configured on the Driver Station!
+        Scheduler.getInstance().run();
+    }
 
-	/**
-	 * This function is called periodically during autonomous
-	 */
-	@Override
-	public void autonomousPeriodic() {
-        String gameData = DriverStation.getInstance().getGameSpecificMessage();
-        if (this.field.getAssignmentData() == null) {
-            this.field.doFieldAssignments(gameData);
+    protected void applyStationPosition() {
+        this.getField().setOurStationPosition(
+                this.getOperatorDisplay().getSelectedPosition()
+                );
+    }
+
+    protected void pollForGameData() {
+
+        if (! this.getField().hasAssignmentData()) {
+            String gameData = DriverStation.getInstance().getGameSpecificMessage();
+            if (gameData != null && gameData.length() > 0) {
+                this.getField().doFieldAssignments(gameData);
+            } else {
+                // Only output every 10 time we poll, don't need to do every time.
+                if (this.gameDataPollCount % 10 == 0) {
+                    logger.info("No field assignment data received yet");
+                }
+            }
         }
-        
-		Scheduler.getInstance().run();
-		updateOperatorDisplay();
-	}
+        this.gameDataPollCount++;
+    }
 
-	@Override
-	public void teleopInit() {
-		// This makes sure that the autonomous stops running when
-		// teleop starts running. If you want the autonomous to
-		// continue until interrupted by another command, remove
-		// this line or comment it out.
-		if (autonomousCommand != null) {
-			autonomousCommand.cancel();
-		}
+    @Override
+    public void autonomousInit() {
+        // Make sure we have the game data, even though we should already have it from disabledPeriodic method
+        pollForGameData();
+        applyStationPosition();
+        // TODO: If for some reason we don't have the game data, just drive to cross line.  Don't try to deliver anything
 
-	}
 
-	/**
-	 * This function is called periodically during operator control
-	 */
-	@Override
-	public void teleopPeriodic() {
-	    this.updateOperatorDisplay();
-		Scheduler.getInstance().run();
-	}
+        //this.autonomousCommand = new AutoLineStraight(this.sensorService, this.drivetrain, this.operatorDisplay);
+        //		this.autonomousCommand = new DriveStraightCommand(this.sensorService, this.drivetrain, this.operatorDisplay, this.prefs.getDouble("driveStraightCommand.driveDistance", 12.0), DriveDistanceMode.DistanceReadingOnEncoder);
+        this.getSensorService().getGyroSensor().reset();
+        this.autonomousCommand = new TurnCommand(90.0, this.sensorService, this.drivetrain, this.operatorDisplay);
+        // schedule the autonomous command (example)
+        if (autonomousCommand != null) {
+            autonomousCommand.start();
+        }
 
-	/**
-	 * This function is called periodically during test mode
-	 */
-	@Override
-	public void testPeriodic() {
-		LiveWindow.run();
-	}
+    }
 
-	public OperatorInterface getOperatorInterface() {
-		return operatorInterface;
-	}
+    /**
+     * This function is called periodically during autonomous
+     */
+    @Override
+    public void autonomousPeriodic() {
+        Scheduler.getInstance().run();
+        updateOperatorDisplay();
+    }
 
-	public void setOperatorInterface(OperatorInterface operatorInterface) {
-		this.operatorInterface = operatorInterface;
-	}
+    @Override
+    public void teleopInit() {
+        // This makes sure that the autonomous stops running when
+        // teleop starts running. If you want the autonomous to
+        // continue until interrupted by another command, remove
+        // this line or comment it out.
+        if (autonomousCommand != null) {
+            autonomousCommand.cancel();
+        }
 
-	public OperatorDisplay getOperatorDisplay() {
-		return operatorDisplay;
-	}
+    }
 
-	public void setOperatorDisplay(OperatorDisplay operatorDisplay) {
-		this.operatorDisplay = operatorDisplay;
-	}
+    /**
+     * This function is called periodically during operator control
+     */
+    @Override
+    public void teleopPeriodic() {
+        this.updateOperatorDisplay();
+        Scheduler.getInstance().run();
+    }
 
-	public DrivetrainSubsystem getDrivetrain() {
-		return drivetrain;
-	}
+    /**
+     * This function is called periodically during test mode
+     */
+    @Override
+    public void testPeriodic() {
+        LiveWindow.run();
+    }
 
-	public void setDrivetrain(DrivetrainSubsystem drivetrain) {
-		this.drivetrain = drivetrain;
-	}
+    public OperatorInterface getOperatorInterface() {
+        return operatorInterface;
+    }
 
-	public PneumaticSubsystem getPneumaticSubsystem() {
-		return pneumaticSubsystem;
-	}
+    public void setOperatorInterface(OperatorInterface operatorInterface) {
+        this.operatorInterface = operatorInterface;
+    }
 
-	public void setPneumaticSubsystem(PneumaticSubsystem pneumaticSubsystem) {
-		this.pneumaticSubsystem = pneumaticSubsystem;
-	}
+    public OperatorDisplay getOperatorDisplay() {
+        return operatorDisplay;
+    }
 
-	public SensorService getSensorService() {
+    public void setOperatorDisplay(OperatorDisplay operatorDisplay) {
+        this.operatorDisplay = operatorDisplay;
+    }
+
+    public DrivetrainSubsystem getDrivetrain() {
+        return drivetrain;
+    }
+
+    public void setDrivetrain(DrivetrainSubsystem drivetrain) {
+        this.drivetrain = drivetrain;
+    }
+
+    public PneumaticSubsystem getPneumaticSubsystem() {
+        return pneumaticSubsystem;
+    }
+
+    public void setPneumaticSubsystem(PneumaticSubsystem pneumaticSubsystem) {
+        this.pneumaticSubsystem = pneumaticSubsystem;
+    }
+
+    public SensorService getSensorService() {
         return sensorService;
     }
 
@@ -260,5 +260,5 @@ public class Robot extends IterativeRobot {
         getOperatorDisplay().setFieldValue("Air Pressure", this.sensorService.getAirPressureSensor().getAirPressurePsi());
         getOperatorDisplay().setFieldValue("Ultrasonic Distance (in)", this.sensorService.getUltrasonicSensor().getDistanceInches());
 
-	}
+    }
 }

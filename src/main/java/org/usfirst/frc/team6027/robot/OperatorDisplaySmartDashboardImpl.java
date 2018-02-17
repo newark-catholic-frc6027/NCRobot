@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.usfirst.frc.team6027.robot.commands.autonomous.NoOpCommand;
 
 import edu.wpi.first.wpilibj.NamedSendable;
 import edu.wpi.first.wpilibj.command.Command;
@@ -33,7 +34,7 @@ public class OperatorDisplaySmartDashboardImpl implements OperatorDisplay {
 
     protected void initScenarioChooser() {
         this.chooserCache.put(ChooserName.Scenario, this.scenarioChooser);
-        DefaultNoOpCommand noOpCommand = new DefaultNoOpCommand();
+        NoOpCommand noOpCommand = new NoOpCommand();
         this.registerAutoCommand(noOpCommand, true);
         SmartDashboard.putData(ChooserName.Scenario.displayName(), this.scenarioChooser);
     }
@@ -107,17 +108,5 @@ public class OperatorDisplaySmartDashboardImpl implements OperatorDisplay {
         return (Integer) this.positionChooser.getSelected();
     }
 
-    
-    private class DefaultNoOpCommand extends Command {
-        public DefaultNoOpCommand() {
-            this.setName("Do Nothing");
-        }
-        
-        @Override
-        protected boolean isFinished() {
-            return true;
-        }
-        
-    }
-    
+       
 }

@@ -8,6 +8,45 @@ import edu.wpi.first.wpilibj.SerialPort.Port;
  * ports into a constant. This provides flexibility changing wiring, makes
  * checking the wiring easier and significantly reduces the number of magic
  * numbers floating around.
+ * 
+ * 
+ * <pre>
+                      CONTROLLER BOARD LAYOUT
+                              [FRONT]
+    L                                                         R
+    ===========================================================
+    |                                                         |
+    |                       ---------                         |
+    |                      |   PDB   |                        |
+    |     SRX              |         |              SRX       |
+    |    ------            |         |             ------     |
+    |   |  30  |           |         |            |  34  |    |
+    |    ------            |    1    |             ------     |
+    |    ------            |         |             ------     |
+    |   |  31  |           |         |            |  35  |    |
+    |    ------            |         |             ------     |
+    |    ------            |         |             ------     |
+    |   |  32  |            ---------             |  36  |    |
+    |    ------                                    ------     |
+    |    ------                                    ------     |
+    |   |  33  |                                  |  37  |    |
+    |    ------                                    ------     |
+    |                                                         |
+    |  ----                                                   |
+    | | 10 | PCM                                              |
+    |  ----                                                   |
+    |                                                         | 
+    |  ----                                                   |
+    | |  0 | PCM                                              |
+    |  ----                                                   |
+    |                                                         |
+    |                                                         |
+    |                                                         |
+    |                                                         |
+    ===========================================================
+    L                                                         R
+                              [REAR] 
+ * </pre>
  */
 public class RobotConfigConstants {
 
