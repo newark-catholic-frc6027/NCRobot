@@ -10,10 +10,15 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.commands.TeleopManager;
-import org.usfirst.frc.team6027.robot.commands.TurnCommand;
 import org.usfirst.frc.team6027.robot.commands.autonomous.AutoCrossLineStraightAhead;
 import org.usfirst.frc.team6027.robot.commands.autonomous.AutoCrossLineVeerLeft;
 import org.usfirst.frc.team6027.robot.commands.autonomous.AutoCrossLineVeerRight;
+import org.usfirst.frc.team6027.robot.commands.autonomous.AutonomousCommandSelector;
+import org.usfirst.frc.team6027.robot.commands.autonomous.DriveStraightCommand;
+import org.usfirst.frc.team6027.robot.commands.autonomous.TurnCommand;
+import org.usfirst.frc.team6027.robot.commands.autonomous.TurnWhileDrivingCommand;
+import org.usfirst.frc.team6027.robot.commands.autonomous.TurnWhileDrivingCommand.TargetVector;
+import org.usfirst.frc.team6027.robot.commands.autonomous.DriveStraightCommand.DriveDistanceMode;
 import org.usfirst.frc.team6027.robot.field.Field;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
@@ -71,6 +76,7 @@ public class Robot extends IterativeRobot {
     }
 
     protected void createAutonomousCommands() {
+        /*
         Command autoCrossStraight = new AutoCrossLineStraightAhead(this.getSensorService(), this.getDrivetrain(), this.getOperatorDisplay());
         this.getOperatorDisplay().registerAutoCommand(autoCrossStraight);
 
@@ -79,8 +85,28 @@ public class Robot extends IterativeRobot {
 
         Command autoDriveRight = new AutoCrossLineVeerRight(this.getSensorService(), this.getDrivetrain(), this.getOperatorDisplay());
         this.getOperatorDisplay().registerAutoCommand(autoDriveRight);
+        */
+        
+        Command driveStraightCmd =  new DriveStraightCommand(this.sensorService, this.drivetrain, this.operatorDisplay, this.prefs.getDouble("driveStraightCommand.driveDistance", 12.0), DriveDistanceMode.DistanceReadingOnEncoder);
+        this.getOperatorDisplay().registerAutoCommand("Drive Straight", driveStraightCmd);
+        
+        Command turnCmd = new TurnCommand(this.prefs.getDouble("turnCommand.targetAngle", 90.0), this.sensorService, this.drivetrain, this.operatorDisplay);
+        this.getOperatorDisplay().registerAutoCommand("Turn", turnCmd);
 
+        double leg1Distance = this.prefs.getDouble("leg1.distance", 48.0);
+        double leg2Distance = this.prefs.getDouble("leg2.distance", 48.0);
+        double leg3Distance = this.prefs.getDouble("leg3.distance", 48.0);
 
+        double leg1Angle = this.prefs.getDouble("leg1.angle", 0.0);
+        double leg2Angle = this.prefs.getDouble("leg2.angle", 10.0);
+        double leg3Angle = this.prefs.getDouble("leg3.angle", -30.0);
+
+        Command turnWhileDriveCmd = new TurnWhileDrivingCommand(this.sensorService, this.drivetrain, this.operatorDisplay, 
+                new TargetVector[] { new TargetVector(0.0, 48.0), new TargetVector(10.0, 60.0), new TargetVector(-30.0, 60.0) },
+                DriveDistanceMode.DistanceReadingOnEncoder
+        );
+        this.getOperatorDisplay().registerAutoCommand("Turn While Driving", turnWhileDriveCmd);
+        
     }
 
     protected void outputBanner() {
@@ -117,8 +143,8 @@ public class Robot extends IterativeRobot {
 
     protected void applyStationPosition() {
         this.getField().setOurStationPosition(
-                this.getOperatorDisplay().getSelectedPosition()
-                );
+            this.getOperatorDisplay().getSelectedPosition()
+        );
     }
 
     protected void pollForGameData() {
@@ -148,7 +174,15 @@ public class Robot extends IterativeRobot {
         //this.autonomousCommand = new AutoLineStraight(this.sensorService, this.drivetrain, this.operatorDisplay);
         //		this.autonomousCommand = new DriveStraightCommand(this.sensorService, this.drivetrain, this.operatorDisplay, this.prefs.getDouble("driveStraightCommand.driveDistance", 12.0), DriveDistanceMode.DistanceReadingOnEncoder);
         this.getSensorService().getGyroSensor().reset();
-        this.autonomousCommand = new TurnCommand(90.0, this.sensorService, this.drivetrain, this.operatorDisplay);
+        Command preferredAutoCommand = this.getOperatorDisplay().getSelectedAutoCommand();
+        
+        /* TODO: use this code once ready for testing positions 
+        AutonomousCommandSelector commandSelector = new AutonomousCommandSelector(this.getField(), preferredAutoCommand);
+        this.autonomousCommand = commandSelector.chooseCommand();
+        */
+        // TODO: this will eventually be replaced with above AutonomousCommandSelector
+        this.autonomousCommand = preferredAutoCommand;
+        
         // schedule the autonomous command (example)
         if (autonomousCommand != null) {
             autonomousCommand.start();

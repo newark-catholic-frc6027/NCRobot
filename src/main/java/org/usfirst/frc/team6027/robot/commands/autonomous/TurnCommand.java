@@ -1,4 +1,4 @@
-package org.usfirst.frc.team6027.robot.commands;
+package org.usfirst.frc.team6027.robot.commands.autonomous;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,13 +56,10 @@ public class TurnCommand extends Command implements PIDOutput {
 
 	@Override
 	protected void initialize() {
-		logger.info("Current Angle, PID Loop Output, Yaw Rate, Right Motor Power");
+		logger.trace("Current Angle, PID Loop Output, Yaw Rate, Right Motor Power");
 	}
 
 	protected void initPIDController() {
-		// pidController = new PIDController(this.prefs.getDouble("turnCommand.pCoeff",
-		// PROPORTIONAL_COEFFICIENT), INTEGRAL_COEFFICIENT, DERIVATIVE_COEFFICIENT,
-		// FEED_FORWARD_TERM, this.gyro.getPIDSource(), this);
 		pidController = new PIDController(this.prefs.getDouble("turnCommand.pCoeff", PID_PROPORTIONAL_COEFFICIENT),
 				this.prefs.getDouble("turnCommand.iCoeff", PID_INTEGRAL_COEFFICIENT),
 				this.prefs.getDouble("turnCommand.dCoeff", PID_DERIVATIVE_COEFFICIENT),
@@ -79,44 +76,32 @@ public class TurnCommand extends Command implements PIDOutput {
 	@Override
 	protected boolean isFinished() {
 	    
-	    //if (this.pidController.onTarget()) {
-        if (Math.abs(this.gyro.getYawAngle() - this.targetAngle) <= 2
+	    if (this.pidController.onTarget()
+//        if (Math.abs(this.gyro.getYawAngle() - this.targetAngle) <= 2
                 && Math.abs(this.gyro.getRate()) <= pidAngleStopThreshold) {
             logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Turn done, angle={}", this.sensorService.getGyroSensor().getYawAngle());
 	        
             pidController.disable();
-            
-            
             return true;
 	    } else {
 	        return false;
 	    }
-	    /*
-	    // TODO: see if we can use the onTarget() method of the PID controller here
-		if (Math.abs(this.gyro.getYawAngle() - this.targetAngle) <= 0.5
-				&& Math.abs(this.gyro.getRate()) <= pidAngleStopThreshold) {
-			pidController.disable();
-			// this.drivetrain.drive (0, 0);
-			this.drivetrain.stopMotor();
-			logger.info("Turn done, angle={}", this.sensorService.getGyroSensor().getYawAngle());
-			return true;
-		}
-		return false;
-		*/
 	}
 
 	protected void execute() {
 		long currentElapsedExecutionMs = System.currentTimeMillis() - this.startTime;
 		if (currentElapsedExecutionMs < this.executionStartThreshold && this.gyro.getYawAngle() == this.initialGyroAngle) {
-			logger.info("Gyro not reset yet. Skipping");
+			logger.trace("Gyro not reset yet. Skipping");
 		} else {
 
 			double pidOutput = this.pidLoopCalculationOutput;
 			
-			double leftPower = 0;//DRIVE_POWER + this.pidLoopCalculationOutput;
-			double rightPower = 0;//DRIVE_POWER - this.pidLoopCalculationOutput;
+			double leftPower = 0;
+			double rightPower = 0;
 			
 		    leftPower = pidOutput;
+		    // If we are within 3 degrees of our target and our power has dropped under a minimum threshold
+		    // increase power to an adjusted value in order to get the PID loop going again.
             if (Math.abs(this.targetAngle - this.gyro.getYawAngle()) > 3.0 
                     && Math.abs(leftPower) < prefs.getDouble("turnCommand.minPower", .20) ) {
                 double adjustedPower = prefs.getDouble("turnCommand.adjustedPower", 0.3);
@@ -125,7 +110,7 @@ public class TurnCommand extends Command implements PIDOutput {
             }
 		    rightPower = -1 * leftPower;
 			    
-            logger.info("yaw: {}, pid: {}, gyro rate: {}, leftPower: {}, rightPower: {}", 
+            logger.trace("yaw: {}, pid: {}, gyro rate: {}, leftPower: {}, rightPower: {}", 
                     String.format("%.3f",this.gyro.getYawAngle()), 
                     String.format("%.3f",this.pidLoopCalculationOutput), 
                     String.format("%.3f",this.gyro.getRate()),
@@ -133,8 +118,6 @@ public class TurnCommand extends Command implements PIDOutput {
                     String.format("%.3f", rightPower));
 			
             this.drivetrain.tankDrive(leftPower, rightPower);           
-			//this.drivetrain.get
-
 		}
 	}
 
