@@ -61,7 +61,7 @@ public class RobotConfigConstants {
 	 *     1 2
 	 * </pre>
 	 */
-	public static final int RIGHT_GEARBOX_CIM_1_ID = 34;
+	public static final int RIGHT_GEARBOX_CIM_1_ID = 36;
 
 	/**
 	 * The device identifier for the Talon SRX speed controller right gear box drive
@@ -72,7 +72,7 @@ public class RobotConfigConstants {
 	 *     1 2
 	 * </pre>
 	 */
-	public static final int RIGHT_GEARBOX_CIM_2_ID = 35;
+	public static final int RIGHT_GEARBOX_CIM_2_ID = 37;
 
 	/**
 	 * The device identifier for the Talon SRX speed controller right gear box drive
@@ -94,7 +94,7 @@ public class RobotConfigConstants {
 	 *     1 2
 	 * </pre>
 	 */
-	public static final int LEFT_GEARBOX_CIM_1_ID = 30;
+	public static final int LEFT_GEARBOX_CIM_1_ID = 33;
 
 	/**
 	 * The device identifier for the Talon SRX speed controller left gear box drive
@@ -105,7 +105,7 @@ public class RobotConfigConstants {
 	 *     1 2
 	 * </pre>
 	 */
-	public static final int LEFT_GEARBOX_CIM_2_ID = 31;
+	public static final int LEFT_GEARBOX_CIM_2_ID = 32;
 
 	/**
 	 * The device identifier for the Talon SRX speed controller left gear box drive
@@ -164,7 +164,9 @@ public class RobotConfigConstants {
 	/*
 	 * SOLENOID constants
 	 */
-	public static final int SOLENOID_1_MODULE_NUMBER = 10;
+	public static final int SOLENOID_1_MODULE_NUMBER = 0;
+	public static final int SOLENOID_2_MOUDULE_NUMBER = 10;
+	
 	public static final int SOLENOID_1_PORT_A = 0;
 	public static final int SOLENOID_1_PORT_B = 1;
 
