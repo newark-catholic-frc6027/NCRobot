@@ -36,8 +36,9 @@ public class AutonomousCommandSelector {
             if (this.isNoPreferredCommand()) {
                 // TODO: deliver END RIGHT
             } else {
-                // TODO: check that the preferred command doesn't contradict with our assignment.  If it does, just 
-                // deliver END RIGHT.  If it doesn't just return the preferred command.
+                // TODO: check that the preferred command doesn't contradict with our assignment.  If it does then just
+                // drive straight to get across the line (this is safest because the robot may not be positioned correctly
+                // for the other commands).  If it doesn't just return the preferred command.
             }
             
         } else { // Assigned Switch Plate is on left
@@ -56,8 +57,9 @@ public class AutonomousCommandSelector {
             if (this.isNoPreferredCommand()) {
                 // TODO: deliver END LEFT
             } else {
-                // TODO: check that the preferred command doesn't contradict with our assignment.  If it does, just 
-                // deliver END LEFT.  If it doesn't just return the preferred command.
+                // TODO: check that the preferred command doesn't contradict with our assignment.  If it does then just
+                // drive straight to get across the line (this is safest because the robot may not be positioned correctly
+                // for the other commands).  If it doesn't just return the preferred command.
             }
             
         } else { // Assigned Switch Plate is on right
@@ -76,14 +78,15 @@ public class AutonomousCommandSelector {
         if (this.isNoPreferredCommand()) {
             if (this.field.isPlateAssignedToUs(PlatePosition.OurSwitchLeft)) {
                 // TODO: 
-                // deliver front left
+                // deliver front left -- Mr. Nelson says no, we should go right
             } else {
                 // TODO:
                 // deliver front right
             }
         } else {
-            // TODO: check that the preferred command doesn't contradict with our assignment.  If it does, just 
-            // get across the line.  If it doesn't just return the preferred command.
+            // TODO: check that the preferred command doesn't contradict with our assignment.  If it does then just
+            // drive straight to get across the line (this is safest because the robot may not be positioned correctly
+            // for the other commands).  If it doesn't just return the preferred command.
         }
         
         return chosenCommand;
