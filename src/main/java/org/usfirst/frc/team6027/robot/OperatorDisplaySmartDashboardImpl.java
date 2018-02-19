@@ -34,15 +34,15 @@ public class OperatorDisplaySmartDashboardImpl implements OperatorDisplay {
 
     protected void initScenarioChooser() {
         this.chooserCache.put(ChooserName.Scenario, this.scenarioChooser);
-        NoOpCommand noOpCommand = new NoOpCommand();
-        this.registerAutoCommand(noOpCommand, true);
+        NoOpCommand noOpCommand = NoOpCommand.getInstance();
+        this.registerAutoCommand("NO SELECTION", noOpCommand, true);
         SmartDashboard.putData(ChooserName.Scenario.displayName(), this.scenarioChooser);
     }
     
     protected void initPositionChooser() {
         this.chooserCache.put(ChooserName.Position, this.positionChooser);
-        
-        this.positionChooser.addDefault("Pos 1", new Integer(1));
+        this.positionChooser.addDefault("NO SELECTION", new Integer(0));
+        this.positionChooser.addObject("Pos 1", new Integer(1));
         this.positionChooser.addObject("Pos 2", new Integer(2));
         this.positionChooser.addObject("Pos 3", new Integer(3));
         

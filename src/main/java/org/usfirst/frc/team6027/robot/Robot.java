@@ -49,8 +49,10 @@ public class Robot extends IterativeRobot {
     private Field field = new Field();
     private int gameDataPollCount = 0;
 
-    Preferences prefs = Preferences.getInstance();
+    private Preferences prefs = Preferences.getInstance();
 
+    // TODO: remove eventually, only caching so that we can update the angle on each run.
+    private TurnCommand turnCommand = null;
     /**
      * This function is run when the robot is first started up and should be used
      * for any initialization code.
@@ -76,22 +78,12 @@ public class Robot extends IterativeRobot {
     }
 
     protected void createAutonomousCommands() {
-        /*
-        Command autoCrossStraight = new AutoCrossLineStraightAhead(this.getSensorService(), this.getDrivetrain(), this.getOperatorDisplay());
-        this.getOperatorDisplay().registerAutoCommand(autoCrossStraight);
-
-        Command autoDriveLeft = new AutoCrossLineVeerLeft(this.getSensorService(), this.getDrivetrain(), this.getOperatorDisplay());
-        this.getOperatorDisplay().registerAutoCommand(autoDriveLeft);
-
-        Command autoDriveRight = new AutoCrossLineVeerRight(this.getSensorService(), this.getDrivetrain(), this.getOperatorDisplay());
-        this.getOperatorDisplay().registerAutoCommand(autoDriveRight);
-        */
         
         Command driveStraightCmd =  new DriveStraightCommand(this.sensorService, this.drivetrain, this.operatorDisplay, this.prefs.getDouble("driveStraightCommand.driveDistance", 12.0), DriveDistanceMode.DistanceReadingOnEncoder);
         this.getOperatorDisplay().registerAutoCommand("Drive Straight", driveStraightCmd);
         
-        Command turnCmd = new TurnCommand(this.prefs.getDouble("turnCommand.targetAngle", 90.0), this.sensorService, this.drivetrain, this.operatorDisplay);
-        this.getOperatorDisplay().registerAutoCommand("Turn", turnCmd);
+        this.turnCommand = new TurnCommand(this.prefs.getDouble("turnCommand.targetAngle", 90.0), this.sensorService, this.drivetrain, this.operatorDisplay);
+        this.getOperatorDisplay().registerAutoCommand("Turn", this.turnCommand);
 
         double leg1Distance = this.prefs.getDouble("leg1.distance", 48.0);
         double leg2Distance = this.prefs.getDouble("leg2.distance", 48.0);
@@ -109,6 +101,10 @@ public class Robot extends IterativeRobot {
         
     }
 
+    protected void updateAutonomousCommands() {
+        this.turnCommand.setTargetAngle(this.prefs.getDouble("turnCommand.targetAngle", 90.0));
+    }
+    
     protected void outputBanner() {
         logger.info(">>>>> Newark Catholic Team 6027 Robot started! <<<<<");
         logger.info("	     ________.____    ._____________      ___ ___  ");
@@ -165,6 +161,9 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void autonomousInit() {
+        // TODO: remove this once done testing, only need to update parameters for repeated testing
+        updateAutonomousCommands();
+        
         // Make sure we have the game data, even though we should already have it from disabledPeriodic method
         pollForGameData();
         applyStationPosition();

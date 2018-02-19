@@ -151,10 +151,9 @@ public class RobotConfigConstants {
 	 */
 	public static final int RIGHT_ANALOG_STICK = 4;
 
-	/**
-	 * ******************************************************************** GYRO
-	 * constants *******************************************************************
-	 */
+	/** ******************************************************************** 
+	 * GYRO constants 
+	 * ********************************************************************/
 
 	/**
 	 * The port that the gyro sensor connects to
@@ -164,12 +163,17 @@ public class RobotConfigConstants {
 	/*
 	 * SOLENOID constants
 	 */
-	public static final int SOLENOID_1_MODULE_NUMBER = 0;
-	public static final int SOLENOID_2_MOUDULE_NUMBER = 10;
+	public static final int PCM_1_ID_NUMBER = 0;
+	public static final int PCM_2_ID_NUMBER = 10;
 	
-	public static final int SOLENOID_1_PORT_A = 0;
+	/** Controlled by PCM_1 */
+	public static final int SOLENOID_1_PORT_A = 7;
 	public static final int SOLENOID_1_PORT_B = 1;
 
+    /** Controlled by PCM_2 */
+    public static final int SOLENOID_2_PORT_A = 6;
+    public static final int SOLENOID_2_PORT_B = 0;
+    
     /*
      * Pressure sensor constants
      */

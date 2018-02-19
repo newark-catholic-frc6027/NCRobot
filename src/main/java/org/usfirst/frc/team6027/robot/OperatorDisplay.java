@@ -63,7 +63,7 @@ public interface OperatorDisplay {
     void registerAutoCommand(String displayName, Command command);
     void registerAutoCommand(Command command, boolean isDefaultCommand);
     void registerAutoCommand(String displayName, Command command, boolean isDefaultCommand);
-    
+
     Command getSelectedAutoCommand();
     
     Integer getSelectedPosition();

@@ -121,7 +121,15 @@ public class TurnCommand extends Command implements PIDOutput {
 		}
 	}
 
-	@Override
+	public double getTargetAngle() {
+        return targetAngle;
+    }
+
+    public void setTargetAngle(double targetAngle) {
+        this.targetAngle = targetAngle;
+    }
+
+    @Override
 	public void pidWrite(double output) {
 		this.pidLoopCalculationOutput = output;
 		this.operatorDisplay.setFieldValue(OperatorDisplay.PID_LOOP_OUPUT_LABEL, this.pidLoopCalculationOutput);

@@ -11,16 +11,23 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class PneumaticSubsystem extends Subsystem {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private DoubleSolenoid solenoid;
 	private OperatorDisplay operatorDisplay;
-	private DoubleSolenoid.Value solenoidState;
 
+	private DoubleSolenoid driveSolenoid;
+	private DoubleSolenoid.Value driveSolenoidState;
+
+    private DoubleSolenoid gripperSolenoid;
+    private DoubleSolenoid.Value gripperSolenoidState;
+	
 	public PneumaticSubsystem(OperatorDisplay operatorDisplay) {
-		this.solenoid = new DoubleSolenoid(RobotConfigConstants.SOLENOID_1_MODULE_NUMBER,
+        this.operatorDisplay = operatorDisplay;
+		this.driveSolenoid = new DoubleSolenoid(RobotConfigConstants.PCM_1_ID_NUMBER,
 				RobotConfigConstants.SOLENOID_1_PORT_A, RobotConfigConstants.SOLENOID_1_PORT_B);
-		this.operatorDisplay = operatorDisplay;
-
-		this.toggleSolenoidForward();
+		this.toggleDriveSolenoidForward();
+		
+        this.gripperSolenoid = new DoubleSolenoid(RobotConfigConstants.PCM_1_ID_NUMBER,
+                RobotConfigConstants.SOLENOID_2_PORT_A, RobotConfigConstants.SOLENOID_2_PORT_B);
+		this.toggleGripperSolenoidForward();
 	}
 
 	@Override
@@ -35,43 +42,76 @@ public class PneumaticSubsystem extends Subsystem {
 	public void periodic() {
 	}
 
-	public DoubleSolenoid getSolenoid() {
-		return solenoid;
+	public DoubleSolenoid getDriveSolenoid() {
+		return driveSolenoid;
 	}
 
-	public void setSolenoid(DoubleSolenoid solenoid) {
-		this.solenoid = solenoid;
+    public DoubleSolenoid getGripperSolenoid() {
+        return gripperSolenoid;
+    }
+
+	public void toggleDriveSolenoid() {
+        this.operatorDisplay.setFieldValue("Solenoid State", this.driveSolenoidState.name());
+
+        if (this.driveSolenoidState == DoubleSolenoid.Value.kReverse) {
+            logger.trace("Calling toggleSolenoidForward");
+            toggleDriveSolenoidForward();
+        } else {
+            logger.trace("Calling toggleSolenoidReverse");
+            toggleDriveSolenoidReverse();
+        }
 	}
 
-	public void toggle() {
-		this.operatorDisplay.setFieldValue("Solenoid State", this.solenoidState.name());
+    public void toggleGripperSolenoid() {
+        this.operatorDisplay.setFieldValue("Gripper Solenoid State", this.gripperSolenoidState.name());
 
-		if (this.solenoidState == DoubleSolenoid.Value.kReverse) {
-			logger.trace("Calling toggleSolenoidForward");
-			toggleSolenoidForward();
-		} else {
-			logger.trace("Calling toggleSolenoidReverse");
-			toggleSolenoidReverse();
-		}
-	}
-
-	public void toggleSolenoidReverse() {
-		logger.trace("Running toggleSolenoidReverse");
-		this.solenoid.set(DoubleSolenoid.Value.kReverse);
+        if (this.gripperSolenoidState == DoubleSolenoid.Value.kReverse) {
+            logger.trace("Calling toggleGripperSolenoidForward");
+            toggleGripperSolenoidForward();
+        } else {
+            logger.trace("Calling toggleGripperSolenoidReverse");
+            toggleGripperSolenoidReverse();
+        }
+    }
+	
+	public void toggleDriveSolenoidReverse() {
+		logger.trace("Running toggleDriveSolenoidReverse");
+		this.driveSolenoid.set(DoubleSolenoid.Value.kReverse);
 		this.operatorDisplay.setFieldValue("Speed", "HIGH");
-		this.solenoidState = DoubleSolenoid.Value.kReverse;
+		this.driveSolenoidState = DoubleSolenoid.Value.kReverse;
 	}
 
-	public void toggleSolenoidForward() {
-		logger.trace("Running toggleSolenoidForward");
-		this.solenoid.set(DoubleSolenoid.Value.kForward);
+	public void toggleDriveSolenoidForward() {
+		logger.trace("Running toggleDriveSolenoidForward");
+		this.driveSolenoid.set(DoubleSolenoid.Value.kForward);
 		this.operatorDisplay.setFieldValue("Speed", "LOW");
-		this.solenoidState = DoubleSolenoid.Value.kForward;
+		this.driveSolenoidState = DoubleSolenoid.Value.kForward;
+	}
+	
+	public void toggleDriveSolenoidOff() {
+		logger.trace("Running toggleDriveSolenoidOff");
+		this.driveSolenoid.set(DoubleSolenoid.Value.kOff);
 	}
 
-	public void toggleSolenoidOff() {
-		logger.trace("Running toggleSolenoidOff");
-		this.solenoid.set(DoubleSolenoid.Value.kOff);
-	}
+    
+    public void toggleGripperSolenoidReverse() {
+        logger.trace("Running toggleGripperSolenoidReverse");
+        this.gripperSolenoid.set(DoubleSolenoid.Value.kReverse);
+        this.operatorDisplay.setFieldValue("Gripper", "OPENED");
+        this.gripperSolenoidState = DoubleSolenoid.Value.kReverse;
+    }
 
+    public void toggleGripperSolenoidForward() {
+        logger.trace("Running toggleGripperSolenoidForward");
+        this.gripperSolenoid.set(DoubleSolenoid.Value.kForward);
+        this.operatorDisplay.setFieldValue("Gripper", "CLOSED");
+        this.gripperSolenoidState = DoubleSolenoid.Value.kForward;
+    }
+    
+    public void toggleGripperSolenoidOff() {
+        logger.trace("Running toggleGripperSolenoidOff");
+        this.gripperSolenoid.set(DoubleSolenoid.Value.kOff);
+    }
+
+	
 }

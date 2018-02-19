@@ -2,8 +2,11 @@ package org.usfirst.frc.team6027.robot.commands.autonomous;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.usfirst.frc.team6027.robot.OperatorDisplay;
 import org.usfirst.frc.team6027.robot.field.Field;
 import org.usfirst.frc.team6027.robot.field.Field.PlatePosition;
+import org.usfirst.frc.team6027.robot.sensors.SensorService;
+import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
 
 import edu.wpi.first.wpilibj.command.Command;
 
@@ -12,13 +15,27 @@ public class AutonomousCommandSelector {
 
     private Field field;
     private Command preferredAutoCommand;
+    private SensorService sensorService;
+    private DrivetrainSubsystem drivetrainSubsystem;
+    private OperatorDisplay operatorDisplay;
     
-    public AutonomousCommandSelector(Field field, Command preferredAutoCommand) {
-        this.field = field;
+    // SensorService sensorService, DrivetrainSubsystem drivetrainSubsystem,
+    // OperatorDisplay operatorDisplay
+    public AutonomousCommandSelector(Command preferredAutoCommand, Field field, SensorService sensorService, 
+            DrivetrainSubsystem drivetrainSubsystem, OperatorDisplay operatorDisplay) {
         this.preferredAutoCommand = preferredAutoCommand;
+        this.field = field;
+        this.sensorService = sensorService;
+        this.drivetrainSubsystem = drivetrainSubsystem;
+        this.operatorDisplay = operatorDisplay;
     }
     
     public Command chooseCommand() {
+        if (this.field.getOurStationPosition() <= 0) {
+            logger.warn("NO POSITION SELECTED, cannot choose an Autonomous command!");
+            return NoOpCommand.getInstance();
+        }
+        
         // If we are positioned in the center station, station 2
         if (this.field.isOurStationCenter()) {
             return chooseCenterStationCommand();
