@@ -9,8 +9,9 @@ import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import edu.wpi.first.wpilibj.PIDOutput;
 
 public class TurnWhileDrivingCommand extends DriveStraightCommand implements PIDOutput {
+    public static final String NAME = "Turn While Driving";
     private final Logger logger = LoggerFactory.getLogger(getClass());
-
+    
     protected TargetVector[] targetVectors;
     int currentTargetVectorIndex = 0;
     double prevLegLeftEncDistance = 0.0;
@@ -23,7 +24,7 @@ public class TurnWhileDrivingCommand extends DriveStraightCommand implements PID
         
         super(sensorService, drivetrainSubsystem, operatorDisplay, targetVectors[0].getDistance(), driveUntil);
         this.targetVectors = targetVectors;
-        
+        this.setName(NAME);
     }
 
     @Override

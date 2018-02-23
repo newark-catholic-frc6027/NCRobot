@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class DriveStraightCommand extends Command implements PIDOutput {
+    public final static String NAME = "Charge";
+    
     private final Logger logger = LoggerFactory.getLogger(getClass());
     protected static final double PID_PROPORTIONAL_COEFFICIENT = 0.005;
     protected static final double PID_INTEGRAL_COEFFICIENT = 0.000;
@@ -66,9 +68,11 @@ public class DriveStraightCommand extends Command implements PIDOutput {
         if (driveUntil != null) {
             this.driveUntil = driveUntil;
         }
-        
+
+        this.setName(NAME);
     }
 
+ 
     @Override
     protected void initialize() {
         this.encoderSensors.reset();

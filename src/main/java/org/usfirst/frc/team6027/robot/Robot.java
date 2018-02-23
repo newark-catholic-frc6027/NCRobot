@@ -50,9 +50,8 @@ public class Robot extends IterativeRobot {
     private int gameDataPollCount = 0;
 
     private Preferences prefs = Preferences.getInstance();
-
-    // TODO: remove eventually, only caching so that we can update the angle on each run.
-    private TurnCommand turnCommand = null;
+    private AutonomousCommandSelector autoCommandSelector;
+    
     /**
      * This function is run when the robot is first started up and should be used
      * for any initialization code.
@@ -61,48 +60,23 @@ public class Robot extends IterativeRobot {
     public void robotInit() {
         outputBanner();
 
-        this.sensorService = new SensorService();
+        this.setSensorService(new SensorService());
         this.setOperatorDisplay(new OperatorDisplaySmartDashboardImpl());
         this.setOperatorInterface(new OperatorInterface(this.getOperatorDisplay()));
         this.setDrivetrain(new DrivetrainSubsystem(this.getOperatorInterface()));
-        this.pneumaticSubsystem = new PneumaticSubsystem(this.getOperatorDisplay());
+        this.setPneumaticSubsystem(new PneumaticSubsystem(this.getOperatorDisplay()));
 
         // This ensures that the Teleop command is running whenever we are not in
         // autonomous mode
-        this.getDrivetrain().setDefaultCommand(new TeleopManager(this.operatorInterface, this.sensorService,
-                this.getDrivetrain(), this.pneumaticSubsystem));
-
-        // Create and populate the list of autonomous commands on the Dashboard for each autonomous scenario
-        createAutonomousCommands();
+        TeleopManager teleOpCommand = new TeleopManager(this.operatorInterface, this.sensorService,
+                this.getDrivetrain(), this.pneumaticSubsystem);
+        this.getDrivetrain().setDefaultCommand(teleOpCommand);
 
     }
 
-    protected void createAutonomousCommands() {
-        
-        Command driveStraightCmd =  new DriveStraightCommand(this.sensorService, this.drivetrain, this.operatorDisplay, this.prefs.getDouble("driveStraightCommand.driveDistance", 12.0), DriveDistanceMode.DistanceReadingOnEncoder);
-        this.getOperatorDisplay().registerAutoCommand("Drive Straight", driveStraightCmd);
-        
-        this.turnCommand = new TurnCommand(this.prefs.getDouble("turnCommand.targetAngle", 90.0), this.sensorService, this.drivetrain, this.operatorDisplay);
-        this.getOperatorDisplay().registerAutoCommand("Turn", this.turnCommand);
-
-        double leg1Distance = this.prefs.getDouble("leg1.distance", 48.0);
-        double leg2Distance = this.prefs.getDouble("leg2.distance", 48.0);
-        double leg3Distance = this.prefs.getDouble("leg3.distance", 48.0);
-
-        double leg1Angle = this.prefs.getDouble("leg1.angle", 0.0);
-        double leg2Angle = this.prefs.getDouble("leg2.angle", 10.0);
-        double leg3Angle = this.prefs.getDouble("leg3.angle", -30.0);
-
-        Command turnWhileDriveCmd = new TurnWhileDrivingCommand(this.sensorService, this.drivetrain, this.operatorDisplay, 
-                new TargetVector[] { new TargetVector(0.0, 48.0), new TargetVector(10.0, 60.0), new TargetVector(-30.0, 60.0) },
-                DriveDistanceMode.DistanceReadingOnEncoder
-        );
-        this.getOperatorDisplay().registerAutoCommand("Turn While Driving", turnWhileDriveCmd);
-        
-    }
 
     protected void updateAutonomousCommands() {
-        this.turnCommand.setTargetAngle(this.prefs.getDouble("turnCommand.targetAngle", 90.0));
+        ((TurnCommand)this.autoCommandSelector.getCommandByName(TurnCommand.NAME)).setTargetAngle(this.prefs.getDouble("turnCommand.targetAngle", 90.0));
     }
     
     protected void outputBanner() {
@@ -122,9 +96,6 @@ public class Robot extends IterativeRobot {
      */
     @Override
     public void disabledInit() {
-        // FIXME: remove gyro reset
-        // this.getSensorService().getGyroSensor().reset();
-
         this.getField().clearAssignmentData();
         this.gameDataPollCount = 0;
 
@@ -161,30 +132,44 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void autonomousInit() {
-        // TODO: remove this once done testing, only need to update parameters for repeated testing
-        updateAutonomousCommands();
-        
-        // Make sure we have the game data, even though we should already have it from disabledPeriodic method
-        pollForGameData();
-        applyStationPosition();
-        // TODO: If for some reason we don't have the game data, just drive to cross line.  Don't try to deliver anything
-
-
-        //this.autonomousCommand = new AutoLineStraight(this.sensorService, this.drivetrain, this.operatorDisplay);
-        //		this.autonomousCommand = new DriveStraightCommand(this.sensorService, this.drivetrain, this.operatorDisplay, this.prefs.getDouble("driveStraightCommand.driveDistance", 12.0), DriveDistanceMode.DistanceReadingOnEncoder);
-        this.getSensorService().getGyroSensor().reset();
         Command preferredAutoCommand = this.getOperatorDisplay().getSelectedAutoCommand();
         
         /* TODO: use this code once ready for testing positions 
         AutonomousCommandSelector commandSelector = new AutonomousCommandSelector(this.getField(), preferredAutoCommand);
         this.autonomousCommand = commandSelector.chooseCommand();
         */
-        // TODO: this will eventually be replaced with above AutonomousCommandSelector
-        this.autonomousCommand = preferredAutoCommand;
+        this.autoCommandSelector = new AutonomousCommandSelector(
+                preferredAutoCommand, this.getField(), 
+                this.getSensorService(), this.getDrivetrain(), this.getPneumaticSubsystem(), this.getOperatorDisplay()
+        );
+        
+        this.autonomousCommand = this.autoCommandSelector.chooseCommand();
+        // TODO: REMOVE after testing, this is only here to allow us to repeatedly test a command without having
+        // to select it on the OperatorDisplay
+        if (this.autoCommandSelector.isNoPreferredCommand()) {
+            this.autonomousCommand = this.autoCommandSelector.getCommandByName(TurnWhileDrivingCommand.NAME);
+        }
+        
+        // TODO: remove this once done testing, only need to update parameters for repeated testing
+        updateAutonomousCommands();
+        
+        // Make sure we have the game data, even though we should already have it from disabledPeriodic method
+        pollForGameData();
+        applyStationPosition();
+        
+        // TODO: If for some reason we don't have the game data, don't run any commands
+
+
+        //this.autonomousCommand = new AutoLineStraight(this.sensorService, this.drivetrain, this.operatorDisplay);
+        //		this.autonomousCommand = new DriveStraightCommand(this.sensorService, this.drivetrain, this.operatorDisplay, this.prefs.getDouble("driveStraightCommand.driveDistance", 12.0), DriveDistanceMode.DistanceReadingOnEncoder);
+        this.getSensorService().getGyroSensor().reset();
+        
         
         // schedule the autonomous command (example)
         if (autonomousCommand != null) {
             autonomousCommand.start();
+        } else {
+            logger.warn("No autonomous command to run!");
         }
 
     }

@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class TurnCommand extends Command implements PIDOutput {
+    public static final String NAME = "Turn";
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	protected static final double PID_PROPORTIONAL_COEFFICIENT = 0.005;
 	protected static final double PID_INTEGRAL_COEFFICIENT = 0.00;
@@ -50,6 +51,7 @@ public class TurnCommand extends Command implements PIDOutput {
 		this.gyro.reset();
 		this.initialGyroAngle = this.gyro.getYawAngle();
 		this.startTime = System.currentTimeMillis();
+        this.setName(NAME);
 
 		initPIDController();
 	}
