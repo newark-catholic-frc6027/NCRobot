@@ -10,15 +10,9 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.commands.TeleopManager;
-import org.usfirst.frc.team6027.robot.commands.autonomous.AutoCrossLineStraightAhead;
-import org.usfirst.frc.team6027.robot.commands.autonomous.AutoCrossLineVeerLeft;
-import org.usfirst.frc.team6027.robot.commands.autonomous.AutoCrossLineVeerRight;
-import org.usfirst.frc.team6027.robot.commands.autonomous.AutonomousCommandSelector;
-import org.usfirst.frc.team6027.robot.commands.autonomous.DriveStraightCommand;
+import org.usfirst.frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
 import org.usfirst.frc.team6027.robot.commands.autonomous.TurnCommand;
 import org.usfirst.frc.team6027.robot.commands.autonomous.TurnWhileDrivingCommand;
-import org.usfirst.frc.team6027.robot.commands.autonomous.TurnWhileDrivingCommand.TargetVector;
-import org.usfirst.frc.team6027.robot.commands.autonomous.DriveStraightCommand.DriveDistanceMode;
 import org.usfirst.frc.team6027.robot.field.Field;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
@@ -50,7 +44,7 @@ public class Robot extends IterativeRobot {
     private int gameDataPollCount = 0;
 
     private Preferences prefs = Preferences.getInstance();
-    private AutonomousCommandSelector autoCommandSelector;
+    private AutonomousCommandManager autoCommandSelector;
     
     /**
      * This function is run when the robot is first started up and should be used
@@ -105,6 +99,7 @@ public class Robot extends IterativeRobot {
     public void disabledPeriodic() {
         // Query for game data until we get something.
         // Make sure that there is no test data configured on the Driver Station!
+        boolean gameDataExists = pollForGameData();
         Scheduler.getInstance().run();
     }
 
@@ -114,31 +109,49 @@ public class Robot extends IterativeRobot {
         );
     }
 
-    protected void pollForGameData() {
-
+    protected boolean pollForGameData() {
         if (! this.getField().hasAssignmentData()) {
             String gameData = DriverStation.getInstance().getGameSpecificMessage();
             if (gameData != null && gameData.length() > 0) {
                 this.getField().doFieldAssignments(gameData);
+                return true;
             } else {
-                // Only output every 10 time we poll, don't need to do every time.
+                this.gameDataPollCount++;
+                // Only output every 10 times we poll, don't need to do every time.
                 if (this.gameDataPollCount % 10 == 0) {
                     logger.info("No field assignment data received yet");
                 }
+                return false;
             }
+        } else {
+            return true;
         }
-        this.gameDataPollCount++;
     }
 
     @Override
     public void autonomousInit() {
-        Command preferredAutoCommand = this.getOperatorDisplay().getSelectedAutoCommand();
         
+        applyStationPosition();
+        Command preferredAutoCommand = this.getOperatorDisplay().getSelectedAutoCommand();
+
+        // TODO: remove this once done testing, only need to update parameters for repeated testing
+        updateAutonomousCommands();
+        
+        // Make sure we have the game data, even though we should already have it from disabledPeriodic method
+        while (! pollForGameData() && this.gameDataPollCount < 20 ) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                logger.error("Interrupted waiting for game data", e);
+            }
+        }
+
+                
         /* TODO: use this code once ready for testing positions 
         AutonomousCommandSelector commandSelector = new AutonomousCommandSelector(this.getField(), preferredAutoCommand);
         this.autonomousCommand = commandSelector.chooseCommand();
         */
-        this.autoCommandSelector = new AutonomousCommandSelector(
+        this.autoCommandSelector = new AutonomousCommandManager(
                 preferredAutoCommand, this.getField(), 
                 this.getSensorService(), this.getDrivetrain(), this.getPneumaticSubsystem(), this.getOperatorDisplay()
         );
@@ -150,12 +163,6 @@ public class Robot extends IterativeRobot {
             this.autonomousCommand = this.autoCommandSelector.getCommandByName(TurnWhileDrivingCommand.NAME);
         }
         
-        // TODO: remove this once done testing, only need to update parameters for repeated testing
-        updateAutonomousCommands();
-        
-        // Make sure we have the game data, even though we should already have it from disabledPeriodic method
-        pollForGameData();
-        applyStationPosition();
         
         // TODO: If for some reason we don't have the game data, don't run any commands
 

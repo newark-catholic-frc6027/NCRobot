@@ -11,6 +11,12 @@ import edu.wpi.first.wpilibj.command.Command;
 public interface OperatorDisplay {
     public static final String PID_LOOP_OUPUT_LABEL = "PID Loop Output Value";
     public static final String TELEOP_MOTOR_POWER_PREF = "teleopMotorPower";
+    public static final String GAME_DATA_LABEL = "Field Assignments";
+    /**
+     * The name of the field representing how far the robot has traveled.
+     */
+    public static final String DISTANCE_FIELD_NAME = "Distance";
+    
     
     public enum ChooserName {
         Position,
@@ -35,10 +41,7 @@ public interface OperatorDisplay {
         
     }
 
-    /**
-     * The name of the field representing how far the robot has traveled.
-     */
-    String DISTANCE_FIELD_NAME = "Distance";
+
 
     /**
      * Sets a new numeric value on the display.

@@ -1,5 +1,8 @@
 package org.usfirst.frc.team6027.robot.field;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +41,8 @@ public class Field {
 
     private String assignmentData = null;
     private int ourStationPosition = -1;
+    
+    private List<String> fieldAssignmentPrettyPrint = new ArrayList<>();
 
     public Field() {
 
@@ -67,40 +72,50 @@ public class Field {
                     theirSwitchAssignment.equalsIgnoreCase(LEFT_ASSIGNMENT_FLAG));
             plates[THEIR_SWITCH_POS][THEIR_SWITCH_RIGHT_PLATE] = new Plate(
                     theirSwitchAssignment.equalsIgnoreCase(RIGHT_ASSIGNMENT_FLAG));
-
-            this.logFieldAssignments();
+            this.makePrettyPrintedFieldAssignment();
         } else {
             logger.trace("Assignment data not ready yet or not valid.  Value: {}", assignmentData);
             this.assignmentData = null;
         }
     }
-
-    public void logFieldAssignments() {
+    
+    public String getPrettyPrintedAssignmentData() {
+        return String.join("/n", this.fieldAssignmentPrettyPrint);
+    }
+    
+    protected void makePrettyPrintedFieldAssignment() {
+        List<String> fapp = this.fieldAssignmentPrettyPrint;
         
-        logger.info("_____________________________");
-        logger.info("|                            |");
-        logger.info("|    *        *        *     |");
-        logger.info("|                            |");
-        logger.info("|                            |");
-        logger.info("|                            |");
-        logger.info("|                            |");
-        logger.info("|        {}        {}          |", this.isPlateAssignedToUs(PlatePosition.TheirSwitchLeft) ? "X" : "-", this.isPlateAssignedToUs(PlatePosition.TheirSwitchRight) ?  "X" : "-");
-        logger.info("|                            |");
-        logger.info("|                            |");
-        logger.info("|                            |");
-        logger.info("|                            |");
-        logger.info("|        {}        {}          |", this.isPlateAssignedToUs(PlatePosition.ScaleLeft) ? "X" : "-", this.isPlateAssignedToUs(PlatePosition.ScaleRight) ?  "X" : "-");
-        logger.info("|                            |");
-        logger.info("|                            |");
-        logger.info("|                            |");
-        logger.info("|                            |");
-        logger.info("|        {}        {}          |", this.isPlateAssignedToUs(PlatePosition.OurSwitchLeft) ? "X" : "-", this.isPlateAssignedToUs(PlatePosition.OurSwitchRight) ?  "X" : "-");
-        logger.info("|                            |");
-        logger.info("|                            |");
-        logger.info("|                            |");
-        logger.info("|                            |");
-        logger.info("|    1        2        3     |");
-        logger.info("|____________________________|");
+        fapp.clear();
+        fapp.add("_____________________________");
+        fapp.add("|                            |");
+        fapp.add("|    *        *        *     |");
+        fapp.add("|                            |");
+        fapp.add("|                            |");
+        fapp.add("|                            |");
+        fapp.add("|                            |");
+        fapp.add(String.format("|        %s        %s          |", this.isPlateAssignedToUs(PlatePosition.TheirSwitchLeft) ? "X" : "-", this.isPlateAssignedToUs(PlatePosition.TheirSwitchRight) ?  "X" : "-"));
+        fapp.add("|                            |");
+        fapp.add("|                            |");
+        fapp.add("|                            |");
+        fapp.add("|                            |");
+        fapp.add(String.format("|        %s        %s          |", this.isPlateAssignedToUs(PlatePosition.ScaleLeft) ? "X" : "-", this.isPlateAssignedToUs(PlatePosition.ScaleRight) ?  "X" : "-"));
+        fapp.add("|                            |");
+        fapp.add("|                            |");
+        fapp.add("|                            |");
+        fapp.add("|                            |");
+        fapp.add(String.format("|        %s        %s          |", this.isPlateAssignedToUs(PlatePosition.OurSwitchLeft) ? "X" : "-", this.isPlateAssignedToUs(PlatePosition.OurSwitchRight) ?  "X" : "-"));
+        fapp.add("|                            |");
+        fapp.add("|                            |");
+        fapp.add("|                            |");
+        fapp.add("|                            |");
+        fapp.add("|    1        2        3     |");
+        fapp.add("|____________________________|");
+        
+        // Log the field assignment lines created from above
+        for (String line: fapp) {
+            logger.info(line);
+        }
     }
     
     public int getOurStationPosition() {

@@ -17,7 +17,7 @@ import org.usfirst.frc.team6027.robot.subsystems.PneumaticSubsystem;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 
-public class AutonomousCommandSelector {
+public class AutonomousCommandManager {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private Field field;
@@ -31,7 +31,7 @@ public class AutonomousCommandSelector {
     
     // SensorService sensorService, DrivetrainSubsystem drivetrainSubsystem,
     // OperatorDisplay operatorDisplay
-    public AutonomousCommandSelector(Command preferredAutoCommand, Field field, SensorService sensorService, 
+    public AutonomousCommandManager(Command preferredAutoCommand, Field field, SensorService sensorService, 
             DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, OperatorDisplay operatorDisplay) {
         this.preferredAutoCommand = preferredAutoCommand;
         this.field = field;

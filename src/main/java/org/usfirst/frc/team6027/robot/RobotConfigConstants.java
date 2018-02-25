@@ -158,6 +158,8 @@ public class RobotConfigConstants {
 	/**
 	 * The port that the gyro sensor connects to
 	 */
+	// TODO: try using SPI or I2C interfaces.  SPI is recommended.  See
+	//    https://www.chiefdelphi.com/forums/showthread.php?t=162704
 	public static final Port GYRO_PORT = SerialPort.Port.kUSB;
 
 	/*
