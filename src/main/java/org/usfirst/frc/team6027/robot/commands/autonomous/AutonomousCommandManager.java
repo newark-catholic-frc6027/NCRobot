@@ -18,10 +18,37 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class AutonomousCommandManager {
+    
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    
+    public enum AutonomousPreference {
+        NoPreference("NO SELECTION"),
+        CrossLine("Cross the Line"),
+        DeliverSwitch("Deliver Switch"),
+        DeliverScale("Deliver Switch");
+        
+        private String displayName;
+        
+        private AutonomousPreference() {
+        }
+        
+        private AutonomousPreference(String displayName) {
+            this.displayName = displayName;
+        }
+        
+        public String displayName() {
+            if (this.displayName == null ) {
+                return this.name();
+            } else {
+                return this.displayName;
+            }
+        }
+        
+    }
+    
     private Field field;
-    private Command preferredAutoCommand;
+    private AutonomousPreference preferredAutoScenario;
     private SensorService sensorService;
     private DrivetrainSubsystem drivetrainSubsystem;
     private PneumaticSubsystem pneumaticSubsystem;
@@ -31,9 +58,9 @@ public class AutonomousCommandManager {
     
     // SensorService sensorService, DrivetrainSubsystem drivetrainSubsystem,
     // OperatorDisplay operatorDisplay
-    public AutonomousCommandManager(Command preferredAutoCommand, Field field, SensorService sensorService, 
+    public AutonomousCommandManager(AutonomousPreference preferredAutoScenario, Field field, SensorService sensorService, 
             DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, OperatorDisplay operatorDisplay) {
-        this.preferredAutoCommand = preferredAutoCommand;
+        this.preferredAutoScenario = preferredAutoScenario;
         this.field = field;
         this.sensorService = sensorService;
         this.drivetrainSubsystem = drivetrainSubsystem;
@@ -44,42 +71,24 @@ public class AutonomousCommandManager {
     }
     
     protected void createAutonomousCommands() {
+        this.getOperatorDisplay().registerAutoScenario(AutonomousPreference.CrossLine.displayName());
+        this.getOperatorDisplay().registerAutoScenario(AutonomousPreference.DeliverSwitch.displayName());
+        this.getOperatorDisplay().registerAutoScenario(AutonomousPreference.DeliverScale.displayName());
         
+        // TODO: May want to defer creating these until we know which command we are going to need to run
+        // based on other inputs
         Command driveStraightCmd =  new DriveStraightCommand(this.getSensorService(), this.getDrivetrainSubsystem(), 
             this.getOperatorDisplay(), this.prefs.getDouble("driveStraightCommand.driveDistance", 12.0), 
             DriveDistanceMode.DistanceReadingOnEncoder);
-        this.getOperatorDisplay().registerAutoCommand(DriveStraightCommand.NAME, driveStraightCmd);
         this.commandsByName.put(driveStraightCmd.getName(), driveStraightCmd);
         
         Command turnCommand = new TurnCommand(this.prefs.getDouble("turnCommand.targetAngle", 90.0), 
             this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
-        this.getOperatorDisplay().registerAutoCommand(turnCommand.getName(), turnCommand);
         this.commandsByName.put(turnCommand.getName(), turnCommand);
 
         
-        // TODO: REMOVE after done testing
-        double leg1Distance = this.prefs.getDouble("leg1.distance", 48.0);
-        double leg2Distance = this.prefs.getDouble("leg2.distance", 48.0);
-        double leg3Distance = this.prefs.getDouble("leg3.distance", 48.0);
-
-        double leg1Angle = this.prefs.getDouble("leg1.angle", 0.0);
-        double leg2Angle = this.prefs.getDouble("leg2.angle", 10.0);
-        double leg3Angle = this.prefs.getDouble("leg3.angle", -30.0);
-
-        // TODO: Remove after done testing
-        TargetVector[] turnVectors = new TargetVector[] { 
-                new TargetVector(leg1Angle, leg1Distance), 
-                new TargetVector(leg2Angle, leg2Distance), 
-                new TargetVector(leg3Angle, leg3Distance) 
-        };
-        Command turnWhileDriveCmd = new TurnWhileDrivingCommand(
-                this.sensorService, this.getDrivetrainSubsystem(), this.operatorDisplay, 
-                turnVectors,
-                DriveDistanceMode.DistanceReadingOnEncoder
-        );
         
-        this.getOperatorDisplay().registerAutoCommand(turnWhileDriveCmd.getName(), turnWhileDriveCmd);
-        this.commandsByName.put(turnWhileDriveCmd.getName(), turnWhileDriveCmd);
+//        this.commandsByName.put(turnWhileDriveCmd.getName(), turnWhileDriveCmd);
         
     }
 
@@ -88,6 +97,13 @@ public class AutonomousCommandManager {
     }
     
     public Command chooseCommand() {
+        // Operators should have 4 choices for command preference
+        // 0 No preference
+        // 1 Cross line
+        // 2 Deliver Cube Switch
+        // 3 Deliver Cube Scale
+        
+        
         if (this.field.getOurStationPosition() <= 0) {
             logger.warn("NO POSITION SELECTED, cannot choose an Autonomous command!");
             return NoOpCommand.getInstance();
@@ -105,18 +121,10 @@ public class AutonomousCommandManager {
         }
         
         if (chosenCommand == null) {
-            String commandName = null;
-            if (this.getPreferredAutoCommand() != null) {
-                commandName = this.getPreferredAutoCommand().getName();
-                if (commandName == null) {
-                    commandName = "<Unnamed Command, please set a name>";
-                }
-                chosenCommand = this.getPreferredAutoCommand();
-            } else {
-                commandName = "<preferredAutoCommand not set>";
-            }
-            logger.warn("A command could not be automatically chosen, returning preferredAutoCommand: '{}'", 
-                commandName);
+            chosenCommand = NoOpCommand.getInstance();
+            logger.warn("!!! A command could not be automatically chosen, choosing NoOpCommand");
+        } else {
+            logger.info(">>> Command <{}> was automatically chosen", chosenCommand.getName()); 
         }
         
         return chosenCommand;
@@ -126,9 +134,37 @@ public class AutonomousCommandManager {
         Command chosenCommand = null;
         
         if (this.field.isPlateAssignedToUs(PlatePosition.OurSwitchRight)) {
-            if (this.isNoPreferredCommand()) {
+            if (this.isNoPreferredScenario()) {
+                logger.trace("DELIVER END RIGHT");
                 // TODO: deliver END RIGHT
             } else {
+                if (this.getPreferredScenario() == AutonomousPreference.CrossLine){
+                    
+                    // TODO: REMOVE after done testing
+                    double leg1Distance = this.prefs.getDouble("leg1.distance", 48.0);
+                    double leg2Distance = this.prefs.getDouble("leg2.distance", 48.0);
+                    double leg3Distance = this.prefs.getDouble("leg3.distance", 48.0);
+
+                    double leg1Angle = this.prefs.getDouble("leg1.angle", 0.0);
+                    double leg2Angle = this.prefs.getDouble("leg2.angle", 10.0);
+                    double leg3Angle = this.prefs.getDouble("leg3.angle", -30.0);
+
+                    // TODO: Remove after done testing
+                    TargetVector[] turnVectors = new TargetVector[] { 
+                            new TargetVector(leg1Angle, leg1Distance), 
+                            new TargetVector(leg2Angle, leg2Distance), 
+                            new TargetVector(leg3Angle, leg3Distance) 
+                    };
+                    
+                    chosenCommand = new TurnWhileDrivingCommand(
+                            this.sensorService, this.getDrivetrainSubsystem(), this.operatorDisplay, 
+                            turnVectors,
+                            DriveDistanceMode.DistanceReadingOnEncoder
+                    );
+                    
+                } else {
+                    logger.trace("Don't yet know how to handle <{}>", this.getPreferredScenario().displayName());
+                }
                 // TODO: check that the preferred command doesn't contradict with our assignment.  If it does then just
                 // drive straight to get across the line (this is safest because the robot may not be positioned correctly
                 // for the other commands).  If it doesn't just return the preferred command.
@@ -147,7 +183,7 @@ public class AutonomousCommandManager {
         Command chosenCommand = null;
 
         if (this.field.isPlateAssignedToUs(PlatePosition.OurSwitchLeft)) {
-            if (this.isNoPreferredCommand()) {
+            if (this.isNoPreferredScenario()) {
                 // TODO: deliver END LEFT
             } else {
                 // TODO: check that the preferred command doesn't contradict with our assignment.  If it does then just
@@ -168,7 +204,7 @@ public class AutonomousCommandManager {
         Command chosenCommand = null;
         logger.info("Team Position: CENTER ({})", this.field.getOurStationPosition());
         // If driver's didn't select a preferred command, automatically select one
-        if (this.isNoPreferredCommand()) {
+        if (this.isNoPreferredScenario()) {
             if (this.field.isPlateAssignedToUs(PlatePosition.OurSwitchLeft)) {
                 // TODO: 
                 // deliver front left -- Mr. Nelson says no, we should go right
@@ -185,16 +221,16 @@ public class AutonomousCommandManager {
         return chosenCommand;
     }
 
-    public boolean isNoPreferredCommand() {
-        return this.preferredAutoCommand instanceof NoOpCommand;
+    public boolean isNoPreferredScenario() {
+        return this.preferredAutoScenario == AutonomousPreference.NoPreference;
     }
 
-    public Command getPreferredAutoCommand() {
-        return preferredAutoCommand;
+    public AutonomousPreference getPreferredScenario() {
+        return preferredAutoScenario;
     }
 
-    public void setPreferredAutoCommand(Command preferredAutoCommand) {
-        this.preferredAutoCommand = preferredAutoCommand;
+    public void setPreferredScenario(AutonomousPreference preferredAutoScenario) {
+        this.preferredAutoScenario = preferredAutoScenario;
     }
 
     protected Field getField() {

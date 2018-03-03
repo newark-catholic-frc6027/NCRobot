@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.commands.TeleopManager;
 import org.usfirst.frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
+import org.usfirst.frc.team6027.robot.commands.autonomous.AutonomousCommandManager.AutonomousPreference;
+import org.usfirst.frc.team6027.robot.commands.autonomous.NoOpCommand;
 import org.usfirst.frc.team6027.robot.commands.autonomous.TurnCommand;
 import org.usfirst.frc.team6027.robot.commands.autonomous.TurnWhileDrivingCommand;
 import org.usfirst.frc.team6027.robot.field.Field;
@@ -44,7 +46,7 @@ public class Robot extends IterativeRobot {
     private int gameDataPollCount = 0;
 
     private Preferences prefs = Preferences.getInstance();
-    private AutonomousCommandManager autoCommandSelector;
+    private AutonomousCommandManager autoCommandManager;
     
     /**
      * This function is run when the robot is first started up and should be used
@@ -70,7 +72,7 @@ public class Robot extends IterativeRobot {
 
 
     protected void updateAutonomousCommands() {
-        ((TurnCommand)this.autoCommandSelector.getCommandByName(TurnCommand.NAME)).setTargetAngle(this.prefs.getDouble("turnCommand.targetAngle", 90.0));
+        ((TurnCommand)this.autoCommandManager.getCommandByName(TurnCommand.NAME)).setTargetAngle(this.prefs.getDouble("turnCommand.targetAngle", 90.0));
     }
     
     protected void outputBanner() {
@@ -132,7 +134,7 @@ public class Robot extends IterativeRobot {
     public void autonomousInit() {
         
         applyStationPosition();
-        Command preferredAutoCommand = this.getOperatorDisplay().getSelectedAutoCommand();
+        String preferredAutoScenario = this.getOperatorDisplay().getSelectedAutoScenario();
 
         // TODO: remove this once done testing, only need to update parameters for repeated testing
         updateAutonomousCommands();
@@ -151,18 +153,20 @@ public class Robot extends IterativeRobot {
         AutonomousCommandSelector commandSelector = new AutonomousCommandSelector(this.getField(), preferredAutoCommand);
         this.autonomousCommand = commandSelector.chooseCommand();
         */
-        this.autoCommandSelector = new AutonomousCommandManager(
-                preferredAutoCommand, this.getField(), 
+        this.autoCommandManager = new AutonomousCommandManager(
+                AutonomousPreference.valueOf(preferredAutoScenario), this.getField(), 
                 this.getSensorService(), this.getDrivetrain(), this.getPneumaticSubsystem(), this.getOperatorDisplay()
         );
         
-        this.autonomousCommand = this.autoCommandSelector.chooseCommand();
+        this.autonomousCommand = this.autoCommandManager.chooseCommand();
+        /*
         // TODO: REMOVE after testing, this is only here to allow us to repeatedly test a command without having
         // to select it on the OperatorDisplay
-        if (this.autoCommandSelector.isNoPreferredCommand()) {
-            this.autonomousCommand = this.autoCommandSelector.getCommandByName(TurnWhileDrivingCommand.NAME);
+        if (this.autonomousCommand == NoOpCommand.getInstance()) {
+            
+            this.autonomousCommand = this.autoCommandManager.getCommandByName(TurnWhileDrivingCommand.NAME);
         }
-        
+        */
         
         // TODO: If for some reason we don't have the game data, don't run any commands
 

@@ -1,7 +1,6 @@
 package org.usfirst.frc.team6027.robot;
 
 import edu.wpi.first.wpilibj.NamedSendable;
-import edu.wpi.first.wpilibj.command.Command;
 
 /**
  * An interface used to define the operations necessary for displaying information and feedback to the robot human 
@@ -62,12 +61,10 @@ public interface OperatorDisplay {
 
     void setFieldValue(String fieldName, boolean value);
 
-    void registerAutoCommand(Command command);
-    void registerAutoCommand(String displayName, Command command);
-    void registerAutoCommand(Command command, boolean isDefaultCommand);
-    void registerAutoCommand(String displayName, Command command, boolean isDefaultCommand);
+    void registerAutoScenario(String displayName);
+    void registerAutoScenario(String displayName, boolean isDefaultCommand);
 
-    Command getSelectedAutoCommand();
+    String getSelectedAutoScenario();
     
     Integer getSelectedPosition();
     

@@ -5,10 +5,8 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.usfirst.frc.team6027.robot.commands.autonomous.NoOpCommand;
 
 import edu.wpi.first.wpilibj.NamedSendable;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -22,7 +20,7 @@ public class OperatorDisplaySmartDashboardImpl implements OperatorDisplay {
 
 
     private SendableChooser<Integer> positionChooser = new SendableChooser<>();
-    private SendableChooser<Command> scenarioChooser = new SendableChooser<>();
+    private SendableChooser<String> scenarioChooser = new SendableChooser<>();
     
     @SuppressWarnings("rawtypes")
     private Map<ChooserName, SendableChooser> chooserCache = new HashMap<>();
@@ -34,8 +32,7 @@ public class OperatorDisplaySmartDashboardImpl implements OperatorDisplay {
 
     protected void initScenarioChooser() {
         this.chooserCache.put(ChooserName.Scenario, this.scenarioChooser);
-        NoOpCommand noOpCommand = NoOpCommand.getInstance();
-        this.registerAutoCommand("NO SELECTION", noOpCommand, true);
+        this.registerAutoScenario("NO SELECTION", true);
         SmartDashboard.putData(ChooserName.Scenario.displayName(), this.scenarioChooser);
     }
     
@@ -75,38 +72,29 @@ public class OperatorDisplaySmartDashboardImpl implements OperatorDisplay {
     }
 
     @Override
-    public void registerAutoCommand(Command command) {
-        this.registerAutoCommand(command.getName(), command);
-    }
-
-    @Override
-    public void registerAutoCommand(Command command, boolean isDefaultCommand) {
-        this.registerAutoCommand(command.getName(), command, isDefaultCommand);
+    public void registerAutoScenario(String displayName) {
+        this.registerAutoScenario(displayName, false);
     }
     
     @Override
-    public void registerAutoCommand(String displayName, Command command) {
-        this.registerAutoCommand(displayName, command, false);
-    }
-    
-    @Override
-    public void registerAutoCommand(String displayName, Command command, boolean isDefaultCommand) {
+    public void registerAutoScenario(String displayName, boolean isDefaultCommand) {
         if (isDefaultCommand) {
-            this.scenarioChooser.addDefault(displayName, command);
+            this.scenarioChooser.addDefault(displayName, displayName);
         } else {
-            this.scenarioChooser.addObject(displayName, command);
+            this.scenarioChooser.addObject(displayName, displayName);
         }
     }
     
     @Override
-    public Command getSelectedAutoCommand() {
-        return (Command) this.scenarioChooser.getSelected();
+    public String getSelectedAutoScenario() {
+        return (String) this.scenarioChooser.getSelected();
     }
 
     @Override
     public Integer getSelectedPosition() {
         return (Integer) this.positionChooser.getSelected();
     }
+
 
        
 }
