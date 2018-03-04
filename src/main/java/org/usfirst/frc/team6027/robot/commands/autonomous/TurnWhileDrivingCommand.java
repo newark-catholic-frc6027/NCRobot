@@ -57,7 +57,8 @@ public class TurnWhileDrivingCommand extends DriveStraightCommand implements PID
         
         if (Math.min(leftLegDisplacement, rightLegDisplacement) >= currentVector.getDistance()) {
             this.currentTargetVectorIndex++;
-            if (this.currentTargetVectorIndex < this.targetVectors.length) {
+            logger.info(">>>>>>>>>>> LEG {} REACHED", this.currentTargetVectorIndex);
+            if (this.currentTargetVectorIndex < this.targetVectors.length) { // Leg completed
                 this.gyroPidController.setSetpoint(this.targetVectors[this.currentTargetVectorIndex].getAngle());
                 this.prevLegLeftEncDistance = this.encoderSensors.getLeftEncoder().getDistance();
                 this.prevLegRightEncDistance = this.encoderSensors.getRightEncoder().getDistance();

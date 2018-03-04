@@ -105,12 +105,9 @@ public class AutonomousCommandManager {
     }
     
     public Command chooseCommand() {
-        // Operators should have 4 choices for command preference
-        // 0 No preference
-        // 1 Cross line
-        // 2 Deliver Cube Switch
-        // 3 Deliver Cube Scale
         
+        logger.info(">>>>>> Station Position: {}", this.getField().getOurStationPosition());
+        logger.info(">>>>>> Preferred Autonomous Scenario: {}", this.getPreferredScenario());
         
         if (this.field.getOurStationPosition() <= 0) {
             logger.warn("NO POSITION SELECTED, cannot choose an Autonomous command!");
