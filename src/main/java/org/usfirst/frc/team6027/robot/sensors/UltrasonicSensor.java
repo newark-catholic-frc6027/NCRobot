@@ -23,5 +23,9 @@ public class UltrasonicSensor {
     public double getDistanceInches() {
         return this.ultrasonic.getRangeInches();
     }
+
+    public boolean isRangeValid() {
+        return this.ultrasonic.isRangeValid();
+    }
     
 }

@@ -131,11 +131,13 @@ public class DriveStraightCommand extends Command implements PIDOutput {
 
     @Override
     protected void execute() {
-        logger.trace("Gyro angles (yaw,raw): ({},{}) left-enc: {}, right-enc: {}, pidOutput: {}", 
+        logger.trace("Gyro angles (yaw,raw): ({},{}) left-enc: {}, right-enc: {}, ultrasonic dist/valid: {}/{},  pidOutput: {}", 
                 String.format("%.3f",this.gyro.getYawAngle()),  
                 String.format("%.3f",this.gyro.getAngle()),  
                 String.format("%.3f",this.encoderSensors.getLeftEncoder().getDistance()),  
                 String.format("%.3f",this.encoderSensors.getRightEncoder().getDistance()),
+                String.format("%.3f",this.ultrasonicSensor.getDistanceInches()),
+                this.ultrasonicSensor.isRangeValid(),
                 String.format("%.3f",this.pidLoopCalculationOutput)
                 
         );
