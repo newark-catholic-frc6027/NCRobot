@@ -63,4 +63,12 @@ public class SensorService {
     public void setCameraSensor(CameraSensors cameraSensor) {
         this.cameraSensor = cameraSensor;
     }
+
+
+    public void resetAll() {
+        this.getGyroSensor().reset();
+        this.getEncoderSensors().reset();
+        
+        // TODO: add more resets?
+    }
 }

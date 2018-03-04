@@ -149,6 +149,7 @@ public class Robot extends IterativeRobot {
             }
         }
 
+        this.sensorService.resetAll();
                 
         /* TODO: use this code once ready for testing positions 
         AutonomousCommandSelector commandSelector = new AutonomousCommandSelector(this.getField(), preferredAutoCommand);
