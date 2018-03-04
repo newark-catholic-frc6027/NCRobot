@@ -28,7 +28,7 @@ public class NavxGyroSensor implements PIDCapableGyro {
     }
 
     protected void initialize() {
-        ahrs = new AHRS(RobotConfigConstants.GYRO_PORT);
+        ahrs = new AHRS(RobotConfigConstants.GYRO_ALT_PORT);
         reset();
     }
     @Override

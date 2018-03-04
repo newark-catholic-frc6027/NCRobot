@@ -1,5 +1,6 @@
 package org.usfirst.frc.team6027.robot;
 
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 
@@ -161,7 +162,7 @@ public class RobotConfigConstants {
 	// TODO: try using SPI or I2C interfaces.  SPI is recommended.  See
 	//    https://www.chiefdelphi.com/forums/showthread.php?t=162704
 	public static final Port GYRO_PORT = SerialPort.Port.kUSB;
-
+	public static final edu.wpi.first.wpilibj.SPI.Port GYRO_ALT_PORT = SPI.Port.kMXP;
 	/*
 	 * SOLENOID constants
 	 */
