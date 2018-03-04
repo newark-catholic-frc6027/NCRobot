@@ -138,7 +138,7 @@ public class Robot extends IterativeRobot {
         String preferredAutoScenario = this.getOperatorDisplay().getSelectedAutoScenario();
 
         // TODO: remove this once done testing, only need to update parameters for repeated testing
-        updateAutonomousCommands();
+        // updateAutonomousCommands();
         
         // Make sure we have the game data, even though we should already have it from disabledPeriodic method
         while (! pollForGameData() && this.gameDataPollCount < 20 ) {

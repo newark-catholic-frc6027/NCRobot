@@ -25,8 +25,8 @@ public class AutonomousCommandManager {
     public enum AutonomousPreference {
         NoPreference("NO SELECTION"),
         CrossLine("Cross the Line"),
-        DeliverSwitch("Deliver Switch"),
-        DeliverScale("Deliver Switch");
+        DeliverSwitch("Deliver to Switch"),
+        DeliverScale("Deliver to Scale");
         
         private String displayName;
         
