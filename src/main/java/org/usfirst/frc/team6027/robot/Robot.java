@@ -155,7 +155,7 @@ public class Robot extends IterativeRobot {
         this.autonomousCommand = commandSelector.chooseCommand();
         */
         this.autoCommandManager = new AutonomousCommandManager(
-                AutonomousPreference.valueOf(preferredAutoScenario), this.getField(), 
+                AutonomousPreference.fromDisplayName(preferredAutoScenario), this.getField(), 
                 this.getSensorService(), this.getDrivetrain(), this.getPneumaticSubsystem(), this.getOperatorDisplay()
         );
         

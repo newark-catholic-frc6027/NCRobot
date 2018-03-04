@@ -1,5 +1,6 @@
 package org.usfirst.frc.team6027.robot.commands.autonomous;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,6 +44,10 @@ public class AutonomousCommandManager {
             } else {
                 return this.displayName;
             }
+        }
+        
+        public static AutonomousPreference fromDisplayName(String displayName) {
+            return Arrays.asList(AutonomousPreference.values()).stream().filter(a -> displayName.equals(a.displayName())).findFirst().orElse(null);
         }
         
     }
