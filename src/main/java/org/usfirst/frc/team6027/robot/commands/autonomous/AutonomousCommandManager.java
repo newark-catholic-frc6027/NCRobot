@@ -7,6 +7,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.OperatorDisplay;
+import org.usfirst.frc.team6027.robot.commands.autonomous.AutoDeliverToSwitch.DeliverySide;
 import org.usfirst.frc.team6027.robot.commands.autonomous.DriveStraightCommand.DriveDistanceMode;
 import org.usfirst.frc.team6027.robot.commands.autonomous.TurnWhileDrivingCommand.TargetVector;
 import org.usfirst.frc.team6027.robot.field.Field;
@@ -192,27 +193,9 @@ public class AutonomousCommandManager {
                 // TODO: deliver END LEFT
             } else {
                 if (this.getPreferredScenario() == AutonomousPreference.DeliverToSwitch) {
-                    double leg1Distance = this.prefs.getDouble("leg1.distance", 48.0);
-                    double leg2Distance = this.prefs.getDouble("leg2.distance", 48.0);
-                    double leg3Distance = this.prefs.getDouble("leg3.distance", 48.0);
-
-                    double leg1Angle = this.prefs.getDouble("leg1.angle", 0.0);
-                    double leg2Angle = this.prefs.getDouble("leg2.angle", 10.0);
-                    double leg3Angle = this.prefs.getDouble("leg3.angle", -30.0);
-
-                    // TODO: Remove after done testing
-                    TargetVector[] turnVectors = new TargetVector[] { 
-                            new TargetVector(leg1Angle, leg1Distance), 
-                            new TargetVector(leg2Angle, leg2Distance), 
-                            new TargetVector(leg3Angle, leg3Distance) 
-                    };
                     
-                    chosenCommand = new TurnWhileDrivingCommand(
-                            this.sensorService, this.getDrivetrainSubsystem(), this.operatorDisplay, 
-                            turnVectors,
-                            DriveDistanceMode.DistanceReadingOnEncoder
-                    );
-                    
+                    chosenCommand = new AutoDeliverToSwitch(DeliverySide.Left, this.getSensorService(), this.getDrivetrainSubsystem(), 
+                            this.getPneumaticSubsystem(), this.getOperatorDisplay());
                 }
                 // TODO: check that the preferred command doesn't contradict with our assignment.  If it does then just
                 // drive straight to get across the line (this is safest because the robot may not be positioned correctly
