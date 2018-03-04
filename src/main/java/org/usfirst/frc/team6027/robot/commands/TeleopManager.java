@@ -97,10 +97,12 @@ public class TeleopManager extends Command {
 
 //	    logger.trace("leftaxis: {}, rightaxis: {}", this.joystick.getLeftAxis(), this.joystick.getRightAxis() );
 		this.drivetrain.doArcadeDrive(this.joystick.getLeftAxis(), this.joystick.getRightAxis());
-
-		logger.trace("Ultrasonic dist/valid: {}/{}", 
-		        String.format("%.3f",this.sensorService.getUltrasonicSensor().getDistanceInches()), 
-		        this.sensorService.getUltrasonicSensor().isRangeValid());
+		
+		if (System.currentTimeMillis() % 10 == 0) {
+    		logger.trace("Ultrasonic dist/valid: {}/{}", 
+    		        String.format("%.3f",this.sensorService.getUltrasonicSensor().getDistanceInches()), 
+    		        this.sensorService.getUltrasonicSensor().isRangeValid());
+		}
 	}
 
 	public OperatorDisplay getOperatorDisplay() {
