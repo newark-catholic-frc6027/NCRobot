@@ -1,5 +1,7 @@
 package org.usfirst.frc.team6027.robot.sensors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.RobotConfigConstants;
 
 import com.kauailabs.navx.frc.AHRS;
@@ -7,7 +9,8 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.PIDSource;
 
 public class NavxGyroSensor implements PIDCapableGyro {
-    
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     protected AHRS ahrs;
 
     //protected Rotation2d mAngleAdjustment = Rotation2d.identity();
@@ -33,6 +36,7 @@ public class NavxGyroSensor implements PIDCapableGyro {
     }
     @Override
     public void reset() {
+        logger.warn(">>>>>>>>>>>>>>>>> GYRO RESET <<<<<<<<<<<<<<<<");
         lastSensorTimestampMs = invalidTimestamp;
         yawDegrees = 0.0;
         yawRateDegreesPerSecond = 0.0;

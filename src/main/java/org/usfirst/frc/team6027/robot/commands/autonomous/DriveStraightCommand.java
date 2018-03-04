@@ -77,9 +77,9 @@ public class DriveStraightCommand extends Command implements PIDOutput {
     protected void initialize() {
         this.encoderSensors.reset();
         this.drivePower = this.prefs.getDouble("driveStraightCommand.power", DRIVE_POWER);
-        initPIDController();
-        
         this.currentAngleHeading =  this.gyro.getYawAngle();
+        
+        initPIDController();
         
         logger.info("DriveStraightCommand target distance: {}", this.driveDistance);
     }
@@ -91,6 +91,7 @@ public class DriveStraightCommand extends Command implements PIDOutput {
                 this.prefs.getDouble("driveStraightCommand.feedForward", PID_FEED_FORWARD_TERM),
                 this.sensorService.getGyroSensor().getPIDSource(), this);
         
+        logger.info("DriveStraightCommand currentAngleHeading: {}", this.currentAngleHeading);
         gyroPidController.setSetpoint(this.currentAngleHeading);
         gyroPidController.setInputRange(-180.0, 180.0);
         gyroPidController.setContinuous(true);

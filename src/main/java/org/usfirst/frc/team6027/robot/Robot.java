@@ -172,11 +172,6 @@ public class Robot extends IterativeRobot {
         
         // TODO: If for some reason we don't have the game data, don't run any commands
 
-
-        //this.autonomousCommand = new AutoLineStraight(this.sensorService, this.drivetrain, this.operatorDisplay);
-        //		this.autonomousCommand = new DriveStraightCommand(this.sensorService, this.drivetrain, this.operatorDisplay, this.prefs.getDouble("driveStraightCommand.driveDistance", 12.0), DriveDistanceMode.DistanceReadingOnEncoder);
-        this.getSensorService().getGyroSensor().reset();
-        
         
         // schedule the autonomous command (example)
         if (autonomousCommand != null) {
