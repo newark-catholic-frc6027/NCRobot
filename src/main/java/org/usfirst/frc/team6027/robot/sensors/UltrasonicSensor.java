@@ -39,7 +39,9 @@ public class UltrasonicSensor implements PIDSource {
 
     @Override
     public double pidGet() {
-        return this.ultrasonic.pidGet();
+        // When using ultrasonic, we need to change our coordinate system
+        // We need to view distance from target as a negative value that we want to increase to 0
+        return -1 * this.ultrasonic.pidGet();
     }
     
 }
