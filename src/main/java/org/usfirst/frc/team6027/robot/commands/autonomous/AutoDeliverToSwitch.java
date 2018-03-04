@@ -37,10 +37,22 @@ public class AutoDeliverToSwitch extends CommandGroup {
         
         Command driveStraightCmd = createDriveStraightCommand();
         Command turnCommand = createTurnCommand();
+        Command driveToSwitchCmd = createDriveToSwitchCommand();
 
         this.addSequential(driveStraightCmd);
         this.addSequential(turnCommand);
+        this.addSequential(driveToSwitchCmd);
+    }
+
+
+    protected Command createDriveToSwitchCommand() {
+        Command cmd = new DriveStraightCommand(
+                this.getSensorService(), this.getDrivetrainSubsystem(), this.operatorDisplay, 
+                12.0,
+                DriveDistanceMode.DistanceFromObject
+        );
         
+        return cmd;
     }
 
 
@@ -59,13 +71,12 @@ public class AutoDeliverToSwitch extends CommandGroup {
 
         double leg1Angle = this.prefs.getDouble("leg1.angle", 0.0);
 
-        // TODO: Remove after done testing
         TargetVector[] turnVectors = new TargetVector[] { 
                 new TargetVector(leg1Angle, leg1Distance)
         };
         
         Command cmd = new TurnWhileDrivingCommand(
-                this.sensorService, this.getDrivetrainSubsystem(), this.operatorDisplay, 
+                this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), 
                 turnVectors,
                 DriveDistanceMode.DistanceReadingOnEncoder
         );
@@ -111,5 +122,15 @@ public class AutoDeliverToSwitch extends CommandGroup {
 
     public void setDeliverySide(DeliverySide deliverySide) {
         this.deliverySide = deliverySide;
+    }
+
+
+    public SensorService getSensorService() {
+        return sensorService;
+    }
+
+
+    public void setSensorService(SensorService sensorService) {
+        this.sensorService = sensorService;
     }
 }
