@@ -2,12 +2,11 @@ package org.usfirst.frc.team6027.robot.sensors;
 
 import org.usfirst.frc.team6027.robot.RobotConfigConstants;
 
+import edu.wpi.first.wpilibj.PIDSource;
+import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Ultrasonic;
 
-public class UltrasonicSensor {
-    
-//    private AnalogInput analogInput;
-//    private int port;
+public class UltrasonicSensor implements PIDSource {
     
     private Ultrasonic ultrasonic;
     
@@ -26,6 +25,21 @@ public class UltrasonicSensor {
 
     public boolean isRangeValid() {
         return this.ultrasonic.isRangeValid();
+    }
+
+    @Override
+    public void setPIDSourceType(PIDSourceType pidSource) {
+        this.ultrasonic.setPIDSourceType(pidSource);
+    }
+
+    @Override
+    public PIDSourceType getPIDSourceType() {
+        return this.ultrasonic.getPIDSourceType();
+    }
+
+    @Override
+    public double pidGet() {
+        return this.ultrasonic.pidGet();
     }
     
 }

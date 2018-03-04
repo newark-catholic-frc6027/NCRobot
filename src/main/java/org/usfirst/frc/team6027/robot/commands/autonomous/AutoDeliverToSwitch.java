@@ -39,8 +39,8 @@ public class AutoDeliverToSwitch extends CommandGroup {
         Command turnCommand = createTurnCommand();
         Command driveToSwitchCmd = createDriveToSwitchCommand();
 
-        this.addSequential(driveStraightCmd);
-        this.addSequential(turnCommand);
+//        this.addSequential(driveStraightCmd);
+//        this.addSequential(turnCommand);
         this.addSequential(driveToSwitchCmd);
     }
 
