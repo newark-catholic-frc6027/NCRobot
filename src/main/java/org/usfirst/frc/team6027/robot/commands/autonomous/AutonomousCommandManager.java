@@ -70,10 +70,13 @@ public class AutonomousCommandManager {
         createAutonomousCommands();
     }
     
+    public static void initAutoScenarioDisplayValues(OperatorDisplay operatorDisplay) {
+        operatorDisplay.registerAutoScenario(AutonomousPreference.CrossLine.displayName());
+        operatorDisplay.registerAutoScenario(AutonomousPreference.DeliverSwitch.displayName());
+        operatorDisplay.registerAutoScenario(AutonomousPreference.DeliverScale.displayName());
+    }
+    
     protected void createAutonomousCommands() {
-        this.getOperatorDisplay().registerAutoScenario(AutonomousPreference.CrossLine.displayName());
-        this.getOperatorDisplay().registerAutoScenario(AutonomousPreference.DeliverSwitch.displayName());
-        this.getOperatorDisplay().registerAutoScenario(AutonomousPreference.DeliverScale.displayName());
         
         // TODO: May want to defer creating these until we know which command we are going to need to run
         // based on other inputs
