@@ -117,7 +117,9 @@ public class DriveStraightCommand extends Command implements PIDOutput {
                 return false;
             }
         } else if (this.driveUntil == DriveDistanceMode.DistanceFromObject) {
-            if (this.ultrasonicSensor.getDistanceInches() <= this.driveDistance) {
+            double distanceToObject = this.ultrasonicSensor.getDistanceInches();
+            // TODO put distance constant in preference
+            if (distanceToObject <= this.driveDistance && !(distanceToObject > 1.94 && distanceToObject < 1.95)  ) {
                 this.drivetrainSubsystem.stopMotor();
                 logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DriveStraight done, distance from object={}", this.ultrasonicSensor.getDistanceInches());
                 return true;
