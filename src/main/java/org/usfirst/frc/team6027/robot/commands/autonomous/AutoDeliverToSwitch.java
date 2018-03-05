@@ -48,7 +48,7 @@ public class AutoDeliverToSwitch extends CommandGroup {
     protected Command createDriveToSwitchCommand() {
         Command cmd = new DriveStraightCommand(
                 this.getSensorService(), this.getDrivetrainSubsystem(), this.operatorDisplay, 
-                -12.0, // distance AWAY from target, on negative side of coordinate system
+                this.prefs.getDouble("autoDeliverToSwitch.driveDistance", -12.0), // distance AWAY from target, on negative side of coordinate system
                 DriveDistanceMode.DistanceFromObject
         );
         

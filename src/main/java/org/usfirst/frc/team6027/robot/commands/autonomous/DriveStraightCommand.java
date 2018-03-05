@@ -46,6 +46,7 @@ public class DriveStraightCommand extends Command implements PIDOutput {
     private Preferences prefs = Preferences.getInstance();
     private double gyroPidLoopCalculationOutput;
     private double distPidLoopCalculationOutput;
+    private int execCount = 0;
 
     private double drivePower = DRIVE_POWER;
 
@@ -162,17 +163,20 @@ public class DriveStraightCommand extends Command implements PIDOutput {
 
     @Override
     protected void execute() {
-        logger.trace("Gyro angles (yaw,raw): ({},{}) left-enc: {}, right-enc: {}, ultrasonic dist/valid: {}/{},  pidOutput gyro/dist: {}/{}", 
-                String.format("%.3f",this.gyro.getYawAngle()),  
-                String.format("%.3f",this.gyro.getAngle()),  
-                String.format("%.3f",this.encoderSensors.getLeftEncoder().getDistance()),  
-                String.format("%.3f",this.encoderSensors.getRightEncoder().getDistance()),
-                String.format("%.3f",this.ultrasonicSensor.getDistanceInches()),
-                this.ultrasonicSensor.isRangeValid(),
-                String.format("%.3f",this.gyroPidLoopCalculationOutput),
-                String.format("%.3f",this.distPidLoopCalculationOutput)
-        );
-
+        if (this.execCount % 2 == 0) {
+            logger.trace("Gyro angles (yaw,raw): ({},{}) left-enc: {}, right-enc: {}, ultrasonic dist/valid: {}/{},  pidOutput gyro/dist: {}/{}", 
+                    String.format("%.3f",this.gyro.getYawAngle()),  
+                    String.format("%.3f",this.gyro.getAngle()),  
+                    String.format("%.3f",this.encoderSensors.getLeftEncoder().getDistance()),  
+                    String.format("%.3f",this.encoderSensors.getRightEncoder().getDistance()),
+                    String.format("%.3f",this.ultrasonicSensor.getDistanceInches()),
+                    this.ultrasonicSensor.isRangeValid(),
+                    String.format("%.3f",this.gyroPidLoopCalculationOutput),
+                    String.format("%.3f",this.distPidLoopCalculationOutput)
+            );
+        }
+        this.execCount++;
+        
         if (! this.distancePidController.onTarget()) {
             if (this.gyroPidController.onTarget()) {
                 double power = this.distPidLoopCalculationOutput;
