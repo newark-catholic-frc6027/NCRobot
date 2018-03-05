@@ -164,7 +164,7 @@ public class DriveStraightCommand extends Command implements PIDOutput {
     @Override
     protected void execute() {
         this.execCount++;
-        if (this.execCount % 4 == 0) {
+        if (this.execCount % 8 == 0) {
             logger.trace("Gyro angles (yaw,raw): ({},{}) left-enc: {}, right-enc: {}, ultrasonic dist/valid: {}/{},  pidOutput gyro/dist: {}/{}", 
                     String.format("%.3f",this.gyro.getYawAngle()),  
                     String.format("%.3f",this.gyro.getAngle()),  
@@ -182,14 +182,14 @@ public class DriveStraightCommand extends Command implements PIDOutput {
                 double power = this.distPidLoopCalculationOutput;
                 this.setDrivePower(power);
                 this.drivetrainSubsystem.tankDrive(power, power);
-                if (this.execCount % 4 == 0) {
+                if (this.execCount % 8 == 0) {
                     logger.trace("onTarget, gyroPidOutput: {}, distPidOutput: {}", this.gyroPidLoopCalculationOutput, 
                             this.distPidLoopCalculationOutput);
                 }
             } else {
                 double leftPower = getDrivePower() + this.gyroPidLoopCalculationOutput;
                 double rightPower = getDrivePower() - this.gyroPidLoopCalculationOutput;
-                if (this.execCount % 4 == 0) {
+                if (this.execCount % 8 == 0) {
                     logger.trace("adjustTo{}, pidOutput: {}, leftPower: {}, rightPower: {}", this.gyroPidLoopCalculationOutput > 0 ? "Right" : "Left", this.gyroPidLoopCalculationOutput, leftPower, rightPower);
                 }
                 this.drivetrainSubsystem.tankDrive(leftPower, rightPower);
