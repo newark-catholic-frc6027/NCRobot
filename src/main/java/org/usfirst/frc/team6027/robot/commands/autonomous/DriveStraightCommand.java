@@ -163,7 +163,8 @@ public class DriveStraightCommand extends Command implements PIDOutput {
 
     @Override
     protected void execute() {
-        if (this.execCount % 2 == 0) {
+        this.execCount++;
+        if (this.execCount % 4 == 0) {
             logger.trace("Gyro angles (yaw,raw): ({},{}) left-enc: {}, right-enc: {}, ultrasonic dist/valid: {}/{},  pidOutput gyro/dist: {}/{}", 
                     String.format("%.3f",this.gyro.getYawAngle()),  
                     String.format("%.3f",this.gyro.getAngle()),  
@@ -175,19 +176,22 @@ public class DriveStraightCommand extends Command implements PIDOutput {
                     String.format("%.3f",this.distPidLoopCalculationOutput)
             );
         }
-        this.execCount++;
         
         if (! this.distancePidController.onTarget()) {
             if (this.gyroPidController.onTarget()) {
                 double power = this.distPidLoopCalculationOutput;
                 this.setDrivePower(power);
                 this.drivetrainSubsystem.tankDrive(power, power);
-                logger.trace("onTarget, gyroPidOutput: {}, distPidOutput: {}", this.gyroPidLoopCalculationOutput, 
-                        this.distPidLoopCalculationOutput);
+                if (this.execCount % 4 == 0) {
+                    logger.trace("onTarget, gyroPidOutput: {}, distPidOutput: {}", this.gyroPidLoopCalculationOutput, 
+                            this.distPidLoopCalculationOutput);
+                }
             } else {
                 double leftPower = getDrivePower() + this.gyroPidLoopCalculationOutput;
                 double rightPower = getDrivePower() - this.gyroPidLoopCalculationOutput;
-                logger.trace("adjustTo{}, pidOutput: {}, leftPower: {}, rightPower: {}", this.gyroPidLoopCalculationOutput > 0 ? "Right" : "Left", this.gyroPidLoopCalculationOutput, leftPower, rightPower);
+                if (this.execCount % 4 == 0) {
+                    logger.trace("adjustTo{}, pidOutput: {}, leftPower: {}, rightPower: {}", this.gyroPidLoopCalculationOutput > 0 ? "Right" : "Left", this.gyroPidLoopCalculationOutput, leftPower, rightPower);
+                }
                 this.drivetrainSubsystem.tankDrive(leftPower, rightPower);
             }
         } else {
