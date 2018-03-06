@@ -20,9 +20,9 @@ public class TurnWhileDrivingCommand extends DriveStraightCommand implements PID
     double curLegRightEncDistance = 0.0;
     
     public TurnWhileDrivingCommand(SensorService sensorService, DrivetrainSubsystem drivetrainSubsystem,
-            OperatorDisplay operatorDisplay, TargetVector[] targetVectors, DriveDistanceMode driveUntil) {
+            OperatorDisplay operatorDisplay, TargetVector[] targetVectors, DriveDistanceMode driveUntil, double drivePower) {
         
-        super(sensorService, drivetrainSubsystem, operatorDisplay, targetVectors[0].getDistance(), driveUntil);
+        super(sensorService, drivetrainSubsystem, operatorDisplay, targetVectors[0].getDistance(), driveUntil, drivePower);
         this.targetVectors = targetVectors;
         this.setName(NAME);
     }

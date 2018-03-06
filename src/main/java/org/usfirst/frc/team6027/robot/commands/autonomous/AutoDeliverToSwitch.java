@@ -39,8 +39,8 @@ public class AutoDeliverToSwitch extends CommandGroup {
         Command turnCommand = createTurnCommand();
         Command driveToSwitchCmd = createDriveToSwitchCommand();
 
-//        this.addSequential(driveStraightCmd);
-//        this.addSequential(turnCommand);
+        this.addSequential(driveStraightCmd);
+        this.addSequential(turnCommand);
         this.addSequential(driveToSwitchCmd);
     }
 
@@ -49,7 +49,8 @@ public class AutoDeliverToSwitch extends CommandGroup {
         Command cmd = new DriveStraightCommand(
                 this.getSensorService(), this.getDrivetrainSubsystem(), this.operatorDisplay, 
                 this.prefs.getDouble("autoDeliverToSwitch.driveDistance", -12.0), // distance AWAY from target, on negative side of coordinate system
-                DriveDistanceMode.DistanceFromObject
+                DriveDistanceMode.DistanceFromObject,
+                this.prefs.getDouble("autoDeliverToSwitch.driveToSwitchCmd.power", 0.6)
         );
         
         return cmd;
@@ -67,7 +68,7 @@ public class AutoDeliverToSwitch extends CommandGroup {
 
 
     protected Command createDriveStraightCommand() {
-        double leg1Distance = this.prefs.getDouble("leg1.distance", 48.0);
+        double leg1Distance = this.prefs.getDouble("leg1.distance", 95.0);
 
         double leg1Angle = this.prefs.getDouble("leg1.angle", 0.0);
 
@@ -78,7 +79,7 @@ public class AutoDeliverToSwitch extends CommandGroup {
         Command cmd = new TurnWhileDrivingCommand(
                 this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), 
                 turnVectors,
-                DriveDistanceMode.DistanceReadingOnEncoder
+                DriveDistanceMode.DistanceReadingOnEncoder, 0.7
         );
         
         return cmd;

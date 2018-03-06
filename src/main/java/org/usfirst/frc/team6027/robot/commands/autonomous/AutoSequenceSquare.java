@@ -13,7 +13,7 @@ public class AutoSequenceSquare extends CommandGroup {
             OperatorDisplay operatorDisplay) {
         requires(drivetrainSubsystem);
 
-        DriveStraightCommand longLeg = new DriveStraightCommand(sensorService, drivetrainSubsystem, operatorDisplay, 93.0, DriveDistanceMode.DistanceReadingOnEncoder);
+        DriveStraightCommand longLeg = new DriveStraightCommand(sensorService, drivetrainSubsystem, operatorDisplay, 93.0, DriveDistanceMode.DistanceReadingOnEncoder, 0.5);
         TurnCommand turnCommand = new TurnCommand(90, sensorService, drivetrainSubsystem, operatorDisplay);
         
         this.addSequential(longLeg);
@@ -29,7 +29,7 @@ public class AutoSequenceSquare extends CommandGroup {
                 sensorService.getEncoderSensors().reset();
             }
         });
-        DriveStraightCommand shortLeg = new DriveStraightCommand(sensorService, drivetrainSubsystem, operatorDisplay, 72.0, DriveDistanceMode.DistanceReadingOnEncoder);
+        DriveStraightCommand shortLeg = new DriveStraightCommand(sensorService, drivetrainSubsystem, operatorDisplay, 72.0, DriveDistanceMode.DistanceReadingOnEncoder, 0.5);
         
 //        this.addSequential(shortLeg);
 //        this.addSequential(turnCommand);

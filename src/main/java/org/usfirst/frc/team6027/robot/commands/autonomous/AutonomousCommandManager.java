@@ -88,7 +88,7 @@ public class AutonomousCommandManager {
         // based on other inputs
         Command driveStraightCmd =  new DriveStraightCommand(this.getSensorService(), this.getDrivetrainSubsystem(), 
             this.getOperatorDisplay(), this.prefs.getDouble("driveStraightCommand.driveDistance", 12.0), 
-            DriveDistanceMode.DistanceReadingOnEncoder);
+            DriveDistanceMode.DistanceReadingOnEncoder, 0.5);
         this.commandsByName.put(driveStraightCmd.getName(), driveStraightCmd);
         
         Command turnCommand = new TurnCommand(this.prefs.getDouble("turnCommand.targetAngle", 90.0), 
@@ -165,7 +165,7 @@ public class AutonomousCommandManager {
                     chosenCommand = new TurnWhileDrivingCommand(
                             this.sensorService, this.getDrivetrainSubsystem(), this.operatorDisplay, 
                             turnVectors,
-                            DriveDistanceMode.DistanceReadingOnEncoder
+                            DriveDistanceMode.DistanceReadingOnEncoder, 0.5
                     );
                     
                 } else {

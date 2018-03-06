@@ -48,7 +48,7 @@ public class DriveStraightCommand extends Command implements PIDOutput {
     private double distPidLoopCalculationOutput;
     private int execCount = 0;
 
-    private double drivePower = DRIVE_POWER;
+    private Double drivePower;
 
     // private double targetDistance =
     private double diff = 0; // Creating variable for the difference between right
@@ -60,8 +60,9 @@ public class DriveStraightCommand extends Command implements PIDOutput {
     private double currentAngleHeading = 0.0;
     
     public DriveStraightCommand(SensorService sensorService, DrivetrainSubsystem drivetrainSubsystem,
-            OperatorDisplay operatorDisplay, double driveDistance, DriveDistanceMode driveUntil) {
+            OperatorDisplay operatorDisplay, double driveDistance, DriveDistanceMode driveUntil, double drivePower) {
         requires(drivetrainSubsystem);
+        this.drivePower = drivePower;
         this.sensorService = sensorService;
         this.encoderSensors = this.sensorService.getEncoderSensors();
         this.ultrasonicSensor = this.sensorService.getUltrasonicSensor();
@@ -80,7 +81,9 @@ public class DriveStraightCommand extends Command implements PIDOutput {
     @Override
     protected void initialize() {
         this.encoderSensors.reset();
-        this.drivePower = this.prefs.getDouble("driveStraightCommand.power", DRIVE_POWER);
+        if (this.drivePower == null) {
+        	this.drivePower = this.prefs.getDouble("driveStraightCommand.power", DRIVE_POWER);
+        }
         this.currentAngleHeading =  this.gyro.getYawAngle();
         
         initGyroPIDController();
