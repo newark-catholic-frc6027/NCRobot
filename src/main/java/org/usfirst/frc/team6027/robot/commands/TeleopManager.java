@@ -29,6 +29,7 @@ public class TeleopManager extends Command {
 
 	private ShiftGearCommand shiftGearCommand;
 	private ToggleGrippersCommand toggleGrippersCommand;
+	protected int execCount = 0;
 
 	public TeleopManager(OperatorInterface operatorInterface, SensorService sensorService,
 			DrivetrainSubsystem drivetrain, PneumaticSubsystem pneumaticSubsystem) {
@@ -93,12 +94,14 @@ public class TeleopManager extends Command {
 
 	@Override
 	protected void execute() {
-//	       this.drivetrain.tankDrive(this.operatorInterface.getJoystick().getLeftAxis(), this.operatorInterface.getJoystick().getRightAxis());
+	    this.execCount++;
+	    //	       this.drivetrain.tankDrive(this.operatorInterface.getJoystick().getLeftAxis(), this.operatorInterface.getJoystick().getRightAxis());
 
 //	    logger.trace("leftaxis: {}, rightaxis: {}", this.joystick.getLeftAxis(), this.joystick.getRightAxis() );
 		this.drivetrain.doArcadeDrive(this.joystick.getLeftAxis(), this.joystick.getRightAxis());
 		
-		if (System.currentTimeMillis() % 2 == 0) {
+		
+		if (this.execCount % 20 == 0) {
     		logger.trace("Ultrasonic dist/valid: {}/{}", 
     		        String.format("%.3f",this.sensorService.getUltrasonicSensor().getDistanceInches()), 
     		        this.sensorService.getUltrasonicSensor().isRangeValid());

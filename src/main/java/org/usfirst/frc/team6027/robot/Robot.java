@@ -48,6 +48,9 @@ public class Robot extends IterativeRobot {
     private Preferences prefs = Preferences.getInstance();
     private AutonomousCommandManager autoCommandManager;
     
+    private int teleopExecCount = 0;
+    private int autoExecCount = 0;
+    
     /**
      * This function is run when the robot is first started up and should be used
      * for any initialization code.
@@ -187,8 +190,11 @@ public class Robot extends IterativeRobot {
      */
     @Override
     public void autonomousPeriodic() {
+        this.autoExecCount++;
         Scheduler.getInstance().run();
-        updateOperatorDisplay();
+        if (this.autoExecCount % 17 == 0) {
+            this.updateOperatorDisplay();
+        }
     }
 
     @Override
@@ -208,8 +214,12 @@ public class Robot extends IterativeRobot {
      */
     @Override
     public void teleopPeriodic() {
-        this.updateOperatorDisplay();
+        this.teleopExecCount++;
         Scheduler.getInstance().run();
+        
+        if (this.teleopExecCount % 17 == 0) {
+            this.updateOperatorDisplay();
+        }
     }
 
     /**
