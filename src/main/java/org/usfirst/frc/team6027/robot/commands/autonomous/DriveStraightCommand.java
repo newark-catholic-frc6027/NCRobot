@@ -183,6 +183,13 @@ public class DriveStraightCommand extends Command implements PIDOutput {
         if (! this.distancePidController.onTarget()) {
             if (this.gyroPidController.onTarget()) {
                 double power = this.distPidLoopCalculationOutput;
+
+                if (Math.abs(power) < prefs.getDouble("driveStraightCommand.minPower", .20) ) {
+                    double adjustedPower = prefs.getDouble("driveStraightCommand.adjustedPower", 0.3);
+                    power  = power < 0.0 ? -1*adjustedPower : adjustedPower;
+                    logger.info("Power increased to: {}", power);                
+                }
+                
                 this.setDrivePower(power);
                 this.drivetrainSubsystem.tankDrive(power, power);
                 if (this.execCount % 8 == 0) {
