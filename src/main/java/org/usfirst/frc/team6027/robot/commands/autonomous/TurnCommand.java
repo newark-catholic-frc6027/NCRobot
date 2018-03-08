@@ -39,6 +39,7 @@ public class TurnCommand extends Command implements PIDOutput {
 	private OperatorDisplay operatorDisplay;
 	private long startTime;
 	private double initialGyroAngle;
+	private int execCount = 0;
 
 	public TurnCommand(double angle, SensorService sensorService, DrivetrainSubsystem drivetrain,
 			OperatorDisplay operatorDisplay) {
@@ -58,6 +59,7 @@ public class TurnCommand extends Command implements PIDOutput {
 
 	@Override
 	protected void initialize() {
+	    logger.info(">>> Turn Command starting...");
 		logger.trace("Current Angle, PID Loop Output, Yaw Rate, Right Motor Power");
 	}
 
@@ -91,6 +93,7 @@ public class TurnCommand extends Command implements PIDOutput {
 	}
 
 	protected void execute() {
+        this.execCount++;
 		long currentElapsedExecutionMs = System.currentTimeMillis() - this.startTime;
 		if (currentElapsedExecutionMs < this.executionStartThreshold && this.gyro.getYawAngle() == this.initialGyroAngle) {
 			logger.trace("Gyro not reset yet. Skipping");
@@ -112,13 +115,15 @@ public class TurnCommand extends Command implements PIDOutput {
             }
 		    rightPower = -1 * leftPower;
 			    
-            logger.trace("yaw: {}, pid: {}, gyro rate: {}, leftPower: {}, rightPower: {}", 
-                    String.format("%.3f",this.gyro.getYawAngle()), 
-                    String.format("%.3f",this.pidLoopCalculationOutput), 
-                    String.format("%.3f",this.gyro.getRate()),
-                    String.format("%.3f", leftPower), 
-                    String.format("%.3f", rightPower));
-			
+		    if (this.execCount % 20 == 0) {
+                logger.trace("yaw: {}, pid: {}, gyro rate: {}, leftPower: {}, rightPower: {}", 
+                        String.format("%.3f",this.gyro.getYawAngle()), 
+                        String.format("%.3f",this.pidLoopCalculationOutput), 
+                        String.format("%.3f",this.gyro.getRate()),
+                        String.format("%.3f", leftPower), 
+                        String.format("%.3f", rightPower));
+		    }
+		    
             this.drivetrain.tankDrive(leftPower, rightPower);           
 		}
 	}

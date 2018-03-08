@@ -46,7 +46,7 @@ public class DriveStraightCommand extends Command implements PIDOutput {
     private Preferences prefs = Preferences.getInstance();
     private double gyroPidLoopCalculationOutput;
     private double distPidLoopCalculationOutput;
-    private int execCount = 0;
+    protected int execCount = 0;
 
     private Double drivePower;
 
@@ -167,7 +167,7 @@ public class DriveStraightCommand extends Command implements PIDOutput {
     @Override
     protected void execute() {
         this.execCount++;
-        if (this.execCount % 8 == 0) {
+        if (this.execCount % 20 == 0) {
             logger.trace("Gyro angles (yaw,raw): ({},{}) left-enc: {}, right-enc: {}, ultrasonic dist/valid: {}/{},  pidOutput gyro/dist: {}/{}", 
                     String.format("%.3f",this.gyro.getYawAngle()),  
                     String.format("%.3f",this.gyro.getAngle()),  

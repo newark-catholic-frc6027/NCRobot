@@ -18,6 +18,8 @@ public class TurnWhileDrivingCommand extends DriveStraightCommand implements PID
     double prevLegRightEncDistance = 0.0;
     double curLegLeftEncDistance = 0.0;
     double curLegRightEncDistance = 0.0;
+
+
     
     public TurnWhileDrivingCommand(SensorService sensorService, DrivetrainSubsystem drivetrainSubsystem,
             OperatorDisplay operatorDisplay, TargetVector[] targetVectors, DriveDistanceMode driveUntil, double drivePower) {
@@ -54,7 +56,7 @@ public class TurnWhileDrivingCommand extends DriveStraightCommand implements PID
         double leftLegDisplacement = this.encoderSensors.getLeftEncoder().getDistance() - this.prevLegLeftEncDistance;
         double rightLegDisplacement = this.encoderSensors.getRightEncoder().getDistance() - this.prevLegRightEncDistance;
 
-        
+
         if (Math.min(leftLegDisplacement, rightLegDisplacement) >= currentVector.getDistance()) {
             this.currentTargetVectorIndex++;
             logger.info(">>>>>>>>>>> LEG {} REACHED", this.currentTargetVectorIndex);
