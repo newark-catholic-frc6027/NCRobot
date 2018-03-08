@@ -47,6 +47,7 @@ public class DriveStraightCommand extends Command implements PIDOutput {
     private double gyroPidLoopCalculationOutput;
     private double distPidLoopCalculationOutput;
     protected int execCount = 0;
+    protected int testOverCount = 0;
 
     private Double drivePower;
 
@@ -153,10 +154,15 @@ public class DriveStraightCommand extends Command implements PIDOutput {
             // TODO put distance constant in preference
 //            if (distanceToObject <= this.driveDistance && !(distanceToObject > 1.94 && distanceToObject < 1.95)  ) {
             if (this.distancePidController.onTarget()) {
+                testOverCount++;
+                if (testOverCount <= 10 && distanceToObject <= driveDistance) {
+                    return false;
+                }
                 this.drivetrainSubsystem.stopMotor();
                 logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DriveStraight done, distance from object={}", this.ultrasonicSensor.getDistanceInches());
                 return true;
             } else {
+                if (testOverCount > 0) { testOverCount++; }
                 return false;
             }
         } else {
