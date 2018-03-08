@@ -214,7 +214,6 @@ public class DriveStraightCommand extends Command implements PIDOutput {
     @Override
     public void pidWrite(double output) {
         this.gyroPidLoopCalculationOutput = output;
-        this.operatorDisplay.setFieldValue(OperatorDisplay.PID_LOOP_OUPUT_LABEL, this.gyroPidLoopCalculationOutput);
     }
 
 
