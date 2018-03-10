@@ -107,8 +107,7 @@ public class AutonomousCommandManager {
     
     public Command chooseCommand() {
         
-        logger.info(">>>>>> Station Position: {}", this.getField().getOurStationPosition());
-        logger.info(">>>>>> Preferred Autonomous Scenario: {}", this.getPreferredScenario());
+        logger.info(">>>>>> Station Position: {}, Scenario: {}", this.getField().getOurStationPosition(), this.getPreferredScenario());
         
         if (this.field.getOurStationPosition() <= 0) {
             logger.warn("NO POSITION SELECTED, cannot choose an Autonomous command!");
@@ -137,6 +136,7 @@ public class AutonomousCommandManager {
     }
     
     protected Command chooseRightStationCommand() {
+        logger.info("Team Position: RIGHT ({}), scenario: ", this.field.getOurStationPosition(), this.getPreferredScenario());
         Command chosenCommand = null;
         
         if (this.field.isPlateAssignedToUs(PlatePosition.OurSwitchRight)) {
@@ -192,6 +192,7 @@ public class AutonomousCommandManager {
     }
 
     protected Command chooseLeftStationCommand() {
+        logger.info("Team Position: LEFT ({}), scenario: ", this.field.getOurStationPosition(), this.getPreferredScenario());
         Command chosenCommand = null;
 
         if (this.field.isPlateAssignedToUs(PlatePosition.OurSwitchLeft)) {
@@ -210,6 +211,7 @@ public class AutonomousCommandManager {
             
         } else { // Assigned Switch Plate is on right
             if (this.getPreferredScenario() == AutonomousPreference.CrossLine) {
+                // Drive straight ahead for a fixed distance at 80% power
                 chosenCommand = new AutoCrossLineStraightAhead(250.0, .80, this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
             } else {
                 logger.error( "No command configured, don't know what to do, so I will do nothing.");
@@ -224,7 +226,7 @@ public class AutonomousCommandManager {
 
     protected Command chooseCenterStationCommand() {
         Command chosenCommand = null;
-        logger.info("Team Position: CENTER ({})", this.field.getOurStationPosition());
+        logger.info("Team Position: CENTER ({}), scenario: ", this.field.getOurStationPosition(), this.getPreferredScenario());
         // If driver's didn't select a preferred command, automatically select one
         if (this.isNoPreferredScenario()) {
             if (this.field.isPlateAssignedToUs(PlatePosition.OurSwitchLeft)) {
@@ -236,8 +238,9 @@ public class AutonomousCommandManager {
             }
         } else {
             if (this.getPreferredScenario() == AutonomousPreference.CrossLine) {
-                chosenCommand = new DriveStraightCommand(this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), -12.0, DriveDistanceMode.DistanceFromObject, .40); 
-                        //AutoCrossLineStraightAhead(250.0, .80, this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
+                // Drive straight ahead and stop when we are 12 inches from the switch
+                chosenCommand = new DriveStraightCommand(this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), 
+                        -12.0, DriveDistanceMode.DistanceFromObject, .40); 
             } else {
                 logger.error( "No command configured, don't know what to do, so I will do nothing.");
             }
