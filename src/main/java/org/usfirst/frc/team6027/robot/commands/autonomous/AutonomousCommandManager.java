@@ -235,6 +235,12 @@ public class AutonomousCommandManager {
                 // deliver front right
             }
         } else {
+            if (this.getPreferredScenario() == AutonomousPreference.CrossLine) {
+                chosenCommand = new DriveStraightCommand(this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), -12.0, DriveDistanceMode.DistanceFromObject, .40); 
+                        //AutoCrossLineStraightAhead(250.0, .80, this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
+            } else {
+                logger.error( "No command configured, don't know what to do, so I will do nothing.");
+            }
             // TODO: check that the preferred command doesn't contradict with our assignment.  If it does then just
             // drive straight to get across the line (this is safest because the robot may not be positioned correctly
             // for the other commands).  If it doesn't just return the preferred command.
