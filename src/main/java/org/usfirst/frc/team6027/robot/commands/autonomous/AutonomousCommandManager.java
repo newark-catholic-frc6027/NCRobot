@@ -7,7 +7,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.OperatorDisplay;
-import org.usfirst.frc.team6027.robot.commands.autonomous.AutoDeliverToSwitch.DeliverySide;
 import org.usfirst.frc.team6027.robot.commands.autonomous.DriveStraightCommand.DriveDistanceMode;
 import org.usfirst.frc.team6027.robot.commands.autonomous.TurnWhileDrivingCommand.TargetVector;
 import org.usfirst.frc.team6027.robot.field.Field;
@@ -27,8 +26,9 @@ public class AutonomousCommandManager {
     public enum AutonomousPreference {
         NoPreference("NO SELECTION"),
         CrossLine("Cross the Line"),
-        DeliverToSwitch("Deliver to Switch"),
-        DeliverToScale("Deliver to Scale");
+        DeliverToSwitchEnd("Deliver to Switch END"),
+        DeliverToSwitchFront("Deliver to Switch FRONT"),
+        DeliverToScaleEnd("Deliver to Scale END");
         
         private String displayName;
         
@@ -78,8 +78,9 @@ public class AutonomousCommandManager {
     
     public static void initAutoScenarioDisplayValues(OperatorDisplay operatorDisplay) {
         operatorDisplay.registerAutoScenario(AutonomousPreference.CrossLine.displayName());
-        operatorDisplay.registerAutoScenario(AutonomousPreference.DeliverToSwitch.displayName());
-        operatorDisplay.registerAutoScenario(AutonomousPreference.DeliverToScale.displayName());
+        operatorDisplay.registerAutoScenario(AutonomousPreference.DeliverToSwitchEnd.displayName());
+        operatorDisplay.registerAutoScenario(AutonomousPreference.DeliverToSwitchFront.displayName());
+        operatorDisplay.registerAutoScenario(AutonomousPreference.DeliverToScaleEnd.displayName());
     }
     
     protected void createAutonomousCommands() {
@@ -199,9 +200,9 @@ public class AutonomousCommandManager {
             if (this.isNoPreferredScenario()) {
                 // TODO: deliver END LEFT
             } else {
-                if (this.getPreferredScenario() == AutonomousPreference.DeliverToSwitch) {
+                if (this.getPreferredScenario() == AutonomousPreference.DeliverToSwitchEnd) {
                     
-                    chosenCommand = new AutoDeliverToSwitch(DeliverySide.Left, this.getSensorService(), this.getDrivetrainSubsystem(), 
+                    chosenCommand = new AutoDeliverToSwitchEnd(DeliverySide.Left, this.getSensorService(), this.getDrivetrainSubsystem(), 
                             this.getPneumaticSubsystem(), this.getOperatorDisplay());
                 }
                 // TODO: check that the preferred command doesn't contradict with our assignment.  If it does then just

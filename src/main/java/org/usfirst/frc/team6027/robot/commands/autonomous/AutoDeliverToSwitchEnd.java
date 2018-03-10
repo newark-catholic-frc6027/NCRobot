@@ -11,11 +11,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class AutoDeliverToSwitch extends CommandGroup {
-    public enum DeliverySide {
-        Left,
-        Right
-    }
+public class AutoDeliverToSwitchEnd extends CommandGroup {
     
     private SensorService sensorService;
     private DrivetrainSubsystem drivetrainSubsystem;
@@ -25,7 +21,7 @@ public class AutoDeliverToSwitch extends CommandGroup {
     private DeliverySide deliverySide;
 
 
-    public AutoDeliverToSwitch(DeliverySide deliverySide, SensorService sensorService, 
+    public AutoDeliverToSwitchEnd(DeliverySide deliverySide, SensorService sensorService, 
             DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, OperatorDisplay operatorDisplay) {
         
         this.sensorService = sensorService;

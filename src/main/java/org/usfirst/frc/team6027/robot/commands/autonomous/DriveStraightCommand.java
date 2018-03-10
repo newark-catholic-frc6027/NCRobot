@@ -53,14 +53,6 @@ public class DriveStraightCommand extends Command implements PIDOutput {
     protected Double distancePidCutoverPoint = null;
 
     private Double drivePower;
-
-    // private double targetDistance =
-    private double diff = 0; // Creating variable for the difference between right
-                     // encoder distance and left encoder distance
-    private int leftcount = 0;
-    private int rightcount = 0;
-    private int centercount = 0;
-
     private double currentAngleHeading = 0.0;
 
     public DriveStraightCommand(SensorService sensorService, DrivetrainSubsystem drivetrainSubsystem,
