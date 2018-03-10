@@ -177,6 +177,12 @@ public class AutonomousCommandManager {
             }
             
         } else { // Assigned Switch Plate is on left
+            if (this.getPreferredScenario() == AutonomousPreference.CrossLine) {
+                chosenCommand = new AutoCrossLineStraightAhead(250.0, 8.0, this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
+            } else {
+                logger.error( "No command configured, don't know what to do, so I will do nothing.");
+            }
+
             // TODO:
             // Either Charge Straight ahead to cross the line -- OR --
             // Deliver to the Scale if right plate is assigned to us
