@@ -24,6 +24,8 @@ public class DriveStraightCommand extends Command implements PIDOutput {
     protected static final double PID_FEED_FORWARD_TERM = 0.3;
     protected static final double GYRO_PID_TOLERANCE = 1.0;  // degrees
     protected static final double DISTANCE_PID_TOLERANCE = 1.0;  // inches
+    protected static final int LOG_REDUCTION_MOD = 10;
+    protected static final int EXEC_LOG_REDUCTION_MOD = 4;
     
     protected static final double DRIVE_POWER = 0.5;
 
@@ -48,6 +50,7 @@ public class DriveStraightCommand extends Command implements PIDOutput {
     private double distPidLoopCalculationOutput;
     protected int execCount = 0;
     protected int testOverCount = 0;
+    protected int pidTargetReachedCount = 0;
 
     private Double drivePower;
 
@@ -142,7 +145,7 @@ public class DriveStraightCommand extends Command implements PIDOutput {
 //            if (   Math.abs(this.encoderSensors.getLeftEncoder().getDistance()) >= this.driveDistance 
 //                || Math.abs(this.encoderSensors.getRightEncoder().getDistance()) >= this.driveDistance) {
             if (this.distancePidController.onTarget()) {
-                
+                               
                 this.drivetrainSubsystem.stopMotor();
                 logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DriveStraight done, distance={}", this.encoderSensors.getLeftEncoder().getDistance());
                 return true;
@@ -154,15 +157,10 @@ public class DriveStraightCommand extends Command implements PIDOutput {
             // TODO put distance constant in preference
 //            if (distanceToObject <= this.driveDistance && !(distanceToObject > 1.94 && distanceToObject < 1.95)  ) {
             if (this.distancePidController.onTarget()) {
-                testOverCount++;
-                if (testOverCount <= 10 && distanceToObject <= driveDistance) {
-                    return false;
-                }
                 this.drivetrainSubsystem.stopMotor();
                 logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DriveStraight done, distance from object={}", this.ultrasonicSensor.getDistanceInches());
                 return true;
             } else {
-                if (testOverCount > 0) { testOverCount++; }
                 return false;
             }
         } else {
@@ -173,7 +171,7 @@ public class DriveStraightCommand extends Command implements PIDOutput {
     @Override
     protected void execute() {
         this.execCount++;
-        if (this.execCount % 20 == 0) {
+        if (this.execCount % LOG_REDUCTION_MOD == 0) {
             logger.trace("Gyro angles (yaw,raw): ({},{}) left-enc: {}, right-enc: {}, ultrasonic dist/valid: {}/{},  pidOutput gyro/dist: {}/{}", 
                     String.format("%.3f",this.gyro.getYawAngle()),  
                     String.format("%.3f",this.gyro.getAngle()),  
@@ -186,6 +184,7 @@ public class DriveStraightCommand extends Command implements PIDOutput {
             );
         }
         
+
         if (! this.distancePidController.onTarget()) {
             if (this.gyroPidController.onTarget()) {
                 double power = this.distPidLoopCalculationOutput;
@@ -198,14 +197,14 @@ public class DriveStraightCommand extends Command implements PIDOutput {
                 
                 this.setDrivePower(power);
                 this.drivetrainSubsystem.tankDrive(power, power);
-                if (this.execCount % 8 == 0) {
+                if (this.execCount % EXEC_LOG_REDUCTION_MOD == 0) {
                     logger.trace("onTarget, gyroPidOutput: {}, distPidOutput: {}", this.gyroPidLoopCalculationOutput, 
                             this.distPidLoopCalculationOutput);
                 }
             } else {
                 double leftPower = getDrivePower() + this.gyroPidLoopCalculationOutput;
                 double rightPower = getDrivePower() - this.gyroPidLoopCalculationOutput;
-                if (this.execCount % 8 == 0) {
+                if (this.execCount % EXEC_LOG_REDUCTION_MOD == 0) {
                     logger.trace("adjustTo{}, pidOutput: {}, leftPower: {}, rightPower: {}", this.gyroPidLoopCalculationOutput > 0 ? "Right" : "Left", this.gyroPidLoopCalculationOutput, leftPower, rightPower);
                 }
                 this.drivetrainSubsystem.tankDrive(leftPower, rightPower);
