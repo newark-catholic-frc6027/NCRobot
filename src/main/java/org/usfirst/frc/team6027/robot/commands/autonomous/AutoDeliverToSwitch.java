@@ -1,7 +1,6 @@
 package org.usfirst.frc.team6027.robot.commands.autonomous;
 
 import org.usfirst.frc.team6027.robot.OperatorDisplay;
-import org.usfirst.frc.team6027.robot.commands.autonomous.AutonomousCommandManager.AutonomousPreference;
 import org.usfirst.frc.team6027.robot.commands.autonomous.DriveStraightCommand.DriveDistanceMode;
 import org.usfirst.frc.team6027.robot.commands.autonomous.TurnWhileDrivingCommand.TargetVector;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
@@ -41,19 +40,19 @@ public class AutoDeliverToSwitch extends CommandGroup {
 
         this.addSequential(driveStraightCmd);
         this.addSequential(turnCommand);
-        
-        
         this.addSequential(driveToSwitchCmd);
     }
 
 
     protected Command createDriveToSwitchCommand() {
         Command cmd = new DriveStraightCommand(
-                this.getSensorService(), this.getDrivetrainSubsystem(), this.operatorDisplay, 
-                this.prefs.getDouble("autoDeliverToSwitch.driveDistance", -12.0), // distance AWAY from target, on negative side of coordinate system
-                DriveDistanceMode.DistanceFromObject,
-                this.prefs.getDouble("autoDeliverToSwitch.driveToSwitchCmd.power", 0.6)
+                this.sensorService, this.drivetrainSubsystem, this.operatorDisplay,
+                this.prefs.getDouble("autoDeliverToSwitch.driveDistance", -12.0),
+                DriveDistanceMode.DistanceFromObject, 
+                this.prefs.getDouble("autoDeliverToSwitch.driveToSwitchCmd.power", 0.6), // power
+                this.prefs.getDouble("autoDeliverToSwitch.driveToSwitchCmd.pidCutoverPercent", 0.8) // Percent of distance from object before cutting over to distance PID control
         );
+
         
         return cmd;
     }

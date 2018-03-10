@@ -17,17 +17,20 @@ public class AutoFinalApproachToSwitchCommand extends CommandGroup {
     private PneumaticSubsystem pneumaticSubsystem;
     private OperatorDisplay operatorDisplay;
 
-    private double driveForwardDistance = 0.0;
-    private double startUsingUltrasonicDistance = 0.0;
+    private double offsetFromTargetDistance = 0.0;
+    private double totalDistanceToTarget = 0.0;
     private double angleHeading = 0.0;
     
-    
-    public AutoFinalApproachToSwitchCommand(double driveForwardDistance /* e.g., 100, total distance to target */, double offsetFromTargetDistance /* e.g., -20.0 */, double angleHeading, SensorService sensorService, 
-            DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, OperatorDisplay operatorDisplay) {
+    /* NOT CURRENTLY USING */
+    public AutoFinalApproachToSwitchCommand(double totalDistanceToTarget, /* e.g., 100, total distance to target */
+            double offsetFromTargetDistance, /* e.g., -20.0 */
+            double angleHeading,  /* not currently used */
+            SensorService sensorService, 
+            DrivetrainSubsystem drivetrainSubsystem, 
+            PneumaticSubsystem pneumaticSubsystem, OperatorDisplay operatorDisplay) {
  
-    	this.driveForwardDistance = driveForwardDistance;
-    	this.startUsingUltrasonicDistance = startUsingUltrasonicDistance;
-    	
+    	this.totalDistanceToTarget = totalDistanceToTarget;
+    	this.offsetFromTargetDistance = offsetFromTargetDistance;
         this.sensorService = sensorService;
         this.drivetrainSubsystem = drivetrainSubsystem;
         this.pneumaticSubsystem = pneumaticSubsystem;
@@ -35,6 +38,7 @@ public class AutoFinalApproachToSwitchCommand extends CommandGroup {
         
         Command driveStraightCommand = createDriveStraightCommand();
        
+        this.addSequential(driveStraightCommand);
         //Do this in stages
         // 1: Drive first stage 80% of distance (driveForwardDistance + offset, offset is negative), make percentage a preference, use .8 power, use gyro pid only
         // 2: Drive remaining distance using ultrasonic pid (distance to target +/- offset)
@@ -44,18 +48,14 @@ public class AutoFinalApproachToSwitchCommand extends CommandGroup {
 
     
     protected Command createDriveStraightCommand() {
-        double leg1Distance = this.driveForwardDistance;
-
-        double leg1Angle = this.angleHeading; //this.prefs.getDouble("leg1.angle", 0.0);
-
-        TargetVector[] turnVectors = new TargetVector[] { 
-                new TargetVector(leg1Angle, leg1Distance)
-        };
+        double driveDistance = this.totalDistanceToTarget + this.offsetFromTargetDistance;
         
-        Command cmd = new TurnWhileDrivingCommand(
-                this.sensorService, this.drivetrainSubsystem, this.operatorDisplay, 
-                turnVectors,
-                DriveDistanceMode.DistanceReadingOnEncoder, 0.6
+        Command cmd = new DriveStraightCommand(
+                this.sensorService, this.drivetrainSubsystem, this.operatorDisplay,
+                driveDistance,
+                DriveDistanceMode.DistanceFromObject, 
+                0.6, // power
+                .80  // Travel this percentage of total distance before cutting over to distance PID control
         );
         
         return cmd;
