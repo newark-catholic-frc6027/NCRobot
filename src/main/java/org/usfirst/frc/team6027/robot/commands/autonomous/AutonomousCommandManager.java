@@ -108,7 +108,7 @@ public class AutonomousCommandManager {
     
     public Command chooseCommand() {
         
-        logger.info(">>>>>> Station Position: {}, Scenario: {}", this.getField().getOurStationPosition(), this.getPreferredScenario());
+        logger.info(">>>>>> Station Position: {}, Scenario: {}", this.getField().getOurStationPosition(), this.preferredAutoScenario);
         
         if (this.field.getOurStationPosition() <= 0) {
             logger.warn("NO POSITION SELECTED, cannot choose an Autonomous command!");
@@ -137,7 +137,7 @@ public class AutonomousCommandManager {
     }
     
     protected Command chooseRightStationCommand() {
-        logger.info("Team Position: RIGHT ({}), scenario: ", this.field.getOurStationPosition(), this.getPreferredScenario());
+        logger.info("Team Position: RIGHT ({}), scenario: ", this.field.getOurStationPosition(), this.preferredAutoScenario);
         Command chosenCommand = null;
         
         if (this.field.isPlateAssignedToUs(PlatePosition.OurSwitchRight)) {
@@ -178,7 +178,7 @@ public class AutonomousCommandManager {
     }
 
     protected Command chooseLeftStationCommand() {
-        logger.info("Team Position: LEFT ({}), scenario: ", this.field.getOurStationPosition(), this.getPreferredScenario());
+        logger.info("Team Position: LEFT ({}), scenario: ", this.field.getOurStationPosition(), this.preferredAutoScenario);
         Command chosenCommand = null;
 
         if (this.field.isPlateAssignedToUs(PlatePosition.OurSwitchLeft)) {
@@ -213,7 +213,7 @@ public class AutonomousCommandManager {
 
     protected Command chooseCenterStationCommand() {
         Command chosenCommand = null;
-        logger.info("Team Position: CENTER ({}), scenario: ", this.field.getOurStationPosition(), this.getPreferredScenario());
+        logger.info("Team Position: CENTER ({}), scenario: ", this.field.getOurStationPosition(), this.preferredAutoScenario);
         // If driver's didn't select a preferred command, automatically select one
         if (this.isNoPreferredScenario()) {
             if (this.field.isPlateAssignedToUs(PlatePosition.OurSwitchLeft)) {
@@ -244,7 +244,7 @@ public class AutonomousCommandManager {
     }
 
     public AutonomousPreference getPreferredScenario() {
-        return preferredAutoScenario;
+        return this.preferredAutoScenario;
     }
 
     public void setPreferredScenario(AutonomousPreference preferredAutoScenario) {
