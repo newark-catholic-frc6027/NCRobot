@@ -20,7 +20,7 @@ public class UltrasonicSensor implements PIDSource {
     }
     
     public double getDistanceInches() {
-        return this.ultrasonic.getRangeInches();
+        return -1 * this.ultrasonic.getRangeInches();
     }
 
     public boolean isRangeValid() {

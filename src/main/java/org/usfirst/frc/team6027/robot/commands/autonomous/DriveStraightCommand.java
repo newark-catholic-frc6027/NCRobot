@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class DriveStraightCommand extends Command implements PIDOutput {
-    public final static String NAME = "Charge";
+    public final static String NAME = "Drive Straight";
     
     private final Logger logger = LoggerFactory.getLogger(getClass());
     protected static final double PID_PROPORTIONAL_COEFFICIENT = 0.005;
