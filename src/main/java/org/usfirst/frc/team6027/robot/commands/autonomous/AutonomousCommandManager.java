@@ -241,7 +241,7 @@ public class AutonomousCommandManager {
             if (this.getPreferredScenario() == AutonomousPreference.CrossLine) {
                 // Drive straight ahead and stop when we are 12 inches from the switch
                 chosenCommand = new DriveStraightCommand(this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), 
-                        -12.0, DriveDistanceMode.DistanceFromObject, .40); 
+                        -14.0, DriveDistanceMode.DistanceFromObject, .40); 
             } else {
                 logger.error( "No command configured, don't know what to do, so I will do nothing.");
             }
