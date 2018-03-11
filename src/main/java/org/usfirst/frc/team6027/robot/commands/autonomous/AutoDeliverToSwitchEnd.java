@@ -30,14 +30,7 @@ public class AutoDeliverToSwitchEnd extends CommandGroup {
         this.operatorDisplay = operatorDisplay;
         this.deliverySide = deliverySide;
         
-        // 12.0 straight
-        // 30deg, 47.0 (left)
-        // 0 deg, 100.0
-        // Turn -90
-        // Ultrasonic to 12
         Command multiLegDriveCmd = createMultiLegDriveCommand();
-        
-//        Command driveStraightCmd = createDriveStraightCommand();
         Command turnCommand = createTurnCommand();
         Command driveToSwitchCmd = createDriveToSwitchCommand();
 
@@ -70,12 +63,12 @@ public class AutoDeliverToSwitchEnd extends CommandGroup {
     }
     
     protected Command createMultiLegDriveCommand() {
-        double leg1Distance = this.prefs.getDouble("leg1.distance", 12.0);
-        double leg1Angle = this.prefs.getDouble("leg1.angle", 0.0);
-        double leg2Distance = this.prefs.getDouble("leg2.distance", 47.0);
-        double leg2Angle = this.prefs.getDouble("leg2.angle", 30.0) * (this.deliverySide == DeliverySide.Right ? 1.0 : -1.0);
-        double leg3Distance = this.prefs.getDouble("leg3.distance", 100.0);
-        double leg3Angle = this.prefs.getDouble("leg3.angle", 0.0);
+        double leg1Distance = 12.0; //this.prefs.getDouble("leg1.distance", 12.0);
+        double leg1Angle = 0.0;     //this.prefs.getDouble("leg1.angle", 0.0);
+        double leg2Distance = 47.0; //this.prefs.getDouble("leg2.distance", 47.0);
+        double leg2Angle = 30.0 * (this.deliverySide == DeliverySide.Right ? 1.0 : -1.0);// this.prefs.getDouble("leg2.angle", 30.0)
+        double leg3Distance = 75.0; //this.prefs.getDouble("leg3.distance", 100.0);
+        double leg3Angle = 0.0;     //this.prefs.getDouble("leg3.angle", 0.0);
 
         TargetVector[] turnVectors = new TargetVector[] { 
                 new TargetVector(leg1Angle, leg1Distance),
