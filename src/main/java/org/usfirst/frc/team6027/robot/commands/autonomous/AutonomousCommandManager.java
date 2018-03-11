@@ -146,27 +146,12 @@ public class AutonomousCommandManager {
                 // TODO: deliver END RIGHT
             } else {
                 if (this.getPreferredScenario() == AutonomousPreference.CrossLine){
-                    
-                    // TODO: REMOVE after done testing
-                    double leg1Distance = this.prefs.getDouble("leg1.distance", 48.0);
-                    double leg2Distance = this.prefs.getDouble("leg2.distance", 48.0);
-                    double leg3Distance = this.prefs.getDouble("leg3.distance", 48.0);
-
-                    double leg1Angle = this.prefs.getDouble("leg1.angle", 0.0);
-                    double leg2Angle = this.prefs.getDouble("leg2.angle", 10.0);
-                    double leg3Angle = this.prefs.getDouble("leg3.angle", -30.0);
-
-                    // TODO: Remove after done testing
-                    TargetVector[] turnVectors = new TargetVector[] { 
-                            new TargetVector(leg1Angle, leg1Distance), 
-                            new TargetVector(leg2Angle, leg2Distance), 
-                            new TargetVector(leg3Angle, leg3Distance) 
-                    };
-                    
-                    chosenCommand = new TurnWhileDrivingCommand(
-                            this.sensorService, this.getDrivetrainSubsystem(), this.operatorDisplay, 
-                            turnVectors,
-                            DriveDistanceMode.DistanceReadingOnEncoder, 0.5
+                    chosenCommand = new AutoCrossLineStraightAhead(250.0, .80, this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
+                } else if (this.getPreferredScenario() == AutonomousPreference.DeliverToSwitchEnd) {
+                    chosenCommand = new AutoDeliverToSwitchEnd(
+                            DeliverySide.Right,
+                            this.sensorService, this.getDrivetrainSubsystem(), this.getPneumaticSubsystem(), 
+                            this.operatorDisplay
                     );
                     
                 } else {
@@ -213,6 +198,7 @@ public class AutonomousCommandManager {
         } else { // Assigned Switch Plate is on right
             if (this.getPreferredScenario() == AutonomousPreference.CrossLine) {
                 // Drive straight ahead for a fixed distance at 80% power
+                // TODO: make minor adjustment to distance since it doesn't 
                 chosenCommand = new AutoCrossLineStraightAhead(250.0, .80, this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
             } else {
                 logger.error( "No command configured, don't know what to do, so I will do nothing.");
