@@ -30,7 +30,7 @@ public class TeleopManager extends Command {
 
 	private ShiftGearCommand shiftGearCommand;
 	private ToggleGrippersCommand toggleGrippersCommand;
-	private ToggleKickerCommand toggleKickerCommand;
+	private CubeKickerCommand toggleKickerCommand;
 	protected int execCount = 0;
 
 	public TeleopManager(OperatorInterface operatorInterface, SensorService sensorService,
@@ -49,6 +49,7 @@ public class TeleopManager extends Command {
 		// Create the commands we will be using during teleop
 		shiftGearCommand = new ShiftGearCommand(this.pneumaticSubsystem);
 		toggleGrippersCommand = new ToggleGrippersCommand(this.pneumaticSubsystem);
+		toggleKickerCommand = new CubeKickerCommand(this.pneumaticSubsystem);
 		
 		// Set up the commands on the Joystick buttons
 		initializeJoystick();
@@ -75,7 +76,7 @@ public class TeleopManager extends Command {
 		this.aButton = new JoystickButton(this.joystick, this.joystick.getAButtonNumber());
 		this.aButton.whenPressed(this.toggleGrippersCommand);
 		
-		this.bButton = new JoystickButton(this.joystick, this.joystick.getAButtonNumber());
+		this.bButton = new JoystickButton(this.joystick, this.joystick.getBButtonNumber());
 		this.bButton.whenPressed(this.toggleKickerCommand);
 		// Add new button assignments here
 	}

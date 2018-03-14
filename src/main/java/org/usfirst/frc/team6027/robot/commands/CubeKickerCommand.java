@@ -34,8 +34,8 @@ public class CubeKickerCommand extends Command {
     @Override 
     public void execute() {
         if (! executionComplete) {
-            logger.trace("Running ShiftGearCommand");
-            this.pneumaticSubsystem.toggleDriveSolenoid();
+            logger.trace("Running CubeKickerCommand");
+            this.pneumaticSubsystem.toggleKickerSolenoid();
             timeStarted = System.currentTimeMillis();
             // We only want to run once, so keep a boolean to make sure we don't run again until 
             // the delay period has expired
@@ -48,7 +48,7 @@ public class CubeKickerCommand extends Command {
     protected boolean isFinished() {
         long timeElapsedMs = System.currentTimeMillis() - this.timeStarted;
         if (timeElapsedMs >= DELAY_TO_OFF_MS) {
-            logger.trace("ShiftGearCommand finished");
+            logger.trace("CubeKickerCommand finished");
             return true;
         } else {
             return false;
@@ -59,7 +59,7 @@ public class CubeKickerCommand extends Command {
     protected void end() {
         // Reset our state for when we run again
         this.executionComplete = false;
-        this.pneumaticSubsystem.toggleDriveSolenoidOff();
+        this.pneumaticSubsystem.toggleKickerSolenoidOff();
     }
 
 }
