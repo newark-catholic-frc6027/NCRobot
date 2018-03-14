@@ -27,10 +27,15 @@ public class TeleopManager extends Command {
 	private JoystickButton leftBumperButton;
 	private JoystickButton aButton;
 	private JoystickButton bButton;
+	private JoystickButton yButton;
+	private JoystickButton xButton;
 
 	private ShiftGearCommand shiftGearCommand;
 	private ToggleGrippersCommand toggleGrippersCommand;
-	private CubeKickerCommand toggleKickerCommand;
+	private CubeKickerCommand cubeKickerCommand;
+	private ElevatorUpCommand elevatorUpCommand;
+	private ElevatorDownCommand elevatorDownCommand;
+	
 	protected int execCount = 0;
 
 	public TeleopManager(OperatorInterface operatorInterface, SensorService sensorService,
@@ -49,7 +54,9 @@ public class TeleopManager extends Command {
 		// Create the commands we will be using during teleop
 		shiftGearCommand = new ShiftGearCommand(this.pneumaticSubsystem);
 		toggleGrippersCommand = new ToggleGrippersCommand(this.pneumaticSubsystem);
-		toggleKickerCommand = new CubeKickerCommand(this.pneumaticSubsystem);
+		cubeKickerCommand = new CubeKickerCommand(this.pneumaticSubsystem);
+		elevatorUpCommand = new ElevatorUpCommand();
+		elevatorDownCommand = new ElevatorDownCommand();
 		
 		// Set up the commands on the Joystick buttons
 		initializeJoystick();
@@ -77,7 +84,14 @@ public class TeleopManager extends Command {
 		this.aButton.whenPressed(this.toggleGrippersCommand);
 		
 		this.bButton = new JoystickButton(this.joystick, this.joystick.getBButtonNumber());
-		this.bButton.whenPressed(this.toggleKickerCommand);
+		this.bButton.whenPressed(this.cubeKickerCommand);
+		
+		this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());
+		this.yButton.whenPressed(this.elevatorUpCommand);
+		
+		this.xButton = new JoystickButton(this.joystick, this.joystick.getXButtonNumber());
+		this.xButton.whenPressed(this.elevatorDownCommand);
+		
 		// Add new button assignments here
 	}
 
