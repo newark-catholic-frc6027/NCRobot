@@ -29,30 +29,49 @@ public class AutoDeliverToSwitchFront extends CommandGroup {
         this.pneumaticSubsystem = pneumaticSubsystem;
         this.operatorDisplay = operatorDisplay;
         this.deliverySide = deliverySide;
-  
-// TODO: Not sure which of these commands we'll need
-//        Command driveStraightCmd = createDriveStraightCommand();
+          
+        Command multiLegDriveCmd = createMultiLegDriveCommand();
         Command driveToSwitchCmd = createDriveToSwitchCommand();
 
-//        this.addSequential(driveStraightCmd);
+        this.addSequential(multiLegDriveCmd);
         this.addSequential(driveToSwitchCmd);
     }
-
 
     protected Command createDriveToSwitchCommand() {
         Command cmd = new DriveStraightCommand(
                 this.sensorService, this.drivetrainSubsystem, this.operatorDisplay,
                 this.prefs.getDouble("autoDeliverToSwitch.driveDistance", -12.0),
                 DriveDistanceMode.DistanceFromObject, 
-                this.prefs.getDouble("autoDeliverToSwitch.driveToSwitchCmd.power", 0.6), // power
-                this.prefs.getDouble("autoDeliverToSwitch.driveToSwitchCmd.pidCutoverPercent", 0.8) // Percent of distance from object before cutting over to distance PID control
+                this.prefs.getDouble("autoDeliverToSwitch.driveToSwitchCmd.power", 0.6)
         );
 
         
         return cmd;
     }
+    
+    protected Command createMultiLegDriveCommand() {
+        double leg1Distance = this.prefs.getDouble("leg1.distance", 12.0);
+        double leg1Angle = this.prefs.getDouble("leg1.angle", 0.0);
+        double leg2Distance = this.prefs.getDouble("leg2.distance", 47.0);
+        double leg2Angle = this.prefs.getDouble("leg2.angle", 0.0) * (this.deliverySide == DeliverySide.Left ? 1.0 : -1.0);// this.prefs.getDouble("leg2.angle", 30.0)
+        double leg3Distance = this.prefs.getDouble("leg3.distance", 0.0);
+        double leg3Angle = this.prefs.getDouble("leg3.angle", 0.0);
 
-
+        TargetVector[] turnVectors = new TargetVector[] { 
+                new TargetVector(leg1Angle, leg1Distance),
+                new TargetVector(leg2Angle, leg2Distance),
+                new TargetVector(leg3Angle, leg3Distance),
+                
+        };
+        
+        Command cmd = new TurnWhileDrivingCommand(
+                this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), 
+                turnVectors,
+                DriveDistanceMode.DistanceReadingOnEncoder, 0.7
+        );
+        
+        return cmd;
+    }
 
 
     protected Command createDriveStraightCommand() {

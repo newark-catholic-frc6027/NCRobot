@@ -145,17 +145,24 @@ public class AutonomousCommandManager {
                 logger.trace("DELIVER END RIGHT");
                 // TODO: deliver END RIGHT
             } else {
-                if (this.getPreferredScenario() == AutonomousPreference.CrossLine){
-                    chosenCommand = new AutoCrossLineStraightAhead(250.0, .80, this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
-                } else if (this.getPreferredScenario() == AutonomousPreference.DeliverToSwitchEnd) {
-                    chosenCommand = new AutoDeliverToSwitchEnd(
-                            DeliverySide.Right,
-                            this.sensorService, this.getDrivetrainSubsystem(), this.getPneumaticSubsystem(), 
-                            this.operatorDisplay
-                    );
-                    
-                } else {
-                    logger.trace("Don't yet know how to handle <{}>", this.getPreferredScenario().displayName());
+                switch(this.getPreferredScenario()) {
+                    case CrossLine:
+                        chosenCommand = new AutoCrossLineStraightAhead(250.0, .80, this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
+                        break;
+                    case DeliverToSwitchEnd:
+                        chosenCommand = new AutoDeliverToSwitchEnd(
+                                DeliverySide.Right,
+                                this.sensorService, this.getDrivetrainSubsystem(), this.getPneumaticSubsystem(), 
+                                this.operatorDisplay
+                        );
+                        break;
+                    case DeliverToSwitchFront:
+                        chosenCommand = new AutoDeliverToSwitchFront(DeliverySide.Right, this.getSensorService(), this.getDrivetrainSubsystem(),
+                                this.getPneumaticSubsystem(), this.getOperatorDisplay());
+                        break;
+    
+                    default:
+                       logger.trace("Don't yet know how to handle <{}>", this.getPreferredScenario().displayName());
                 }
                 // TODO: check that the preferred command doesn't contradict with our assignment.  If it does then just
                 // drive straight to get across the line (this is safest because the robot may not be positioned correctly
@@ -193,7 +200,12 @@ public class AutonomousCommandManager {
                         chosenCommand = new AutoDeliverToSwitchEnd(DeliverySide.Left, this.getSensorService(), this.getDrivetrainSubsystem(), 
                                 this.getPneumaticSubsystem(), this.getOperatorDisplay());
                         break;
+                    case DeliverToSwitchFront:
+                        chosenCommand = new AutoDeliverToSwitchFront(DeliverySide.Left, this.getSensorService(), this.getDrivetrainSubsystem(),
+                                this.getPneumaticSubsystem(), this.getOperatorDisplay());
+                        break;
                     default:
+                        logger.trace("Don't yet know how to handle <{}>", this.getPreferredScenario().displayName());
                         // leave chosenCommand as null
                 }
                 
