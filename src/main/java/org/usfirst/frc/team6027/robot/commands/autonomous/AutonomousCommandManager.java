@@ -160,7 +160,7 @@ public class AutonomousCommandManager {
                         chosenCommand = new AutoDeliverToSwitchFront(DeliverySide.Right, this.getSensorService(), this.getDrivetrainSubsystem(),
                                 this.getPneumaticSubsystem(), this.getOperatorDisplay());
                         break;
-    
+
                     default:
                        logger.trace("Don't yet know how to handle <{}>", this.getPreferredScenario().displayName());
                 }
@@ -170,12 +170,18 @@ public class AutonomousCommandManager {
             }
             
         } else { // Assigned Switch Plate is on left
-            if (this.getPreferredScenario() == AutonomousPreference.CrossLine) {
-                chosenCommand = new AutoCrossLineStraightAhead(250.0, .80, this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
-            } else {
-                logger.error( "No command configured, don't know what to do, so I will do nothing.");
+            switch(this.getPreferredScenario()) {
+                case CrossLine:
+                    chosenCommand = new AutoCrossLineStraightAhead(250.0, .80, this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
+                    break;
+                case DeliverToSwitchEnd:
+                    // TODO!!!! Need to factor in another choice which is "NEVER DO THIS"
+                    chosenCommand = new AutoDeliverToSwitchEndFromOppositeSide(DeliverySide.Left, this.getSensorService(),
+                            this.getDrivetrainSubsystem(), this.getPneumaticSubsystem(), this.getOperatorDisplay());
+                    break;
+                default:
+                    logger.error( "No command configured, don't know what to do, so I will do nothing.");
             }
-
             // TODO:
             // Either Charge Straight ahead to cross the line -- OR --
             // Deliver to the Scale if right plate is assigned to us
