@@ -185,11 +185,18 @@ public class AutonomousCommandManager {
             if (this.isNoPreferredScenario()) {
                 // TODO: deliver END LEFT
             } else {
-                if (this.getPreferredScenario() == AutonomousPreference.DeliverToSwitchEnd) {
-                    
-                    chosenCommand = new AutoDeliverToSwitchEnd(DeliverySide.Left, this.getSensorService(), this.getDrivetrainSubsystem(), 
-                            this.getPneumaticSubsystem(), this.getOperatorDisplay());
+                switch (this.getPreferredScenario()) {
+                    case CrossLine:
+                        chosenCommand = new AutoCrossLineStraightAhead(250.0, .80, this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
+                        break;
+                    case DeliverToSwitchEnd:
+                        chosenCommand = new AutoDeliverToSwitchEnd(DeliverySide.Left, this.getSensorService(), this.getDrivetrainSubsystem(), 
+                                this.getPneumaticSubsystem(), this.getOperatorDisplay());
+                        break;
+                    default:
+                        // leave chosenCommand as null
                 }
+                
                 // TODO: check that the preferred command doesn't contradict with our assignment.  If it does then just
                 // drive straight to get across the line (this is safest because the robot may not be positioned correctly
                 // for the other commands).  If it doesn't just return the preferred command.
