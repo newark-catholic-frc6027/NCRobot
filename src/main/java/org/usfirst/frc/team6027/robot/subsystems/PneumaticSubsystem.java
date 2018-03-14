@@ -18,6 +18,9 @@ public class PneumaticSubsystem extends Subsystem {
 
     private DoubleSolenoid gripperSolenoid;
     private DoubleSolenoid.Value gripperSolenoidState;
+    
+    private DoubleSolenoid kickerSolenoid;
+    private DoubleSolenoid.Value kickerSolenoidState;
 	
 	public PneumaticSubsystem(OperatorDisplay operatorDisplay) {
         this.operatorDisplay = operatorDisplay;
@@ -28,6 +31,10 @@ public class PneumaticSubsystem extends Subsystem {
         this.gripperSolenoid = new DoubleSolenoid(RobotConfigConstants.PCM_1_ID_NUMBER,
                 RobotConfigConstants.SOLENOID_2_PORT_A, RobotConfigConstants.SOLENOID_2_PORT_B);
 		this.toggleGripperSolenoidForward();
+		
+		this.kickerSolenoid = new DoubleSolenoid(RobotConfigConstants.PCM_1_ID_NUMBER,
+                RobotConfigConstants.SOLENOID_3_PORT_A, RobotConfigConstants.SOLENOID_3_PORT_B);
+		this.toggleKickerSolenoidForward();
 	}
 
 	@Override
@@ -48,6 +55,10 @@ public class PneumaticSubsystem extends Subsystem {
 
     public DoubleSolenoid getGripperSolenoid() {
         return gripperSolenoid;
+    }
+    
+    public DoubleSolenoid getKickerSolenoid() {
+        return kickerSolenoid;
     }
 
 	public void toggleDriveSolenoid() {
@@ -71,6 +82,18 @@ public class PneumaticSubsystem extends Subsystem {
         } else {
             logger.trace("Calling toggleGripperSolenoidReverse");
             toggleGripperSolenoidReverse();
+        }
+    }
+    
+    public void toggleKickerrSolenoid() {
+        this.operatorDisplay.setFieldValue("Kicker Solenoid State", this.kickerSolenoidState.name());
+
+        if (this.kickerSolenoidState == DoubleSolenoid.Value.kReverse) {
+            logger.trace("Calling toggleKickerSolenoidForward");
+            toggleKickerSolenoidForward();
+        } else {
+            logger.trace("Calling toggleKickerSolenoidReverse");
+            toggleKickerSolenoidReverse();
         }
     }
 	
@@ -111,6 +134,25 @@ public class PneumaticSubsystem extends Subsystem {
     public void toggleGripperSolenoidOff() {
         logger.trace("Running toggleGripperSolenoidOff");
         this.gripperSolenoid.set(DoubleSolenoid.Value.kOff);
+    }
+    
+    public void toggleKickerSolenoidReverse() {
+        logger.trace("Running toggleKickerSolenoidReverse");
+        this.kickerSolenoid.set(DoubleSolenoid.Value.kReverse);
+        this.operatorDisplay.setFieldValue("Kicker", "FORWARD");
+        this.kickerSolenoidState = DoubleSolenoid.Value.kReverse;
+    }
+
+    public void toggleKickerSolenoidForward() {
+        logger.trace("Running toggleKickerSolenoidForward");
+        this.kickerSolenoid.set(DoubleSolenoid.Value.kForward);
+        this.operatorDisplay.setFieldValue("Kicker", "Retracted");
+        this.kickerSolenoidState = DoubleSolenoid.Value.kForward;
+    }
+    
+    public void toggleKickerSolenoidOff() {
+        logger.trace("Running toggleKickerSolenoidOff");
+        this.kickerSolenoid.set(DoubleSolenoid.Value.kOff);
     }
 
 	

@@ -26,9 +26,11 @@ public class TeleopManager extends Command {
 	private JoystickButton shiftGearButton;
 	private JoystickButton leftBumperButton;
 	private JoystickButton aButton;
+	private JoystickButton bButton;
 
 	private ShiftGearCommand shiftGearCommand;
 	private ToggleGrippersCommand toggleGrippersCommand;
+	private ToggleKickerCommand toggleKickerCommand;
 	protected int execCount = 0;
 
 	public TeleopManager(OperatorInterface operatorInterface, SensorService sensorService,
@@ -73,6 +75,8 @@ public class TeleopManager extends Command {
 		this.aButton = new JoystickButton(this.joystick, this.joystick.getAButtonNumber());
 		this.aButton.whenPressed(this.toggleGrippersCommand);
 		
+		this.bButton = new JoystickButton(this.joystick, this.joystick.getAButtonNumber());
+		this.bButton.whenPressed(this.toggleKickerCommand);
 		// Add new button assignments here
 	}
 

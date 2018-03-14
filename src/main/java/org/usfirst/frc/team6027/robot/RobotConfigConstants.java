@@ -170,12 +170,16 @@ public class RobotConfigConstants {
 	public static final int PCM_2_ID_NUMBER = 10;
 	
 	/** Controlled by PCM_1 */
-	public static final int SOLENOID_1_PORT_A = 7;
-	public static final int SOLENOID_1_PORT_B = 1;
+	public static final int SOLENOID_1_PORT_A = 1;
+	public static final int SOLENOID_1_PORT_B = 0;
 
     /** Controlled by PCM_2 */
-    public static final int SOLENOID_2_PORT_A = 6;
-    public static final int SOLENOID_2_PORT_B = 0;
+    public static final int SOLENOID_2_PORT_A = 3;
+    public static final int SOLENOID_2_PORT_B = 2;
+    
+    /** Controlled by PCM_3 */
+    public static final int SOLENOID_3_PORT_A = 5;
+    public static final int SOLENOID_3_PORT_B = 4;
     
     /*
      * Pressure sensor constants
