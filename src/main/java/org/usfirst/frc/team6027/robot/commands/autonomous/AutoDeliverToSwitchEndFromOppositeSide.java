@@ -43,9 +43,9 @@ public class AutoDeliverToSwitchEndFromOppositeSide extends CommandGroup {
     protected Command createDriveToSwitchCommand() {
         Command cmd = new DriveStraightCommand(
                 this.sensorService, this.drivetrainSubsystem, this.operatorDisplay,
-                this.prefs.getDouble("autoDeliverToSwitch.driveDistance", -12.0),
+                -12.0,//this.prefs.getDouble("autoDeliverToSwitch.driveDistance", -12.0),
                 DriveDistanceMode.DistanceFromObject, 
-                this.prefs.getDouble("autoDeliverToSwitch.driveToSwitchCmd.power", 0.6)
+                0.55 //this.prefs.getDouble("autoDeliverToSwitch.driveToSwitchCmd.power", 0.6)
         );
 
         
@@ -63,12 +63,12 @@ public class AutoDeliverToSwitchEndFromOppositeSide extends CommandGroup {
     }
     
     protected Command createMultiLegDriveCommand() {
-        double leg1Distance = this.prefs.getDouble("leg1.distance", 12.0);
-        double leg1Angle = this.prefs.getDouble("leg1.angle", 0.0);
-        double leg2Distance = this.prefs.getDouble("leg2.distance", 47.0);
-        double leg2Angle = this.prefs.getDouble("leg2.angle", 30.0) * (this.deliverySide == DeliverySide.Right ? 1.0 : -1.0);
-        double leg3Distance = this.prefs.getDouble("leg3.distance", 100.0);
-        double leg3Angle = this.prefs.getDouble("leg3.angle", 0.0);
+        double leg1Distance = 200.0;//this.prefs.getDouble("leg1.distance", 12.0);
+        double leg1Angle = 0.0;//this.prefs.getDouble("leg1.angle", 0.0);
+        double leg2Distance = 215.0;//this.prefs.getDouble("leg2.distance", 47.0);
+        double leg2Angle = 90.0 * (this.deliverySide == DeliverySide.Right ? 1.0 : -1.0);//this.prefs.getDouble("leg2.angle", 30.0) * (this.deliverySide == DeliverySide.Right ? 1.0 : -1.0);
+        double leg3Distance = 70.0;//this.prefs.getDouble("leg3.distance", 100.0);
+        double leg3Angle = 180.0 * (this.deliverySide == DeliverySide.Left ? 1.0 : -1.0);//this.prefs.getDouble("leg3.angle", 0.0);
 
         TargetVector[] turnVectors = new TargetVector[] { 
                 new TargetVector(leg1Angle, leg1Distance),
