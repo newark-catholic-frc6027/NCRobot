@@ -19,7 +19,8 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class TeleopManager extends Command {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-	
+    protected static final int LOG_REDUCTION_MOD = 10;
+
 	private OperatorInterface operatorInterface;
 	private SensorService sensorService;
 	private XboxJoystick joystick;
@@ -63,8 +64,11 @@ public class TeleopManager extends Command {
 		shiftGearCommand = new ShiftGearCommand(this.pneumaticSubsystem);
 		toggleGrippersCommand = new ToggleGrippersCommand(this.pneumaticSubsystem);
 		cubeKickerCommand = new CubeKickerCommand(this.pneumaticSubsystem);
+
+		/*
 		elevatorUpCommand = new ElevatorCommand(ElevatorDirection.Up, 1.0, this.sensorService, this.elevatorSubsystem);
 		elevatorDownCommand = new ElevatorCommand(ElevatorDirection.Down, 1.0, this.sensorService, this.elevatorSubsystem);
+		*/
 		
 		// Set up the commands on the Joystick buttons
 		initializeJoystick();
@@ -122,34 +126,44 @@ public class TeleopManager extends Command {
 	@Override
 	protected void execute() {
 	    this.execCount++;
-	    //	       this.drivetrain.tankDrive(this.operatorInterface.getJoystick().getLeftAxis(), this.operatorInterface.getJoystick().getRightAxis());
+	    this.drive();
+		this.runElevatorIfRequired();
 
-//	    logger.trace("leftaxis: {}, rightaxis: {}", this.joystick.getLeftAxis(), this.joystick.getRightAxis() );
-		this.drivetrain.doArcadeDrive(this.joystick.getLeftAxis(), this.joystick.getRightAxis());
-		if (this.joystick.getTriggerAxis(Hand.kLeft) > .05) {
-	        if (execCount % 10 == 0) {
-	            logger.trace("Left trigger: {}", this.joystick.getTriggerAxis(Hand.kLeft));
-	        }
-		    this.elevatorSubsystem.elevatorDown(this.joystick.getTriggerAxis(Hand.kLeft));
-		} else {
-	        if (execCount % 10 == 0) {
-	            logger.trace("Right trigger: {}", this.joystick.getTriggerAxis(Hand.kRight));
-	        }
-		    this.elevatorSubsystem.elevatorUp(this.joystick.getTriggerAxis(Hand.kRight));
-		}
-		
-		if (this.execCount % 20 == 0) {
-    		logger.trace("Ultrasonic dist/valid: {}/{}", 
-    		        String.format("%.3f",this.sensorService.getUltrasonicSensor().getDistanceInches()), 
-    		        this.sensorService.getUltrasonicSensor().isRangeValid());
-		}
+		this.logData();
 	}
 
-	public OperatorDisplay getOperatorDisplay() {
+	private void drive() {
+        this.drivetrain.doArcadeDrive(this.joystick.getLeftAxis(), this.joystick.getRightAxis());
+    }
+
+    protected void logData() {
+        if (this.execCount % LOG_REDUCTION_MOD == 0) {
+            logger.trace("Ultrasonic dist: {}", 
+                    String.format("%.3f",this.sensorService.getUltrasonicSensor().getDistanceInches()));
+        }
+        
+    }
+
+    private void runElevatorIfRequired() {
+        if (this.joystick.getTriggerAxis(Hand.kLeft) > .05) {
+            if (execCount % LOG_REDUCTION_MOD == 0) {
+                logger.trace("Left trigger: {}", this.joystick.getTriggerAxis(Hand.kLeft));
+            }
+            this.elevatorSubsystem.elevatorDown(this.joystick.getTriggerAxis(Hand.kLeft));
+        } else {
+            if (execCount % LOG_REDUCTION_MOD == 0) {
+                logger.trace("Right trigger: {}", this.joystick.getTriggerAxis(Hand.kRight));
+            }
+            this.elevatorSubsystem.elevatorUp(this.joystick.getTriggerAxis(Hand.kRight));
+        }
+    }
+
+    public OperatorDisplay getOperatorDisplay() {
 		return this.operatorInterface.getOperatorDisplay();
 	}
 
 
+    // TODO: remove after done testing
 	class ElevatorCommandGroup extends CommandGroup {
 	    public ElevatorCommandGroup(ElevatorCommand ecmd) {
 	        super();

@@ -51,15 +51,16 @@ public class ElevatorCommand extends Command {
     protected boolean isFinished() {
         boolean bottomSwitchTripped = this.bottomLimitSwitch.get();
         boolean topSwitchTripped = this.topLimitSwitch.get();
-/*
+
+        // Checking isGoingUp/Down may be affecting communication
         boolean done = (this.direction == ElevatorDirection.Up && this.elevator.isGoingUp() && topSwitchTripped) 
                            ||
                        (this.direction == ElevatorDirection.Down && this.elevator.isGoingDown() && bottomSwitchTripped);
-                       */
+        /*
         boolean done = (this.direction == ElevatorDirection.Up && topSwitchTripped) 
                 ||
             (this.direction == ElevatorDirection.Down && bottomSwitchTripped);
-              
+        */      
         if (done) {
             logger.info(">>>>> Elevator command finished. topSwitch: {}, bottomSwitch: {}", topSwitchTripped, bottomSwitchTripped);
             this.elevator.elevatorStop();
@@ -70,12 +71,6 @@ public class ElevatorCommand extends Command {
     
     protected void execute() {
         this.execCount++;
-        /*
-        if (execCount % LOG_REDUCTION_MOD == 0) {
-            logger.trace("Elevator direction: {}, power: {}", this.elevator.isGoingUp() ? "UP" : (this.elevator.isGoingDown() ? "DOWN" : "N/A"), 
-                    this.elevator.getPower() );
-        }
-        */
         if (this.direction == ElevatorDirection.Up) {
             this.elevator.elevatorUp(power);
         } else if (this.direction == ElevatorDirection.Down) {

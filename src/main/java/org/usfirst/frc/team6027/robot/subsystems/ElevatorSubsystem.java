@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class ElevatorSubsystem extends Subsystem {
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    
 
     private WPI_TalonSRX elevatorGearBoxMaster = new WPI_TalonSRX(RobotConfigConstants.ELEVATOR_GEARBOX_CIM_1_ID);    
 
