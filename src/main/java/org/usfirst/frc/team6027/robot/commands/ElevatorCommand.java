@@ -36,6 +36,18 @@ public class ElevatorCommand extends Command {
     }
 
     @Override
+    protected void initialize() {
+        if (! this.doesRequire(this.elevator)) {
+            requires(elevator);
+        }
+    }
+
+    @Override
+    protected void end() {
+        this.clearRequirements();
+    }
+    
+    @Override
     protected boolean isFinished() {
         boolean bottomSwitchTripped = this.limitSwitches.getLimitSwitch(LimitSwitchId.MastBottom).get();
         boolean topSwitchTripped = this.limitSwitches.getLimitSwitch(LimitSwitchId.MastTop).get();
@@ -47,6 +59,7 @@ public class ElevatorCommand extends Command {
         if (done) {
             logger.info(">>>>> Elevator command finished. topSwitch: {}, bottomSwitch: {}", topSwitchTripped, bottomSwitchTripped);
             this.elevator.elevatorStop();
+            this.clearRequirements();
         }
         return done;
     }

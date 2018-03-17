@@ -47,7 +47,7 @@ public class TeleopManager extends Command {
 		// Identify the subsystems we will be using in this command and this command
 		// only
 		requires(drivetrain);
-//		requires(elevator);
+		requires(elevator);
 
 		// Hang onto references of the components we will need during teleop
 		this.operatorInterface = operatorInterface;
@@ -90,13 +90,13 @@ public class TeleopManager extends Command {
 		
 		this.bButton = new JoystickButton(this.joystick, this.joystick.getBButtonNumber());
 		this.bButton.whenPressed(this.cubeKickerCommand);
-		
+/*		
 		this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());
 		this.yButton.whenPressed(this.elevatorUpCommand);
 		
 		this.xButton = new JoystickButton(this.joystick, this.joystick.getXButtonNumber());
 		this.xButton.whenPressed(this.elevatorDownCommand);
-		
+*/		
 		// Add new button assignments here
 	}
 
@@ -107,6 +107,7 @@ public class TeleopManager extends Command {
 
 	@Override
 	protected void end() {
+	    this.clearRequirements();
 		// This will only get called if isFinished returns true
 		// this.drivetrain.stopArcadeDrive();
 	}
