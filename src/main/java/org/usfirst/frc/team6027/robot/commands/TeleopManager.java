@@ -47,7 +47,7 @@ public class TeleopManager extends Command {
 		// Identify the subsystems we will be using in this command and this command
 		// only
 		requires(drivetrain);
-		requires(elevator);
+//		requires(elevator);
 
 		// Hang onto references of the components we will need during teleop
 		this.operatorInterface = operatorInterface;
