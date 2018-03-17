@@ -36,13 +36,6 @@ public class ElevatorCommand extends Command {
     }
 
     @Override
-    protected void initialize() {
-        if (! this.doesRequire(this.elevator)) {
-            requires(elevator);
-        }
-    }
-
-    @Override
     protected void end() {
         this.clearRequirements();
     }
