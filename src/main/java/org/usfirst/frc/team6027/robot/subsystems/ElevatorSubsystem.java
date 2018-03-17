@@ -67,7 +67,7 @@ public class ElevatorSubsystem extends Subsystem {
     
     public void elevatorDown(double power) {
         double adjustedPower = power > 0.0 ? power : power * -1;
-        logger.trace("ElevatorDown, power, adjustedPower: {}, bottomLimitTripped? {}", power, adjustedPower, this.isBottomLimitSwitchTripped());
+        logger.trace("ElevatorDown power: {}, adjustedPower: {}, bottomLimitTripped? {}", power, adjustedPower, this.isBottomLimitSwitchTripped());
         if (Math.abs(adjustedPower) > .05 && ! this.isBottomLimitSwitchTripped()) {
             logger.trace("ElevatorDown, running motor: {}", adjustedPower);
             this.elevatorGearBoxMaster.set(adjustedPower);
