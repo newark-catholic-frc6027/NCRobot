@@ -93,7 +93,7 @@ public class TeleopManager extends Command {
 		
 		this.bButton = new JoystickButton(this.joystick, this.joystick.getBButtonNumber());
 		this.bButton.whenPressed(this.cubeKickerCommand);
-		
+		/*
 		this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());
 		this.yButton.whenPressed(new CommandGroup() {
             public void initialize() {
@@ -119,7 +119,7 @@ public class TeleopManager extends Command {
                 TeleopManager.this.requires(elevatorSubsystem);
             }
         });
-		
+		*/
 		// Add new button assignments here
 	}
 
