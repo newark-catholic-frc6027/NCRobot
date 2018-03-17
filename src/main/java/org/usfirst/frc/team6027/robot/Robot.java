@@ -12,9 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.commands.TeleopManager;
 import org.usfirst.frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
 import org.usfirst.frc.team6027.robot.commands.autonomous.AutonomousCommandManager.AutonomousPreference;
-import org.usfirst.frc.team6027.robot.commands.autonomous.NoOpCommand;
+import org.usfirst.frc.team6027.robot.commands.autonomous.AutonomousCommandManager.UnlessOption;
 import org.usfirst.frc.team6027.robot.commands.autonomous.TurnCommand;
-import org.usfirst.frc.team6027.robot.commands.autonomous.TurnWhileDrivingCommand;
 import org.usfirst.frc.team6027.robot.field.Field;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
@@ -72,6 +71,7 @@ public class Robot extends IterativeRobot {
         this.getDrivetrain().setDefaultCommand(teleOpCommand);
 
         AutonomousCommandManager.initAutoScenarioDisplayValues(this.getOperatorDisplay());
+        AutonomousCommandManager.initUnlessOptionDisplayValues(this.getOperatorDisplay());
     }
 
 
@@ -139,6 +139,7 @@ public class Robot extends IterativeRobot {
         
         applyStationPosition();
         String preferredAutoScenario = this.getOperatorDisplay().getSelectedAutoScenario();
+        String unlessOption = this.getOperatorDisplay().getSelectedUnlessOption();
 
         // TODO: remove this once done testing, only need to update parameters for repeated testing
         // updateAutonomousCommands();
@@ -162,6 +163,7 @@ public class Robot extends IterativeRobot {
                 AutonomousPreference.fromDisplayName(preferredAutoScenario), this.getField(), 
                 this.getSensorService(), this.getDrivetrain(), this.getPneumaticSubsystem(), this.getOperatorDisplay()
         );
+        this.autoCommandManager.setUnlessOption(UnlessOption.fromDisplayName(unlessOption));
         
         this.autonomousCommand = this.autoCommandManager.chooseCommand();
         /*

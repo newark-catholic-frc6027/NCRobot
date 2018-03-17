@@ -22,6 +22,31 @@ public class AutonomousCommandManager {
     
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    public enum UnlessOption {
+        NoPreference("NO SELECTION"),
+        OppositeAssignment("Assignment is Opposite Side");
+        
+        private String displayName;
+        
+        private UnlessOption() {
+        }
+        
+        private UnlessOption(String displayName) {
+            this.displayName = displayName;
+        }
+        
+        public String displayName() {
+            if (this.displayName == null ) {
+                return this.name();
+            } else {
+                return this.displayName;
+            }
+        }
+        
+        public static UnlessOption fromDisplayName(String displayName) {
+            return Arrays.asList(UnlessOption.values()).stream().filter(a -> displayName.equals(a.displayName())).findFirst().orElse(null);
+        }
+    }
     
     public enum AutonomousPreference {
         NoPreference("NO SELECTION"),
@@ -55,6 +80,7 @@ public class AutonomousCommandManager {
     
     private Field field;
     private AutonomousPreference preferredAutoScenario;
+    private UnlessOption unlessOption = UnlessOption.NoPreference;
     private SensorService sensorService;
     private DrivetrainSubsystem drivetrainSubsystem;
     private PneumaticSubsystem pneumaticSubsystem;
@@ -81,6 +107,10 @@ public class AutonomousCommandManager {
         operatorDisplay.registerAutoScenario(AutonomousPreference.DeliverToSwitchEnd.displayName());
         operatorDisplay.registerAutoScenario(AutonomousPreference.DeliverToSwitchFront.displayName());
         operatorDisplay.registerAutoScenario(AutonomousPreference.DeliverToScaleEnd.displayName());
+    }
+
+    public static void initUnlessOptionDisplayValues(OperatorDisplay operatorDisplay) {
+        operatorDisplay.registerUnlessOption(UnlessOption.OppositeAssignment.displayName());
     }
     
     protected void createAutonomousCommands() {
@@ -176,8 +206,15 @@ public class AutonomousCommandManager {
                     break;
                 case DeliverToSwitchEnd:
                     // TODO!!!! Need to factor in another choice which is "NEVER DO THIS"
-                    chosenCommand = new AutoDeliverToSwitchEndFromOppositeSide(DeliverySide.Left, this.getSensorService(),
-                            this.getDrivetrainSubsystem(), this.getPneumaticSubsystem(), this.getOperatorDisplay());
+                    if (this.getUnlessOption() == UnlessOption.OppositeAssignment) {
+                        // Driver chose not to deliver to opposite side
+                        // TODO: Deliver to scale if scale assignment is on right or cross line?
+                        logger.error( "Driver chose not to deliver to switch if switch color assignment is on left, don't know what to do, so I will do nothing.");
+                        
+                    } else {
+                        chosenCommand = new AutoDeliverToSwitchEndFromOppositeSide(DeliverySide.Left, this.getSensorService(),
+                                this.getDrivetrainSubsystem(), this.getPneumaticSubsystem(), this.getOperatorDisplay());
+                    }
                     break;
                 default:
                     logger.error( "No command configured, don't know what to do, so I will do nothing.");
@@ -274,6 +311,14 @@ public class AutonomousCommandManager {
 
     public void setPreferredScenario(AutonomousPreference preferredAutoScenario) {
         this.preferredAutoScenario = preferredAutoScenario;
+    }
+
+    public UnlessOption getUnlessOption() {
+        return unlessOption;
+    }
+
+    public void setUnlessOption(UnlessOption unlessOption) {
+        this.unlessOption = unlessOption;
     }
 
     protected Field getField() {
