@@ -4,9 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.OperatorDisplay;
 import org.usfirst.frc.team6027.robot.OperatorInterface;
+import org.usfirst.frc.team6027.robot.commands.ElevatorCommand.ElevatorDirection;
 import org.usfirst.frc.team6027.robot.controls.XboxJoystick;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
+import org.usfirst.frc.team6027.robot.subsystems.ElevatorSubsystem;
 import org.usfirst.frc.team6027.robot.subsystems.PneumaticSubsystem;
 
 import edu.wpi.first.wpilibj.Preferences;
@@ -22,6 +24,7 @@ public class TeleopManager extends Command {
 	private DrivetrainSubsystem drivetrain;
 	private Preferences prefs = Preferences.getInstance();
 	private PneumaticSubsystem pneumaticSubsystem;
+    private ElevatorSubsystem elevatorSubsystem;
 
 	private JoystickButton shiftGearButton;
 	private JoystickButton leftBumperButton;
@@ -33,13 +36,13 @@ public class TeleopManager extends Command {
 	private ShiftGearCommand shiftGearCommand;
 	private ToggleGrippersCommand toggleGrippersCommand;
 	private CubeKickerCommand cubeKickerCommand;
-	private ElevatorUpCommand elevatorUpCommand;
-	private ElevatorDownCommand elevatorDownCommand;
+	private ElevatorCommand elevatorUpCommand;
+	private ElevatorCommand elevatorDownCommand;
 	
 	protected int execCount = 0;
 
 	public TeleopManager(OperatorInterface operatorInterface, SensorService sensorService,
-			DrivetrainSubsystem drivetrain, PneumaticSubsystem pneumaticSubsystem) {
+			DrivetrainSubsystem drivetrain, PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevator) {
 		// Identify the subsystems we will be using in this command and this command
 		// only
 		requires(drivetrain);
@@ -50,13 +53,13 @@ public class TeleopManager extends Command {
 		this.joystick = this.operatorInterface.getJoystick();
 		this.drivetrain = drivetrain;
 		this.pneumaticSubsystem = pneumaticSubsystem;
-
+		this.elevatorSubsystem = elevator;
 		// Create the commands we will be using during teleop
 		shiftGearCommand = new ShiftGearCommand(this.pneumaticSubsystem);
 		toggleGrippersCommand = new ToggleGrippersCommand(this.pneumaticSubsystem);
 		cubeKickerCommand = new CubeKickerCommand(this.pneumaticSubsystem);
-		elevatorUpCommand = new ElevatorUpCommand();
-		elevatorDownCommand = new ElevatorDownCommand();
+		elevatorUpCommand = new ElevatorCommand(ElevatorDirection.Up, 1.0, this.sensorService, this.elevatorSubsystem);
+		elevatorDownCommand = new ElevatorCommand(ElevatorDirection.Down, 1.0, this.sensorService, this.elevatorSubsystem);
 		
 		// Set up the commands on the Joystick buttons
 		initializeJoystick();

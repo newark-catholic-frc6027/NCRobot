@@ -202,5 +202,10 @@ public class RobotConfigConstants {
     
     /* set to 1 if inversion is not needed, -1 if inversion is needed */
     public final static int OPTIONAL_DRIVETRAIN_DIRECTION_INVERSION = 1;
+    
+    public final static int LIMIT_SWITCH_1_CHANNEL = 8;
+    public final static int LIMIT_SWITCH_2_CHANNEL = 9;
+    
+    
             
 }

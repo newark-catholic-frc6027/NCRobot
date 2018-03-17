@@ -17,6 +17,7 @@ import org.usfirst.frc.team6027.robot.commands.autonomous.TurnCommand;
 import org.usfirst.frc.team6027.robot.field.Field;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
+import org.usfirst.frc.team6027.robot.subsystems.ElevatorSubsystem;
 import org.usfirst.frc.team6027.robot.subsystems.PneumaticSubsystem;
 
 /**
@@ -39,6 +40,7 @@ public class Robot extends IterativeRobot {
 
     private DrivetrainSubsystem drivetrain;
     private PneumaticSubsystem pneumaticSubsystem;
+    private ElevatorSubsystem elevatorSubsystem;
     private SensorService sensorService;
 
     private Field field = new Field();
@@ -63,11 +65,13 @@ public class Robot extends IterativeRobot {
         this.setOperatorInterface(new OperatorInterface(this.getOperatorDisplay()));
         this.setDrivetrain(new DrivetrainSubsystem(this.getOperatorInterface()));
         this.setPneumaticSubsystem(new PneumaticSubsystem(this.getOperatorDisplay()));
+        this.setElevatorSubsystem(new ElevatorSubsystem(this.getSensorService().getLimitSwitchSensors()));
+        
 
         // This ensures that the Teleop command is running whenever we are not in
         // autonomous mode
         TeleopManager teleOpCommand = new TeleopManager(this.operatorInterface, this.sensorService,
-                this.getDrivetrain(), this.pneumaticSubsystem);
+                this.getDrivetrain(), this.pneumaticSubsystem, this.elevatorSubsystem);
         this.getDrivetrain().setDefaultCommand(teleOpCommand);
 
         AutonomousCommandManager.initAutoScenarioDisplayValues(this.getOperatorDisplay());
@@ -263,6 +267,16 @@ public class Robot extends IterativeRobot {
     public void setPneumaticSubsystem(PneumaticSubsystem pneumaticSubsystem) {
         this.pneumaticSubsystem = pneumaticSubsystem;
     }
+
+    public ElevatorSubsystem getElevatorSubsystem() {
+        return elevatorSubsystem;
+    }
+
+
+    public void setElevatorSubsystem(ElevatorSubsystem elevatorSubsystem) {
+        this.elevatorSubsystem = elevatorSubsystem;
+    }
+
 
     public SensorService getSensorService() {
         return sensorService;

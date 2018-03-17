@@ -8,6 +8,7 @@ public class SensorService {
 	private AirPressureSensor airPressureSensor;
 	private UltrasonicSensor ultrasonicSensor;
 	private CameraSensors cameraSensor;
+	private LimitSwitchSensors limitSwitchSensors;
 
 	public SensorService() {
 		this.encoderSensors = new EncoderSensors();
@@ -15,6 +16,7 @@ public class SensorService {
 		this.airPressureSensor = new AirPressureSensor();
 		this.ultrasonicSensor = new UltrasonicSensor();
 		this.cameraSensor = new CameraSensors();
+		this.limitSwitchSensors = new LimitSwitchSensors();
 	}
 
 
@@ -22,16 +24,9 @@ public class SensorService {
 		return encoderSensors;
 	}
 
-	public void setEncoderSensors(EncoderSensors encoderSensors) {
-		this.encoderSensors = encoderSensors;
-	}
 
 	public PIDCapableGyro getGyroSensor() {
 		return gyroSensor;
-	}
-
-	public void setGyroSensor(PIDCapableGyro gyroSensor) {
-		this.gyroSensor = gyroSensor;
 	}
 
 
@@ -40,19 +35,11 @@ public class SensorService {
     }
 
 
-    public void setAirPressureSensor(AirPressureSensor airPressureSensor) {
-        this.airPressureSensor = airPressureSensor;
-    }
-
 
     public UltrasonicSensor getUltrasonicSensor() {
         return ultrasonicSensor;
     }
 
-
-    public void setUltrasonicSensor(UltrasonicSensor ultrasonicSensor) {
-        this.ultrasonicSensor = ultrasonicSensor;
-    }
 
 
     public CameraSensors getCameraSensor() {
@@ -60,9 +47,13 @@ public class SensorService {
     }
 
 
-    public void setCameraSensor(CameraSensors cameraSensor) {
-        this.cameraSensor = cameraSensor;
+
+
+    public LimitSwitchSensors getLimitSwitchSensors() {
+        return limitSwitchSensors;
     }
+
+
 
 
     public void resetAll() {
