@@ -40,9 +40,9 @@ public class ElevatorCommand extends Command {
         boolean bottomSwitchTripped = this.limitSwitches.getLimitSwitch(LimitSwitchId.MastBottom).get();
         boolean topSwitchTripped = this.limitSwitches.getLimitSwitch(LimitSwitchId.MastTop).get();
 
-        boolean done = (this.direction == ElevatorDirection.Up && this.elevator.isGoingUp() && bottomSwitchTripped) 
+        boolean done = (this.direction == ElevatorDirection.Up && this.elevator.isGoingUp() && topSwitchTripped) 
                            ||
-                       (this.direction == ElevatorDirection.Down && this.elevator.isGoingDown() && topSwitchTripped);
+                       (this.direction == ElevatorDirection.Down && this.elevator.isGoingDown() && bottomSwitchTripped);
               
         if (done) {
             logger.info(">>>>> Elevator command finished. topSwitch: {}, bottomSwitch: {}", topSwitchTripped, bottomSwitchTripped);
