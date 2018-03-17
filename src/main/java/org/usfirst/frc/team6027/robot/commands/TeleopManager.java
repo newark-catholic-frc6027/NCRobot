@@ -47,6 +47,7 @@ public class TeleopManager extends Command {
 		// Identify the subsystems we will be using in this command and this command
 		// only
 		requires(drivetrain);
+		requires(elevator);
 
 		// Hang onto references of the components we will need during teleop
 		this.operatorInterface = operatorInterface;
@@ -125,8 +126,8 @@ public class TeleopManager extends Command {
 		if (execCount % 10 == 0) {
 		    logger.trace("Left trigger: {}", this.joystick.getTriggerAxis(Hand.kLeft));
 		}
-        this.elevatorSubsystem.elevatorDown(this.joystick.getTriggerAxis(Hand.kLeft));
-		this.elevatorSubsystem.elevatorUp(this.joystick.getTriggerAxis(Hand.kRight));
+//        this.elevatorSubsystem.elevatorDown(this.joystick.getTriggerAxis(Hand.kLeft));
+//		this.elevatorSubsystem.elevatorUp(this.joystick.getTriggerAxis(Hand.kRight));
 		
 		if (this.execCount % 20 == 0) {
     		logger.trace("Ultrasonic dist/valid: {}/{}", 
