@@ -48,14 +48,30 @@ public class ElevatorSubsystem extends Subsystem {
         return this.elevatorGearBoxMaster.get() > 0.0;
     }
     
+    public boolean isTopLimitSwitchTripped() {
+        return this.limitSwitches.getLimitSwitch(LimitSwitchId.MastTop).get();
+    }
+
+    public boolean isBottomLimitSwitchTripped() {
+        return this.limitSwitches.getLimitSwitch(LimitSwitchId.MastBottom).get();
+    }
+    
     public void elevatorUp(double power) {
         double adjustedPower = power > 0.0 ? power * -1 : power;
-        this.elevatorGearBoxMaster.set(adjustedPower);
+        if (Math.abs(adjustedPower) > .05 && ! this.isTopLimitSwitchTripped()) {
+            this.elevatorGearBoxMaster.set(adjustedPower);
+        } else {
+            this.elevatorStop();
+        }
     }
     
     public void elevatorDown(double power) {
         double adjustedPower = power > 0.0 ? power : power * -1;
-        this.elevatorGearBoxMaster.set(adjustedPower);
+        if (Math.abs(adjustedPower) > .05 && ! this.isBottomLimitSwitchTripped()) {
+            this.elevatorGearBoxMaster.set(adjustedPower);
+        } else {
+            this.elevatorStop();
+        }
     }
     
     public void elevatorStop() {

@@ -11,6 +11,7 @@ import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import org.usfirst.frc.team6027.robot.subsystems.ElevatorSubsystem;
 import org.usfirst.frc.team6027.robot.subsystems.PneumaticSubsystem;
 
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
@@ -121,7 +122,8 @@ public class TeleopManager extends Command {
 
 //	    logger.trace("leftaxis: {}, rightaxis: {}", this.joystick.getLeftAxis(), this.joystick.getRightAxis() );
 		this.drivetrain.doArcadeDrive(this.joystick.getLeftAxis(), this.joystick.getRightAxis());
-		
+        this.elevatorSubsystem.elevatorDown(this.joystick.getTriggerAxis(Hand.kLeft));
+		this.elevatorSubsystem.elevatorUp(this.joystick.getTriggerAxis(Hand.kRight));
 		
 		if (this.execCount % 20 == 0) {
     		logger.trace("Ultrasonic dist/valid: {}/{}", 
