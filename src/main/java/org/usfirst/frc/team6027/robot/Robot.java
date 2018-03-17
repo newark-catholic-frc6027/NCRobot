@@ -9,7 +9,9 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.usfirst.frc.team6027.robot.commands.ElevatorCommand;
 import org.usfirst.frc.team6027.robot.commands.TeleopManager;
+import org.usfirst.frc.team6027.robot.commands.ElevatorCommand.ElevatorDirection;
 import org.usfirst.frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
 import org.usfirst.frc.team6027.robot.commands.autonomous.AutonomousCommandManager.AutonomousPreference;
 import org.usfirst.frc.team6027.robot.commands.autonomous.AutonomousCommandManager.UnlessOption;
@@ -170,6 +172,7 @@ public class Robot extends IterativeRobot {
         this.autoCommandManager.setUnlessOption(UnlessOption.fromDisplayName(unlessOption));
         
         this.autonomousCommand = this.autoCommandManager.chooseCommand();
+        this.autonomousCommand = new ElevatorCommand(ElevatorDirection.Up, 1.0, this.sensorService, this.elevatorSubsystem);
         /*
         // TODO: REMOVE after testing, this is only here to allow us to repeatedly test a command without having
         // to select it on the OperatorDisplay
