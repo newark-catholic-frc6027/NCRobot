@@ -93,33 +93,12 @@ public class TeleopManager extends Command {
 		
 		this.bButton = new JoystickButton(this.joystick, this.joystick.getBButtonNumber());
 		this.bButton.whenPressed(this.cubeKickerCommand);
-		/*
+		
 		this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());
-		this.yButton.whenPressed(new CommandGroup() {
-            public void initialize() {
-                TeleopManager.this.clearRequirements();
-                TeleopManager.this.requires(drivetrain);
-                this.addSequential( new ElevatorCommand(ElevatorDirection.Up, 1.0, TeleopManager.this.sensorService, elevatorSubsystem));
-            }
-            
-            public void end() {
-                TeleopManager.this.requires(elevatorSubsystem);
-            }
-        });
+		this.yButton.whenPressed(new ElevatorCommandGroup(new ElevatorCommand(ElevatorDirection.Up, 1.0, TeleopManager.this.sensorService, elevatorSubsystem)));
 		
 		this.xButton = new JoystickButton(this.joystick, this.joystick.getXButtonNumber());
-		this.xButton.whenPressed(new CommandGroup() {
-            public void initialize() {
-                TeleopManager.this.clearRequirements();
-                TeleopManager.this.requires(drivetrain);
-                this.addSequential( new ElevatorCommand(ElevatorDirection.Down, 1.0, TeleopManager.this.sensorService, elevatorSubsystem));
-            }
-            
-            public void end() {
-                TeleopManager.this.requires(elevatorSubsystem);
-            }
-        });
-		*/
+		this.xButton.whenPressed(new ElevatorCommandGroup(new ElevatorCommand(ElevatorDirection.Down, 1.0, TeleopManager.this.sensorService, elevatorSubsystem)));
 		// Add new button assignments here
 	}
 
@@ -171,4 +150,17 @@ public class TeleopManager extends Command {
 	}
 
 
+	class ElevatorCommandGroup extends CommandGroup {
+	    public ElevatorCommandGroup(ElevatorCommand ecmd) {
+	        super();
+            TeleopManager.this.clearRequirements();
+            TeleopManager.this.requires(drivetrain);
+            this.addSequential(ecmd);
+	    }
+	    
+        public void end() {
+            TeleopManager.this.requires(elevatorSubsystem);
+        }
+	    
+	}
 }
