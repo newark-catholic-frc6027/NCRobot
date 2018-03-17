@@ -33,7 +33,8 @@ public class ElevatorDownCommand extends Command {
     public void execute() {
        
             logger.trace("Running ElevatorCommand");
-           this.elevatorGearBoxMaster.set(winchSpeedDown);
+            this.elevatorGearBoxMaster.set(0);
+            //this.elevatorGearBoxMaster.set(winchSpeedDown);
        
     }
     

@@ -18,6 +18,7 @@ public class ElevatorUpCommand extends Command {
 	private WPI_TalonSRX elevatorGearBoxMaster = new WPI_TalonSRX(RobotConfigConstants.ELEVATOR_GEARBOX_CIM_1_ID);    
     
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    DigitalInput limitSwitchBot = new DigitalInput(8);
     DigitalInput limitSwitchTop = new DigitalInput(9);
 	double winchSpeedUp = -1;
 	
@@ -33,7 +34,9 @@ public class ElevatorUpCommand extends Command {
     @Override 
     public void execute() {
        
-            logger.trace("Running ElevatorCommand");
+           logger.trace("Running ElevatorCommand");
+           logger.trace("Limit Switch Top:{}, Limit Switch Bottom:{}", limitSwitchTop.get(),limitSwitchBot.get());
+          //this.elevatorGearBoxMaster.set(0);
            this.elevatorGearBoxMaster.set(winchSpeedUp);
        
     }
@@ -42,12 +45,16 @@ public class ElevatorUpCommand extends Command {
     @Override
     protected boolean isFinished() {
 
-    	if(this.limitSwitchTop.get()==false) {
+    	    	
+    	if(this.limitSwitchTop.get()) {
     		this.elevatorGearBoxMaster.set(0);
     		return true;
     	}
     	
-    	return false;
+    		return false;
+    	
+    		
+    	
     }
     
     @Override
