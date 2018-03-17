@@ -127,8 +127,11 @@ public class TeleopManager extends Command {
 		if (execCount % 10 == 0) {
 		    logger.trace("Left trigger: {}", this.joystick.getTriggerAxis(Hand.kLeft));
 		}
-        this.elevatorSubsystem.elevatorDown(this.joystick.getTriggerAxis(Hand.kLeft));
-//		this.elevatorSubsystem.elevatorUp(this.joystick.getTriggerAxis(Hand.kRight));
+		if (this.joystick.getTriggerAxis(Hand.kLeft) > .05) {
+		    this.elevatorSubsystem.elevatorDown(this.joystick.getTriggerAxis(Hand.kLeft));
+		} else {
+		    this.elevatorSubsystem.elevatorUp(this.joystick.getTriggerAxis(Hand.kRight));
+		}
 		
 		if (this.execCount % 20 == 0) {
     		logger.trace("Ultrasonic dist/valid: {}/{}", 
