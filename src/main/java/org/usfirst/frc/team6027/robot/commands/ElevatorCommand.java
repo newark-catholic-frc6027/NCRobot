@@ -7,6 +7,7 @@ import org.usfirst.frc.team6027.robot.sensors.LimitSwitchSensors.LimitSwitchId;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.ElevatorSubsystem;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class ElevatorCommand extends Command {
@@ -24,6 +25,9 @@ public class ElevatorCommand extends Command {
     private ElevatorDirection direction = null;
     private ElevatorSubsystem elevator;
     private LimitSwitchSensors limitSwitches;
+    private DigitalInput topLimitSwitch;
+    private DigitalInput bottomLimitSwitch;
+    
     private double power = 0.5;
     
     public ElevatorCommand(ElevatorDirection direction, double power, SensorService sensorService, ElevatorSubsystem elevator) {
@@ -31,6 +35,9 @@ public class ElevatorCommand extends Command {
         this.elevator = elevator;
         this.power = power;
         this.limitSwitches = sensorService.getLimitSwitchSensors();
+        this.topLimitSwitch = this.limitSwitches.getLimitSwitch(LimitSwitchId.MastTop);
+        this.bottomLimitSwitch = this.limitSwitches.getLimitSwitch(LimitSwitchId.MastBottom);
+        
         this.setName(NAME);
         requires(elevator);
     }
@@ -42,8 +49,8 @@ public class ElevatorCommand extends Command {
     
     @Override
     protected boolean isFinished() {
-        boolean bottomSwitchTripped = this.limitSwitches.getLimitSwitch(LimitSwitchId.MastBottom).get();
-        boolean topSwitchTripped = this.limitSwitches.getLimitSwitch(LimitSwitchId.MastTop).get();
+        boolean bottomSwitchTripped = this.bottomLimitSwitch.get();
+        boolean topSwitchTripped = this.topLimitSwitch.get();
 
         boolean done = (this.direction == ElevatorDirection.Up && this.elevator.isGoingUp() && topSwitchTripped) 
                            ||
@@ -59,10 +66,12 @@ public class ElevatorCommand extends Command {
     
     protected void execute() {
         this.execCount++;
+        /*
         if (execCount % LOG_REDUCTION_MOD == 0) {
             logger.trace("Elevator direction: {}, power: {}", this.elevator.isGoingUp() ? "UP" : (this.elevator.isGoingDown() ? "DOWN" : "N/A"), 
                     this.elevator.getPower() );
         }
+        */
         if (this.direction == ElevatorDirection.Up) {
             this.elevator.elevatorUp(power);
         } else if (this.direction == ElevatorDirection.Down) {
