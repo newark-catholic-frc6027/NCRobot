@@ -19,7 +19,8 @@ public interface OperatorDisplay {
     
     public enum ChooserName {
         Position,
-        Scenario("Auto Scenario");
+        Scenario("Auto Scenario"),
+        Unless("Unless");
         
         private String displayName;
         
@@ -64,8 +65,14 @@ public interface OperatorDisplay {
     void registerAutoScenario(String displayName);
     void registerAutoScenario(String displayName, boolean isDefaultCommand);
 
+    void registerUnlessOption(String displayName, boolean isDefaultCommand);
+    void registerUnlessOption(String displayName);
+    
     String getSelectedAutoScenario();
     
     Integer getSelectedPosition();
+
+    String getSelectedUnlessOption();
+
     
 }
