@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class TeleopManager extends Command {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -39,6 +40,8 @@ public class TeleopManager extends Command {
 	private CubeKickerCommand cubeKickerCommand;
 	private ElevatorCommand elevatorUpCommand;
 	private ElevatorCommand elevatorDownCommand;
+	private Command teleopElevatorUpCommand;
+    private Command teleopElevatorDownCommand;
 	
 	protected int execCount = 0;
 
@@ -90,13 +93,33 @@ public class TeleopManager extends Command {
 		
 		this.bButton = new JoystickButton(this.joystick, this.joystick.getBButtonNumber());
 		this.bButton.whenPressed(this.cubeKickerCommand);
-/*		
+		
 		this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());
-		this.yButton.whenPressed(this.elevatorUpCommand);
+		this.yButton.whenPressed(new CommandGroup() {
+            public void initialize() {
+                TeleopManager.this.clearRequirements();
+                TeleopManager.this.requires(drivetrain);
+                this.addSequential( new ElevatorCommand(ElevatorDirection.Up, 1.0, TeleopManager.this.sensorService, elevatorSubsystem));
+            }
+            
+            public void end() {
+                TeleopManager.this.requires(elevatorSubsystem);
+            }
+        });
 		
 		this.xButton = new JoystickButton(this.joystick, this.joystick.getXButtonNumber());
-		this.xButton.whenPressed(this.elevatorDownCommand);
-*/		
+		this.xButton.whenPressed(new CommandGroup() {
+            public void initialize() {
+                TeleopManager.this.clearRequirements();
+                TeleopManager.this.requires(drivetrain);
+                this.addSequential( new ElevatorCommand(ElevatorDirection.Down, 1.0, TeleopManager.this.sensorService, elevatorSubsystem));
+            }
+            
+            public void end() {
+                TeleopManager.this.requires(elevatorSubsystem);
+            }
+        });
+		
 		// Add new button assignments here
 	}
 
