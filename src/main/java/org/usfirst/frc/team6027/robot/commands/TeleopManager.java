@@ -122,6 +122,9 @@ public class TeleopManager extends Command {
 
 //	    logger.trace("leftaxis: {}, rightaxis: {}", this.joystick.getLeftAxis(), this.joystick.getRightAxis() );
 		this.drivetrain.doArcadeDrive(this.joystick.getLeftAxis(), this.joystick.getRightAxis());
+		if (execCount % 10 == 0) {
+		    logger.debug("Left trigger: {}", this.joystick.getTriggerAxis(Hand.kLeft));
+		}
         this.elevatorSubsystem.elevatorDown(this.joystick.getTriggerAxis(Hand.kLeft));
 		this.elevatorSubsystem.elevatorUp(this.joystick.getTriggerAxis(Hand.kRight));
 		
