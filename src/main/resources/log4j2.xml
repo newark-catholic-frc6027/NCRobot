@@ -10,6 +10,10 @@
     <Logger name="org.usfirst.frc.team6027" level="trace" additivity="false">
       <AppenderRef ref="Console"/>
     </Logger>
+
+    <Logger name="org.usfirst.frc.team6027.robot.subsystems.ElevatorSubsystem" level="info" additivity="false">
+      <AppenderRef ref="Console"/>
+    </Logger>
     
     <Root level="info">
       <AppenderRef ref="Console"/>
