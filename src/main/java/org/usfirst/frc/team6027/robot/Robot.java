@@ -171,7 +171,7 @@ public class Robot extends IterativeRobot {
         this.autoCommandManager.setUnlessOption(UnlessOption.fromDisplayName(unlessOption));
         
         this.autonomousCommand = this.autoCommandManager.chooseCommand();
-        this.autonomousCommand = new ElevatorCommand(ElevatorDirection.Up, 1.0, this.sensorService, this.elevatorSubsystem);
+//        this.autonomousCommand = new ElevatorCommand(ElevatorDirection.Up, 1.0, this.sensorService, this.elevatorSubsystem);
         /*
         // TODO: REMOVE after testing, this is only here to allow us to repeatedly test a command without having
         // to select it on the OperatorDisplay
