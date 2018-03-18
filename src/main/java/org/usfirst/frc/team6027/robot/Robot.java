@@ -75,6 +75,8 @@ public class Robot extends IterativeRobot {
                 this.getDrivetrain(), this.pneumaticSubsystem, this.elevatorSubsystem);
         this.getDrivetrain().setDefaultCommand(teleOpCommand);
         
+        this.getPneumaticSubsystem().initDefaultCommand();
+        
         AutonomousCommandManager.initAutoScenarioDisplayValues(this.getOperatorDisplay());
         AutonomousCommandManager.initUnlessOptionDisplayValues(this.getOperatorDisplay());
     }

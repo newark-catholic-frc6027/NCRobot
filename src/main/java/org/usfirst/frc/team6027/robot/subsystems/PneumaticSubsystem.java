@@ -40,7 +40,7 @@ public class PneumaticSubsystem extends Subsystem {
 	}
 
 	@Override
-	protected void initDefaultCommand() {
+	public void initDefaultCommand() {
 	    this.pneumaticInitializationCommand = new PneumaticsInitializationCommand(this);
 	    this.setDefaultCommand(this.pneumaticInitializationCommand);
 
