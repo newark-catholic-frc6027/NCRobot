@@ -106,6 +106,7 @@ public class CubeDeliveryCommand extends Command {
     protected void end() {
         // Reset our state for when we run again
         this.executionComplete = false;
+        this.pneumaticSubsystem.toggleKickerSolenoid();
         this.pneumaticSubsystem.toggleKickerSolenoidOff();
         this.pneumaticSubsystem.toggleGripperSolenoidOff();
     }
