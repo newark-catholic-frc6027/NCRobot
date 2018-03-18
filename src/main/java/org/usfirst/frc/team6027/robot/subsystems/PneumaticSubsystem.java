@@ -41,7 +41,7 @@ public class PneumaticSubsystem extends Subsystem {
 
 	@Override
 	protected void initDefaultCommand() {
-	    this.pneumaticInitializationCommand = new PneumaticsInitializationCommand();
+	    this.pneumaticInitializationCommand = new PneumaticsInitializationCommand(this);
 	    this.setDefaultCommand(this.pneumaticInitializationCommand);
 
 	}
@@ -170,6 +170,10 @@ public class PneumaticSubsystem extends Subsystem {
         
         boolean kickerSolenoidToggled = false;
         boolean kickerSolenoidInitialized = false;
+        
+        public PneumaticsInitializationCommand(PneumaticSubsystem subsys) {
+            requires(subsys);
+        }
         
         @Override
         protected void execute() {
