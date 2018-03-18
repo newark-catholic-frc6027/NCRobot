@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.OperatorDisplay;
 import org.usfirst.frc.team6027.robot.OperatorInterface;
+import org.usfirst.frc.team6027.robot.commands.CubeDeliveryCommand.DeliveryMode;
 import org.usfirst.frc.team6027.robot.commands.ElevatorCommand.ElevatorDirection;
 import org.usfirst.frc.team6027.robot.controls.XboxJoystick;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
@@ -95,8 +96,18 @@ public class TeleopManager extends Command {
 		this.aButton = new JoystickButton(this.joystick, this.joystick.getAButtonNumber());
 		this.aButton.whenPressed(this.toggleGrippersCommand);
 		
+		/*
 		this.bButton = new JoystickButton(this.joystick, this.joystick.getBButtonNumber());
 		this.bButton.whenPressed(this.cubeKickerCommand);
+		*/
+		
+        this.xButton = new JoystickButton(this.joystick, this.joystick.getXButtonNumber());
+	    this.xButton.whenPressed(new CubeDeliveryCommand(
+	            DeliveryMode.valueOf(this.prefs.getString("cubeDelivery.mode", DeliveryMode.DropThenKick.toString())), 
+	            this.prefs.getInt("cubeDelivery.msdelay", 150),
+	            this.pneumaticSubsystem)
+	    );
+
 /*		
 		this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());
 		this.yButton.whenPressed(new ElevatorCommandGroup(new ElevatorCommand(ElevatorDirection.Up, 1.0, TeleopManager.this.sensorService, elevatorSubsystem)));
@@ -169,7 +180,7 @@ public class TeleopManager extends Command {
 	    public ElevatorCommandGroup(ElevatorCommand ecmd) {
 	        super();
             TeleopManager.this.clearRequirements();
-            TeleopManager.this.requires(drivetrain);
+            //TeleopManager.this.requires(drivetrain);
             this.addSequential(ecmd);
 	    }
 	    
