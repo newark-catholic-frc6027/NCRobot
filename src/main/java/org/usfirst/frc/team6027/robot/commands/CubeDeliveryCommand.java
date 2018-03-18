@@ -66,15 +66,10 @@ public class CubeDeliveryCommand extends Command {
             } else {
                 long timeElapsedSinceKicked = System.currentTimeMillis() - this.timeKicked;
                 if (timeElapsedSinceKicked >= this.dropKickMillisDelay) {
-                    if (! this.kickerAskedToRetract) {
-                        // 
-                        this.pneumaticSubsystem.toggleGripperSolenoid();
-                        // Put kicker back in
-                        this.pneumaticSubsystem.toggleKickerSolenoid();
-                        this.kickerAskedToRetract = true;
-                    }
+                    this.pneumaticSubsystem.toggleGripperSolenoid();
                     
-                    if (!this.pneumaticSubsystem.isKickerOut()) {
+                    if (this.pneumaticSubsystem.isKickerOut()) {
+                        this.pneumaticSubsystem.toggleKickerSolenoid();
                         this.executionComplete = true;
                     }
                 }
@@ -94,13 +89,11 @@ public class CubeDeliveryCommand extends Command {
             } else {
                 long timeElapsedSinceGrippersOpened = System.currentTimeMillis() - this.timeGrippersOpened;
                 if (timeElapsedSinceGrippersOpened >= this.dropKickMillisDelay) {
-                    if (! this.kickerAskedToRetract) {
-                        // Put kicker back in
+                    if (this.pneumaticSubsystem.isKickerOut()) {
                         this.pneumaticSubsystem.toggleKickerSolenoid();
-                        this.kickerAskedToRetract = true;
-                    }
-                    if (! this.pneumaticSubsystem.isKickerOut()) {
                         this.executionComplete = true;
+                    } else {
+                        this.pneumaticSubsystem.toggleKickerSolenoid();
                     }
                 }
             }
@@ -117,7 +110,7 @@ public class CubeDeliveryCommand extends Command {
     @Override
     protected boolean isFinished() {
         long timeElapsedMs = System.currentTimeMillis() - this.timeStarted;
-        if (this.executionComplete && timeElapsedMs >= DELAY_TO_OFF_MS) {
+        if (this.executionComplete && ! this.pneumaticSubsystem.isKickerOut() && timeElapsedMs >= DELAY_TO_OFF_MS) {
             logger.trace("CubeKickerCommand finished");
             return true;
         } else {
