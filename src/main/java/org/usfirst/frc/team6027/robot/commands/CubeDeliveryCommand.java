@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.subsystems.PneumaticSubsystem;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
@@ -18,9 +19,9 @@ public class CubeDeliveryCommand extends Command {
     public static final long DEFAULT_DROPKICK_DELAY_MS = 100;
     /** The delay in milliseconds before we allow the command to finish.  This builds in a small delay to allow the
      * solenoid to finish toggling before we turn it back off. */
-    public final static int DELAY_TO_OFF_MS = 250;
-    public boolean executionComplete = false;
-    
+    public final static int DELAY_TO_OFF_MS = 1000;
+    protected boolean executionComplete = false;
+    protected boolean kickerAskedToRetract = false;
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private PneumaticSubsystem pneumaticSubsystem;
@@ -65,8 +66,17 @@ public class CubeDeliveryCommand extends Command {
             } else {
                 long timeElapsedSinceKicked = System.currentTimeMillis() - this.timeKicked;
                 if (timeElapsedSinceKicked >= this.dropKickMillisDelay) {
-                    this.pneumaticSubsystem.toggleGripperSolenoid();
-                    this.executionComplete = true;
+                    if (! this.kickerAskedToRetract) {
+                        // 
+                        this.pneumaticSubsystem.toggleGripperSolenoid();
+                        // Put kicker back in
+                        this.pneumaticSubsystem.toggleKickerSolenoid();
+                        this.kickerAskedToRetract = true;
+                    }
+                    
+                    if (!this.pneumaticSubsystem.isKickerOut()) {
+                        this.executionComplete = true;
+                    }
                 }
             }
         }
@@ -84,13 +94,26 @@ public class CubeDeliveryCommand extends Command {
             } else {
                 long timeElapsedSinceGrippersOpened = System.currentTimeMillis() - this.timeGrippersOpened;
                 if (timeElapsedSinceGrippersOpened >= this.dropKickMillisDelay) {
-                    this.pneumaticSubsystem.toggleKickerSolenoid();
-                    this.executionComplete = true;
+                    if (! this.kickerAskedToRetract) {
+                        // Put kicker back in
+                        this.pneumaticSubsystem.toggleKickerSolenoid();
+                        this.kickerAskedToRetract = true;
+                    }
+                    if (! this.pneumaticSubsystem.isKickerOut()) {
+                        this.executionComplete = true;
+                    }
                 }
             }
         }
     }
 
+    @Override
+    protected void interrupted() {
+        super.interrupted();
+        
+        logger.warn("!!!!!!!!!! CubeDeliveryCommand interrupted!!");
+    }
+    
     @Override
     protected boolean isFinished() {
         long timeElapsedMs = System.currentTimeMillis() - this.timeStarted;
@@ -106,7 +129,7 @@ public class CubeDeliveryCommand extends Command {
     protected void end() {
         // Reset our state for when we run again
         this.executionComplete = false;
-        this.pneumaticSubsystem.toggleKickerSolenoid();
+        this.kickerAskedToRetract = false;
         this.pneumaticSubsystem.toggleKickerSolenoidOff();
         this.pneumaticSubsystem.toggleGripperSolenoidOff();
     }

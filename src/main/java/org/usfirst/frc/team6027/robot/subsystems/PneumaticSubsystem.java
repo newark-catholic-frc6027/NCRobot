@@ -89,6 +89,10 @@ public class PneumaticSubsystem extends Subsystem {
         }
     }
     
+    public boolean isKickerOut() {
+        return this.kickerSolenoid.get() == DoubleSolenoid.Value.kReverse;
+    }
+    
     public void toggleKickerSolenoid() {
         this.operatorDisplay.setFieldValue("Kicker Solenoid State", this.kickerSolenoidState.name());
 
