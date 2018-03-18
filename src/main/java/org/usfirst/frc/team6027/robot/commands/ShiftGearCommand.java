@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.subsystems.PneumaticSubsystem;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
@@ -19,10 +21,16 @@ public class ShiftGearCommand extends Command {
 
     private PneumaticSubsystem pneumaticSubsystem;
     private long timeStarted;
-    
+    private DoubleSolenoid shifterSolenoid;
+    private Value initialShifterState;
+
+
     public ShiftGearCommand(PneumaticSubsystem pneumaticSubsystem) {
         requires(pneumaticSubsystem);
         this.pneumaticSubsystem = pneumaticSubsystem;
+        this.shifterSolenoid = this.pneumaticSubsystem.getDriveSolenoid();
+        this.initialShifterState = this.shifterSolenoid.get();
+
     }
     
     @Override
@@ -47,7 +55,7 @@ public class ShiftGearCommand extends Command {
     @Override
     protected boolean isFinished() {
         long timeElapsedMs = System.currentTimeMillis() - this.timeStarted;
-        if (timeElapsedMs >= DELAY_TO_OFF_MS) {
+        if (this.shifterSolenoid.get() != this.initialShifterState || timeElapsedMs >= DELAY_TO_OFF_MS) {
             logger.trace("ShiftGearCommand finished");
             return true;
         } else {

@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.subsystems.PneumaticSubsystem;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class ToggleGrippersCommand extends Command {
@@ -15,11 +17,16 @@ public class ToggleGrippersCommand extends Command {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private PneumaticSubsystem pneumaticSubsystem;
+    private DoubleSolenoid gripperSolenoid;
+    
     private long timeStarted;
+    private Value initialGripperState;
     
     public ToggleGrippersCommand(PneumaticSubsystem pneumaticSubsystem) {
         requires(pneumaticSubsystem);
         this.pneumaticSubsystem = pneumaticSubsystem;
+        this.gripperSolenoid = this.pneumaticSubsystem.getGripperSolenoid();
+        this.initialGripperState = this.gripperSolenoid.get();
     }
     
     @Override
@@ -44,7 +51,7 @@ public class ToggleGrippersCommand extends Command {
     @Override
     protected boolean isFinished() {
         long timeElapsedMs = System.currentTimeMillis() - this.timeStarted;
-        if (timeElapsedMs >= DELAY_TO_OFF_MS) {
+        if (this.gripperSolenoid.get() != this.initialGripperState || timeElapsedMs >= DELAY_TO_OFF_MS) {
             logger.trace("ToggleGrippersCommand finished");
             return true;
         } else {
