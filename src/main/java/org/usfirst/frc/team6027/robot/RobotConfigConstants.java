@@ -119,7 +119,7 @@ public class RobotConfigConstants {
 	 */
 	public static final int LEFT_GEARBOX_CIM_3_ID = -1;  // not currently used
 	
-	public static final int ELEVATOR_GEARBOX_CIM_1_ID = 30;
+	public static final int ELEVATOR_GEARBOX_CIM_1_ID = 31;
 
 	/**
 	 * The joystick port number corresponds to the 'USB Order' serial number on the
