@@ -67,7 +67,14 @@ public class Robot extends IterativeRobot {
         this.setOperatorInterface(new OperatorInterface(this.getOperatorDisplay()));
         this.setDrivetrain(new DrivetrainSubsystem(this.getOperatorInterface()));
         this.setElevatorSubsystem(new ElevatorSubsystem(this.getSensorService().getLimitSwitchSensors()));
+        this.setPneumaticSubsystem(new PneumaticSubsystem(this.getOperatorDisplay()));
 
+        // This ensures that the Teleop command is running whenever we are not in
+        // autonomous mode
+        TeleopManager teleOpCommand = new TeleopManager(this.operatorInterface, this.sensorService,
+                this.getDrivetrain(), this.pneumaticSubsystem, this.elevatorSubsystem);
+        this.getDrivetrain().setDefaultCommand(teleOpCommand);
+        
         AutonomousCommandManager.initAutoScenarioDisplayValues(this.getOperatorDisplay());
         AutonomousCommandManager.initUnlessOptionDisplayValues(this.getOperatorDisplay());
     }
@@ -135,8 +142,6 @@ public class Robot extends IterativeRobot {
     @Override
     public void autonomousInit() {
         
-        this.setPneumaticSubsystem(new PneumaticSubsystem(this.getOperatorDisplay()));
-        
         applyStationPosition();
         String preferredAutoScenario = this.getOperatorDisplay().getSelectedAutoScenario();
         String unlessOption = this.getOperatorDisplay().getSelectedUnlessOption();
@@ -202,14 +207,6 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void teleopInit() {
-        // This ensures that the Teleop command is running whenever we are not in
-        // autonomous mode
-        this.setPneumaticSubsystem(new PneumaticSubsystem(this.getOperatorDisplay()));
-        
-        TeleopManager teleOpCommand = new TeleopManager(this.operatorInterface, this.sensorService,
-                this.getDrivetrain(), this.pneumaticSubsystem, this.elevatorSubsystem);
-        this.getDrivetrain().setDefaultCommand(teleOpCommand);
-
         // This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to
         // continue until interrupted by another command, remove

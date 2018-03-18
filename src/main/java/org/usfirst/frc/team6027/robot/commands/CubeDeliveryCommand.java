@@ -20,6 +20,8 @@ public class CubeDeliveryCommand extends Command {
     /** The delay in milliseconds before we allow the command to finish.  This builds in a small delay to allow the
      * solenoid to finish toggling before we turn it back off. */
     public final static int DELAY_TO_OFF_MS = 1000;
+    public final static int DELAY_TO_RETRACT_KICKER_MS = 350;
+    
     protected boolean executionComplete = false;
     protected boolean kickerAskedToRetract = false;
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -28,6 +30,7 @@ public class CubeDeliveryCommand extends Command {
     private long timeStarted;
     private long timeGrippersOpened = -1;
     private long timeKicked = -1;
+    private long timeKickStarted = -1;
     private DeliveryMode deliveryMode = DeliveryMode.DropThenKick;
     private long dropKickMillisDelay = DEFAULT_DROPKICK_DELAY_MS;
     
@@ -42,6 +45,9 @@ public class CubeDeliveryCommand extends Command {
     protected void initialize() {
         logger.trace("CubeDeliveryCommand deliveryMode: {}, dropKickMillsDelay: {}", this.deliveryMode, this.dropKickMillisDelay);
         this.setTimeout(DELAY_TO_OFF_MS);
+        this.timeGrippersOpened = -1;
+        this.timeKicked = -1;
+        this.timeKickStarted = -1;
     }
     
     
@@ -89,11 +95,16 @@ public class CubeDeliveryCommand extends Command {
             } else {
                 long timeElapsedSinceGrippersOpened = System.currentTimeMillis() - this.timeGrippersOpened;
                 if (timeElapsedSinceGrippersOpened >= this.dropKickMillisDelay) {
-                    if (this.pneumaticSubsystem.isKickerOut()) {
+                    
+                    if (this.timeKicked < 0) {
+                        this.timeKicked = System.currentTimeMillis();
                         this.pneumaticSubsystem.toggleKickerSolenoid();
-                        this.executionComplete = true;
                     } else {
-                        this.pneumaticSubsystem.toggleKickerSolenoid();
+                        long timeElapsedSinceKicked = System.currentTimeMillis() - this.timeKicked;
+                        if (timeElapsedSinceKicked >= DELAY_TO_RETRACT_KICKER_MS) {
+                            this.pneumaticSubsystem.toggleKickerSolenoid();
+                            this.executionComplete = true;
+                        }
                     }
                 }
             }
