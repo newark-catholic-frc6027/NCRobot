@@ -180,7 +180,7 @@ public class TeleopManager extends Command {
 	    public ElevatorCommandGroup(ElevatorCommand ecmd) {
 	        super();
             TeleopManager.this.clearRequirements();
-            //TeleopManager.this.requires(drivetrain);
+            TeleopManager.this.requires(drivetrain);
             this.addSequential(ecmd);
 	    }
 	    

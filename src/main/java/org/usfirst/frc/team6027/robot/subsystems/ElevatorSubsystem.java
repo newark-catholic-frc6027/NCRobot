@@ -26,14 +26,8 @@ public class ElevatorSubsystem extends Subsystem {
     protected void initDefaultCommand() {
     }
 
+    @Override
     public void periodic() {
-        /*
-        if ((this.isGoingUp() && this.elevatorGearBoxMaster.get() > 0.0) || (this.isGoingDown() && this.elevatorGearBoxMaster.get() < 0.0)) {
-            this.elevatorStop();
-            this.logger(">>>> Elevator Emergency Stopped due to movement in the wrong direction!!!!");
-        }
-        */
-        
         if (this.isGoingUp() && this.limitSwitches.getLimitSwitch(LimitSwitchId.MastTop).get()) {
             this.elevatorStop();
         } else if (this.isGoingDown() && this.limitSwitches.getLimitSwitch(LimitSwitchId.MastBottom).get()) {
