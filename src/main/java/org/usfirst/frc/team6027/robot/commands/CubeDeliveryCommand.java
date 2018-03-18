@@ -16,7 +16,7 @@ public class CubeDeliveryCommand extends Command {
         DropThenKick
     };
     
-    public static final long DEFAULT_DROPKICK_DELAY_MS = 100;
+    public static final long DEFAULT_DROPKICK_DELAY_MS = 10;
     /** The delay in milliseconds before we allow the command to finish.  This builds in a small delay to allow the
      * solenoid to finish toggling before we turn it back off. */
     public final static int DELAY_TO_OFF_MS = 1000;
