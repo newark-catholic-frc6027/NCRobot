@@ -6,6 +6,7 @@ import org.usfirst.frc.team6027.robot.OperatorDisplay;
 import org.usfirst.frc.team6027.robot.RobotConfigConstants;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class PneumaticSubsystem extends Subsystem {
@@ -22,23 +23,26 @@ public class PneumaticSubsystem extends Subsystem {
     private DoubleSolenoid kickerSolenoid;
     private DoubleSolenoid.Value kickerSolenoidState;
 	
+    private PneumaticsInitializationCommand pneumaticInitializationCommand;
+    
 	public PneumaticSubsystem(OperatorDisplay operatorDisplay) {
         this.operatorDisplay = operatorDisplay;
-		this.driveSolenoid = new DoubleSolenoid(RobotConfigConstants.PCM_1_ID_NUMBER,
-				RobotConfigConstants.SOLENOID_1_PORT_A, RobotConfigConstants.SOLENOID_1_PORT_B);
-		this.toggleDriveSolenoidForward();
-		
+        
+        this.driveSolenoid = new DoubleSolenoid(RobotConfigConstants.PCM_1_ID_NUMBER,
+                RobotConfigConstants.SOLENOID_1_PORT_A, RobotConfigConstants.SOLENOID_1_PORT_B);
+
         this.gripperSolenoid = new DoubleSolenoid(RobotConfigConstants.PCM_1_ID_NUMBER,
                 RobotConfigConstants.SOLENOID_2_PORT_A, RobotConfigConstants.SOLENOID_2_PORT_B);
-		this.toggleGripperSolenoidForward();
-		
-		this.kickerSolenoid = new DoubleSolenoid(RobotConfigConstants.PCM_1_ID_NUMBER,
+
+        this.kickerSolenoid = new DoubleSolenoid(RobotConfigConstants.PCM_1_ID_NUMBER,
                 RobotConfigConstants.SOLENOID_3_PORT_A, RobotConfigConstants.SOLENOID_3_PORT_B);
-		this.toggleKickerSolenoidForward();
+     
 	}
 
 	@Override
 	protected void initDefaultCommand() {
+	    this.pneumaticInitializationCommand = new PneumaticsInitializationCommand();
+	    this.setDefaultCommand(this.pneumaticInitializationCommand);
 
 	}
 
@@ -155,5 +159,79 @@ public class PneumaticSubsystem extends Subsystem {
         this.kickerSolenoid.set(DoubleSolenoid.Value.kOff);
     }
 
+    class PneumaticsInitializationCommand extends Command {
+        boolean initialized = false;
+        
+        boolean driveSolenoidToggled = false;
+        boolean driveSolenoidInitialized = false;
+        
+        boolean gripperSolenoidToggled = false;
+        boolean gripperSolenoidInitialized = false;
+        
+        boolean kickerSolenoidToggled = false;
+        boolean kickerSolenoidInitialized = false;
+        
+        @Override
+        protected void execute() {
+            if (this.initialized) {
+                return;
+            }
+            
+            if (! driveSolenoidToggled) {
+                logger.trace("Initializing Drive Solenoid...");
+                PneumaticSubsystem.this.toggleDriveSolenoidForward();
+                this.driveSolenoidToggled = true;
+            } else {
+                if (PneumaticSubsystem.this.driveSolenoid.get() == DoubleSolenoid.Value.kForward) {
+                    driveSolenoidInitialized = true;
+                    PneumaticSubsystem.this.toggleDriveSolenoidOff();
+                    logger.trace("Drive Solenoid initialized.");
+                } else {
+                    logger.trace("Drive Solenoid not initialized yet");
+                }
+            }
+            
+            if (driveSolenoidInitialized) {
+                if (! gripperSolenoidToggled) {
+                    logger.trace("Initializing Gripper Solenoid...");
+                    PneumaticSubsystem.this.toggleGripperSolenoidForward();
+                    this.gripperSolenoidToggled = true;
+                } else {
+                    if (PneumaticSubsystem.this.gripperSolenoid.get() == DoubleSolenoid.Value.kForward) {
+                        gripperSolenoidInitialized = true;
+                        PneumaticSubsystem.this.toggleGripperSolenoidOff();
+                        logger.trace("Gripper Solenoid initialized.");
+                    } else {
+                        logger.trace("Gripper Solenoid not initialized yet");
+                    }
+                }
+            }
+            
+
+            if (driveSolenoidInitialized && gripperSolenoidInitialized) {
+                if (! kickerSolenoidToggled) {
+                    logger.trace("Initializing Kicker Solenoid...");
+                    PneumaticSubsystem.this.toggleKickerSolenoidForward();
+                    this.kickerSolenoidToggled = true;
+                } else {
+                    if (PneumaticSubsystem.this.kickerSolenoid.get() == DoubleSolenoid.Value.kForward) {
+                        kickerSolenoidInitialized = true;
+                        PneumaticSubsystem.this.toggleKickerSolenoidOff();
+                        logger.trace("Kicker Solenoid initialized.");
+                    } else {
+                        logger.trace("Kicker Solenoid not initialized yet");
+                    }
+                }
+            }
+            
+            this.initialized = driveSolenoidInitialized && gripperSolenoidInitialized && kickerSolenoidInitialized;
+        }
+        
+        @Override
+        protected boolean isFinished() {
+            return this.initialized;
+        }
+        
+    }
 	
 }
