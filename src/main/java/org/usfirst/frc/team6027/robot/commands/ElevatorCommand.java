@@ -49,24 +49,26 @@ public class ElevatorCommand extends Command {
     
     @Override
     protected boolean isFinished() {
-        boolean bottomSwitchTripped = this.bottomLimitSwitch.get();
-        boolean topSwitchTripped = this.topLimitSwitch.get();
-
-        // Checking isGoingUp/Down may be affecting communication
-        boolean done = (this.direction == ElevatorDirection.Up && this.elevator.isGoingUp() && topSwitchTripped) 
-                           ||
-                       (this.direction == ElevatorDirection.Down && this.elevator.isGoingDown() && bottomSwitchTripped);
-        /*
-        boolean done = (this.direction == ElevatorDirection.Up && topSwitchTripped) 
-                ||
-            (this.direction == ElevatorDirection.Down && bottomSwitchTripped);
-        */      
-        if (done) {
-            logger.info(">>>>> Elevator command finished. topSwitch: {}, bottomSwitch: {}", topSwitchTripped, bottomSwitchTripped);
-            this.elevator.elevatorStop();
-            this.clearRequirements();
-        }
-        return done;
+        return false;
+        
+//        boolean bottomSwitchTripped = this.bottomLimitSwitch.get();
+//        boolean topSwitchTripped = this.topLimitSwitch.get();
+//
+//        // Checking isGoingUp/Down may be affecting communication
+//        boolean done = (this.direction == ElevatorDirection.Up && this.elevator.isGoingUp() && topSwitchTripped) 
+//                           ||
+//                       (this.direction == ElevatorDirection.Down && this.elevator.isGoingDown() && bottomSwitchTripped);
+//        /*
+//        boolean done = (this.direction == ElevatorDirection.Up && topSwitchTripped) 
+//                ||
+//            (this.direction == ElevatorDirection.Down && bottomSwitchTripped);
+//        */      
+//        if (done) {
+//            logger.info(">>>>> Elevator command finished. topSwitch: {}, bottomSwitch: {}", topSwitchTripped, bottomSwitchTripped);
+//            this.elevator.elevatorStop();
+//            this.clearRequirements();
+//        }
+//        return done;
     }
     
     protected void execute() {
