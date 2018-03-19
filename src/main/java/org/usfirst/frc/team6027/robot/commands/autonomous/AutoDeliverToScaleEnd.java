@@ -102,7 +102,7 @@ public class AutoDeliverToScaleEnd extends CommandGroup {
         Command cmd = new TurnWhileDrivingCommand(
                 this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), 
                 turnVectors,
-                DriveDistanceMode.DistanceReadingOnEncoder, 0.7
+                DriveDistanceMode.DistanceReadingOnEncoder, 0.8
         );
         
         return cmd;
