@@ -13,6 +13,7 @@ import org.usfirst.frc.team6027.robot.field.Field;
 import org.usfirst.frc.team6027.robot.field.Field.PlatePosition;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
+import org.usfirst.frc.team6027.robot.subsystems.ElevatorSubsystem;
 import org.usfirst.frc.team6027.robot.subsystems.PneumaticSubsystem;
 
 import edu.wpi.first.wpilibj.Preferences;
@@ -87,16 +88,18 @@ public class AutonomousCommandManager {
     private OperatorDisplay operatorDisplay;
     private Preferences prefs = Preferences.getInstance();
     private Map<String,Command> commandsByName = new HashMap<>();
+    private ElevatorSubsystem elevatorSubsystem;
     
     // SensorService sensorService, DrivetrainSubsystem drivetrainSubsystem,
     // OperatorDisplay operatorDisplay
     public AutonomousCommandManager(AutonomousPreference preferredAutoScenario, Field field, SensorService sensorService, 
-            DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, OperatorDisplay operatorDisplay) {
+            DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevatorSubsystem, OperatorDisplay operatorDisplay) {
         this.preferredAutoScenario = preferredAutoScenario;
         this.field = field;
         this.sensorService = sensorService;
         this.drivetrainSubsystem = drivetrainSubsystem;
         this.pneumaticSubsystem = pneumaticSubsystem;
+        this.elevatorSubsystem = elevatorSubsystem;
         this.operatorDisplay = operatorDisplay;
         
         createAutonomousCommands();
@@ -189,6 +192,14 @@ public class AutonomousCommandManager {
                     case DeliverToSwitchFront:
                         chosenCommand = new AutoDeliverToSwitchFront(DeliverySide.Right, this.getSensorService(), this.getDrivetrainSubsystem(),
                                 this.getPneumaticSubsystem(), this.getOperatorDisplay());
+                        break;
+                    case DeliverToScaleEnd:
+                        chosenCommand = new AutoDeliverToScaleEnd(
+                                DeliverySide.Right,
+                                this.sensorService, this.getDrivetrainSubsystem(), this.getPneumaticSubsystem(),
+                                this.getElevatorSubsystem(),
+                                this.operatorDisplay
+                        );
                         break;
 
                     default:
@@ -359,5 +370,13 @@ public class AutonomousCommandManager {
 
     protected void setOperatorDisplay(OperatorDisplay operatorDisplay) {
         this.operatorDisplay = operatorDisplay;
+    }
+
+    public ElevatorSubsystem getElevatorSubsystem() {
+        return elevatorSubsystem;
+    }
+
+    public void setElevatorSubsystem(ElevatorSubsystem elevatorSubsystem) {
+        this.elevatorSubsystem = elevatorSubsystem;
     }
 }
