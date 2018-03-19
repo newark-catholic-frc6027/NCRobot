@@ -168,7 +168,7 @@ public class Robot extends IterativeRobot {
         */
         this.autoCommandManager = new AutonomousCommandManager(
                 AutonomousPreference.fromDisplayName(preferredAutoScenario), this.getField(), 
-                this.getSensorService(), this.getDrivetrain(), this.getPneumaticSubsystem(), this.getOperatorDisplay()
+                this.getSensorService(), this.getDrivetrain(), this.getPneumaticSubsystem(), this.getElevatorSubsystem(), this.getOperatorDisplay()
         );
         this.autoCommandManager.setUnlessOption(UnlessOption.fromDisplayName(unlessOption));
         
