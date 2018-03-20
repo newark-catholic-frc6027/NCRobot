@@ -31,6 +31,7 @@ public class NavxGyroSensor implements PIDCapableGyro {
     }
 
     protected void initialize() {
+        logger.info("Initializing Gyro sensor...");
         ahrs = new AHRS(RobotConfigConstants.GYRO_ALT_PORT);
         reset();
     }

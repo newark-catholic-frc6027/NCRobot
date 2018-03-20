@@ -1,7 +1,10 @@
 package org.usfirst.frc.team6027.robot.sensors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SensorService {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private EncoderSensors encoderSensors;
 	private PIDCapableGyro gyroSensor;
@@ -57,6 +60,7 @@ public class SensorService {
 
 
     public void resetAll() {
+        logger.info("SensorService is resetting all sensors...");
         this.getGyroSensor().reset();
         this.getEncoderSensors().reset();
         

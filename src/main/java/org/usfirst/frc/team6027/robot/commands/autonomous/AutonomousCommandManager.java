@@ -101,8 +101,6 @@ public class AutonomousCommandManager {
         this.pneumaticSubsystem = pneumaticSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
         this.operatorDisplay = operatorDisplay;
-        
-        createAutonomousCommands();
     }
     
     public static void initAutoScenarioDisplayValues(OperatorDisplay operatorDisplay) {
@@ -115,7 +113,8 @@ public class AutonomousCommandManager {
     public static void initUnlessOptionDisplayValues(OperatorDisplay operatorDisplay) {
         operatorDisplay.registerUnlessOption(UnlessOption.OppositeAssignment.displayName());
     }
-    
+
+    /*
     protected void createAutonomousCommands() {
         
         // TODO: May want to defer creating these until we know which command we are going to need to run
@@ -130,11 +129,8 @@ public class AutonomousCommandManager {
         this.commandsByName.put(turnCommand.getName(), turnCommand);
 
         
-        
-//        this.commandsByName.put(turnWhileDriveCmd.getName(), turnWhileDriveCmd);
-        
     }
-
+*/
     public Command getCommandByName(String commandName) {
         return this.commandsByName.get(commandName);
     }
