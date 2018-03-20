@@ -69,7 +69,6 @@ public class Robot extends IterativeRobot {
         this.setElevatorSubsystem(new ElevatorSubsystem(this.getSensorService().getLimitSwitchSensors()));
         this.setPneumaticSubsystem(new PneumaticSubsystem(this.getOperatorDisplay()));
 
-        this.getPneumaticSubsystem().reset();
         // This ensures that the Teleop command is running whenever we are not in
         // autonomous mode
         TeleopManager teleOpCommand = new TeleopManager(this.operatorInterface, this.sensorService,
@@ -80,6 +79,7 @@ public class Robot extends IterativeRobot {
         
         AutonomousCommandManager.initAutoScenarioDisplayValues(this.getOperatorDisplay());
         AutonomousCommandManager.initUnlessOptionDisplayValues(this.getOperatorDisplay());
+        
     }
 
 
@@ -144,6 +144,7 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void autonomousInit() {
+        this.getPneumaticSubsystem().reset();
         
         applyStationPosition();
         String preferredAutoScenario = this.getOperatorDisplay().getSelectedAutoScenario();
