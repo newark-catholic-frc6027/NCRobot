@@ -37,7 +37,9 @@ public class PneumaticSubsystem extends Subsystem {
 
         this.kickerSolenoid = new DoubleSolenoid(RobotConfigConstants.PCM_1_ID_NUMBER,
                 RobotConfigConstants.SOLENOID_3_PORT_A, RobotConfigConstants.SOLENOID_3_PORT_B);
-     
+
+        this.pneumaticInitializationCommand = new PneumaticsInitializationCommand(this);
+
 	}
 
 	@Override
