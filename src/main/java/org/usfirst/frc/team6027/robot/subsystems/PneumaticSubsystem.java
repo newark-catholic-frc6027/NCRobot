@@ -7,6 +7,7 @@ import org.usfirst.frc.team6027.robot.RobotConfigConstants;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class PneumaticSubsystem extends Subsystem {
@@ -41,11 +42,16 @@ public class PneumaticSubsystem extends Subsystem {
 
 	@Override
 	public void initDefaultCommand() {
+	    /*
 	    this.pneumaticInitializationCommand = new PneumaticsInitializationCommand(this);
 	    this.setDefaultCommand(this.pneumaticInitializationCommand);
-
+*/
 	}
 
+	public void reset() {
+	    Scheduler.getInstance().add(this.pneumaticInitializationCommand);
+	}
+	
 	/**
 	 * When the run method of the scheduler is called this method will be called.
 	 */
@@ -178,7 +184,7 @@ public class PneumaticSubsystem extends Subsystem {
         public PneumaticsInitializationCommand(PneumaticSubsystem subsys) {
             requires(subsys);
         }
-        
+                
         @Override
         protected void execute() {
             if (this.initialized) {
@@ -238,6 +244,14 @@ public class PneumaticSubsystem extends Subsystem {
         @Override
         protected boolean isFinished() {
             return this.initialized;
+        }
+        
+        protected void end() {
+            this.initialized = 
+                this.driveSolenoidInitialized = this.driveSolenoidToggled = 
+                this.gripperSolenoidInitialized = this.gripperSolenoidToggled = 
+                this.kickerSolenoidInitialized = this.kickerSolenoidToggled = false;
+            
         }
         
     }
