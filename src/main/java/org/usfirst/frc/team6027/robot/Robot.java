@@ -13,6 +13,7 @@ import org.usfirst.frc.team6027.robot.commands.ElevatorCommand;
 import org.usfirst.frc.team6027.robot.commands.TeleopManager;
 import org.usfirst.frc.team6027.robot.commands.ElevatorCommand.ElevatorDirection;
 import org.usfirst.frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
+import org.usfirst.frc.team6027.robot.commands.autonomous.NoOpCommand;
 import org.usfirst.frc.team6027.robot.commands.autonomous.AutonomousCommandManager.AutonomousPreference;
 import org.usfirst.frc.team6027.robot.commands.autonomous.AutonomousCommandManager.UnlessOption;
 import org.usfirst.frc.team6027.robot.commands.autonomous.TurnCommand;
@@ -189,7 +190,7 @@ public class Robot extends IterativeRobot {
 
         
         // schedule the autonomous command (example)
-        if (autonomousCommand != null) {
+        if (autonomousCommand != null && ! NoOpCommand.getInstance().equals(autonomousCommand) ) {
             autonomousCommand.start();
         } else {
             logger.warn("No autonomous command to run!");
