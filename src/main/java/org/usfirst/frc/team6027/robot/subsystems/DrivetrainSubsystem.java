@@ -103,6 +103,10 @@ public class DrivetrainSubsystem extends Subsystem {
     }
 
     public void stopMotor() {
+        this.leftGearBoxMaster.stopMotor();
+        this.leftGearBoxSlave1.stopMotor();
+        this.rightGearBoxMaster.stopMotor();
+        this.rightGearBoxSlave1.stopMotor();
         getRobotDrive().stopMotor();
         
     }

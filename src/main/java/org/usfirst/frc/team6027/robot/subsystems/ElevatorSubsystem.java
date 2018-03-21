@@ -26,6 +26,7 @@ public class ElevatorSubsystem extends Subsystem {
     
     public void initialize() {
         this.initialized = true;
+        this.elevatorGearBoxMaster.stopMotor();
     }
     
     @Override
