@@ -46,6 +46,8 @@ public class DrivetrainSubsystem extends Subsystem {
         this.rightGearBoxSlave1.setInverted(invert);
         this.leftGearBoxMaster.setInverted(invert);
         this.leftGearBoxSlave1.setInverted(invert);
+        
+        this.stopMotor();
     }
 
     /**
@@ -71,6 +73,7 @@ public class DrivetrainSubsystem extends Subsystem {
 
     public void stopArcadeDrive() {
         getRobotDrive().arcadeDrive(0,0);
+        getRobotDrive().stopMotor();
     }
 
     public void drive(double outputMagnitude, double curve) {
@@ -93,15 +96,7 @@ public class DrivetrainSubsystem extends Subsystem {
         this.robotDrive = robotDrive;
         
     }
-/*
-    public void differentialDrive(double leftSpeed, double rightSpeed) {
-        this.differentialDrive.tankDrive(leftSpeed, rightSpeed);
-    }
-    
-    public void differentialStopMotor() {
-        this.differentialDrive.stopMotor();
-    }
-    */
+
     public void tankDrive(double leftValue, double rightValue) {
         getRobotDrive().tankDrive(leftValue, rightValue);
         
