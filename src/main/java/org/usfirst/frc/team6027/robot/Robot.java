@@ -112,6 +112,10 @@ public class Robot extends IterativeRobot {
         // Make sure that there is no test data configured on the Driver Station!
         boolean gameDataExists = pollForGameData();
         Scheduler.getInstance().run();
+        
+        this.getDrivetrain().stopMotor();
+        this.getElevatorSubsystem().elevatorStop();
+
     }
 
     protected void applyStationPosition() {
