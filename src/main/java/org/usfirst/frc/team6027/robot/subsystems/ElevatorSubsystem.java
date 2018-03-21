@@ -18,8 +18,14 @@ public class ElevatorSubsystem extends Subsystem {
 
     private LimitSwitchSensors limitSwitches;
     
+    private boolean initialized = false;
+    
     public ElevatorSubsystem(LimitSwitchSensors limitSwitches) {
         this.limitSwitches = limitSwitches;
+    }
+    
+    public void initialize() {
+        this.initialized = true;
     }
     
     @Override
@@ -28,10 +34,12 @@ public class ElevatorSubsystem extends Subsystem {
 
     @Override
     public void periodic() {
-        if (this.isGoingUp() && this.limitSwitches.getLimitSwitch(LimitSwitchId.MastTop).get()) {
-            this.elevatorStop();
-        } else if (this.isGoingDown() && this.limitSwitches.getLimitSwitch(LimitSwitchId.MastBottom).get()) {
-            this.elevatorStop();
+        if (this.initialized) {
+            if (this.isGoingUp() && this.limitSwitches.getLimitSwitch(LimitSwitchId.MastTop).get()) {
+                this.elevatorStop();
+            } else if (this.isGoingDown() && this.limitSwitches.getLimitSwitch(LimitSwitchId.MastBottom).get()) {
+                this.elevatorStop();
+            }
         }
     }
     

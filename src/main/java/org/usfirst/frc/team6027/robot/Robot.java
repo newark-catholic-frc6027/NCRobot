@@ -84,10 +84,6 @@ public class Robot extends IterativeRobot {
     }
 
 
-    protected void updateAutonomousCommands() {
-        ((TurnCommand)this.autoCommandManager.getCommandByName(TurnCommand.NAME)).setTargetAngle(this.prefs.getDouble("turnCommand.targetAngle", 90.0));
-    }
-    
     protected void outputBanner() {
         logger.info(">>>>> Newark Catholic Team 6027 Robot started! <<<<<");
         logger.info("	     ________.____    ._____________      ___ ___  ");
@@ -151,9 +147,6 @@ public class Robot extends IterativeRobot {
         String preferredAutoScenario = this.getOperatorDisplay().getSelectedAutoScenario();
         String unlessOption = this.getOperatorDisplay().getSelectedUnlessOption();
 
-        // TODO: remove this once done testing, only need to update parameters for repeated testing
-        // updateAutonomousCommands();
-        
         // Make sure we have the game data, even though we should already have it from disabledPeriodic method
         while (! pollForGameData() && this.gameDataPollCount < 20 ) {
             try {
@@ -165,10 +158,6 @@ public class Robot extends IterativeRobot {
 
         this.sensorService.resetAll();
                 
-        /* TODO: use this code once ready for testing positions 
-        AutonomousCommandSelector commandSelector = new AutonomousCommandSelector(this.getField(), preferredAutoCommand);
-        this.autonomousCommand = commandSelector.chooseCommand();
-        */
         this.autoCommandManager = new AutonomousCommandManager(
                 AutonomousPreference.fromDisplayName(preferredAutoScenario), this.getField(), 
                 this.getSensorService(), this.getDrivetrain(), this.getPneumaticSubsystem(), this.getElevatorSubsystem(), this.getOperatorDisplay()
@@ -176,21 +165,10 @@ public class Robot extends IterativeRobot {
         this.autoCommandManager.setUnlessOption(UnlessOption.fromDisplayName(unlessOption));
         
         this.autonomousCommand = this.autoCommandManager.chooseCommand();
-//        this.autonomousCommand = new ElevatorCommand(ElevatorDirection.Up, 1.0, this.sensorService, this.elevatorSubsystem);
-        /*
-        // TODO: REMOVE after testing, this is only here to allow us to repeatedly test a command without having
-        // to select it on the OperatorDisplay
-        if (this.autonomousCommand == NoOpCommand.getInstance()) {
-            
-            this.autonomousCommand = this.autoCommandManager.getCommandByName(TurnWhileDrivingCommand.NAME);
-        }
-        */
-        
-        // TODO: If for some reason we don't have the game data, don't run any commands
-
         
         // schedule the autonomous command (example)
         if (autonomousCommand != null && ! NoOpCommand.getInstance().equals(autonomousCommand) ) {
+            this.elevatorSubsystem.initialize();
             autonomousCommand.start();
         } else {
             logger.warn("No autonomous command to run!");
@@ -212,6 +190,8 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void teleopInit() {
+        // If elevatorSubsystem is already initialized, this will do nothing
+        this.elevatorSubsystem.initialize();
         this.getPneumaticSubsystem().reset();
         // This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to
