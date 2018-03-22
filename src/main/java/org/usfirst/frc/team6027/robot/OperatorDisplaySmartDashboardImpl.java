@@ -47,9 +47,9 @@ public class OperatorDisplaySmartDashboardImpl implements OperatorDisplay {
     protected void initPositionChooser() {
         this.chooserCache.put(ChooserName.Position, this.positionChooser);
         this.positionChooser.addDefault("NO SELECTION", new Integer(0));
-        this.positionChooser.addObject("Pos 1", new Integer(1));
-        this.positionChooser.addObject("Pos 2", new Integer(2));
-        this.positionChooser.addObject("Pos 3", new Integer(3));
+        this.positionChooser.addObject("Left", new Integer(1));
+        this.positionChooser.addObject("Center", new Integer(2));
+        this.positionChooser.addObject("Right", new Integer(3));
         
         SmartDashboard.putData(ChooserName.Position.displayName(), this.positionChooser);
     }

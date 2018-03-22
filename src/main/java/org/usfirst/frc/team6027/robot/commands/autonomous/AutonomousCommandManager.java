@@ -7,7 +7,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.OperatorDisplay;
-import org.usfirst.frc.team6027.robot.commands.autonomous.DriveStraightCommand.DriveDistanceMode;
 import org.usfirst.frc.team6027.robot.field.Field;
 import org.usfirst.frc.team6027.robot.field.Field.PlatePosition;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
@@ -405,7 +404,7 @@ public class AutonomousCommandManager {
         return null;
     }
     
-    private Command makeDeliverToSwitchFromCenterCommand(DeliverySide right) {
+    private Command makeDeliverToSwitchFromCenterCommand(DeliverySide deliverySide) {
         logger.error("makeDeliverToSwitchFromCenterCommand Not implemented yet!!");
         return null;
         
