@@ -20,7 +20,7 @@ public interface OperatorDisplay {
     public enum ChooserName {
         Position,
         Scenario("Auto Scenario"),
-        Unless("Unless");
+        DontDoOption("Dont Do Option");
         
         private String displayName;
         
@@ -65,14 +65,14 @@ public interface OperatorDisplay {
     void registerAutoScenario(String displayName);
     void registerAutoScenario(String displayName, boolean isDefaultCommand);
 
-    void registerUnlessOption(String displayName, boolean isDefaultCommand);
-    void registerUnlessOption(String displayName);
+    void registerDontDoOption(String displayName, boolean isDefaultCommand);
+    void registerDontDoOption(String displayName);
     
     String getSelectedAutoScenario();
     
     Integer getSelectedPosition();
 
-    String getSelectedUnlessOption();
+    String getSelectedDontDoOption();
 
     
 }

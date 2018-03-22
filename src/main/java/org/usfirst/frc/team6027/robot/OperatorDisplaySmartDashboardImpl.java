@@ -21,7 +21,7 @@ public class OperatorDisplaySmartDashboardImpl implements OperatorDisplay {
 
     private SendableChooser<Integer> positionChooser = new SendableChooser<>();
     private SendableChooser<String> scenarioChooser = new SendableChooser<>();
-    private SendableChooser<String> unlessChooser = new SendableChooser<>();
+    private SendableChooser<String> dontDoOptionChooser = new SendableChooser<>();
     
     @SuppressWarnings("rawtypes")
     private Map<ChooserName, SendableChooser> chooserCache = new HashMap<>();
@@ -29,7 +29,7 @@ public class OperatorDisplaySmartDashboardImpl implements OperatorDisplay {
     public OperatorDisplaySmartDashboardImpl() {
        initPositionChooser();
        initScenarioChooser();
-       initUnlessChooser();
+       initDontDoOptionChooser();
     }
 
     protected void initScenarioChooser() {
@@ -38,10 +38,10 @@ public class OperatorDisplaySmartDashboardImpl implements OperatorDisplay {
         SmartDashboard.putData(ChooserName.Scenario.displayName(), this.scenarioChooser);
     }
     
-    protected void initUnlessChooser() {
-        this.chooserCache.put(ChooserName.Unless, this.unlessChooser);
-        this.unlessChooser.addDefault("NO SELECTION", "NO SELECTION" );
-        SmartDashboard.putData(ChooserName.Unless.displayName(), this.unlessChooser);
+    protected void initDontDoOptionChooser() {
+        this.chooserCache.put(ChooserName.DontDoOption, this.dontDoOptionChooser);
+        this.dontDoOptionChooser.addDefault("NO SELECTION", "NO SELECTION" );
+        SmartDashboard.putData(ChooserName.DontDoOption.displayName(), this.dontDoOptionChooser);
     }
     
     protected void initPositionChooser() {
@@ -94,16 +94,16 @@ public class OperatorDisplaySmartDashboardImpl implements OperatorDisplay {
     }
 
     @Override
-    public void registerUnlessOption(String displayName) {
+    public void registerDontDoOption(String displayName) {
         this.registerAutoScenario(displayName, false);
     }
 
     @Override
-    public void registerUnlessOption(String displayName, boolean isDefaultCommand) {
+    public void registerDontDoOption(String displayName, boolean isDefaultCommand) {
         if (isDefaultCommand) {
-            this.unlessChooser.addDefault(displayName, displayName);
+            this.dontDoOptionChooser.addDefault(displayName, displayName);
         } else {
-            this.unlessChooser.addObject(displayName, displayName);
+            this.dontDoOptionChooser.addObject(displayName, displayName);
         }
     }
     
@@ -118,8 +118,8 @@ public class OperatorDisplaySmartDashboardImpl implements OperatorDisplay {
     }
 
     @Override
-    public String getSelectedUnlessOption() {
-        return (String) this.unlessChooser.getSelected();
+    public String getSelectedDontDoOption() {
+        return (String) this.dontDoOptionChooser.getSelected();
     }
 
 
