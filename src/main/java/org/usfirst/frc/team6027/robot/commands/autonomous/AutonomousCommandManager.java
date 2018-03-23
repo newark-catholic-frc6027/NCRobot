@@ -426,8 +426,11 @@ public class AutonomousCommandManager {
     }
     
     private Command makeDeliverToScaleEndFromOppositeSideCommand(DeliverySide deliverySide) {
-        logger.error("makeDeliverToScaleEndCommandFromOppositeSide Not implemented yet!!");
-        return null;
+        return new AutoDeliverToScaleEndFromOppositeSide(deliverySide, 
+                this.sensorService, this.getDrivetrainSubsystem(), 
+                this.getPneumaticSubsystem(), 
+                this.getElevatorSubsystem(), this.getOperatorDisplay()
+        );
     }
     
     private Command makeDeliverToSwitchFromCenterCommand(DeliverySide deliverySide) {

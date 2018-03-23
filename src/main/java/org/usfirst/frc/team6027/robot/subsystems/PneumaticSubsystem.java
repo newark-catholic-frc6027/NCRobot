@@ -205,6 +205,7 @@ public class PneumaticSubsystem extends Subsystem {
         @Override
         protected void execute() {
             if (this.initialized) {
+                logger.info("Pneumatics already initialized, nothing to do.");
                 return;
             }
             

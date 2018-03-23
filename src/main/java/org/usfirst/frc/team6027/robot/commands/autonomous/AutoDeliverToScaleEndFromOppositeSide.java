@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class AutoDeliverToScaleEnd extends CommandGroup {
+public class AutoDeliverToScaleEndFromOppositeSide extends CommandGroup {
     
     private SensorService sensorService;
     private DrivetrainSubsystem drivetrainSubsystem;
@@ -27,7 +27,7 @@ public class AutoDeliverToScaleEnd extends CommandGroup {
     private DeliverySide deliverySide;
 
 
-    public AutoDeliverToScaleEnd(DeliverySide deliverySide, SensorService sensorService, 
+    public AutoDeliverToScaleEndFromOppositeSide(DeliverySide deliverySide, SensorService sensorService, 
             DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevatorSubsystem, OperatorDisplay operatorDisplay) {
         
         this.sensorService = sensorService;
@@ -38,8 +38,8 @@ public class AutoDeliverToScaleEnd extends CommandGroup {
         this.elevatorSubsystem = elevatorSubsystem;
   
         Command multiLegDriveCmd = createMultiLegDriveCommand();
-        Command elevatorUpCmd = createElevatorCommand();
         Command turnCommand = createTurnCommand();
+        Command elevatorUpCmd = createElevatorCommand();
         Command driveToScaleCmd = createDriveToScaleCommand();
         Command cubeDeliverCmd = createCubeDeliveryCommand();
 
@@ -85,12 +85,12 @@ public class AutoDeliverToScaleEnd extends CommandGroup {
     }
     
     protected Command createMultiLegDriveCommand() {
-        double leg1Distance = 12.0; //this.prefs.getDouble("leg1.distance", 12.0);
-        double leg1Angle = 0.0;     //this.prefs.getDouble("leg1.angle", 0.0);
-        double leg2Distance = 47.0; //this.prefs.getDouble("leg2.distance", 47.0);
-        double leg2Angle = 30.0 * (this.deliverySide == DeliverySide.Right ? 1.0 : -1.0);// this.prefs.getDouble("leg2.angle", 30.0)
-        double leg3Distance = this.prefs.getDouble("leg3.distance", 100.0);
-        double leg3Angle = 0.0;     //this.prefs.getDouble("leg3.angle", 0.0);
+        double leg1Distance = 200.0;//this.prefs.getDouble("leg1.distance", 12.0);
+        double leg1Angle = 0.0;//this.prefs.getDouble("leg1.angle", 0.0);
+        double leg2Distance = 215.0;//this.prefs.getDouble("leg2.distance", 47.0);
+        double leg2Angle = 90.0 * (this.deliverySide == DeliverySide.Right ? 1.0 : -1.0);//this.prefs.getDouble("leg2.angle", 30.0) * (this.deliverySide == DeliverySide.Right ? 1.0 : -1.0);
+        double leg3Distance = 70.0;//this.prefs.getDouble("leg3.distance", 100.0);
+        double leg3Angle = 180.0 * (this.deliverySide == DeliverySide.Left ? 1.0 : -1.0);//this.prefs.getDouble("leg3.angle", 0.0);
 
         TargetVector[] turnVectors = new TargetVector[] { 
                 new TargetVector(leg1Angle, leg1Distance),
@@ -102,7 +102,7 @@ public class AutoDeliverToScaleEnd extends CommandGroup {
         Command cmd = new TurnWhileDrivingCommand(
                 this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), 
                 turnVectors,
-                DriveDistanceMode.DistanceReadingOnEncoder, 0.8
+                DriveDistanceMode.DistanceReadingOnEncoder, 0.9
         );
         
         return cmd;

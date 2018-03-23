@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.sensors.LimitSwitchSensors;
 import org.usfirst.frc.team6027.robot.sensors.LimitSwitchSensors.LimitSwitchId;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
+import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import org.usfirst.frc.team6027.robot.subsystems.ElevatorSubsystem;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -27,12 +28,14 @@ public class ElevatorCommand extends Command {
     private LimitSwitchSensors limitSwitches;
     private DigitalInput topLimitSwitch;
     private DigitalInput bottomLimitSwitch;
+    private DrivetrainSubsystem driveTrain;
     
     private double power = 0.5;
     
-    public ElevatorCommand(ElevatorDirection direction, double power, SensorService sensorService, ElevatorSubsystem elevator) {
+    public ElevatorCommand(ElevatorDirection direction, double power, SensorService sensorService, ElevatorSubsystem elevator, DrivetrainSubsystem drivetrain) {
         this.direction = direction;
         this.elevator = elevator;
+        this.driveTrain = drivetrain;
         this.power = power;
         this.limitSwitches = sensorService.getLimitSwitchSensors();
         this.topLimitSwitch = this.limitSwitches.getLimitSwitch(LimitSwitchId.MastTop);
@@ -84,6 +87,8 @@ public class ElevatorCommand extends Command {
         } else {
             logger.error("Elevator Execute stopped!  Direction not set!");
         }
+        // Be explicit in order to try reduce motor "Output not updated often enough" warnings
+        this.driveTrain.stopMotor();
     }
 
     
