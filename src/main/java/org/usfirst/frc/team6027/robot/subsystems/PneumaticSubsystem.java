@@ -189,21 +189,5 @@ public class PneumaticSubsystem extends Subsystem {
         }
         
         pneumaticsInitializationCommand.start();
-
-        /*
-        long startTime = System.currentTimeMillis();
-        long currentTime = startTime;
-        long elapsedTime = currentTime - startTime;
-        while (! this.isReset() && (elapsedTime) < 1000) {
-            try {
-                logger.trace("Waiting for pneumatics to reset. Elapsed time: {}", elapsedTime);
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                logger.error("", e);
-            }
-            currentTime = System.currentTimeMillis();
-            elapsedTime = currentTime - startTime;
-        }
-        */
     }
 }

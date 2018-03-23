@@ -4,6 +4,7 @@ import org.usfirst.frc.team6027.robot.OperatorDisplay;
 import org.usfirst.frc.team6027.robot.commands.CubeDeliveryCommand;
 import org.usfirst.frc.team6027.robot.commands.CubeDeliveryCommand.DeliveryMode;
 import org.usfirst.frc.team6027.robot.commands.ElevatorCommand;
+import org.usfirst.frc.team6027.robot.commands.PneumaticsInitializationCommand;
 import org.usfirst.frc.team6027.robot.commands.ElevatorCommand.ElevatorDirection;
 import org.usfirst.frc.team6027.robot.commands.autonomous.DriveStraightCommand.DriveDistanceMode;
 import org.usfirst.frc.team6027.robot.commands.autonomous.TurnWhileDrivingCommand.TargetVector;
@@ -37,6 +38,8 @@ public class AutoDeliverToScaleEnd extends CommandGroup {
         this.deliverySide = deliverySide;
         this.elevatorSubsystem = elevatorSubsystem;
   
+        this.addSequential(new PneumaticsInitializationCommand(this.pneumaticSubsystem));
+        
         Command multiLegDriveCmd = createMultiLegDriveCommand();
         Command elevatorUpCmd = createElevatorCommand();
         Command turnCommand = createTurnCommand();

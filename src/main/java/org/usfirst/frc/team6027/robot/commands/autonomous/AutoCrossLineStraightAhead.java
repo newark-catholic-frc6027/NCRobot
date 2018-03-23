@@ -3,6 +3,7 @@ package org.usfirst.frc.team6027.robot.commands.autonomous;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.OperatorDisplay;
+import org.usfirst.frc.team6027.robot.commands.PneumaticsInitializationCommand;
 import org.usfirst.frc.team6027.robot.commands.autonomous.DriveStraightCommand.DriveDistanceMode;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;

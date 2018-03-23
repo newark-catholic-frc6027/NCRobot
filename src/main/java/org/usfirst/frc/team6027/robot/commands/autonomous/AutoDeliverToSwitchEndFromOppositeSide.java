@@ -1,6 +1,7 @@
 package org.usfirst.frc.team6027.robot.commands.autonomous;
 
 import org.usfirst.frc.team6027.robot.OperatorDisplay;
+import org.usfirst.frc.team6027.robot.commands.PneumaticsInitializationCommand;
 import org.usfirst.frc.team6027.robot.commands.autonomous.DriveStraightCommand.DriveDistanceMode;
 import org.usfirst.frc.team6027.robot.commands.autonomous.TurnWhileDrivingCommand.TargetVector;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
@@ -30,6 +31,8 @@ public class AutoDeliverToSwitchEndFromOppositeSide extends CommandGroup {
         this.operatorDisplay = operatorDisplay;
         this.deliverySide = deliverySide;
         
+        this.addSequential(new PneumaticsInitializationCommand(this.pneumaticSubsystem));
+
         Command multiLegDriveCmd = createMultiLegDriveCommand();
         Command turnCommand = createTurnCommand();
         Command driveToSwitchCmd = createDriveToSwitchCommand();
