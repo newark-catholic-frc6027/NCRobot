@@ -77,7 +77,7 @@ public class Robot extends IterativeRobot {
         AutonomousCommandManager.initAutoScenarioDisplayValues(this.getOperatorDisplay());
         AutonomousCommandManager.initDontDoOptionDisplayValues(this.getOperatorDisplay());
         
-        this.getPneumaticSubsystem().reset();
+//        this.getPneumaticSubsystem().reset();
     }
 
 
@@ -142,7 +142,7 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void autonomousInit() {
-        this.getPneumaticSubsystem().reset();
+//        this.getPneumaticSubsystem().reset();
         
         applyStationPosition();
         String preferredAutoScenario = this.getOperatorDisplay().getSelectedAutoScenario();

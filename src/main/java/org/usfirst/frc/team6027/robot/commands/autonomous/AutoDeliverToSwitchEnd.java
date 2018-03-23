@@ -2,6 +2,7 @@ package org.usfirst.frc.team6027.robot.commands.autonomous;
 
 import org.usfirst.frc.team6027.robot.OperatorDisplay;
 import org.usfirst.frc.team6027.robot.commands.CubeDeliveryCommand;
+import org.usfirst.frc.team6027.robot.commands.PneumaticsInitializationCommand;
 import org.usfirst.frc.team6027.robot.commands.StopMotorsCommand;
 import org.usfirst.frc.team6027.robot.commands.CubeDeliveryCommand.DeliveryMode;
 import org.usfirst.frc.team6027.robot.commands.autonomous.DriveStraightCommand.DriveDistanceMode;
@@ -35,7 +36,9 @@ public class AutoDeliverToSwitchEnd extends CommandGroup {
         this.elevatorSubsystem = elevatorSubsystem;
         this.operatorDisplay = operatorDisplay;
         this.deliverySide = deliverySide;
-        
+
+        this.addSequential(new PneumaticsInitializationCommand(this.pneumaticSubsystem));
+
         Command multiLegDriveCmd = createMultiLegDriveCommand();
         Command turnCommand = createTurnCommand();
         Command driveToSwitchCmd = createDriveToSwitchCommand();
