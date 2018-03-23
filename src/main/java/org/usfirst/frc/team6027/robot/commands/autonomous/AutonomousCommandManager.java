@@ -51,7 +51,6 @@ public class AutonomousCommandManager {
         NoPreference("NO SELECTION"),
         CrossLine("Cross the Line"),
         DeliverToSwitchEnd("Deliver to Switch END"),
-//        DeliverToSwitchFront("Deliver to Switch FRONT"),
         DeliverToScaleEnd("Deliver to Scale END");
         
         private String displayName;
@@ -113,6 +112,7 @@ public class AutonomousCommandManager {
     }
 
     public Command chooseEndStationCommand(int stationPosition) {
+
         // If override = NO SELECTION AND dontDoOption = NO SELECTION
         //   FULL AUTO: 1 -> Scale our side
         //              2 -> Switch our side
@@ -160,52 +160,72 @@ public class AutonomousCommandManager {
         boolean switchIsOnOurSide = (this.getField().isPlateAssignedToUs(PlatePosition.OurSwitchLeft) && stationPosition == 1) 
                 || (this.getField().isPlateAssignedToUs(PlatePosition.OurSwitchRight) && stationPosition == 3);
         
+        
         DeliverySide deliverySide = stationPosition == 1 ? DeliverySide.Left : DeliverySide.Right;
+
+        logger.info("Choosing a {} station command...", deliverySide);
+        
+        logger.info("Scale on our side? {}, switch on our side? {}, deliverySide: {}", scaleIsOnOurSide, switchIsOnOurSide, deliverySide);
+        logger.info("autonomousPreference: {}, dontDoOption: {}", autoPreference, dontDoOption);
         
         if (autoPreference == AutonomousPreference.NoPreference && dontDoOption == DontDoOption.NoPreference) {
             if (scaleIsOnOurSide) {
+                logger.info("Delivering to SCALE on OUR SIDE (1)...");
                 chosenCommand = this.makeDeliverToScaleEndCommand(deliverySide);
             } else if (switchIsOnOurSide) {
+                logger.info("Delivering to SWITCH on OUR SIDE (1)...");
                 chosenCommand = this.makeDeliverToSwitchEndCommand(deliverySide);
             } else { // going with opposite scale
+                logger.info("Delivering to SCALE on OPPOSITE SIDE (1)...");
                 chosenCommand = this.makeDeliverToScaleEndFromOppositeSideCommand(deliverySide);
             } 
         } else if (autoPreference == AutonomousPreference.DeliverToScaleEnd && dontDoOption == DontDoOption.NoPreference) {
             if (scaleIsOnOurSide) {
+                logger.info("Delivering to SCALE on OUR SIDE (2)...");
                 chosenCommand = this.makeDeliverToScaleEndCommand(deliverySide);
             } else { // going with opposite scale
+                logger.info("Delivering to SCALE on OPPOSITE SIDE (2)...");
                 chosenCommand = this.makeDeliverToScaleEndFromOppositeSideCommand(deliverySide);
             } 
             
         } else if (autoPreference == AutonomousPreference.DeliverToScaleEnd && dontDoOption == DontDoOption.DontCrossField) {
             if (scaleIsOnOurSide) {
+                logger.info("Delivering to SCALE on OUR SIDE (3)...");
                 chosenCommand = this.makeDeliverToScaleEndCommand(deliverySide);
             } else if (switchIsOnOurSide) {
+                logger.info("Delivering to SWITCH on OUR SIDE (3)...");
                 chosenCommand = this.makeDeliverToSwitchEndCommand(deliverySide);
             } else { // cross line
+                logger.info("CROSSING LINE (3)...");
                 chosenCommand = this.makeCrossLineFromEndPositionCommand();
             } 
             
         } else if (autoPreference == AutonomousPreference.DeliverToSwitchEnd && dontDoOption == DontDoOption.NoPreference) {
             if (switchIsOnOurSide) {
+                logger.info("Delivering to SWITCH on OUR SIDE (4)...");
                 chosenCommand = this.makeDeliverToSwitchEndCommand(deliverySide);
             } else { // switch opposite side
+                logger.info("Delivering to SWITCH on OPPOSITE SIDE (4)...");
                 chosenCommand = this.makeDeliverToSwitchEndFromOppositeSideCommand(deliverySide);
             } 
             
         } else if (autoPreference == AutonomousPreference.DeliverToSwitchEnd && dontDoOption == DontDoOption.DontCrossField) {
             if (switchIsOnOurSide) {
+                logger.info("Delivering to SWITCH on OUR SIDE (5)...");
                 chosenCommand = this.makeDeliverToSwitchEndCommand(deliverySide);
             } else if (scaleIsOnOurSide) {
+                logger.info("Delivering to SCALE on OUR SIDE (5)...");
                 chosenCommand = this.makeDeliverToScaleEndCommand(deliverySide);
             } else { // cross line
+                logger.info("CROSSING LINE (5)...");
                 chosenCommand = this.makeCrossLineFromEndPositionCommand();
             } 
             
         } else if (autoPreference == AutonomousPreference.CrossLine) {
+            logger.info("CROSSING LINE (6)...");
             chosenCommand = this.makeCrossLineFromEndPositionCommand();
         } else {
-            logger.error("What happened? Should never get here");
+            logger.error("What happened? Should never get here. No command selected.");
         }
         
         return chosenCommand;
@@ -213,6 +233,7 @@ public class AutonomousCommandManager {
     
 
     public Command chooseCenterStationCommand() {
+        logger.info("Choosing a CENTER station command...");
         Command chosenCommand = null;
         if (this.getField().getOurStationPosition() != 2) {
             logger.error("Position {} is not a valid position for chooseCenterStationCommand!  No command will be chosen.");
@@ -228,6 +249,10 @@ public class AutonomousCommandManager {
         // If Override = CROSS LINE
         //              1 -> Cross Line
         AutonomousPreference autoPreference = this.getPreferredScenario();
+        
+        logger.info("Our switch assignment: {}", ourSwitchAssignmentIsOnRight ? "RIGHT" : "LEFT");
+        logger.info("autonomousPreference: {}, dontDoOption: {}", autoPreference, dontDoOption);
+        
         if (autoPreference != AutonomousPreference.CrossLine) {
             if (ourSwitchAssignmentIsOnRight) {
                 chosenCommand = this.makeDeliverToSwitchFromCenterCommand(DeliverySide.Right);
