@@ -7,6 +7,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.OperatorDisplay;
+import org.usfirst.frc.team6027.robot.commands.autonomous.DriveStraightCommand.DriveDistanceMode;
 import org.usfirst.frc.team6027.robot.field.Field;
 import org.usfirst.frc.team6027.robot.field.Field.PlatePosition;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
@@ -431,8 +432,7 @@ public class AutonomousCommandManager {
                 this.getPneumaticSubsystem(), 
                 this.getElevatorSubsystem(), this.getOperatorDisplay()
         );
-    }
-    
+    }    
     private Command makeDeliverToSwitchFromCenterCommand(DeliverySide deliverySide) {
         logger.error("makeDeliverToSwitchFromCenterCommand Not implemented yet!!");
         return null;
@@ -440,8 +440,8 @@ public class AutonomousCommandManager {
     }
 
     private Command makeCrossLineFromCenterCommand() {
-        logger.error("makeCrossLineFromCenterCommand Not implemented yet!!");
-        return null;
+        return new DriveStraightCommand(this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), 
+                -12.0, DriveDistanceMode.DistanceFromObject, .40); 
     }
     
 }
