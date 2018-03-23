@@ -2,11 +2,13 @@ package org.usfirst.frc.team6027.robot.commands.autonomous;
 
 import org.usfirst.frc.team6027.robot.OperatorDisplay;
 import org.usfirst.frc.team6027.robot.commands.CubeDeliveryCommand;
+import org.usfirst.frc.team6027.robot.commands.StopMotorsCommand;
 import org.usfirst.frc.team6027.robot.commands.CubeDeliveryCommand.DeliveryMode;
 import org.usfirst.frc.team6027.robot.commands.autonomous.DriveStraightCommand.DriveDistanceMode;
 import org.usfirst.frc.team6027.robot.commands.autonomous.TurnWhileDrivingCommand.TargetVector;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
+import org.usfirst.frc.team6027.robot.subsystems.ElevatorSubsystem;
 import org.usfirst.frc.team6027.robot.subsystems.PneumaticSubsystem;
 
 import edu.wpi.first.wpilibj.Preferences;
@@ -18,32 +20,39 @@ public class AutoDeliverToSwitchEnd extends CommandGroup {
     private SensorService sensorService;
     private DrivetrainSubsystem drivetrainSubsystem;
     private PneumaticSubsystem pneumaticSubsystem;
+    private ElevatorSubsystem elevatorSubsystem;
     private OperatorDisplay operatorDisplay;
     private Preferences prefs = Preferences.getInstance();
     private DeliverySide deliverySide;
 
 
     public AutoDeliverToSwitchEnd(DeliverySide deliverySide, SensorService sensorService, 
-            DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, OperatorDisplay operatorDisplay) {
+            DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevatorSubsystem, OperatorDisplay operatorDisplay) {
         
         this.sensorService = sensorService;
         this.drivetrainSubsystem = drivetrainSubsystem;
         this.pneumaticSubsystem = pneumaticSubsystem;
+        this.elevatorSubsystem = elevatorSubsystem;
         this.operatorDisplay = operatorDisplay;
         this.deliverySide = deliverySide;
         
         Command multiLegDriveCmd = createMultiLegDriveCommand();
         Command turnCommand = createTurnCommand();
         Command driveToSwitchCmd = createDriveToSwitchCommand();
+        Command stopMotorsCommand = createStopMotorsCommand();
         Command cubeDeliverCmd = createCubeDeliveryCommand();
 
         this.addSequential(multiLegDriveCmd);
         this.addSequential(turnCommand);
         this.addSequential(driveToSwitchCmd);
+        this.addSequential(stopMotorsCommand);
         // TODO: need to add command to DROP carriage
         this.addSequential(cubeDeliverCmd);
     }
 
+    protected Command createStopMotorsCommand() {
+        return new StopMotorsCommand(this.elevatorSubsystem, this.drivetrainSubsystem);
+    }
 
     protected Command createCubeDeliveryCommand() {
         Command cmd = new CubeDeliveryCommand(DeliveryMode.DropThenKick, 10, this.getPneumaticSubsystem());

@@ -419,7 +419,8 @@ public class AutonomousCommandManager {
     private Command makeDeliverToSwitchEndCommand(DeliverySide deliverySide) {
         return new AutoDeliverToSwitchEnd(
                 deliverySide,
-                this.sensorService, this.getDrivetrainSubsystem(), this.getPneumaticSubsystem(), 
+                this.sensorService, this.getDrivetrainSubsystem(), this.getPneumaticSubsystem(),
+                this.getElevatorSubsystem(),
                 this.operatorDisplay
         );
     }
