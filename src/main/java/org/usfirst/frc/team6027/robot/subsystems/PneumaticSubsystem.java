@@ -189,7 +189,8 @@ public class PneumaticSubsystem extends Subsystem {
         }
         
         pneumaticsInitializationCommand.start();
-        
+
+        /*
         long startTime = System.currentTimeMillis();
         long currentTime = startTime;
         long elapsedTime = currentTime - startTime;
@@ -203,6 +204,6 @@ public class PneumaticSubsystem extends Subsystem {
             currentTime = System.currentTimeMillis();
             elapsedTime = currentTime - startTime;
         }
-        
+        */
     }
 }
