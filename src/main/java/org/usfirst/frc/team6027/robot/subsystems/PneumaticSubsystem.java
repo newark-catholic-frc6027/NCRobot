@@ -4,10 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.OperatorDisplay;
 import org.usfirst.frc.team6027.robot.RobotConfigConstants;
+import org.usfirst.frc.team6027.robot.commands.PneumaticsInitializationCommand;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class PneumaticSubsystem extends Subsystem {
@@ -23,9 +22,9 @@ public class PneumaticSubsystem extends Subsystem {
     
     private DoubleSolenoid kickerSolenoid;
     private DoubleSolenoid.Value kickerSolenoidState;
-	
-    private PneumaticsInitializationCommand pneumaticInitializationCommand;
     
+    private PneumaticsInitializationCommand pneumaticsInitializationCommand = null;
+	
 	public PneumaticSubsystem(OperatorDisplay operatorDisplay) {
         this.operatorDisplay = operatorDisplay;
         
@@ -37,9 +36,6 @@ public class PneumaticSubsystem extends Subsystem {
 
         this.kickerSolenoid = new DoubleSolenoid(RobotConfigConstants.PCM_1_ID_NUMBER,
                 RobotConfigConstants.SOLENOID_3_PORT_A, RobotConfigConstants.SOLENOID_3_PORT_B);
-
-        this.pneumaticInitializationCommand = new PneumaticsInitializationCommand(this);
-
 	}
 
 	@Override
@@ -50,12 +46,6 @@ public class PneumaticSubsystem extends Subsystem {
 */
 	}
 
-	public void reset() {
-	    logger.info("Running PneumaticsSystem reset...");
-	    this.pneumaticInitializationCommand.start();
-//	    Scheduler.getInstance().add(this.pneumaticInitializationCommand);
-	}
-	
 	/**
 	 * When the run method of the scheduler is called this method will be called.
 	 */
@@ -188,98 +178,12 @@ public class PneumaticSubsystem extends Subsystem {
         this.kickerSolenoid.set(DoubleSolenoid.Value.kOff);
     }
 
-    class PneumaticsInitializationCommand extends Command {
-        boolean initialized = false;
-        
-        boolean driveSolenoidToggled = false;
-        boolean driveSolenoidInitialized = false;
-        
-        boolean gripperSolenoidToggled = false;
-        boolean gripperSolenoidInitialized = false;
-        
-        boolean kickerSolenoidToggled = false;
-        boolean kickerSolenoidInitialized = false;
-        
-        public PneumaticsInitializationCommand(PneumaticSubsystem subsys) {
-            requires(subsys);
-        }
-                
-        @Override
-        protected void initialize() {
-            logger.info("Pneumatics initialize method called, but initialize doesn't do anything.");
+    public void reset() {
+        if (this.pneumaticsInitializationCommand == null) {
+            pneumaticsInitializationCommand = new PneumaticsInitializationCommand(this);
         }
         
-        @Override
-        protected void execute() {
-            if (this.initialized) {
-                logger.info("Pneumatics already initialized, nothing to do.");
-                return;
-            }
-            
-            if (! driveSolenoidToggled) {
-                logger.trace("Initializing Drive Solenoid...");
-                PneumaticSubsystem.this.toggleDriveSolenoidForward();
-                this.driveSolenoidToggled = true;
-            } else {
-                if (PneumaticSubsystem.this.driveSolenoid.get() == DoubleSolenoid.Value.kForward) {
-                    driveSolenoidInitialized = true;
-                    PneumaticSubsystem.this.toggleDriveSolenoidOff();
-                    logger.trace("Drive Solenoid initialized.");
-                } else {
-                    logger.trace("Drive Solenoid not initialized yet");
-                }
-            }
-            
-            if (driveSolenoidInitialized) {
-                if (! gripperSolenoidToggled) {
-                    logger.trace("Initializing Gripper Solenoid...");
-                    PneumaticSubsystem.this.toggleGripperSolenoidForward();
-                    this.gripperSolenoidToggled = true;
-                } else {
-                    if (PneumaticSubsystem.this.gripperSolenoid.get() == DoubleSolenoid.Value.kForward) {
-                        gripperSolenoidInitialized = true;
-                        PneumaticSubsystem.this.toggleGripperSolenoidOff();
-                        logger.trace("Gripper Solenoid initialized.");
-                    } else {
-                        logger.trace("Gripper Solenoid not initialized yet");
-                    }
-                }
-            }
-            
-
-            if (driveSolenoidInitialized && gripperSolenoidInitialized) {
-                if (! kickerSolenoidToggled) {
-                    logger.trace("Initializing Kicker Solenoid...");
-                    PneumaticSubsystem.this.toggleKickerSolenoidForward();
-                    this.kickerSolenoidToggled = true;
-                } else {
-                    if (PneumaticSubsystem.this.kickerSolenoid.get() == DoubleSolenoid.Value.kForward) {
-                        kickerSolenoidInitialized = true;
-                        PneumaticSubsystem.this.toggleKickerSolenoidOff();
-                        logger.trace("Kicker Solenoid initialized.");
-                    } else {
-                        logger.trace("Kicker Solenoid not initialized yet");
-                    }
-                }
-            }
-            
-            this.initialized = driveSolenoidInitialized && gripperSolenoidInitialized && kickerSolenoidInitialized;
-        }
-        
-        @Override
-        protected boolean isFinished() {
-            return this.initialized;
-        }
-        
-        protected void end() {
-            logger.info("Pneumatics end method called");
-            this.initialized = 
-                this.driveSolenoidInitialized = this.driveSolenoidToggled = 
-                this.gripperSolenoidInitialized = this.gripperSolenoidToggled = 
-                this.kickerSolenoidInitialized = this.kickerSolenoidToggled = false;
-            
-        }
+        pneumaticsInitializationCommand.start();
         
     }
-	
 }
