@@ -169,6 +169,7 @@ public class Robot extends IterativeRobot {
         // schedule the autonomous command (example)
         if (autonomousCommand != null && ! NoOpCommand.getInstance().equals(autonomousCommand) ) {
             this.elevatorSubsystem.initialize();
+            
             this.getPneumaticSubsystem().reset();
             autonomousCommand.start();
         } else {

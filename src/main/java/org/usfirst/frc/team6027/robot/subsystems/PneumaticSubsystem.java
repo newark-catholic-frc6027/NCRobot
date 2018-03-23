@@ -178,12 +178,31 @@ public class PneumaticSubsystem extends Subsystem {
         this.kickerSolenoid.set(DoubleSolenoid.Value.kOff);
     }
 
+    public boolean isReset() {
+        return this.pneumaticsInitializationCommand != null && ! this.pneumaticsInitializationCommand.isRunning() 
+                && this.pneumaticsInitializationCommand.isCompleted();
+    }
+    
     public void reset() {
         if (this.pneumaticsInitializationCommand == null) {
             pneumaticsInitializationCommand = new PneumaticsInitializationCommand(this);
         }
         
         pneumaticsInitializationCommand.start();
+        
+        long startTime = System.currentTimeMillis();
+        long currentTime = startTime;
+        long elapsedTime = currentTime - startTime;
+        while (! this.isReset() && (elapsedTime) < 500) {
+            try {
+                logger.trace("Waiting for pneumatics to reset. Elapsed time: {}", elapsedTime);
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                logger.error("", e);
+            }
+            currentTime = System.currentTimeMillis();
+            elapsedTime = currentTime - startTime;
+        }
         
     }
 }
