@@ -78,7 +78,8 @@ public class Robot extends IterativeRobot {
         
         AutonomousCommandManager.initAutoScenarioDisplayValues(this.getOperatorDisplay());
         AutonomousCommandManager.initDontDoOptionDisplayValues(this.getOperatorDisplay());
-        
+        this.getPneumaticSubsystem().reset();
+
     }
 
 
@@ -171,7 +172,6 @@ public class Robot extends IterativeRobot {
         // schedule the autonomous command (example)
         if (autonomousCommand != null && ! NoOpCommand.getInstance().equals(autonomousCommand) ) {
             this.elevatorSubsystem.initialize();
-            Scheduler.getInstance().add(autonomousCommand);
             autonomousCommand.start();
         } else {
             logger.warn("No autonomous command to run!");

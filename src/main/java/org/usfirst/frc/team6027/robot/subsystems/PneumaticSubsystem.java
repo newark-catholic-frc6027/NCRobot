@@ -272,6 +272,7 @@ public class PneumaticSubsystem extends Subsystem {
         }
         
         protected void end() {
+            logger.info("Pneumatics end method called");
             this.initialized = 
                 this.driveSolenoidInitialized = this.driveSolenoidToggled = 
                 this.gripperSolenoidInitialized = this.gripperSolenoidToggled = 
