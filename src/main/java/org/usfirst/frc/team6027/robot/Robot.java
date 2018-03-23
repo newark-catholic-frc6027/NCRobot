@@ -142,6 +142,7 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void autonomousInit() {
+        this.getPneumaticSubsystem().reset();
         
         applyStationPosition();
         String preferredAutoScenario = this.getOperatorDisplay().getSelectedAutoScenario();
@@ -169,8 +170,6 @@ public class Robot extends IterativeRobot {
         // schedule the autonomous command (example)
         if (autonomousCommand != null && ! NoOpCommand.getInstance().equals(autonomousCommand) ) {
             this.elevatorSubsystem.initialize();
-            
-            this.getPneumaticSubsystem().reset();
             autonomousCommand.start();
         } else {
             logger.warn("No autonomous command to run!");
