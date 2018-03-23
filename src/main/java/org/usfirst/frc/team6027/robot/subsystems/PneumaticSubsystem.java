@@ -51,7 +51,8 @@ public class PneumaticSubsystem extends Subsystem {
 	}
 
 	public void reset() {
-	    Scheduler.getInstance().add(this.pneumaticInitializationCommand);
+	    this.pneumaticInitializationCommand.start();
+//	    Scheduler.getInstance().add(this.pneumaticInitializationCommand);
 	}
 	
 	/**

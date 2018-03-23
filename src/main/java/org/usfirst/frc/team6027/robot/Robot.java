@@ -171,7 +171,7 @@ public class Robot extends IterativeRobot {
         if (autonomousCommand != null && ! NoOpCommand.getInstance().equals(autonomousCommand) ) {
             this.elevatorSubsystem.initialize();
             Scheduler.getInstance().add(autonomousCommand);
-//            autonomousCommand.start();
+            autonomousCommand.start();
         } else {
             logger.warn("No autonomous command to run!");
         }
