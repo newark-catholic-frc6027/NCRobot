@@ -176,7 +176,7 @@ public class DriveStraightCommand extends Command implements PIDOutput {
                     || Math.abs(this.encoderSensors.getRightEncoder().getDistance()) >= this.driveDistance) {
                     
                     this.drivetrainSubsystem.stopMotor();
-                    logger.info(">>>>>>>>>>>>>>>>> NON-PID >>>>>>>>>>>>>>>>>>> DriveStraight done (, distance={}", this.encoderSensors.getLeftEncoder().getDistance());
+                    logger.info(">>>>>>>>>>>>>>>>> NON-PID >>>>>>>>>>>>>>>>>>> DriveStraight done, distance={}", this.encoderSensors.getLeftEncoder().getDistance());
                     return true;
                 } else {
                     return false;

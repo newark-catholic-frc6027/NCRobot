@@ -49,7 +49,7 @@ public class TurnCommand extends Command implements PIDOutput {
 		this.drivetrain = drivetrain;
 		this.targetAngle = angle;
 		this.operatorDisplay = operatorDisplay;
-		this.gyro.reset();
+//		this.gyro.reset();
 		this.initialGyroAngle = this.gyro.getYawAngle();
 		this.startTime = System.currentTimeMillis();
         this.setName(NAME);
@@ -95,10 +95,11 @@ public class TurnCommand extends Command implements PIDOutput {
 	protected void execute() {
         this.execCount++;
 		long currentElapsedExecutionMs = System.currentTimeMillis() - this.startTime;
+		/*
 		if (currentElapsedExecutionMs < this.executionStartThreshold && this.gyro.getYawAngle() == this.initialGyroAngle) {
 			logger.trace("Gyro not reset yet. Skipping");
 		} else {
-
+*/
 			double pidOutput = this.pidLoopCalculationOutput;
 			
 			double leftPower = 0;
@@ -125,7 +126,7 @@ public class TurnCommand extends Command implements PIDOutput {
 		    }
 		    
             this.drivetrain.tankDrive(leftPower, rightPower);           
-		}
+//		}
 	}
 
 	public double getTargetAngle() {

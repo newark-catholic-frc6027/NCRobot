@@ -43,6 +43,11 @@ public class ElevatorCommand extends Command {
     }
 
     @Override
+    protected void initialize() {
+        logger.info("Elevator Command starting...");
+    }
+    
+    @Override
     protected void end() {
         this.clearRequirements();
     }
@@ -63,7 +68,7 @@ public class ElevatorCommand extends Command {
             (this.direction == ElevatorDirection.Down && bottomSwitchTripped);
         */      
         if (done) {
-            logger.info(">>>>> Elevator command finished. topSwitch: {}, bottomSwitch: {}", topSwitchTripped, bottomSwitchTripped);
+            logger.info(">>>>> Elevator command FINISHED. topSwitch: {}, bottomSwitch: {}", topSwitchTripped, bottomSwitchTripped);
             this.elevator.elevatorStop();
             this.clearRequirements();
         }

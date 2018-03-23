@@ -43,7 +43,7 @@ public class TurnWhileDrivingCommand extends DriveStraightCommand implements PID
     protected boolean isFinished() {
         if (this.currentTargetVectorIndex >= this.targetVectors.length) {
             this.drivetrainSubsystem.stopMotor();
-            logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TurnWhileDrivingCommand done, distance={}", this.encoderSensors.getLeftEncoder().getDistance());
+            logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TurnWhileDrivingCommand FINISHED, distance={}", this.encoderSensors.getLeftEncoder().getDistance());
             return true;
         }
         
@@ -59,7 +59,7 @@ public class TurnWhileDrivingCommand extends DriveStraightCommand implements PID
 
         if (Math.min(leftLegDisplacement, rightLegDisplacement) >= currentVector.getDistance()) {
             this.currentTargetVectorIndex++;
-            logger.info(">>>>>>>>>>> LEG {} REACHED", this.currentTargetVectorIndex);
+            logger.info(">>>>>>>>>>> LEG {} REACHED, displacements(L/R): {}/{}", this.currentTargetVectorIndex, leftLegDisplacement, rightLegDisplacement);
             if (this.currentTargetVectorIndex < this.targetVectors.length) { // Leg completed
                 this.gyroPidController.setSetpoint(this.targetVectors[this.currentTargetVectorIndex].getAngle());
                 this.prevLegLeftEncDistance = this.encoderSensors.getLeftEncoder().getDistance();
