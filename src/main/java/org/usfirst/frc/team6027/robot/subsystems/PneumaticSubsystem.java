@@ -74,6 +74,11 @@ public class PneumaticSubsystem extends Subsystem {
     }
 
 	public void toggleDriveSolenoid() {
+        if (this.driveSolenoidState == null) {
+            logger.warn("Don't know drive solenoid state yet, can't toggle drive solenoid");
+            return;
+        }
+        
         this.operatorDisplay.setFieldValue("Solenoid State", this.driveSolenoidState.name());
 
         if (this.driveSolenoidState == DoubleSolenoid.Value.kReverse) {
@@ -86,6 +91,11 @@ public class PneumaticSubsystem extends Subsystem {
 	}
 
     public void toggleGripperSolenoid() {
+        if (this.gripperSolenoidState == null) {
+            logger.warn("Don't know gripper solenoid state yet, can't toggle gripper solenoid");
+            return;
+        }
+        
         this.operatorDisplay.setFieldValue("Gripper Solenoid State", this.gripperSolenoidState.name());
 
         if (this.gripperSolenoidState == DoubleSolenoid.Value.kReverse) {
@@ -102,6 +112,11 @@ public class PneumaticSubsystem extends Subsystem {
     }
     
     public void toggleKickerSolenoid() {
+        if (this.kickerSolenoidState == null) {
+            logger.warn("Don't know kicker solenoid state yet, can't toggle kicker solenoid");
+            return;
+        }
+
         this.operatorDisplay.setFieldValue("Kicker Solenoid State", this.kickerSolenoidState.name());
 
         if (this.kickerSolenoidState == DoubleSolenoid.Value.kReverse) {
