@@ -95,7 +95,7 @@ public class OperatorDisplaySmartDashboardImpl implements OperatorDisplay {
 
     @Override
     public void registerDontDoOption(String displayName) {
-        this.registerAutoScenario(displayName, false);
+        this.registerDontDoOption(displayName, false);
     }
 
     @Override
