@@ -51,6 +51,7 @@ public class PneumaticSubsystem extends Subsystem {
 	}
 
 	public void reset() {
+	    logger.info("Running PneumaticsSystem reset...");
 	    this.pneumaticInitializationCommand.start();
 //	    Scheduler.getInstance().add(this.pneumaticInitializationCommand);
 	}
@@ -203,6 +204,11 @@ public class PneumaticSubsystem extends Subsystem {
             requires(subsys);
         }
                 
+        @Override
+        protected void initialize() {
+            logger.info("Pneumatics initialize method called, but initialize doesn't do anything.");
+        }
+        
         @Override
         protected void execute() {
             if (this.initialized) {
