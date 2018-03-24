@@ -81,7 +81,7 @@ public class AutoDeliverToScaleEndFromOppositeSide extends CommandGroup {
     protected Command createTurnCommand() {
         // When delivering to the left, need to turn robot to the right.  When delivering to the right, need to turn
         // robot left
-        double angle = 90.0 * (this.deliverySide == DeliverySide.Left ? 1.0 : -1.0);
+        double angle = 90.0 * (this.deliverySide == DeliverySide.Right ? 1.0 : -1.0);
         
         Command returnCommand = new TurnCommand(angle, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay);
         return returnCommand;
