@@ -19,10 +19,10 @@ public class AutoDeliverToSwitchFront extends CommandGroup {
     private PneumaticSubsystem pneumaticSubsystem;
     private OperatorDisplay operatorDisplay;
     private Preferences prefs = Preferences.getInstance();
-    private DeliverySide deliverySide;
+    private StartingPositionSide deliverySide;
 
 
-    public AutoDeliverToSwitchFront(DeliverySide deliverySide, SensorService sensorService, 
+    public AutoDeliverToSwitchFront(StartingPositionSide deliverySide, SensorService sensorService, 
             DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, OperatorDisplay operatorDisplay) {
         
         this.sensorService = sensorService;
@@ -126,12 +126,12 @@ public class AutoDeliverToSwitchFront extends CommandGroup {
     }
 
 
-    public DeliverySide getDeliverySide() {
+    public StartingPositionSide getDeliverySide() {
         return deliverySide;
     }
 
 
-    public void setDeliverySide(DeliverySide deliverySide) {
+    public void setDeliverySide(StartingPositionSide deliverySide) {
         this.deliverySide = deliverySide;
     }
 

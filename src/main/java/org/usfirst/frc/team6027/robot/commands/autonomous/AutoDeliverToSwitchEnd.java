@@ -24,10 +24,10 @@ public class AutoDeliverToSwitchEnd extends CommandGroup {
     private ElevatorSubsystem elevatorSubsystem;
     private OperatorDisplay operatorDisplay;
     private Preferences prefs = Preferences.getInstance();
-    private DeliverySide deliverySide;
+    private StartingPositionSide deliverySide;
 
 
-    public AutoDeliverToSwitchEnd(DeliverySide deliverySide, SensorService sensorService, 
+    public AutoDeliverToSwitchEnd(StartingPositionSide deliverySide, SensorService sensorService, 
             DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevatorSubsystem, OperatorDisplay operatorDisplay) {
         
         this.sensorService = sensorService;
@@ -79,7 +79,7 @@ public class AutoDeliverToSwitchEnd extends CommandGroup {
     protected Command createTurnCommand() {
         // When delivering to the left, need to turn robot to the right.  When delivering to the right, need to turn
         // robot left
-        double angle = 90.0 * (this.deliverySide == DeliverySide.Left ? 1.0 : -1.0);
+        double angle = 90.0 * (this.deliverySide == StartingPositionSide.Left ? 1.0 : -1.0);
         
         Command returnCommand = new TurnCommand(angle, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay);
         return returnCommand;
@@ -89,7 +89,7 @@ public class AutoDeliverToSwitchEnd extends CommandGroup {
         double leg1Distance = 12.0; //this.prefs.getDouble("leg1.distance", 12.0);
         double leg1Angle = 0.0;     //this.prefs.getDouble("leg1.angle", 0.0);
         double leg2Distance = 47.0; //this.prefs.getDouble("leg2.distance", 47.0);
-        double leg2Angle = 30.0 * (this.deliverySide == DeliverySide.Right ? 1.0 : -1.0);// this.prefs.getDouble("leg2.angle", 30.0)
+        double leg2Angle = 30.0 * (this.deliverySide == StartingPositionSide.Right ? 1.0 : -1.0);// this.prefs.getDouble("leg2.angle", 30.0)
         double leg3Distance = 75.0; //this.prefs.getDouble("leg3.distance", 100.0);
         double leg3Angle = 0.0;     //this.prefs.getDouble("leg3.angle", 0.0);
 
@@ -140,12 +140,12 @@ public class AutoDeliverToSwitchEnd extends CommandGroup {
     }
 
 
-    public DeliverySide getDeliverySide() {
+    public StartingPositionSide getDeliverySide() {
         return deliverySide;
     }
 
 
-    public void setDeliverySide(DeliverySide deliverySide) {
+    public void setDeliverySide(StartingPositionSide deliverySide) {
         this.deliverySide = deliverySide;
     }
 

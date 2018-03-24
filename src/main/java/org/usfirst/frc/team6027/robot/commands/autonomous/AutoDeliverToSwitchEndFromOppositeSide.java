@@ -19,10 +19,10 @@ public class AutoDeliverToSwitchEndFromOppositeSide extends CommandGroup {
     private PneumaticSubsystem pneumaticSubsystem;
     private OperatorDisplay operatorDisplay;
     private Preferences prefs = Preferences.getInstance();
-    private DeliverySide deliverySide;
+    private StartingPositionSide deliverySide;
 
 
-    public AutoDeliverToSwitchEndFromOppositeSide(DeliverySide deliverySide, SensorService sensorService, 
+    public AutoDeliverToSwitchEndFromOppositeSide(StartingPositionSide deliverySide, SensorService sensorService, 
             DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, OperatorDisplay operatorDisplay) {
         
         this.sensorService = sensorService;
@@ -59,7 +59,7 @@ public class AutoDeliverToSwitchEndFromOppositeSide extends CommandGroup {
     protected Command createTurnCommand() {
         // When delivering to the left, need to turn robot to the right.  When delivering to the right, need to turn
         // robot left
-        double angle = 90.0 * (this.deliverySide == DeliverySide.Left ? 1.0 : -1.0);
+        double angle = 90.0 * (this.deliverySide == StartingPositionSide.Left ? 1.0 : -1.0);
         
         Command returnCommand = new TurnCommand(angle, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay);
         return returnCommand;
@@ -69,9 +69,9 @@ public class AutoDeliverToSwitchEndFromOppositeSide extends CommandGroup {
         double leg1Distance = 200.0;//this.prefs.getDouble("leg1.distance", 12.0);
         double leg1Angle = 0.0;//this.prefs.getDouble("leg1.angle", 0.0);
         double leg2Distance = 215.0;//this.prefs.getDouble("leg2.distance", 47.0);
-        double leg2Angle = 90.0 * (this.deliverySide == DeliverySide.Right ? 1.0 : -1.0);//this.prefs.getDouble("leg2.angle", 30.0) * (this.deliverySide == DeliverySide.Right ? 1.0 : -1.0);
+        double leg2Angle = 90.0 * (this.deliverySide == StartingPositionSide.Right ? 1.0 : -1.0);//this.prefs.getDouble("leg2.angle", 30.0) * (this.deliverySide == DeliverySide.Right ? 1.0 : -1.0);
         double leg3Distance = 70.0;//this.prefs.getDouble("leg3.distance", 100.0);
-        double leg3Angle = 180.0 * (this.deliverySide == DeliverySide.Left ? 1.0 : -1.0);//this.prefs.getDouble("leg3.angle", 0.0);
+        double leg3Angle = 180.0 * (this.deliverySide == StartingPositionSide.Left ? 1.0 : -1.0);//this.prefs.getDouble("leg3.angle", 0.0);
 
         TargetVector[] turnVectors = new TargetVector[] { 
                 new TargetVector(leg1Angle, leg1Distance),
@@ -120,12 +120,12 @@ public class AutoDeliverToSwitchEndFromOppositeSide extends CommandGroup {
     }
 
 
-    public DeliverySide getDeliverySide() {
+    public StartingPositionSide getDeliverySide() {
         return deliverySide;
     }
 
 
-    public void setDeliverySide(DeliverySide deliverySide) {
+    public void setDeliverySide(StartingPositionSide deliverySide) {
         this.deliverySide = deliverySide;
     }
 

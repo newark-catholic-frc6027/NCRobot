@@ -1,6 +1,6 @@
 package org.usfirst.frc.team6027.robot.commands.autonomous;
 
-public enum DeliverySide {
+public enum StartingPositionSide {
     Left,
     Right
 }

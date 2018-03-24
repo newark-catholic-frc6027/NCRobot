@@ -23,17 +23,17 @@ public class AutoDeliverToSwitchFrontFromCenterPosition extends CommandGroup {
     private PneumaticSubsystem pneumaticSubsystem;
     private OperatorDisplay operatorDisplay;
     private Preferences prefs = Preferences.getInstance();
-    private DeliverySide deliverySide;
+    private StartingPositionSide startingPositionSide;
 
 
-    public AutoDeliverToSwitchFrontFromCenterPosition(DeliverySide deliverySide, SensorService sensorService, 
+    public AutoDeliverToSwitchFrontFromCenterPosition(StartingPositionSide deliverySide, SensorService sensorService, 
             DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, OperatorDisplay operatorDisplay) {
         
         this.sensorService = sensorService;
         this.drivetrainSubsystem = drivetrainSubsystem;
         this.pneumaticSubsystem = pneumaticSubsystem;
         this.operatorDisplay = operatorDisplay;
-        this.deliverySide = deliverySide;
+        this.startingPositionSide = deliverySide;
           
         this.addSequential(new PneumaticsInitializationCommand(this.pneumaticSubsystem));
         
@@ -75,7 +75,8 @@ public class AutoDeliverToSwitchFrontFromCenterPosition extends CommandGroup {
         double leg1Distance = this.prefs.getDouble("leg1.distance", 10.0); // 10
         double leg1Angle = this.prefs.getDouble("leg1.angle", 0.0); // 0
         double leg2Distance = this.prefs.getDouble("leg2.distance", 50.0); // 70
-        double leg2Angle = (this.deliverySide == DeliverySide.Left ? 1.0 : -1.0) * this.prefs.getDouble("leg2.angle", 0.0);// * (this.deliverySide == DeliverySide.Left ? 1.0 : -1.0);// this.prefs.getDouble("leg2.angle", 30.0) // 60
+        // Interpreting StartingPostionSide Left here as the side we are delivering to
+        double leg2Angle = (this.startingPositionSide == StartingPositionSide.Left ? -1.0 : 1.0) * this.prefs.getDouble("leg2.angle", 0.0);// * (this.deliverySide == DeliverySide.Left ? 1.0 : -1.0);// this.prefs.getDouble("leg2.angle", 30.0) // 60
         double leg3Distance = this.prefs.getDouble("leg3.distance", 12.0);
         double leg3Angle = this.prefs.getDouble("leg3.angle", 0.0);
 
@@ -165,13 +166,13 @@ public class AutoDeliverToSwitchFrontFromCenterPosition extends CommandGroup {
     }
 
 
-    public DeliverySide getDeliverySide() {
-        return deliverySide;
+    public StartingPositionSide getDeliverySide() {
+        return startingPositionSide;
     }
 
 
-    public void setDeliverySide(DeliverySide deliverySide) {
-        this.deliverySide = deliverySide;
+    public void setDeliverySide(StartingPositionSide deliverySide) {
+        this.startingPositionSide = deliverySide;
     }
 
 

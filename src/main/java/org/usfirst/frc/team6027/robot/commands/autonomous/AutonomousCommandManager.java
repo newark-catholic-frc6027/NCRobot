@@ -161,7 +161,7 @@ public class AutonomousCommandManager {
                 || (this.getField().isPlateAssignedToUs(PlatePosition.OurSwitchRight) && stationPosition == 3);
         
         
-        DeliverySide deliverySide = stationPosition == 1 ? DeliverySide.Left : DeliverySide.Right;
+        StartingPositionSide deliverySide = stationPosition == 1 ? StartingPositionSide.Left : StartingPositionSide.Right;
 
         logger.info("Choosing a {} station command...", deliverySide);
         
@@ -255,9 +255,9 @@ public class AutonomousCommandManager {
         
         if (autoPreference != AutonomousPreference.CrossLine) {
             if (ourSwitchAssignmentIsOnRight) {
-                chosenCommand = this.makeDeliverToSwitchFromCenterCommand(DeliverySide.Right);
+                chosenCommand = this.makeDeliverToSwitchFromCenterCommand(StartingPositionSide.Right);
             } else {
-                chosenCommand = this.makeDeliverToSwitchFromCenterCommand(DeliverySide.Left);
+                chosenCommand = this.makeDeliverToSwitchFromCenterCommand(StartingPositionSide.Left);
             }
         } else {
             chosenCommand = this.makeCrossLineFromCenterCommand();
@@ -389,7 +389,7 @@ public class AutonomousCommandManager {
         this.elevatorSubsystem = elevatorSubsystem;
     }
     
-    private Command makeDeliverToScaleEndCommand(DeliverySide deliverySide) {
+    private Command makeDeliverToScaleEndCommand(StartingPositionSide deliverySide) {
         return new AutoDeliverToScaleEnd(
                 deliverySide,
                 this.sensorService, this.getDrivetrainSubsystem(), this.getPneumaticSubsystem(),
@@ -406,17 +406,17 @@ public class AutonomousCommandManager {
         return new AutoCrossLineStraightAhead(250.0, .80, this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
     }
     
-    private Command makeDeliverToSwitchFrontCommand(DeliverySide deliverySide) {
+    private Command makeDeliverToSwitchFrontCommand(StartingPositionSide deliverySide) {
         return new AutoDeliverToSwitchFront(deliverySide, this.getSensorService(), this.getDrivetrainSubsystem(),
                 this.getPneumaticSubsystem(), this.getOperatorDisplay());
     }
 
-    private Command makeDeliverToSwitchEndFromOppositeSideCommand(DeliverySide deliverySide) {
+    private Command makeDeliverToSwitchEndFromOppositeSideCommand(StartingPositionSide deliverySide) {
         return new AutoDeliverToSwitchEndFromOppositeSide(deliverySide, this.getSensorService(),
                 this.getDrivetrainSubsystem(), this.getPneumaticSubsystem(), this.getOperatorDisplay());
     }
     
-    private Command makeDeliverToSwitchEndCommand(DeliverySide deliverySide) {
+    private Command makeDeliverToSwitchEndCommand(StartingPositionSide deliverySide) {
         return new AutoDeliverToSwitchEnd(
                 deliverySide,
                 this.sensorService, this.getDrivetrainSubsystem(), this.getPneumaticSubsystem(),
@@ -425,14 +425,14 @@ public class AutonomousCommandManager {
         );
     }
     
-    private Command makeDeliverToScaleEndFromOppositeSideCommand(DeliverySide deliverySide) {
+    private Command makeDeliverToScaleEndFromOppositeSideCommand(StartingPositionSide deliverySide) {
         return new AutoDeliverToScaleEndFromOppositeSide(deliverySide, 
                 this.sensorService, this.getDrivetrainSubsystem(), 
                 this.getPneumaticSubsystem(), 
                 this.getElevatorSubsystem(), this.getOperatorDisplay()
         );
     }    
-    private Command makeDeliverToSwitchFromCenterCommand(DeliverySide deliverySide) {
+    private Command makeDeliverToSwitchFromCenterCommand(StartingPositionSide deliverySide) {
         return new AutoDeliverToSwitchFrontFromCenterPosition(deliverySide, this.getSensorService(), this.getDrivetrainSubsystem(), this.getPneumaticSubsystem(), this.getOperatorDisplay());
     }
 
