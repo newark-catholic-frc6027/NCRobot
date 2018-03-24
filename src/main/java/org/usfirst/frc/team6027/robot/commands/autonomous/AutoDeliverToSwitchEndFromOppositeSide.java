@@ -14,36 +14,42 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class AutoDeliverToSwitchFrontFromCenterPosition extends CommandGroup {
-    
-    
+/**
+ * This is fallback code for delivering to the switch, in case we find that delivering to the back side does not work
+ * well.
+ *
+ */
+public class AutoDeliverToSwitchEndFromOppositeSide extends CommandGroup {
     
     private SensorService sensorService;
     private DrivetrainSubsystem drivetrainSubsystem;
     private PneumaticSubsystem pneumaticSubsystem;
     private OperatorDisplay operatorDisplay;
     private Preferences prefs = Preferences.getInstance();
-    private StartingPositionSide startingPositionSide;
+    private StartingPositionSide startingSide;
 
 
-    public AutoDeliverToSwitchFrontFromCenterPosition(StartingPositionSide startingSide, SensorService sensorService, 
+    public AutoDeliverToSwitchEndFromOppositeSide(StartingPositionSide startingSide, SensorService sensorService, 
             DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, OperatorDisplay operatorDisplay) {
         
         this.sensorService = sensorService;
         this.drivetrainSubsystem = drivetrainSubsystem;
         this.pneumaticSubsystem = pneumaticSubsystem;
         this.operatorDisplay = operatorDisplay;
-        this.startingPositionSide = startingSide;
-          
-        this.addSequential(new PneumaticsInitializationCommand(this.pneumaticSubsystem));
+        this.startingSide = startingSide;
         
+        this.addSequential(new PneumaticsInitializationCommand(this.pneumaticSubsystem));
+
         Command multiLegDriveCmd = createMultiLegDriveCommand();
+        Command turnCommand = createTurnCommand();
         Command driveToSwitchCmd = createDriveToSwitchCommand();
         Command cubeDeliverCmd = createCubeDeliveryCommand();
 
         this.addSequential(multiLegDriveCmd);
+        this.addSequential(turnCommand);
         this.addSequential(driveToSwitchCmd);
         // TODO: drop arm
+
         this.addSequential(cubeDeliverCmd);
     }
 
@@ -55,57 +61,44 @@ public class AutoDeliverToSwitchFrontFromCenterPosition extends CommandGroup {
     protected Command createDriveToSwitchCommand() {
         Command cmd = new DriveStraightCommand(
                 this.sensorService, this.drivetrainSubsystem, this.operatorDisplay,
-                -12.0,
+                -12.0,//this.prefs.getDouble("autoDeliverToSwitch.driveDistance", -12.0),
                 DriveDistanceMode.DistanceFromObject, 
-                0.55
+                0.55 //this.prefs.getDouble("autoDeliverToSwitch.driveToSwitchCmd.power", 0.6)
         );
 
         
         return cmd;
     }
+
+
+    protected Command createTurnCommand() {
+        // When delivering to the left, need to turn robot to the right.  When delivering to the right, need to turn
+        // robot left
+        double angle = 90.0 * (this.startingSide == StartingPositionSide.Left ? 1.0 : -1.0);
+        
+        Command returnCommand = new TurnCommand(angle, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay);
+        return returnCommand;
+    }
     
     protected Command createMultiLegDriveCommand() {
-        double leg1Distance = 40.0;//this.prefs.getDouble("leg1.distance", 10.0);
+        double leg1Distance = 200.0;//this.prefs.getDouble("leg1.distance", 12.0);
         double leg1Angle = 0.0;//this.prefs.getDouble("leg1.angle", 0.0);
-        double leg2Distance = 55.0;//this.prefs.getDouble("leg2.distance", 50.0);
-        // Interpreting StartingPostionSide Left here as the side we are delivering to
-        double leg2Angle = (this.startingPositionSide == StartingPositionSide.Left ? -1.0 : 1.0) * 90.0;//this.prefs.getDouble("leg2.angle", 0.0);// * (this.startingSide == StartingPositionSide.Left ? 1.0 : -1.0);// this.prefs.getDouble("leg2.angle", 30.0) // 60
-        double leg3Distance = 10.0;//this.prefs.getDouble("leg3.distance", 12.0);
-        double leg3Angle = 0.0;//this.prefs.getDouble("leg3.angle", 0.0);
-
-        Command straight1Cmd = new DriveStraightCommand(this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), leg1Distance, DriveDistanceMode.DistanceReadingOnEncoder, 0.6);
-
-        Command straight2Cmd = new DriveStraightCommand(this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), leg2Distance, DriveDistanceMode.DistanceReadingOnEncoder, 0.6);
-        Command turn2Command = new TurnCommand(leg2Angle, this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
-
-        Command straight3Cmd = new DriveStraightCommand(this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), leg3Distance, DriveDistanceMode.DistanceReadingOnEncoder, 0.6);
-        Command turn3Command = new TurnCommand(leg3Angle, this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
-
-        
-        CommandGroup group = new CommandGroup();
-        group.addSequential(straight1Cmd);
-        group.addSequential(turn2Command);
-        group.addSequential(straight2Cmd);
-        group.addSequential(turn3Command);
-        group.addSequential(straight3Cmd);
-        
-        return group;
-    }
-
-
-    protected Command createDriveStraightCommand() {
-        double leg1Distance = this.prefs.getDouble("leg1.distance", 95.0);
-
-        double leg1Angle = this.prefs.getDouble("leg1.angle", 0.0);
+        double leg2Distance = 215.0;//this.prefs.getDouble("leg2.distance", 47.0);
+        double leg2Angle = 90.0 * (this.startingSide == StartingPositionSide.Right ? 1.0 : -1.0);//this.prefs.getDouble("leg2.angle", 30.0) * (this.startingSide == StartingPosition.Right ? 1.0 : -1.0);
+        double leg3Distance = 70.0;//this.prefs.getDouble("leg3.distance", 100.0);
+        double leg3Angle = 180.0 * (this.startingSide == StartingPositionSide.Left ? 1.0 : -1.0);//this.prefs.getDouble("leg3.angle", 0.0);
 
         TargetVector[] turnVectors = new TargetVector[] { 
-                new TargetVector(leg1Angle, leg1Distance)
+                new TargetVector(leg1Angle, leg1Distance),
+                new TargetVector(leg2Angle, leg2Distance),
+                new TargetVector(leg3Angle, leg3Distance),
+                
         };
         
         Command cmd = new TurnWhileDrivingCommand(
                 this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), 
                 turnVectors,
-                DriveDistanceMode.DistanceReadingOnEncoder, 0.7
+                DriveDistanceMode.DistanceReadingOnEncoder, 0.9
         );
         
         return cmd;
@@ -143,12 +136,12 @@ public class AutoDeliverToSwitchFrontFromCenterPosition extends CommandGroup {
 
 
     public StartingPositionSide getStartingPositionSide() {
-        return startingPositionSide;
+        return startingSide;
     }
 
 
-    public void setStartingPositionSide(StartingPositionSide startingSide) {
-        this.startingPositionSide = startingSide;
+    public void setStartingPositionSide(StartingPositionSide startingPosition) {
+        this.startingSide = startingPosition;
     }
 
 
