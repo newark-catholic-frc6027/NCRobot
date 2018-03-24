@@ -1,7 +1,9 @@
 package org.usfirst.frc.team6027.robot.commands.autonomous;
 
 import org.usfirst.frc.team6027.robot.OperatorDisplay;
+import org.usfirst.frc.team6027.robot.commands.CubeDeliveryCommand;
 import org.usfirst.frc.team6027.robot.commands.PneumaticsInitializationCommand;
+import org.usfirst.frc.team6027.robot.commands.CubeDeliveryCommand.DeliveryMode;
 import org.usfirst.frc.team6027.robot.commands.autonomous.DriveStraightCommand.DriveDistanceMode;
 import org.usfirst.frc.team6027.robot.commands.autonomous.TurnWhileDrivingCommand.TargetVector;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
@@ -12,7 +14,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class AutoDeliverToSwitchEndFromOppositeSide extends CommandGroup {
+public class AutoDeliverToSwitchFromOppositeSide extends CommandGroup {
     
     private SensorService sensorService;
     private DrivetrainSubsystem drivetrainSubsystem;
@@ -22,7 +24,7 @@ public class AutoDeliverToSwitchEndFromOppositeSide extends CommandGroup {
     private StartingPositionSide startingSide;
 
 
-    public AutoDeliverToSwitchEndFromOppositeSide(StartingPositionSide startingSide, SensorService sensorService, 
+    public AutoDeliverToSwitchFromOppositeSide(StartingPositionSide startingSide, SensorService sensorService, 
             DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, OperatorDisplay operatorDisplay) {
         
         this.sensorService = sensorService;
@@ -36,12 +38,18 @@ public class AutoDeliverToSwitchEndFromOppositeSide extends CommandGroup {
         Command multiLegDriveCmd = createMultiLegDriveCommand();
         Command turnCommand = createTurnCommand();
         Command driveToSwitchCmd = createDriveToSwitchCommand();
+        Command cubeDeliverCmd = createCubeDeliveryCommand();
 
         this.addSequential(multiLegDriveCmd);
         this.addSequential(turnCommand);
         this.addSequential(driveToSwitchCmd);
+        this.addSequential(cubeDeliverCmd);
     }
 
+    protected Command createCubeDeliveryCommand() {
+        Command cmd = new CubeDeliveryCommand(DeliveryMode.DropThenKick, 10, this.getPneumaticSubsystem());
+        return cmd;
+    }
 
     protected Command createDriveToSwitchCommand() {
         Command cmd = new DriveStraightCommand(

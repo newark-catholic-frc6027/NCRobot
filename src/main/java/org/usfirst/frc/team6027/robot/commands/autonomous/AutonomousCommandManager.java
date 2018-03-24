@@ -412,7 +412,7 @@ public class AutonomousCommandManager {
     }
 
     private Command makeDeliverToSwitchEndFromOppositeSideCommand(StartingPositionSide startingSide) {
-        return new AutoDeliverToSwitchEndFromOppositeSide(startingSide, this.getSensorService(),
+        return new AutoDeliverToSwitchFromOppositeSide(startingSide, this.getSensorService(),
                 this.getDrivetrainSubsystem(), this.getPneumaticSubsystem(), this.getOperatorDisplay());
     }
     
