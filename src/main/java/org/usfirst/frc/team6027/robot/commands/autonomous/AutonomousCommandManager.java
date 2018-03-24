@@ -433,9 +433,7 @@ public class AutonomousCommandManager {
         );
     }    
     private Command makeDeliverToSwitchFromCenterCommand(DeliverySide deliverySide) {
-        logger.error("makeDeliverToSwitchFromCenterCommand Not implemented yet!!");
-        return null;
-        
+        return new AutoDeliverToSwitchFrontFromCenterPosition(deliverySide, this.getSensorService(), this.getDrivetrainSubsystem(), this.getPneumaticSubsystem(), this.getOperatorDisplay());
     }
 
     private Command makeCrossLineFromCenterCommand() {
