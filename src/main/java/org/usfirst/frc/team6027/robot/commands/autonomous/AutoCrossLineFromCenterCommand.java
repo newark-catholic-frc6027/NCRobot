@@ -17,9 +17,11 @@ public class AutoCrossLineFromCenterCommand extends CommandGroup {
             PneumaticSubsystem pneumaticSubsystem, OperatorDisplay operatorDisplay) {
         
         this.addSequential(new PneumaticsInitializationCommand(pneumaticSubsystem));
+        
+        double distance = this.prefs.getDouble("H-L1-Cross", -12.0);
         this.addSequential( 
             new DriveStraightCommand(sensorService, drivetrain, operatorDisplay, 
-                    -12.0, 
+                    distance, 
                     DriveDistanceMode.DistanceFromObject, .40) 
         );
     }
