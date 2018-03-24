@@ -67,11 +67,11 @@ public class AutoDeliverToSwitchFrontFromCenterPosition extends CommandGroup {
     
     protected Command createMultiLegDriveCommand() {
         double leg1Distance = this.prefs.getDouble("leg1.distance", 10.0); // 10
-        double leg1Angle = 0.0;//this.prefs.getDouble("leg1.angle", 0.0); // 0
+        double leg1Angle = this.prefs.getDouble("leg1.angle", 0.0); // 0
         double leg2Distance = this.prefs.getDouble("leg2.distance", 50.0); // 70
-        double leg2Angle = (this.deliverySide == DeliverySide.Left ? 1.0 : -1.0) * 60.0;// this.prefs.getDouble("leg2.angle", 0.0) * (this.deliverySide == DeliverySide.Left ? 1.0 : -1.0);// this.prefs.getDouble("leg2.angle", 30.0) // 60
+        double leg2Angle = (this.deliverySide == DeliverySide.Left ? 1.0 : -1.0) * this.prefs.getDouble("leg2.angle", 0.0);// * (this.deliverySide == DeliverySide.Left ? 1.0 : -1.0);// this.prefs.getDouble("leg2.angle", 30.0) // 60
         double leg3Distance = this.prefs.getDouble("leg3.distance", 12.0);
-        double leg3Angle = 0.0;//this.prefs.getDouble("leg3.angle", 0.0);
+        double leg3Angle = this.prefs.getDouble("leg3.angle", 0.0);
 
         TargetVector[] turnVectors = new TargetVector[] { 
                 new TargetVector(leg1Angle, leg1Distance),
