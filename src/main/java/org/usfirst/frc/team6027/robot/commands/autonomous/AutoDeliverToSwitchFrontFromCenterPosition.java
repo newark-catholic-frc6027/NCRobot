@@ -67,18 +67,18 @@ public class AutoDeliverToSwitchFrontFromCenterPosition extends CommandGroup {
     protected Command createMultiLegDriveCommand() {
         double leg1Distance = 40.0;//this.prefs.getDouble("leg1.distance", 10.0);
         double leg1Angle = 0.0;//this.prefs.getDouble("leg1.angle", 0.0);
-        double leg2Distance = 55.0;//this.prefs.getDouble("leg2.distance", 50.0);
+        double leg2Distance = (this.startingPositionSide == StartingPositionSide.Left ? 55.0 : 35.0);//this.prefs.getDouble("leg2.distance", 50.0);
         // Interpreting StartingPostionSide Left here as the side we are delivering to
         double leg2Angle = (this.startingPositionSide == StartingPositionSide.Left ? -1.0 : 1.0) * 90.0;//this.prefs.getDouble("leg2.angle", 0.0);// * (this.startingSide == StartingPositionSide.Left ? 1.0 : -1.0);// this.prefs.getDouble("leg2.angle", 30.0) // 60
         double leg3Distance = 10.0;//this.prefs.getDouble("leg3.distance", 12.0);
         double leg3Angle = 0.0;//this.prefs.getDouble("leg3.angle", 0.0);
 
-        Command straight1Cmd = new DriveStraightCommand(this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), leg1Distance, DriveDistanceMode.DistanceReadingOnEncoder, 0.6);
+        Command straight1Cmd = new DriveStraightCommand(this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), leg1Distance, DriveDistanceMode.DistanceReadingOnEncoder, 0.7);
 
-        Command straight2Cmd = new DriveStraightCommand(this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), leg2Distance, DriveDistanceMode.DistanceReadingOnEncoder, 0.6);
+        Command straight2Cmd = new DriveStraightCommand(this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), leg2Distance, DriveDistanceMode.DistanceReadingOnEncoder, 0.7);
         Command turn2Command = new TurnCommand(leg2Angle, this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
 
-        Command straight3Cmd = new DriveStraightCommand(this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), leg3Distance, DriveDistanceMode.DistanceReadingOnEncoder, 0.6);
+        Command straight3Cmd = new DriveStraightCommand(this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), leg3Distance, DriveDistanceMode.DistanceReadingOnEncoder, 0.7);
         Command turn3Command = new TurnCommand(leg3Angle, this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
 
         

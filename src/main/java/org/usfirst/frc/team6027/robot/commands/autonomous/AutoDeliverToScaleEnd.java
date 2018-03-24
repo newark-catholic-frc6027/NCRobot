@@ -68,7 +68,7 @@ public class AutoDeliverToScaleEnd extends CommandGroup {
     protected Command createDriveToScaleCommand() {
         Command cmd = new DriveStraightCommand(
                 this.sensorService, this.drivetrainSubsystem, this.operatorDisplay,
-                15.0 /*this.prefs.getDouble("autoDeliverToSwitch.driveDistance", -12.0)*/,
+                30.0 /*this.prefs.getDouble("autoDeliverToSwitch.driveDistance", -12.0)*/,
                 DriveDistanceMode.DistanceReadingOnEncoder, 
                 0.55 /*this.prefs.getDouble("autoDeliverToSwitch.driveToSwitchCmd.power", 0.6)*/
         );

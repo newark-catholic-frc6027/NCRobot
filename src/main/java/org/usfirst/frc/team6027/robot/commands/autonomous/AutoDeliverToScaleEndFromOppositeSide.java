@@ -88,11 +88,11 @@ public class AutoDeliverToScaleEndFromOppositeSide extends CommandGroup {
     }
     
     protected Command createMultiLegDriveCommand() {
-        double leg1Distance = 165.0;//this.prefs.getDouble("leg1.distance", 200.0);
+        double leg1Distance = this.prefs.getDouble("leg1.distance", 200.0); //165.0;//
         double leg1Angle = 0.0;//this.prefs.getDouble("leg1.angle", 0.0);
-        double leg2Distance = 220.0;//this.prefs.getDouble("leg2.distance", 215.0);
+        double leg2Distance = this.prefs.getDouble("leg2.distance", 215.0); // 220.0;
         double leg2Angle = 90.0 * (this.startingSide == StartingPositionSide.Right ? -1.0 : 1.0);//this.prefs.getDouble("leg2.angle", 30.0) * (this.startingSide == StartingPositionSide.Right ? 1.0 : -1.0);
-        double leg3Distance = 70.0;//this.prefs.getDouble("leg3.distance", 70.0);
+        double leg3Distance = this.prefs.getDouble("leg3.distance", 70.0); //70.0;//
         double leg3Angle = 0.0;
 
         TargetVector[] turnVectors = new TargetVector[] { 
