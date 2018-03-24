@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.subsystems.PneumaticSubsystem;
 
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Command;
 
@@ -33,7 +34,8 @@ public class CubeDeliveryCommand extends Command {
     private long timeKickStarted = -1;
     private DeliveryMode deliveryMode = DeliveryMode.DropThenKick;
     private long dropKickMillisDelay = DEFAULT_DROPKICK_DELAY_MS;
-    
+    private Preferences prefs = Preferences.getInstance();
+
     public CubeDeliveryCommand(DeliveryMode deliveryMode, long dropKickMillisDelay, PneumaticSubsystem pneumaticSubsystem) {
         requires(pneumaticSubsystem);
         this.pneumaticSubsystem = pneumaticSubsystem;

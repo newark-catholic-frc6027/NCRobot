@@ -7,11 +7,13 @@ import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
 
 import edu.wpi.first.wpilibj.PIDOutput;
+import edu.wpi.first.wpilibj.Preferences;
 
 public class TurnWhileDrivingCommand extends DriveStraightCommand implements PIDOutput {
     public static final String NAME = "Turn While Driving";
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    
+    private Preferences prefs = Preferences.getInstance();
+
     protected TargetVector[] targetVectors;
     int currentTargetVectorIndex = 0;
     double prevLegLeftEncDistance = 0.0;

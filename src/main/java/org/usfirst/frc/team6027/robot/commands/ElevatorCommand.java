@@ -9,11 +9,13 @@ import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import org.usfirst.frc.team6027.robot.subsystems.ElevatorSubsystem;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class ElevatorCommand extends Command {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     public final static String NAME = "Elevator Command";
+    private Preferences prefs = Preferences.getInstance();
     protected static final int LOG_REDUCTION_MOD = 10;
     protected int execCount = 0;
 

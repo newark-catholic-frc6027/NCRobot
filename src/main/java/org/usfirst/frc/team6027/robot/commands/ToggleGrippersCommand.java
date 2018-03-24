@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.subsystems.PneumaticSubsystem;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Command;
 
@@ -13,6 +14,7 @@ public class ToggleGrippersCommand extends Command {
      * solenoid to finish toggling before we turn it back off. */
     public final static int DELAY_TO_OFF_MS = 250;
     public boolean executionComplete = false;
+    private Preferences prefs = Preferences.getInstance();
     
     private final Logger logger = LoggerFactory.getLogger(getClass());
 

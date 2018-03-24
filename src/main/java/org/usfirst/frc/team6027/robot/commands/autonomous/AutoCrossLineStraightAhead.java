@@ -8,11 +8,13 @@ import org.usfirst.frc.team6027.robot.commands.autonomous.DriveStraightCommand.D
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
 
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class AutoCrossLineStraightAhead extends CommandGroup {
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    private Preferences prefs = Preferences.getInstance();
 
     public static final String COMMAND_NAME = "Cross Line Straight Ahead";
     
