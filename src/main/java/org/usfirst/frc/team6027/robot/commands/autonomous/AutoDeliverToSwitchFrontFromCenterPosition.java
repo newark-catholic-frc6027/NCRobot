@@ -37,16 +37,18 @@ public class AutoDeliverToSwitchFrontFromCenterPosition extends CommandGroup {
           
         this.addSequential(new PneumaticsInitializationCommand(this.pneumaticSubsystem));
         
-        Command[] multiLegDriveCmd = createMultiLegDriveCommand();
+//        Command[] multiLegDriveCmd = createMultiLegDriveCommand();
+        Command multiLegDriveCmd = createMultiLegDriveCommand();
         Command driveToSwitchCmd = createDriveToSwitchCommand();
         Command cubeDeliverCmd = createCubeDeliveryCommand();
 
-
+/*
         for (Command cmd : multiLegDriveCmd) {
             this.addSequential(cmd);
             
         }
-//        this.addSequential(multiLegDriveCmd);
+*/
+        this.addSequential(multiLegDriveCmd);
         this.addSequential(driveToSwitchCmd);
         // TODO: add drop carriage command
         this.addSequential(cubeDeliverCmd);
@@ -69,7 +71,7 @@ public class AutoDeliverToSwitchFrontFromCenterPosition extends CommandGroup {
         return cmd;
     }
     
-    protected Command[] createMultiLegDriveCommand() {
+    protected Command createMultiLegDriveCommand() {
         double leg1Distance = this.prefs.getDouble("leg1.distance", 10.0); // 10
         double leg1Angle = this.prefs.getDouble("leg1.angle", 0.0); // 0
         double leg2Distance = this.prefs.getDouble("leg2.distance", 50.0); // 70
@@ -78,7 +80,7 @@ public class AutoDeliverToSwitchFrontFromCenterPosition extends CommandGroup {
         double leg3Angle = this.prefs.getDouble("leg3.angle", 0.0);
 
         Command straight1Cmd = new DriveStraightCommand(this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), leg1Distance, DriveDistanceMode.DistanceReadingOnEncoder, 0.6);
-        Command turn1Command = new TurnCommand(leg1Angle, this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
+        // Command turn1Command = new TurnCommand(leg1Angle, this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
 
         Command straight2Cmd = new DriveStraightCommand(this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), leg2Distance, DriveDistanceMode.DistanceReadingOnEncoder, 0.6);
         Command turn2Command = new TurnCommand(leg2Angle, this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
@@ -86,20 +88,16 @@ public class AutoDeliverToSwitchFrontFromCenterPosition extends CommandGroup {
         Command straight3Cmd = new DriveStraightCommand(this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), leg3Distance, DriveDistanceMode.DistanceReadingOnEncoder, 0.6);
         Command turn3Command = new TurnCommand(leg3Angle, this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
 
-        return new Command[] {straight1Cmd, turn1Command, straight2Cmd, turn2Command, straight3Cmd, turn3Command  };
-        /*
+//        return new Command[] {straight1Cmd, turn2Command, straight2Cmd,  straight3Cmd, turn3Command  };
+        
         CommandGroup group = new CommandGroup();
         group.addSequential(straight1Cmd);
-        group.addSequential(turn1Command);
-        
-        group.addSequential(straight2Cmd);
         group.addSequential(turn2Command);
-        
-        group.addSequential(straight3Cmd);
+        group.addSequential(straight2Cmd);
         group.addSequential(turn3Command);
+        group.addSequential(straight3Cmd);
         
         return group;
-        */
 /*        
         TargetVector[] turnVectors = new TargetVector[] { 
                 new TargetVector(leg1Angle, leg1Distance),
