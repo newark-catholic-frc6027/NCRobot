@@ -1,5 +1,10 @@
 <xml version="1.0">
 <dashboard>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.RobotPreferences">
+		<location x="890" y="36"/>
+		<width>913</width>
+		<height>571</height>
+	</static-widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
 		<location x="2" y="2"/>
 		<width>696</width>
