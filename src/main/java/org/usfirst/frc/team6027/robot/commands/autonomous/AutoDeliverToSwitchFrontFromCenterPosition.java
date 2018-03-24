@@ -53,9 +53,16 @@ public class AutoDeliverToSwitchFrontFromCenterPosition extends CommandGroup {
     }
 
     protected Command createDriveToSwitchCommand() {
+        // Value is negative because we are using ultrasonic
+        double leg4Distance = (
+                this.startingPositionSide == StartingPositionSide.Left ? 
+                        this.prefs.getDouble("E-L4-LC-Switch", -12.0) : // Left
+                        this.prefs.getDouble("F-L4-RC-Switch", -12.0)   // Right
+        );
+        
         Command cmd = new DriveStraightCommand(
                 this.sensorService, this.drivetrainSubsystem, this.operatorDisplay,
-                -12.0,
+                leg4Distance,
                 DriveDistanceMode.DistanceFromObject, 
                 0.55
         );
@@ -65,22 +72,40 @@ public class AutoDeliverToSwitchFrontFromCenterPosition extends CommandGroup {
     }
     
     protected Command createMultiLegDriveCommand() {
-        double leg1Distance = 40.0;//this.prefs.getDouble("leg1.distance", 10.0);
-        double leg1Angle = 0.0;//this.prefs.getDouble("leg1.angle", 0.0);
-        double leg2Distance = (this.startingPositionSide == StartingPositionSide.Left ? 55.0 : 35.0);//this.prefs.getDouble("leg2.distance", 50.0);
         // Interpreting StartingPostionSide Left here as the side we are delivering to
-        double leg2Angle = (this.startingPositionSide == StartingPositionSide.Left ? -1.0 : 1.0) * 90.0;//this.prefs.getDouble("leg2.angle", 0.0);// * (this.startingSide == StartingPositionSide.Left ? 1.0 : -1.0);// this.prefs.getDouble("leg2.angle", 30.0) // 60
-        double leg3Distance = 10.0;//this.prefs.getDouble("leg3.distance", 12.0);
-        double leg3Angle = 0.0;//this.prefs.getDouble("leg3.angle", 0.0);
+        double leg1Distance = (
+                this.startingPositionSide == StartingPositionSide.Left ? 
+                        this.prefs.getDouble("E-L1-LC-Switch", 40.0) : // Left
+                        this.prefs.getDouble("F-L1-RC-Switch", 40.0)   // Right
+        );
+        
+        double leg2Distance = (
+                this.startingPositionSide == StartingPositionSide.Left ? 
+                        this.prefs.getDouble("E-L2-LC-Switch", 55.0) : // Left
+                        this.prefs.getDouble("F-L2-RC-Switch", 35.0)   // Right
+        );
+        
+        double leg2Angle = (this.startingPositionSide == StartingPositionSide.Left ? -1.0 : 1.0) * 90.0;
 
-        Command straight1Cmd = new DriveStraightCommand(this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), leg1Distance, DriveDistanceMode.DistanceReadingOnEncoder, 0.7);
+        double leg3Distance = (
+                this.startingPositionSide == StartingPositionSide.Left ? 
+                        this.prefs.getDouble("E-L3-LC-Switch", 10.0) : // Left
+                        this.prefs.getDouble("F-L3-RC-Switch", 10.0)   // Right
+        );
+        double leg3Angle = 0.0;
 
-        Command straight2Cmd = new DriveStraightCommand(this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), leg2Distance, DriveDistanceMode.DistanceReadingOnEncoder, 0.7);
-        Command turn2Command = new TurnCommand(leg2Angle, this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
+        Command straight1Cmd = new DriveStraightCommand(this.getSensorService(), this.getDrivetrainSubsystem(), 
+                this.getOperatorDisplay(), leg1Distance, DriveDistanceMode.DistanceReadingOnEncoder, 0.7);
 
-        Command straight3Cmd = new DriveStraightCommand(this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), leg3Distance, DriveDistanceMode.DistanceReadingOnEncoder, 0.7);
-        Command turn3Command = new TurnCommand(leg3Angle, this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
+        Command straight2Cmd = new DriveStraightCommand(this.getSensorService(), this.getDrivetrainSubsystem(), 
+                this.getOperatorDisplay(), leg2Distance, DriveDistanceMode.DistanceReadingOnEncoder, 0.7);
+        Command turn2Command = new TurnCommand(leg2Angle, this.getSensorService(), this.getDrivetrainSubsystem(), 
+                this.getOperatorDisplay());
 
+        Command straight3Cmd = new DriveStraightCommand(this.getSensorService(), this.getDrivetrainSubsystem(), 
+                this.getOperatorDisplay(), leg3Distance, DriveDistanceMode.DistanceReadingOnEncoder, 0.7);
+        Command turn3Command = new TurnCommand(leg3Angle, this.getSensorService(), this.getDrivetrainSubsystem(),
+                this.getOperatorDisplay());
         
         CommandGroup group = new CommandGroup();
         group.addSequential(straight1Cmd);
@@ -90,25 +115,6 @@ public class AutoDeliverToSwitchFrontFromCenterPosition extends CommandGroup {
         group.addSequential(straight3Cmd);
         
         return group;
-    }
-
-
-    protected Command createDriveStraightCommand() {
-        double leg1Distance = this.prefs.getDouble("leg1.distance", 95.0);
-
-        double leg1Angle = this.prefs.getDouble("leg1.angle", 0.0);
-
-        TargetVector[] turnVectors = new TargetVector[] { 
-                new TargetVector(leg1Angle, leg1Distance)
-        };
-        
-        Command cmd = new TurnWhileDrivingCommand(
-                this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), 
-                turnVectors,
-                DriveDistanceMode.DistanceReadingOnEncoder, 0.7
-        );
-        
-        return cmd;
     }
 
 
