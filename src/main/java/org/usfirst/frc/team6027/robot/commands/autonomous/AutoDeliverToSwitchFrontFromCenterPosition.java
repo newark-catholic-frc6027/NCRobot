@@ -73,6 +73,27 @@ public class AutoDeliverToSwitchFrontFromCenterPosition extends CommandGroup {
         double leg3Distance = this.prefs.getDouble("leg3.distance", 12.0);
         double leg3Angle = this.prefs.getDouble("leg3.angle", 0.0);
 
+        Command straight1Cmd = new DriveStraightCommand(this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), leg1Distance, DriveDistanceMode.DistanceReadingOnEncoder, 0.6);
+        Command turn1Command = new TurnCommand(leg1Angle, this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
+
+        Command straight2Cmd = new DriveStraightCommand(this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), leg2Distance, DriveDistanceMode.DistanceReadingOnEncoder, 0.6);
+        Command turn2Command = new TurnCommand(leg2Angle, this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
+
+        Command straight3Cmd = new DriveStraightCommand(this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), leg3Distance, DriveDistanceMode.DistanceReadingOnEncoder, 0.6);
+        Command turn3Command = new TurnCommand(leg3Angle, this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
+
+        CommandGroup group = new CommandGroup();
+        group.addSequential(straight1Cmd);
+        group.addSequential(turn1Command);
+        
+        group.addSequential(straight2Cmd);
+        group.addSequential(turn2Command);
+        
+        group.addSequential(straight3Cmd);
+        group.addSequential(turn3Command);
+        
+        return group;
+/*        
         TargetVector[] turnVectors = new TargetVector[] { 
                 new TargetVector(leg1Angle, leg1Distance),
                 new TargetVector(leg2Angle, leg2Distance),
@@ -85,8 +106,8 @@ public class AutoDeliverToSwitchFrontFromCenterPosition extends CommandGroup {
                 turnVectors,
                 DriveDistanceMode.DistanceReadingOnEncoder, 0.6
         );
-        
-        return cmd;
+        */
+        // return cmd;
     }
 
 
