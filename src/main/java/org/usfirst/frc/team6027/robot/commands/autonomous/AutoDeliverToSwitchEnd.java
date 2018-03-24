@@ -66,9 +66,9 @@ public class AutoDeliverToSwitchEnd extends CommandGroup {
     protected Command createDriveToSwitchCommand() {
         Command cmd = new DriveStraightCommand(
                 this.sensorService, this.drivetrainSubsystem, this.operatorDisplay,
-                -12.0 /*this.prefs.getDouble("autoDeliverToSwitch.driveDistance", -12.0)*/,
+                this.prefs.getDouble("C-L4-SS-Switch", -12.0),
                 DriveDistanceMode.DistanceFromObject, 
-                0.55 /*this.prefs.getDouble("autoDeliverToSwitch.driveToSwitchCmd.power", 0.6)*/
+                0.55
         );
 
         
@@ -86,12 +86,12 @@ public class AutoDeliverToSwitchEnd extends CommandGroup {
     }
     
     protected Command createMultiLegDriveCommand() {
-        double leg1Distance = 12.0; //this.prefs.getDouble("leg1.distance", 12.0);
-        double leg1Angle = 0.0;     //this.prefs.getDouble("leg1.angle", 0.0);
-        double leg2Distance = 47.0; //this.prefs.getDouble("leg2.distance", 47.0);
-        double leg2Angle = 30.0 * (this.startingSide == StartingPositionSide.Right ? 1.0 : -1.0);// this.prefs.getDouble("leg2.angle", 30.0)
-        double leg3Distance = 75.0; //this.prefs.getDouble("leg3.distance", 100.0);
-        double leg3Angle = 0.0;     //this.prefs.getDouble("leg3.angle", 0.0);
+        double leg1Distance = this.prefs.getDouble("C-L1-SS-Switch", 12.0);
+        double leg1Angle = 0.0;
+        double leg2Distance = this.prefs.getDouble("C-L2-SS-Switch", 47.0);
+        double leg2Angle = 30.0 * (this.startingSide == StartingPositionSide.Right ? 1.0 : -1.0);
+        double leg3Distance = this.prefs.getDouble("C-L3-SS-Switch", 75.0);
+        double leg3Angle = 0.0;
 
         TargetVector[] turnVectors = new TargetVector[] { 
                 new TargetVector(leg1Angle, leg1Distance),
