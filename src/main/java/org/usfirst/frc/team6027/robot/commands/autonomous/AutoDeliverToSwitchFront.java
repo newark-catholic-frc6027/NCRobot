@@ -43,9 +43,9 @@ public class AutoDeliverToSwitchFront extends CommandGroup {
     protected Command createDriveToSwitchCommand() {
         Command cmd = new DriveStraightCommand(
                 this.sensorService, this.drivetrainSubsystem, this.operatorDisplay,
-                -12.0, //this.prefs.getDouble("autoDeliverToSwitch.driveDistance", -12.0),
+                -12.0,
                 DriveDistanceMode.DistanceFromObject, 
-                0.55   //this.prefs.getDouble("autoDeliverToSwitch.driveToSwitchCmd.power", 0.6)
+                0.55
         );
 
         
