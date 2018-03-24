@@ -55,9 +55,9 @@ public class AutoDeliverToSwitchFromOppositeSide extends CommandGroup {
     protected Command createDriveToSwitchCommand() {
         Command cmd = new DriveStraightCommand(
                 this.sensorService, this.drivetrainSubsystem, this.operatorDisplay,
-                10.0,//this.prefs.getDouble("autoDeliverToSwitch.driveDistance", -12.0),
+                this.prefs.getDouble("D-L3-XS-Switch", 10.0),
                 DriveDistanceMode.DistanceReadingOnEncoder, 
-                0.55 //this.prefs.getDouble("autoDeliverToSwitch.driveToSwitchCmd.power", 0.6)
+                0.55
         );
 
         
@@ -75,18 +75,14 @@ public class AutoDeliverToSwitchFromOppositeSide extends CommandGroup {
     }
     
     protected Command createMultiLegDriveCommand() {
-        double leg1Distance = this.prefs.getDouble("leg1.distance", 200.0);
-        double leg1Angle = 0.0;//this.prefs.getDouble("leg1.angle", 0.0);
-        double leg2Distance = this.prefs.getDouble("leg2.distance", 170.0);
-        double leg2Angle = 90.0 * (this.startingSide == StartingPositionSide.Right ? -1.0 : 1.0);//this.prefs.getDouble("leg2.angle", 30.0) * (this.startingSide == StartingPosition.Right ? 1.0 : -1.0);
-//        double leg3Distance = this.prefs.getDouble("leg3.distance", 10.0);
-//        double leg3Angle = 180.0 * (this.startingSide == StartingPositionSide.Left ? 1.0 : -1.0);//this.prefs.getDouble("leg3.angle", 0.0);
+        double leg1Distance = this.prefs.getDouble("D-L1-XS-Switch", 205.0);
+        double leg1Angle = 0.0;
+        double leg2Distance = this.prefs.getDouble("D-L2-XS-Switch", 170.0);
+        double leg2Angle = 90.0 * (this.startingSide == StartingPositionSide.Right ? -1.0 : 1.0);
 
         TargetVector[] turnVectors = new TargetVector[] { 
                 new TargetVector(leg1Angle, leg1Distance),
                 new TargetVector(leg2Angle, leg2Distance)
-//                new TargetVector(leg3Angle, leg3Distance),
-                
         };
         
         Command cmd = new TurnWhileDrivingCommand(
