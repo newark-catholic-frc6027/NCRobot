@@ -50,7 +50,7 @@ public class AutonomousCommandManager {
     public enum AutonomousPreference {
         NoPreference("NO SELECTION"),
         CrossLine("Cross the Line"),
-        DeliverToSwitchEnd("Deliver to Switch END"),
+        DeliverToSwitch("Deliver to Switch"),
         DeliverToScaleEnd("Deliver to Scale END");
         
         private String displayName;
@@ -102,7 +102,7 @@ public class AutonomousCommandManager {
     
     public static void initAutoScenarioDisplayValues(OperatorDisplay operatorDisplay) {
         operatorDisplay.registerAutoScenario(AutonomousPreference.CrossLine.displayName());
-        operatorDisplay.registerAutoScenario(AutonomousPreference.DeliverToSwitchEnd.displayName());
+        operatorDisplay.registerAutoScenario(AutonomousPreference.DeliverToSwitch.displayName());
 //        operatorDisplay.registerAutoScenario(AutonomousPreference.DeliverToSwitchFront.displayName());
         operatorDisplay.registerAutoScenario(AutonomousPreference.DeliverToScaleEnd.displayName());
     }
@@ -200,7 +200,7 @@ public class AutonomousCommandManager {
                 chosenCommand = this.makeCrossLineFromEndPositionCommand();
             } 
             
-        } else if (autoPreference == AutonomousPreference.DeliverToSwitchEnd && dontDoOption == DontDoOption.NoPreference) {
+        } else if (autoPreference == AutonomousPreference.DeliverToSwitch && dontDoOption == DontDoOption.NoPreference) {
             if (switchIsOnOurSide) {
                 logger.info("Delivering to SWITCH on OUR SIDE (4)...");
                 chosenCommand = this.makeDeliverToSwitchEndCommand(startingSide);
@@ -209,7 +209,7 @@ public class AutonomousCommandManager {
                 chosenCommand = this.makeDeliverToSwitchEndFromOppositeSideCommand(startingSide);
             } 
             
-        } else if (autoPreference == AutonomousPreference.DeliverToSwitchEnd && dontDoOption == DontDoOption.DontCrossField) {
+        } else if (autoPreference == AutonomousPreference.DeliverToSwitch && dontDoOption == DontDoOption.DontCrossField) {
             if (switchIsOnOurSide) {
                 logger.info("Delivering to SWITCH on OUR SIDE (5)...");
                 chosenCommand = this.makeDeliverToSwitchEndCommand(startingSide);
