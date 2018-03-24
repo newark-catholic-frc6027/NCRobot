@@ -19,17 +19,17 @@ public class AutoDeliverToSwitchFront extends CommandGroup {
     private PneumaticSubsystem pneumaticSubsystem;
     private OperatorDisplay operatorDisplay;
     private Preferences prefs = Preferences.getInstance();
-    private StartingPositionSide deliverySide;
+    private StartingPositionSide startingSide;
 
 
-    public AutoDeliverToSwitchFront(StartingPositionSide deliverySide, SensorService sensorService, 
+    public AutoDeliverToSwitchFront(StartingPositionSide startingSide, SensorService sensorService, 
             DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, OperatorDisplay operatorDisplay) {
         
         this.sensorService = sensorService;
         this.drivetrainSubsystem = drivetrainSubsystem;
         this.pneumaticSubsystem = pneumaticSubsystem;
         this.operatorDisplay = operatorDisplay;
-        this.deliverySide = deliverySide;
+        this.startingSide = startingSide;
           
         this.addSequential(new PneumaticsInitializationCommand(this.pneumaticSubsystem));
         
@@ -56,7 +56,7 @@ public class AutoDeliverToSwitchFront extends CommandGroup {
         double leg1Distance = 10.0;//this.prefs.getDouble("leg1.distance", 12.0); // 10
         double leg1Angle = 0.0;//this.prefs.getDouble("leg1.angle", 0.0); // 0
         double leg2Distance = 50.0;//this.prefs.getDouble("leg2.distance", 47.0); // 70
-        double leg2Angle = 60.0;// this.prefs.getDouble("leg2.angle", 0.0) * (this.deliverySide == DeliverySide.Left ? 1.0 : -1.0);// this.prefs.getDouble("leg2.angle", 30.0) // 60
+        double leg2Angle = 60.0;// this.prefs.getDouble("leg2.angle", 0.0) * (this.startingSide == StartingPositionSide.Left ? 1.0 : -1.0);// this.prefs.getDouble("leg2.angle", 30.0) // 60
         double leg3Distance = 12.0;// this.prefs.getDouble("leg3.distance", 0.0);
         double leg3Angle = 0.0;//this.prefs.getDouble("leg3.angle", 0.0);
 
@@ -126,13 +126,13 @@ public class AutoDeliverToSwitchFront extends CommandGroup {
     }
 
 
-    public StartingPositionSide getDeliverySide() {
-        return deliverySide;
+    public StartingPositionSide getStartingPositionSide() {
+        return startingSide;
     }
 
 
-    public void setDeliverySide(StartingPositionSide deliverySide) {
-        this.deliverySide = deliverySide;
+    public void setStartingPositionSide(StartingPositionSide startingSide) {
+        this.startingSide = startingSide;
     }
 
 
