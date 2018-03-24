@@ -403,7 +403,8 @@ public class AutonomousCommandManager {
      * @return
      */
     private Command makeCrossLineFromEndPositionCommand() {
-        return new AutoCrossLineStraightAhead(250.0, .80, this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
+        double distance = this.prefs.getDouble("G-L1-Cross", 250.0);
+        return new AutoCrossLineStraightAhead(distance, .80, this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
     }
     
     private Command makeDeliverToSwitchFrontCommand(StartingPositionSide startingSide) {

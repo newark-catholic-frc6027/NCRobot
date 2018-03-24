@@ -16,7 +16,7 @@ public class AutoCrossLineStraightAhead extends CommandGroup {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private Preferences prefs = Preferences.getInstance();
 
-    public static final String COMMAND_NAME = "Cross Line Straight Ahead";
+    public static final String COMMAND_NAME = "Cross Line From End Position";
     
 	public AutoCrossLineStraightAhead(double distance, double power, SensorService sensorService, DrivetrainSubsystem drivetrainSubsystem,
 			OperatorDisplay operatorDisplay) {
