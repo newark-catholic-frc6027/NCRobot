@@ -37,12 +37,16 @@ public class AutoDeliverToSwitchFrontFromCenterPosition extends CommandGroup {
           
         this.addSequential(new PneumaticsInitializationCommand(this.pneumaticSubsystem));
         
-        Command multiLegDriveCmd = createMultiLegDriveCommand();
+        Command[] multiLegDriveCmd = createMultiLegDriveCommand();
         Command driveToSwitchCmd = createDriveToSwitchCommand();
         Command cubeDeliverCmd = createCubeDeliveryCommand();
 
 
-        this.addSequential(multiLegDriveCmd);
+        for (Command cmd : multiLegDriveCmd) {
+            this.addSequential(cmd);
+            
+        }
+//        this.addSequential(multiLegDriveCmd);
         this.addSequential(driveToSwitchCmd);
         // TODO: add drop carriage command
         this.addSequential(cubeDeliverCmd);
@@ -65,7 +69,7 @@ public class AutoDeliverToSwitchFrontFromCenterPosition extends CommandGroup {
         return cmd;
     }
     
-    protected Command createMultiLegDriveCommand() {
+    protected Command[] createMultiLegDriveCommand() {
         double leg1Distance = this.prefs.getDouble("leg1.distance", 10.0); // 10
         double leg1Angle = this.prefs.getDouble("leg1.angle", 0.0); // 0
         double leg2Distance = this.prefs.getDouble("leg2.distance", 50.0); // 70
@@ -82,6 +86,8 @@ public class AutoDeliverToSwitchFrontFromCenterPosition extends CommandGroup {
         Command straight3Cmd = new DriveStraightCommand(this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), leg3Distance, DriveDistanceMode.DistanceReadingOnEncoder, 0.6);
         Command turn3Command = new TurnCommand(leg3Angle, this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
 
+        return new Command[] {straight1Cmd, turn1Command, straight2Cmd, turn2Command, straight3Cmd, turn3Command  };
+        /*
         CommandGroup group = new CommandGroup();
         group.addSequential(straight1Cmd);
         group.addSequential(turn1Command);
@@ -93,6 +99,7 @@ public class AutoDeliverToSwitchFrontFromCenterPosition extends CommandGroup {
         group.addSequential(turn3Command);
         
         return group;
+        */
 /*        
         TargetVector[] turnVectors = new TargetVector[] { 
                 new TargetVector(leg1Angle, leg1Distance),

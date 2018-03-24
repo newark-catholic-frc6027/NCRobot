@@ -59,8 +59,7 @@ public class TurnCommand extends Command implements PIDOutput {
 
 	@Override
 	protected void initialize() {
-	    logger.info(">>> Turn Command starting...");
-		logger.trace("Current Angle, PID Loop Output, Yaw Rate, Right Motor Power");
+	    logger.info(">>> Turn Command starting, target angle: {}, initial gyro angle", this.targetAngle, this.initialGyroAngle);
 	}
 
 	protected void initPIDController() {
