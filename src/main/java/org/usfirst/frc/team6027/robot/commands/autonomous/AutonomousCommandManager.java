@@ -266,23 +266,6 @@ public class AutonomousCommandManager {
         return chosenCommand;
     }
 
-    /* Experimental code, delete soon
-    protected void createAutonomousCommands() {
-        
-        // TODO: May want to defer creating these until we know which command we are going to need to run
-        // based on other inputs
-        Command driveStraightCmd =  new DriveStraightCommand(this.getSensorService(), this.getDrivetrainSubsystem(), 
-            this.getOperatorDisplay(), this.prefs.getDouble("driveStraightCommand.driveDistance", 12.0), 
-            DriveDistanceMode.DistanceReadingOnEncoder, 0.5);
-        this.commandsByName.put(driveStraightCmd.getName(), driveStraightCmd);
-        
-        Command turnCommand = new TurnCommand(this.prefs.getDouble("turnCommand.targetAngle", 90.0), 
-            this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
-        this.commandsByName.put(turnCommand.getName(), turnCommand);
-
-        
-    }
-*/
     public Command getCommandByName(String commandName) {
         return this.commandsByName.get(commandName);
     }

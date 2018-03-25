@@ -18,16 +18,25 @@ public class DriveStraightCommand extends Command implements PIDOutput {
     public final static String NAME = "Drive Straight";
     
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    protected static final double PID_PROPORTIONAL_COEFFICIENT = 0.005;
+    protected static final double PID_PROPORTIONAL_COEFFICIENT = 0.0356;
     protected static final double PID_INTEGRAL_COEFFICIENT = 0.000;
     protected static final double PID_DERIVATIVE_COEFFICIENT = 0.00;
-    protected static final double PID_FEED_FORWARD_TERM = 0.3;
+    protected static final double PID_FEED_FORWARD_TERM = 0.0;
+
     protected static final double GYRO_PID_TOLERANCE = 1.0;  // degrees
+    protected static final double GYRO_PID_PROPORTIONAL_COEFFICIENT = .01;
+    protected static final double GYRO_PID_INTEGRAL_COEFFICIENT = 0.0;
+    protected static final double GYRO_PID_DERIVATIVE_COEFFICIENT = 0.0;
+    protected static final double GYRO_PID_FEED_FORWARD_TERM = 0.0;
+
     protected static final double DISTANCE_PID_TOLERANCE = 1.0;  // inches
     protected static final int LOG_REDUCTION_MOD = 10;
     protected static final int EXEC_LOG_REDUCTION_MOD = 4;
-    
-    protected static final double DRIVE_POWER = 0.5;
+
+
+    protected static final double DRIVE_POWER = 0.7;
+
+
 
     public enum DriveDistanceMode {
         DistanceReadingOnEncoder,
@@ -101,7 +110,7 @@ public class DriveStraightCommand extends Command implements PIDOutput {
     protected void initialize() {
         this.encoderSensors.reset();
         if (this.drivePower == null) {
-        	this.drivePower = this.prefs.getDouble("driveStraightCommand.power", DRIVE_POWER);
+        	this.drivePower = this.prefs.getDouble("POWER.driveStraightCommand.power", DRIVE_POWER);
         }
         this.currentAngleHeading =  this.gyro.getYawAngle();
 
@@ -127,10 +136,10 @@ public class DriveStraightCommand extends Command implements PIDOutput {
     
     protected void initDistancePIDController() {
         this.distancePidController = new PIDController(
-                this.prefs.getDouble("driveStraightCommand.dist.pCoeff", PID_PROPORTIONAL_COEFFICIENT),
-                this.prefs.getDouble("driveStraightCommand.dist.iCoeff", PID_INTEGRAL_COEFFICIENT),
-                this.prefs.getDouble("driveStraightCommand.dist.dCoeff", PID_DERIVATIVE_COEFFICIENT),
-                this.prefs.getDouble("driveStraightCommand.dist.feedForward", PID_FEED_FORWARD_TERM),
+                this.prefs.getDouble("PID.driveStraightCommand.dist.pCoeff", PID_PROPORTIONAL_COEFFICIENT),
+                this.prefs.getDouble("PID.driveStraightCommand.dist.iCoeff", PID_INTEGRAL_COEFFICIENT),
+                this.prefs.getDouble("PID.driveStraightCommand.dist.dCoeff", PID_DERIVATIVE_COEFFICIENT),
+                this.prefs.getDouble("PID.driveStraightCommand.dist.feedForward", PID_FEED_FORWARD_TERM),
                 this.getDriveDistanceMode() == DriveDistanceMode.DistanceFromObject ?
                         this.sensorService.getUltrasonicSensor() : this.sensorService.getEncoderSensors().getLeftEncoder(),
                 new DistancePidOutputHandler()
@@ -149,10 +158,10 @@ public class DriveStraightCommand extends Command implements PIDOutput {
     
     protected void initGyroPIDController() {
         gyroPidController = new PIDController(
-                this.prefs.getDouble("driveStraightCommand.pCoeff", PID_PROPORTIONAL_COEFFICIENT),
-                this.prefs.getDouble("driveStraightCommand.iCoeff", PID_INTEGRAL_COEFFICIENT),
-                this.prefs.getDouble("driveStraightCommand.dCoeff", PID_DERIVATIVE_COEFFICIENT),
-                this.prefs.getDouble("driveStraightCommand.feedForward", PID_FEED_FORWARD_TERM),
+                this.prefs.getDouble("PID.driveStraightCommand.pCoeff", GYRO_PID_PROPORTIONAL_COEFFICIENT),
+                this.prefs.getDouble("driveStraightCommand.iCoeff", GYRO_PID_INTEGRAL_COEFFICIENT),
+                this.prefs.getDouble("driveStraightCommand.dCoeff", GYRO_PID_DERIVATIVE_COEFFICIENT),
+                this.prefs.getDouble("driveStraightCommand.feedForward", GYRO_PID_FEED_FORWARD_TERM),
                 this.sensorService.getGyroSensor().getPIDSource(), this);
         
         logger.info("DriveStraightCommand currentAngleHeading: {}", this.currentAngleHeading);
@@ -272,8 +281,8 @@ public class DriveStraightCommand extends Command implements PIDOutput {
             
         } else {  // Driving with distance PID
             double power = this.distPidLoopCalculationOutput;
-            if (Math.abs(power) < prefs.getDouble("driveStraightCommand.minPower", .20) ) {
-                double adjustedPower = prefs.getDouble("driveStraightCommand.adjustedPower", 0.3);
+            if (Math.abs(power) < prefs.getDouble("PID.driveStraightCommand.minPower", .20) ) {
+                double adjustedPower = prefs.getDouble("PID.driveStraightCommand.adjustedPower", 0.3);
                 power  = power < 0.0 ? -1*adjustedPower : adjustedPower;
                 logger.info("Power increased by DISTANCE PID to: {}", power);                
             }
@@ -285,36 +294,6 @@ public class DriveStraightCommand extends Command implements PIDOutput {
                         this.distPidLoopCalculationOutput, power);
             }
         }
-        /*
-        if (! this.distancePidController.onTarget()) {
-            if (this.gyroPidController.onTarget()) {
-                double power = this.distPidLoopCalculationOutput;
-
-                if (Math.abs(power) < prefs.getDouble("driveStraightCommand.minPower", .20) ) {
-                    double adjustedPower = prefs.getDouble("driveStraightCommand.adjustedPower", 0.3);
-                    power  = power < 0.0 ? -1*adjustedPower : adjustedPower;
-                    logger.info("Power increased to: {}", power);                
-                }
-                
-                this.setDrivePower(power);
-                this.drivetrainSubsystem.tankDrive(power, power);
-                if (this.execCount % EXEC_LOG_REDUCTION_MOD == 0) {
-                    logger.trace("onTarget, gyroPidOutput: {}, distPidOutput: {}", this.gyroPidLoopCalculationOutput, 
-                            this.distPidLoopCalculationOutput);
-                }
-            } else {
-                double leftPower = getDrivePower() + this.gyroPidLoopCalculationOutput;
-                double rightPower = getDrivePower() - this.gyroPidLoopCalculationOutput;
-                if (this.execCount % EXEC_LOG_REDUCTION_MOD == 0) {
-                    logger.trace("adjustTo{}, pidOutput: {}, leftPower: {}, rightPower: {}", this.gyroPidLoopCalculationOutput > 0 ? "Right" : "Left", this.gyroPidLoopCalculationOutput, leftPower, rightPower);
-                }
-                this.drivetrainSubsystem.tankDrive(leftPower, rightPower);
-            }
-        } else {
-            this.drivetrainSubsystem.tankDrive(getDrivePower(), getDrivePower());
-        }
-        */
-
     }
 
     protected void setDrivePower(double power) {

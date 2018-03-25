@@ -96,15 +96,14 @@ public class TeleopManager extends Command {
 		this.aButton = new JoystickButton(this.joystick, this.joystick.getAButtonNumber());
 		this.aButton.whenPressed(this.toggleGrippersCommand);
 		
-		/*
-		this.bButton = new JoystickButton(this.joystick, this.joystick.getBButtonNumber());
-		this.bButton.whenPressed(this.cubeKickerCommand);
-		*/
+// for testing
+//      DeliveryMode.valueOf(this.prefs.getString("cubeDelivery.mode", DeliveryMode.DropThenKick.toString())), 
+//      this.prefs.getInt("cubeDelivery.msdelay", 10),
 		
         this.xButton = new JoystickButton(this.joystick, this.joystick.getXButtonNumber());
 	    this.xButton.whenPressed(new CubeDeliveryCommand(
-	            DeliveryMode.valueOf(this.prefs.getString("cubeDelivery.mode", DeliveryMode.DropThenKick.toString())), 
-	            this.prefs.getInt("cubeDelivery.msdelay", 150),
+	            DeliveryMode.DropThenKick,
+	            10,
 	            this.pneumaticSubsystem)
 	    );
 
