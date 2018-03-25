@@ -22,7 +22,8 @@ public class AutoCommandHelper {
     }
    
     public static Command createElevatorUpForDeliveryCommand(ElevatorSubsystem elevator, DrivetrainSubsystem drivetrainSubsystem, SensorService sensorService) {
-        return new ElevatorCommand(ElevatorDirection.Up, 1.0, sensorService, elevator, drivetrainSubsystem);
+        // Reduce power some in Auto since it will be running in high gear
+        return new ElevatorCommand(ElevatorDirection.Up, 0.6, sensorService, elevator, drivetrainSubsystem);
     }
     
     public static Command createCubeDeliveryCommand(PneumaticSubsystem pneumaticSubsystem) {
