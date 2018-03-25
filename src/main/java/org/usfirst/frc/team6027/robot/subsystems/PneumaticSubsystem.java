@@ -7,6 +7,7 @@ import org.usfirst.frc.team6027.robot.RobotConfigConstants;
 import org.usfirst.frc.team6027.robot.commands.PneumaticsInitializationCommand;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class PneumaticSubsystem extends Subsystem {
@@ -213,6 +214,14 @@ public class PneumaticSubsystem extends Subsystem {
         this.elevatorShifterSolenoid.toggleOff();
     }
     
+    public boolean isElevatorShifterInHighGear() {
+        return this.elevatorShifterSolenoid.getState() == Value.kReverse; 
+    }
+
+    public boolean isElevatorShifterInLowGear() {
+        return this.elevatorShifterSolenoid.getState() == Value.kForward; 
+    }
+    
     public boolean isReset() {
         return this.pneumaticsInitializationCommand != null && ! this.pneumaticsInitializationCommand.isRunning() 
                 && this.pneumaticsInitializationCommand.isCompleted();
@@ -225,5 +234,6 @@ public class PneumaticSubsystem extends Subsystem {
         
         pneumaticsInitializationCommand.start();
     }
+
 
 }

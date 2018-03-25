@@ -93,10 +93,11 @@ public class PneumaticsInitializationCommand extends Command {
         if (driveSolenoidInitialized && gripperSolenoidInitialized && kickerSolenoidToggled) {
             if (! elevatorSolenoidToggled) {
                 logger.trace("Initializing Elevator Solenoid...");
-                this.pneumaticSubsystem.toggleElevatorShifterSolenoidForward();
+                // Reverse is HIGH for elevator.  We want to start in high gear.
+                this.pneumaticSubsystem.toggleElevatorShifterSolenoidReverse();
                 this.elevatorSolenoidToggled = true;
             } else {
-                if (this.pneumaticSubsystem.getElevatorShifterSolenoid().get() == DoubleSolenoid.Value.kForward) {
+                if (this.pneumaticSubsystem.getElevatorShifterSolenoid().get() == DoubleSolenoid.Value.kReverse) {
                     elevatorSolenoidInitialized = true;
                     this.pneumaticSubsystem.toggleElevatorShifterSolenoidOff();
                     logger.trace("Elevator Solenoid initialized.");
