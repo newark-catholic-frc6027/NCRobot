@@ -14,28 +14,27 @@ public class PneumaticSubsystem extends Subsystem {
 
 	private OperatorDisplay operatorDisplay;
 
-	private DoubleSolenoid driveSolenoid;
-	private DoubleSolenoid.Value driveSolenoidState;
-
-    private DoubleSolenoid gripperSolenoid;
-    private DoubleSolenoid.Value gripperSolenoidState;
-    
-    private DoubleSolenoid kickerSolenoid;
-    private DoubleSolenoid.Value kickerSolenoidState;
+	private StatefulSolenoid driveSolenoid;
+    private StatefulSolenoid gripperSolenoid;
+    private StatefulSolenoid kickerSolenoid;
+    private StatefulSolenoid carriageBiFunctionSolenoid;
     
     private PneumaticsInitializationCommand pneumaticsInitializationCommand = null;
 	
 	public PneumaticSubsystem(OperatorDisplay operatorDisplay) {
         this.operatorDisplay = operatorDisplay;
         
-        this.driveSolenoid = new DoubleSolenoid(RobotConfigConstants.PCM_1_ID_NUMBER,
+        this.driveSolenoid = new StatefulSolenoid(RobotConfigConstants.PCM_1_ID_NUMBER,
                 RobotConfigConstants.SOLENOID_1_PORT_A, RobotConfigConstants.SOLENOID_1_PORT_B);
 
-        this.gripperSolenoid = new DoubleSolenoid(RobotConfigConstants.PCM_1_ID_NUMBER,
+        this.gripperSolenoid = new StatefulSolenoid(RobotConfigConstants.PCM_1_ID_NUMBER,
                 RobotConfigConstants.SOLENOID_2_PORT_A, RobotConfigConstants.SOLENOID_2_PORT_B);
 
-        this.kickerSolenoid = new DoubleSolenoid(RobotConfigConstants.PCM_1_ID_NUMBER,
+        this.kickerSolenoid = new StatefulSolenoid(RobotConfigConstants.PCM_1_ID_NUMBER,
                 RobotConfigConstants.SOLENOID_3_PORT_A, RobotConfigConstants.SOLENOID_3_PORT_B);
+        
+        this.carriageBiFunctionSolenoid = new StatefulSolenoid(RobotConfigConstants.PCM_2_ID_NUMBER, 
+                RobotConfigConstants.SOLENOID_4_PORT_A, RobotConfigConstants.SOLENOID_4_PORT_B);
 	}
 
 	@Override
@@ -66,14 +65,14 @@ public class PneumaticSubsystem extends Subsystem {
     }
 
 	public void toggleDriveSolenoid() {
-        if (this.driveSolenoidState == null) {
+        if (this.driveSolenoid.getState() == null) {
             logger.warn("Don't know drive solenoid state yet, can't toggle drive solenoid");
             return;
         }
         
-        this.operatorDisplay.setFieldValue("Solenoid State", this.driveSolenoidState.name());
+        this.operatorDisplay.setFieldValue("Solenoid State", this.driveSolenoid.getState().name());
 
-        if (this.driveSolenoidState == DoubleSolenoid.Value.kReverse) {
+        if (this.driveSolenoid.getState() == DoubleSolenoid.Value.kReverse) {
             logger.trace("Calling toggleSolenoidForward");
             toggleDriveSolenoidForward();
         } else {
@@ -83,14 +82,14 @@ public class PneumaticSubsystem extends Subsystem {
 	}
 
     public void toggleGripperSolenoid() {
-        if (this.gripperSolenoidState == null) {
+        if (this.gripperSolenoid.getState() == null) {
             logger.warn("Don't know gripper solenoid state yet, can't toggle gripper solenoid");
             return;
         }
         
-        this.operatorDisplay.setFieldValue("Gripper Solenoid State", this.gripperSolenoidState.name());
+        this.operatorDisplay.setFieldValue("Gripper Solenoid State", this.gripperSolenoid.getState().name());
 
-        if (this.gripperSolenoidState == DoubleSolenoid.Value.kReverse) {
+        if (this.gripperSolenoid.getState() == DoubleSolenoid.Value.kReverse) {
             logger.trace("Calling toggleGripperSolenoidForward");
             toggleGripperSolenoidForward();
         } else {
@@ -104,14 +103,14 @@ public class PneumaticSubsystem extends Subsystem {
     }
     
     public void toggleKickerSolenoid() {
-        if (this.kickerSolenoidState == null) {
+        if (this.kickerSolenoid.getState() == null) {
             logger.warn("Don't know kicker solenoid state yet, can't toggle kicker solenoid");
             return;
         }
 
-        this.operatorDisplay.setFieldValue("Kicker Solenoid State", this.kickerSolenoidState.name());
+        this.operatorDisplay.setFieldValue("Kicker Solenoid State", this.kickerSolenoid.getState().name());
 
-        if (this.kickerSolenoidState == DoubleSolenoid.Value.kReverse) {
+        if (this.kickerSolenoid.getState() == DoubleSolenoid.Value.kReverse) {
             logger.trace("Calling toggleKickerSolenoidForward");
             toggleKickerSolenoidForward();
         } else {
@@ -122,62 +121,73 @@ public class PneumaticSubsystem extends Subsystem {
 	
 	public void toggleDriveSolenoidReverse() {
 		logger.trace("Running toggleDriveSolenoidReverse");
-		this.driveSolenoid.set(DoubleSolenoid.Value.kReverse);
+		this.driveSolenoid.toggleReverse();
 		this.operatorDisplay.setFieldValue("Speed", "HIGH");
-		this.driveSolenoidState = DoubleSolenoid.Value.kReverse;
 	}
 
 	public void toggleDriveSolenoidForward() {
 		logger.trace("Running toggleDriveSolenoidForward");
-		this.driveSolenoid.set(DoubleSolenoid.Value.kForward);
+        this.driveSolenoid.toggleForward();
 		this.operatorDisplay.setFieldValue("Speed", "LOW");
-		this.driveSolenoidState = DoubleSolenoid.Value.kForward;
 	}
 	
 	public void toggleDriveSolenoidOff() {
 		logger.trace("Running toggleDriveSolenoidOff");
-		this.driveSolenoid.set(DoubleSolenoid.Value.kOff);
+        this.driveSolenoid.toggleOff();
 	}
 
     
     public void toggleGripperSolenoidReverse() {
         logger.trace("Running toggleGripperSolenoidReverse");
-        this.gripperSolenoid.set(DoubleSolenoid.Value.kReverse);
+        this.gripperSolenoid.toggleReverse();
         this.operatorDisplay.setFieldValue("Gripper", "OPENED");
-        this.gripperSolenoidState = DoubleSolenoid.Value.kReverse;
     }
 
     public void toggleGripperSolenoidForward() {
         logger.trace("Running toggleGripperSolenoidForward");
-        this.gripperSolenoid.set(DoubleSolenoid.Value.kForward);
+        this.gripperSolenoid.toggleForward();
         this.operatorDisplay.setFieldValue("Gripper", "CLOSED");
-        this.gripperSolenoidState = DoubleSolenoid.Value.kForward;
     }
     
     public void toggleGripperSolenoidOff() {
         logger.trace("Running toggleGripperSolenoidOff");
-        this.gripperSolenoid.set(DoubleSolenoid.Value.kOff);
+        this.gripperSolenoid.toggleOff();
     }
     
     public void toggleKickerSolenoidReverse() {
         logger.trace("Running toggleKickerSolenoidReverse");
-        this.kickerSolenoid.set(DoubleSolenoid.Value.kReverse);
+        this.kickerSolenoid.toggleReverse();
         this.operatorDisplay.setFieldValue("Kicker", "FORWARD");
-        this.kickerSolenoidState = DoubleSolenoid.Value.kReverse;
     }
 
     public void toggleKickerSolenoidForward() {
         logger.trace("Running toggleKickerSolenoidForward");
-        this.kickerSolenoid.set(DoubleSolenoid.Value.kForward);
+        this.kickerSolenoid.toggleForward();
         this.operatorDisplay.setFieldValue("Kicker", "Retracted");
-        this.kickerSolenoidState = DoubleSolenoid.Value.kForward;
-    }
-    
-    public void toggleKickerSolenoidOff() {
-        logger.trace("Running toggleKickerSolenoidOff");
-        this.kickerSolenoid.set(DoubleSolenoid.Value.kOff);
     }
 
+    public void toggleKickerSolenoidOff() {
+        logger.trace("Running toggleKickerSolenoidOff");
+        this.kickerSolenoid.toggleOff();
+    }
+    
+    public void toggleCarriageSolenoidOff() {
+        logger.trace("Running toggleCarriageSolenoidOff");
+        this.carriageBiFunctionSolenoid.toggleOff();
+    }
+    
+    public void dropCarriageForDelivery() {
+        logger.trace("Running dropCarriageForDelivery");
+        this.carriageBiFunctionSolenoid.toggleReverse();
+        this.operatorDisplay.setFieldValue("Carriage", "DELIVERY");
+    }
+
+    public void dropCarriageForClimb() {
+        logger.trace("Running dropCarriageForClimb");
+        this.carriageBiFunctionSolenoid.toggleForward();
+        this.operatorDisplay.setFieldValue("Carriage", "CLIMB");
+    }
+    
     public boolean isReset() {
         return this.pneumaticsInitializationCommand != null && ! this.pneumaticsInitializationCommand.isRunning() 
                 && this.pneumaticsInitializationCommand.isCompleted();
