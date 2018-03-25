@@ -71,8 +71,8 @@ public class TeleopManager extends Command {
 		this.shiftGearButton = new JoystickButton(this.joystick, this.joystick.getRightBumperButtonNumber());
 		shiftGearButton.whenPressed(this.shiftGearCommand);
 
-		this.leftBumperButton = new JoystickButton(this.joystick, this.joystick.getLeftBumperButtonNumber());
-		this.leftBumperButton.whenPressed(new Command() {
+		this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());
+		this.yButton.whenPressed(new Command() {
             @Override
             protected boolean isFinished() {
                 return true;
@@ -99,18 +99,8 @@ public class TeleopManager extends Command {
 	    );
 
 	    this.backButton = new JoystickButton(this.joystick,  this.joystick.getBackButtonNumber());
-	    this.backButton.whenPressed(new DropCarriageCommand(
-	            DropFunction.DropForClimb,
-	            DriverStation.getInstance(),
-	            this.pneumaticSubsystem)
-	    );
-/*		
-		this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());
-		this.yButton.whenPressed(new ElevatorCommandGroup(new ElevatorCommand(ElevatorDirection.Up, 1.0, TeleopManager.this.sensorService, elevatorSubsystem)));
-		
-		this.xButton = new JoystickButton(this.joystick, this.joystick.getXButtonNumber());
-		this.xButton.whenPressed(new ElevatorCommandGroup(new ElevatorCommand(ElevatorDirection.Down, 1.0, TeleopManager.this.sensorService, elevatorSubsystem)));
-		*/
+	    this.backButton.whenPressed(new PrepareForClimbCommand(this.pneumaticSubsystem));
+	    
 		// Add new button assignments here
 	}
 
