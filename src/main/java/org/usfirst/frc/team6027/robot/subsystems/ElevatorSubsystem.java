@@ -44,6 +44,8 @@ public class ElevatorSubsystem extends Subsystem {
             } else if (this.isGoingDown() && this.limitSwitches.getLimitSwitch(LimitSwitchId.MastBottom).get()) {
                 this.elevatorStop();
             }
+            
+            this.operatorDisplay.setFieldValue("Elevator Motor Amps", this.elevatorGearBoxMaster.getOutputCurrent());
         }
     }
     
