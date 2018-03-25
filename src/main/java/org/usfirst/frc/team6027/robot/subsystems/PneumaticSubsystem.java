@@ -17,6 +17,7 @@ public class PneumaticSubsystem extends Subsystem {
 	private StatefulSolenoid driveSolenoid;
     private StatefulSolenoid gripperSolenoid;
     private StatefulSolenoid kickerSolenoid;
+    private StatefulSolenoid elevatorShifterSolenoid;
     private StatefulSolenoid carriageBiFunctionSolenoid;
     
     private PneumaticsInitializationCommand pneumaticsInitializationCommand = null;
@@ -32,9 +33,12 @@ public class PneumaticSubsystem extends Subsystem {
 
         this.kickerSolenoid = new StatefulSolenoid(RobotConfigConstants.PCM_1_ID_NUMBER,
                 RobotConfigConstants.SOLENOID_3_PORT_A, RobotConfigConstants.SOLENOID_3_PORT_B);
-        
-        this.carriageBiFunctionSolenoid = new StatefulSolenoid(RobotConfigConstants.PCM_2_ID_NUMBER, 
+
+        this.elevatorShifterSolenoid = new StatefulSolenoid(RobotConfigConstants.PCM_1_ID_NUMBER,
                 RobotConfigConstants.SOLENOID_4_PORT_A, RobotConfigConstants.SOLENOID_4_PORT_B);
+
+        this.carriageBiFunctionSolenoid = new StatefulSolenoid(RobotConfigConstants.PCM_2_ID_NUMBER, 
+                RobotConfigConstants.SOLENOID_5_PORT_A, RobotConfigConstants.SOLENOID_5_PORT_B);
 	}
 
 	@Override
@@ -52,18 +56,22 @@ public class PneumaticSubsystem extends Subsystem {
 	public void periodic() {
 	}
 
-	public DoubleSolenoid getDriveSolenoid() {
+	public StatefulSolenoid getDriveSolenoid() {
 		return driveSolenoid;
 	}
 
-    public DoubleSolenoid getGripperSolenoid() {
+    public StatefulSolenoid getGripperSolenoid() {
         return gripperSolenoid;
     }
     
-    public DoubleSolenoid getKickerSolenoid() {
+    public StatefulSolenoid getKickerSolenoid() {
         return kickerSolenoid;
     }
 
+    public StatefulSolenoid getElevatorShifterSolenoid() {
+        return this.elevatorShifterSolenoid;
+    }
+   
 	public void toggleDriveSolenoid() {
         if (this.driveSolenoid.getState() == null) {
             logger.warn("Don't know drive solenoid state yet, can't toggle drive solenoid");
@@ -187,6 +195,23 @@ public class PneumaticSubsystem extends Subsystem {
         this.carriageBiFunctionSolenoid.toggleForward();
         this.operatorDisplay.setFieldValue("Carriage", "CLIMB");
     }
+
+    public void toggleElevatorShifterSolenoidReverse() {
+        logger.trace("Running toggleElevatorShifterSolenoidReverse");
+        this.elevatorShifterSolenoid.toggleReverse();
+        this.operatorDisplay.setFieldValue("Elevator Shifter", "HIGH");
+    }
+
+    public void toggleElevatorShifterSolenoidForward() {
+        logger.trace("Running toggleElevatorShifterSolenoidForward");
+        this.elevatorShifterSolenoid.toggleForward();
+        this.operatorDisplay.setFieldValue("Elevator Shifter", "LOW");
+    }
+    
+    public void toggleElevatorShifterSolenoidOff() {
+        logger.trace("Running toggleElevatorShifterSolenoidOff");
+        this.elevatorShifterSolenoid.toggleOff();
+    }
     
     public boolean isReset() {
         return this.pneumaticsInitializationCommand != null && ! this.pneumaticsInitializationCommand.isRunning() 
@@ -200,4 +225,5 @@ public class PneumaticSubsystem extends Subsystem {
         
         pneumaticsInitializationCommand.start();
     }
+
 }

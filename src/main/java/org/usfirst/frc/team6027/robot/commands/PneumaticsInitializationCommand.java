@@ -21,6 +21,10 @@ public class PneumaticsInitializationCommand extends Command {
     private boolean kickerSolenoidToggled = false;
     private boolean kickerSolenoidInitialized = false;
     
+    private boolean elevatorSolenoidToggled = false;
+    private boolean elevatorSolenoidInitialized = false;
+    
+    
     private PneumaticSubsystem pneumaticSubsystem;
     public PneumaticsInitializationCommand(PneumaticSubsystem subsys) {
         this.pneumaticSubsystem = subsys;
@@ -86,7 +90,23 @@ public class PneumaticsInitializationCommand extends Command {
             }
         }
         
-        this.initialized = driveSolenoidInitialized && gripperSolenoidInitialized && kickerSolenoidInitialized;
+        if (driveSolenoidInitialized && gripperSolenoidInitialized && kickerSolenoidToggled) {
+            if (! elevatorSolenoidToggled) {
+                logger.trace("Initializing Elevator Solenoid...");
+                this.pneumaticSubsystem.toggleElevatorShifterSolenoidForward();
+                this.elevatorSolenoidToggled = true;
+            } else {
+                if (this.pneumaticSubsystem.getElevatorShifterSolenoid().get() == DoubleSolenoid.Value.kForward) {
+                    elevatorSolenoidInitialized = true;
+                    this.pneumaticSubsystem.toggleElevatorShifterSolenoidOff();
+                    logger.trace("Elevator Solenoid initialized.");
+                } else {
+                    logger.trace("Elevator Solenoid not initialized yet");
+                }
+            }
+        }
+        
+        this.initialized = driveSolenoidInitialized && gripperSolenoidInitialized && kickerSolenoidInitialized && elevatorSolenoidInitialized;
     }
     
     @Override
