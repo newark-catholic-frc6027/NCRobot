@@ -155,18 +155,8 @@ public class TeleopManager extends Command {
 
     private void runElevatorIfRequired() {
         if (this.joystick.getTriggerAxis(Hand.kLeft) > .05) {
-            /*
-            if (execCount % LOG_REDUCTION_MOD == 0) {
-                logger.trace("Left trigger: {}", this.joystick.getTriggerAxis(Hand.kLeft));
-            }
-            */
             this.elevatorSubsystem.elevatorDown(this.joystick.getTriggerAxis(Hand.kLeft));
         } else {
-            /*
-            if (execCount % LOG_REDUCTION_MOD == 0) {
-                logger.trace("Right trigger: {}", this.joystick.getTriggerAxis(Hand.kRight));
-            }
-            */
             this.elevatorSubsystem.elevatorUp(this.joystick.getTriggerAxis(Hand.kRight));
         }
     }

@@ -2,6 +2,7 @@ package org.usfirst.frc.team6027.robot.subsystems;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.usfirst.frc.team6027.robot.OperatorDisplay;
 import org.usfirst.frc.team6027.robot.RobotConfigConstants;
 import org.usfirst.frc.team6027.robot.sensors.LimitSwitchSensors;
 import org.usfirst.frc.team6027.robot.sensors.LimitSwitchSensors.LimitSwitchId;
@@ -17,11 +18,13 @@ public class ElevatorSubsystem extends Subsystem {
     private WPI_TalonSRX elevatorGearBoxMaster = new WPI_TalonSRX(RobotConfigConstants.ELEVATOR_GEARBOX_CIM_1_ID);    
 
     private LimitSwitchSensors limitSwitches;
+    private OperatorDisplay operatorDisplay;
     
     private boolean initialized = false;
     
-    public ElevatorSubsystem(LimitSwitchSensors limitSwitches) {
+    public ElevatorSubsystem(LimitSwitchSensors limitSwitches, OperatorDisplay operatorDisplay) {
         this.limitSwitches = limitSwitches;
+        this.operatorDisplay = operatorDisplay;
     }
     
     public void initialize() {
@@ -67,8 +70,10 @@ public class ElevatorSubsystem extends Subsystem {
         if (Math.abs(adjustedPower) > .05 && ! this.isTopLimitSwitchTripped()) {
             logger.trace("Elevator UP, running motor: {}", adjustedPower);
             this.elevatorGearBoxMaster.set(adjustedPower);
+            this.operatorDisplay.setFieldValue(OperatorDisplay.ELEVATOR_MAX, "NO");
         } else {
             logger.trace("Elevator UP --> stopping");
+            this.operatorDisplay.setFieldValue(OperatorDisplay.ELEVATOR_MAX, "YES");
             this.elevatorStop();
         }
     }
@@ -79,9 +84,11 @@ public class ElevatorSubsystem extends Subsystem {
         if (Math.abs(adjustedPower) > .05 && ! this.isBottomLimitSwitchTripped()) {
             logger.trace("Elevator DOWN, running motor: {}", adjustedPower);
             this.elevatorGearBoxMaster.set(adjustedPower);
+            this.operatorDisplay.setFieldValue(OperatorDisplay.ELEVATOR_MIN, "NO");
         } else {
             logger.trace("ElevatorDown --> stopping");
             this.elevatorStop();
+            this.operatorDisplay.setFieldValue(OperatorDisplay.ELEVATOR_MIN, "YES");
         }
     }
     

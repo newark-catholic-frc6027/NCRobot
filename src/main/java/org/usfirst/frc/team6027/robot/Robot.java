@@ -65,7 +65,7 @@ public class Robot extends IterativeRobot {
         this.setOperatorDisplay(new OperatorDisplaySmartDashboardImpl());
         this.setOperatorInterface(new OperatorInterface(this.getOperatorDisplay()));
         this.setDrivetrain(new DrivetrainSubsystem(this.getOperatorInterface()));
-        this.setElevatorSubsystem(new ElevatorSubsystem(this.getSensorService().getLimitSwitchSensors()));
+        this.setElevatorSubsystem(new ElevatorSubsystem(this.getSensorService().getLimitSwitchSensors(), this.getOperatorDisplay()));
         this.setPneumaticSubsystem(new PneumaticSubsystem(this.getOperatorDisplay()));
 
         // This ensures that the Teleop command is running whenever we are not in
@@ -194,6 +194,8 @@ public class Robot extends IterativeRobot {
         // If elevatorSubsystem is already initialized, this will do nothing
         this.elevatorSubsystem.initialize();
         this.getPneumaticSubsystem().reset();
+        this.getOperatorDisplay().setFieldValue(OperatorDisplay.ELEVATOR_MAX, this.getElevatorSubsystem().isTopLimitSwitchTripped() ? "YES" : "NO");
+        this.getOperatorDisplay().setFieldValue(OperatorDisplay.ELEVATOR_MIN, this.getElevatorSubsystem().isBottomLimitSwitchTripped() ? "YES" : "NO");
         // This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to
         // continue until interrupted by another command, remove

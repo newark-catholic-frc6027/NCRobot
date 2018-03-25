@@ -11,6 +11,8 @@ public interface OperatorDisplay {
     public static final String PID_LOOP_OUPUT_LABEL = "PID Loop Output Value";
     public static final String TELEOP_MOTOR_POWER_PREF = "teleopMotorPower";
     public static final String GAME_DATA_LABEL = "Field Assignments";
+    public static final String ELEVATOR_MAX = "Elevator MAX?";
+    public static final String ELEVATOR_MIN = "Elevator MIN?";
     /**
      * The name of the field representing how far the robot has traveled.
      */

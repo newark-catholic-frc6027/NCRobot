@@ -67,11 +67,7 @@ public class ElevatorCommand extends Command {
         boolean done = (this.direction == ElevatorDirection.Up && this.elevator.isGoingUp() && topSwitchTripped) 
                            ||
                        (this.direction == ElevatorDirection.Down && this.elevator.isGoingDown() && bottomSwitchTripped);
-        /*
-        boolean done = (this.direction == ElevatorDirection.Up && topSwitchTripped) 
-                ||
-            (this.direction == ElevatorDirection.Down && bottomSwitchTripped);
-        */      
+
         if (done) {
             logger.info(">>>>> Elevator command FINISHED. topSwitch: {}, bottomSwitch: {}", topSwitchTripped, bottomSwitchTripped);
             this.elevator.elevatorStop();
