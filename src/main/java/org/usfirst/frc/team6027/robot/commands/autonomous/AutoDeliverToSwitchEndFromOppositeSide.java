@@ -43,19 +43,12 @@ public class AutoDeliverToSwitchEndFromOppositeSide extends CommandGroup {
         Command multiLegDriveCmd = createMultiLegDriveCommand();
         Command turnCommand = createTurnCommand();
         Command driveToSwitchCmd = createDriveToSwitchCommand();
-        Command cubeDeliverCmd = createCubeDeliveryCommand();
 
         this.addSequential(multiLegDriveCmd);
         this.addSequential(turnCommand);
         this.addSequential(driveToSwitchCmd);
-        // TODO: drop arm
-
-        this.addSequential(cubeDeliverCmd);
-    }
-
-    protected Command createCubeDeliveryCommand() {
-        Command cmd = new CubeDeliveryCommand(DeliveryMode.DropThenKick, 10, this.getPneumaticSubsystem());
-        return cmd;
+        this.addSequential(AutoCommandHelper.createDropCarriageForDeliveryCommand(this.pneumaticSubsystem));
+        this.addSequential(AutoCommandHelper.createCubeDeliveryCommand(this.getPneumaticSubsystem()));
     }
 
     protected Command createDriveToSwitchCommand() {

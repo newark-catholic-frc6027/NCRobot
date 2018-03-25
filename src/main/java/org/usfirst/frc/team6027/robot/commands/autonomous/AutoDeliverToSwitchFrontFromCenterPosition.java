@@ -5,7 +5,6 @@ import org.usfirst.frc.team6027.robot.commands.CubeDeliveryCommand;
 import org.usfirst.frc.team6027.robot.commands.PneumaticsInitializationCommand;
 import org.usfirst.frc.team6027.robot.commands.CubeDeliveryCommand.DeliveryMode;
 import org.usfirst.frc.team6027.robot.commands.autonomous.DriveStraightCommand.DriveDistanceMode;
-import org.usfirst.frc.team6027.robot.commands.autonomous.TurnWhileDrivingCommand.TargetVector;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import org.usfirst.frc.team6027.robot.subsystems.PneumaticSubsystem;
@@ -43,7 +42,7 @@ public class AutoDeliverToSwitchFrontFromCenterPosition extends CommandGroup {
 
         this.addSequential(multiLegDriveCmd);
         this.addSequential(driveToSwitchCmd);
-        // TODO: drop arm
+        this.addSequential(AutoCommandHelper.createDropCarriageForDeliveryCommand(this.pneumaticSubsystem));
         this.addSequential(cubeDeliverCmd);
     }
 

@@ -1,11 +1,7 @@
 package org.usfirst.frc.team6027.robot.commands.autonomous;
 
 import org.usfirst.frc.team6027.robot.OperatorDisplay;
-import org.usfirst.frc.team6027.robot.commands.CubeDeliveryCommand;
-import org.usfirst.frc.team6027.robot.commands.CubeDeliveryCommand.DeliveryMode;
-import org.usfirst.frc.team6027.robot.commands.ElevatorCommand;
 import org.usfirst.frc.team6027.robot.commands.PneumaticsInitializationCommand;
-import org.usfirst.frc.team6027.robot.commands.ElevatorCommand.ElevatorDirection;
 import org.usfirst.frc.team6027.robot.commands.autonomous.DriveStraightCommand.DriveDistanceMode;
 import org.usfirst.frc.team6027.robot.commands.autonomous.TurnWhileDrivingCommand.TargetVector;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
@@ -42,26 +38,14 @@ public class AutoDeliverToScaleEndFromOppositeSide extends CommandGroup {
         
         Command multiLegDriveCmd = createMultiLegDriveCommand();
         Command turnCommand = createTurnCommand();
-        Command elevatorUpCmd = createElevatorCommand();
         Command driveToScaleCmd = createDriveToScaleCommand();
-        Command cubeDeliverCmd = createCubeDeliveryCommand();
 
         this.addSequential(multiLegDriveCmd);
-        this.addSequential(elevatorUpCmd);
+        this.addSequential(AutoCommandHelper.createElevatorUpForDeliveryCommand(this.elevatorSubsystem, this.drivetrainSubsystem, this.getSensorService()));
         this.addSequential(turnCommand);
         this.addSequential(driveToScaleCmd);
-        // TODO: need to add command to DROP carriage
-        this.addSequential(cubeDeliverCmd);
-    }
-
-    protected Command createElevatorCommand() {
-        Command cmd = new ElevatorCommand(ElevatorDirection.Up, 1.0, this.getSensorService(), this.getElevatorSubsystem(), this.getDrivetrainSubsystem());
-        return cmd;
-    }
-    
-    protected Command createCubeDeliveryCommand() {
-        Command cmd = new CubeDeliveryCommand(DeliveryMode.DropThenKick, 10, this.getPneumaticSubsystem());
-        return cmd;
+        this.addSequential(AutoCommandHelper.createDropCarriageForDeliveryCommand(this.pneumaticSubsystem));
+        this.addSequential(AutoCommandHelper.createCubeDeliveryCommand(this.getPneumaticSubsystem()));
     }
 
 

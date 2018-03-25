@@ -1,10 +1,8 @@
 package org.usfirst.frc.team6027.robot.commands.autonomous;
 
 import org.usfirst.frc.team6027.robot.OperatorDisplay;
-import org.usfirst.frc.team6027.robot.commands.CubeDeliveryCommand;
 import org.usfirst.frc.team6027.robot.commands.PneumaticsInitializationCommand;
 import org.usfirst.frc.team6027.robot.commands.StopMotorsCommand;
-import org.usfirst.frc.team6027.robot.commands.CubeDeliveryCommand.DeliveryMode;
 import org.usfirst.frc.team6027.robot.commands.autonomous.DriveStraightCommand.DriveDistanceMode;
 import org.usfirst.frc.team6027.robot.commands.autonomous.TurnWhileDrivingCommand.TargetVector;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
@@ -43,25 +41,18 @@ public class AutoDeliverToSwitchEnd extends CommandGroup {
         Command turnCommand = createTurnCommand();
         Command driveToSwitchCmd = createDriveToSwitchCommand();
         Command stopMotorsCommand = createStopMotorsCommand();
-        Command cubeDeliverCmd = createCubeDeliveryCommand();
 
         this.addSequential(multiLegDriveCmd);
         this.addSequential(turnCommand);
         this.addSequential(driveToSwitchCmd);
         this.addSequential(stopMotorsCommand);
-        // TODO: need to add command to DROP carriage
-        this.addSequential(cubeDeliverCmd);
+        this.addSequential(AutoCommandHelper.createDropCarriageForDeliveryCommand(this.pneumaticSubsystem));
+        this.addSequential(AutoCommandHelper.createCubeDeliveryCommand(this.getPneumaticSubsystem()));
     }
 
     protected Command createStopMotorsCommand() {
         return new StopMotorsCommand(this.elevatorSubsystem, this.drivetrainSubsystem);
     }
-
-    protected Command createCubeDeliveryCommand() {
-        Command cmd = new CubeDeliveryCommand(DeliveryMode.DropThenKick, 10, this.getPneumaticSubsystem());
-        return cmd;
-    }
-
 
     protected Command createDriveToSwitchCommand() {
         Command cmd = new DriveStraightCommand(

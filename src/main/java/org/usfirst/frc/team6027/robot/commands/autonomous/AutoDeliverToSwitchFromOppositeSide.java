@@ -1,9 +1,7 @@
 package org.usfirst.frc.team6027.robot.commands.autonomous;
 
 import org.usfirst.frc.team6027.robot.OperatorDisplay;
-import org.usfirst.frc.team6027.robot.commands.CubeDeliveryCommand;
 import org.usfirst.frc.team6027.robot.commands.PneumaticsInitializationCommand;
-import org.usfirst.frc.team6027.robot.commands.CubeDeliveryCommand.DeliveryMode;
 import org.usfirst.frc.team6027.robot.commands.autonomous.DriveStraightCommand.DriveDistanceMode;
 import org.usfirst.frc.team6027.robot.commands.autonomous.TurnWhileDrivingCommand.TargetVector;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
@@ -38,18 +36,12 @@ public class AutoDeliverToSwitchFromOppositeSide extends CommandGroup {
         Command multiLegDriveCmd = createMultiLegDriveCommand();
         Command turnCommand = createTurnCommand();
         Command driveToSwitchCmd = createDriveToSwitchCommand();
-        Command cubeDeliverCmd = createCubeDeliveryCommand();
 
         this.addSequential(multiLegDriveCmd);
         this.addSequential(turnCommand);
         this.addSequential(driveToSwitchCmd);
-        // TODO: drop arm
-        this.addSequential(cubeDeliverCmd);
-    }
-
-    protected Command createCubeDeliveryCommand() {
-        Command cmd = new CubeDeliveryCommand(DeliveryMode.DropThenKick, 10, this.getPneumaticSubsystem());
-        return cmd;
+        this.addSequential(AutoCommandHelper.createDropCarriageForDeliveryCommand(this.pneumaticSubsystem));
+        this.addSequential(AutoCommandHelper.createCubeDeliveryCommand(this.getPneumaticSubsystem()));
     }
 
     protected Command createDriveToSwitchCommand() {
