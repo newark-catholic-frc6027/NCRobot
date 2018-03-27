@@ -45,7 +45,7 @@ public class ElevatorSubsystem extends Subsystem {
                 this.elevatorStop();
             }
             
-            this.operatorDisplay.setFieldValue("Elevator Motor Amps", this.elevatorGearBoxMaster.getOutputCurrent());
+            //this.operatorDisplay.setFieldValue("Elevator Motor Amps", this.elevatorGearBoxMaster.getOutputCurrent());
         }
     }
     
