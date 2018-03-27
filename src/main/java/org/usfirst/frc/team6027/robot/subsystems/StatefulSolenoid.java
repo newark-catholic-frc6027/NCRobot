@@ -1,13 +1,11 @@
 package org.usfirst.frc.team6027.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 public class StatefulSolenoid extends DoubleSolenoid {
 
     private DoubleSolenoid.Value state;
     
-
     public StatefulSolenoid(final int forwardChannel, final int reverseChannel) {
         super(forwardChannel, reverseChannel);
     }
