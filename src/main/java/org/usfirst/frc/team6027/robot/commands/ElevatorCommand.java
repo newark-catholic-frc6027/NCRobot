@@ -40,8 +40,8 @@ public class ElevatorCommand extends Command {
         this.driveTrain = drivetrain;
         this.power = power;
         this.limitSwitches = sensorService.getLimitSwitchSensors();
-        this.topLimitSwitch = this.limitSwitches.getLimitSwitch(LimitSwitchId.MastTop);
-        this.bottomLimitSwitch = this.limitSwitches.getLimitSwitch(LimitSwitchId.MastBottom);
+//        this.topLimitSwitch = this.limitSwitches.getLimitSwitch(LimitSwitchId.MastTop);
+//        this.bottomLimitSwitch = this.limitSwitches.getLimitSwitch(LimitSwitchId.MastBottom);
         
         this.setName(NAME);
         requires(elevator);

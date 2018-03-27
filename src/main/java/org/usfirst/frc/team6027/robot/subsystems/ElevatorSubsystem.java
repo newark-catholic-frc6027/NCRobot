@@ -39,9 +39,9 @@ public class ElevatorSubsystem extends Subsystem {
     @Override
     public void periodic() {
         if (this.initialized) {
-            if (this.isGoingUp() && this.limitSwitches.getLimitSwitch(LimitSwitchId.MastTop).get()) {
+            if (this.isGoingUp() && this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.MastTop)) {
                 this.elevatorStop();
-            } else if (this.isGoingDown() && this.limitSwitches.getLimitSwitch(LimitSwitchId.MastBottom).get()) {
+            } else if (this.isGoingDown() && this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.MastBottom)) {
                 this.elevatorStop();
             }
             
@@ -58,11 +58,11 @@ public class ElevatorSubsystem extends Subsystem {
     }
     
     public boolean isTopLimitSwitchTripped() {
-        return this.limitSwitches.getLimitSwitch(LimitSwitchId.MastTop).get();
+        return this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.MastTop);
     }
 
     public boolean isBottomLimitSwitchTripped() {
-        return this.limitSwitches.getLimitSwitch(LimitSwitchId.MastBottom).get();
+        return this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.MastBottom);
     }
     
     public void elevatorUp(double power) {
