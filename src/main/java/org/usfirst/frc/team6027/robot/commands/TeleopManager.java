@@ -156,18 +156,4 @@ public class TeleopManager extends Command {
 	}
 
 
-    // TODO: remove after done testing
-	class ElevatorCommandGroup extends CommandGroup {
-	    public ElevatorCommandGroup(ElevatorCommand ecmd) {
-	        super();
-            TeleopManager.this.clearRequirements();
-            TeleopManager.this.requires(drivetrain);
-            this.addSequential(ecmd);
-	    }
-	    
-        public void end() {
-            TeleopManager.this.requires(elevatorSubsystem);
-        }
-	    
-	}
 }

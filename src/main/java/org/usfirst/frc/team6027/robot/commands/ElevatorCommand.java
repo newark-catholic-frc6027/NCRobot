@@ -59,7 +59,7 @@ public class ElevatorCommand extends Command {
         boolean topSwitchTripped = this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.MastTop);
 
         // Checking isGoingUp/Down may be affecting communication
-        boolean done = (this.direction == ElevatorDirection.Up && this.elevator.isGoingUp() && topSwitchTripped) 
+        boolean done = (this.direction == ElevatorDirection.Up && this.elevator.isGoingUp() && (topSwitchTripped || this.elevator.isUpwardMaxAmpsExceeded())) 
                            ||
                        (this.direction == ElevatorDirection.Down && this.elevator.isGoingDown() && bottomSwitchTripped);
 
