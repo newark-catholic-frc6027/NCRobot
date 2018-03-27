@@ -9,6 +9,7 @@ import org.usfirst.frc.team6027.robot.sensors.LimitSwitchSensors.LimitSwitchId;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class ElevatorSubsystem extends Subsystem {
@@ -19,6 +20,7 @@ public class ElevatorSubsystem extends Subsystem {
 
     private LimitSwitchSensors limitSwitches;
     private OperatorDisplay operatorDisplay;
+    private Preferences prefs = Preferences.getInstance();
     
     private boolean initialized = false;
     
@@ -39,8 +41,19 @@ public class ElevatorSubsystem extends Subsystem {
     @Override
     public void periodic() {
         if (this.initialized) {
-            if (this.isGoingUp() && this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.MastTop)) {
-                this.elevatorStop();
+            if (this.isGoingUp()) {
+                if ( this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.MastTop) ) {
+                    this.elevatorStop();
+                } else {
+                    double maxMotorAmps = this.prefs.getDouble("elevatorSubystem.maxMotorAmps", 12.0);
+                    double currentOutputAmps = this.elevatorGearBoxMaster.getOutputCurrent();
+                    if (currentOutputAmps > maxMotorAmps) {
+                        this.elevatorStop();
+                        logger.error("!!!! Elevator up stopped due to exceeding maxMotorAmps value of {}", maxMotorAmps);
+                    } else {
+                        logger.trace("Elevator currentOutputAmps: {}, maxMotorAmps: {}", currentOutputAmps, maxMotorAmps);
+                    }
+                }
             } else if (this.isGoingDown() && this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.MastBottom)) {
                 this.elevatorStop();
             }
