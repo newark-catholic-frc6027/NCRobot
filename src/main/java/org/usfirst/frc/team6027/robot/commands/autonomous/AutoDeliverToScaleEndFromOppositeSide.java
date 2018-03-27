@@ -46,12 +46,13 @@ public class AutoDeliverToScaleEndFromOppositeSide extends CommandGroup {
         Command multiLegDriveCmd = createMultiLegDriveCommand();
         Command turnCommand = createTurnCommand();
         Command driveToScaleCmd = createDriveToScaleCommand();
-
+        
         this.addSequential(multiLegDriveCmd);
-        this.addSequential(AutoCommandHelper.createElevatorUpForDeliveryCommand(this.elevatorSubsystem, this.drivetrainSubsystem, this.getSensorService()));
         this.addSequential(turnCommand);
-        this.addSequential(driveToScaleCmd);
+        this.addSequential(AutoCommandHelper.createElevatorDownForDeliveryCommand(this.elevatorSubsystem, this.drivetrainSubsystem, this.getSensorService()));
         this.addSequential(AutoCommandHelper.createDropCarriageForDeliveryCommand(this.pneumaticSubsystem, this.field));
+        this.addSequential(AutoCommandHelper.createElevatorUpForDeliveryCommand(this.elevatorSubsystem, this.drivetrainSubsystem, this.getSensorService()));
+        this.addSequential(driveToScaleCmd);
         this.addSequential(AutoCommandHelper.createCubeDeliveryCommand(this.getPneumaticSubsystem(), this.field));
     }
 

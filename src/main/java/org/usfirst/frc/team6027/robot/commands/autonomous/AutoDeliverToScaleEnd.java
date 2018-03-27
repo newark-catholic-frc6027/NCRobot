@@ -46,12 +46,18 @@ public class AutoDeliverToScaleEnd extends CommandGroup {
         Command multiLegDriveCmd = createMultiLegDriveCommand();
         Command turnCommand = createTurnCommand();
         Command driveToScaleCmd = createDriveToScaleCommand();
-        
+                
         this.addSequential(multiLegDriveCmd);
-        this.addSequential(AutoCommandHelper.createElevatorUpForDeliveryCommand(this.elevatorSubsystem, this.drivetrainSubsystem, this.getSensorService()));
-        this.addSequential(turnCommand);
-        this.addSequential(driveToScaleCmd);
+        this.addSequential(turnCommand);  // Turn toward scale
+        // Elevator should already be shifted into high gear
+        // Run elevator all the way down first
+        this.addSequential(AutoCommandHelper.createElevatorDownForDeliveryCommand(this.elevatorSubsystem, this.drivetrainSubsystem, this.getSensorService()));
+        // Drop carriage down
         this.addSequential(AutoCommandHelper.createDropCarriageForDeliveryCommand(this.pneumaticSubsystem, field));
+        // Run elevator back up
+        this.addSequential(AutoCommandHelper.createElevatorUpForDeliveryCommand(this.elevatorSubsystem, this.drivetrainSubsystem, this.getSensorService()));
+        // Drive to scale and eject
+        this.addSequential(driveToScaleCmd);
         this.addSequential(AutoCommandHelper.createCubeDeliveryCommand(this.getPneumaticSubsystem(), field));
     }
 

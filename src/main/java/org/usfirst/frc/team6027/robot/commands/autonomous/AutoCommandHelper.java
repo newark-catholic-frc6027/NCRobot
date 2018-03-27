@@ -41,9 +41,15 @@ public class AutoCommandHelper {
         return new ElevatorCommand(ElevatorDirection.Up, 0.6, sensorService, elevator, drivetrainSubsystem);
     }
     
+    public static Command createElevatorDownForDeliveryCommand(ElevatorSubsystem elevator,
+            DrivetrainSubsystem drivetrainSubsystem, SensorService sensorService) {
+        return new ElevatorCommand(ElevatorDirection.Down, 0.6, sensorService, elevator, drivetrainSubsystem);
+    }
+    
     public static Command createCubeDeliveryCommand(PneumaticSubsystem pneumaticSubsystem, Field field) {
         return new CubeDeliveryCommand(DeliveryMode.DropThenKick, 10, pneumaticSubsystem, field, true);
     }
+
     
     
     
