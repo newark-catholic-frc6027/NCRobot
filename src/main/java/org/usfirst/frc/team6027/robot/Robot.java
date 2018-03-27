@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.commands.TeleopManager;
+import org.usfirst.frc.team6027.robot.commands.autonomous.AutoCommandHelper;
 import org.usfirst.frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
 import org.usfirst.frc.team6027.robot.commands.autonomous.NoOpCommand;
 import org.usfirst.frc.team6027.robot.commands.autonomous.AutonomousCommandManager.AutonomousPreference;
@@ -122,8 +123,7 @@ public class Robot extends IterativeRobot {
     }
 
     protected boolean isInMatch() {
-        DriverStation ds = DriverStation.getInstance();
-        return ds.getMatchNumber() > 0 || ds.getMatchTime() > -0.1;
+        return AutoCommandHelper.isInMatch();
     }
     
     protected boolean pollForGameData() {

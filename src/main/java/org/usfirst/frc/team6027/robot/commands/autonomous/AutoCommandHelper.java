@@ -20,7 +20,17 @@ import edu.wpi.first.wpilibj.command.Command;
 public class AutoCommandHelper {
     private static final Logger logger = LoggerFactory.getLogger(AutoCommandHelper.class);
 
+    public static boolean isInMatch() {
+        DriverStation ds = DriverStation.getInstance();
+        return ds.getMatchNumber() > 0 || ds.getMatchTime() > -0.1;
+    }
+    
     public static boolean hasFieldDataChangedSinceAutoStart(Field initializedField) {
+        // Don't even bother to check unless we are actually in a match
+        if (! isInMatch()) {
+            return false;
+        }
+        
         String initialAssignment = initializedField.getAssignmentData();
         String currentAssignment = DriverStation.getInstance().getGameSpecificMessage();
         
