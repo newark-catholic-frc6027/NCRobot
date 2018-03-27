@@ -8,6 +8,7 @@ import org.usfirst.frc.team6027.robot.commands.PneumaticsInitializationCommand;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class PneumaticSubsystem extends Subsystem {
@@ -19,7 +20,8 @@ public class PneumaticSubsystem extends Subsystem {
     private StatefulSolenoid gripperSolenoid;
     private StatefulSolenoid kickerSolenoid;
     private StatefulSolenoid elevatorShifterSolenoid;
-    private StatefulSolenoid carriageBiFunctionSolenoid;
+    private Solenoid dropForDeliverySolenoid;
+    private Solenoid dropForClimbSolenoid;
     
     private PneumaticsInitializationCommand pneumaticsInitializationCommand = null;
 	
@@ -38,16 +40,16 @@ public class PneumaticSubsystem extends Subsystem {
         this.elevatorShifterSolenoid = new StatefulSolenoid(RobotConfigConstants.PCM_1_ID_NUMBER,
                 RobotConfigConstants.SOLENOID_4_PORT_A, RobotConfigConstants.SOLENOID_4_PORT_B);
 
-        this.carriageBiFunctionSolenoid = new StatefulSolenoid(RobotConfigConstants.PCM_2_ID_NUMBER, 
-                RobotConfigConstants.SOLENOID_5_PORT_A, RobotConfigConstants.SOLENOID_5_PORT_B);
+        this.dropForDeliverySolenoid = new Solenoid(RobotConfigConstants.PCM_2_ID_NUMBER, 
+                RobotConfigConstants.SOLENOID_5_PORT);
+        
+        this.dropForClimbSolenoid = new Solenoid(RobotConfigConstants.PCM_2_ID_NUMBER, 
+                RobotConfigConstants.SOLENOID_6_PORT);
+        
 	}
 
 	@Override
 	public void initDefaultCommand() {
-	    /*
-	    this.pneumaticInitializationCommand = new PneumaticsInitializationCommand(this);
-	    this.setDefaultCommand(this.pneumaticInitializationCommand);
-*/
 	}
 
 	/**
@@ -72,8 +74,25 @@ public class PneumaticSubsystem extends Subsystem {
     public StatefulSolenoid getElevatorShifterSolenoid() {
         return this.elevatorShifterSolenoid;
     }
+    
    
-	public void toggleDriveSolenoid() {
+	public Solenoid getDropForDeliverySolenoid() {
+        return dropForDeliverySolenoid;
+    }
+
+    public void setDropForDeliverySolenoid(Solenoid dropForDeliverySolenoid) {
+        this.dropForDeliverySolenoid = dropForDeliverySolenoid;
+    }
+
+    public Solenoid getDropForClimbSolenoid() {
+        return dropForClimbSolenoid;
+    }
+
+    public void setDropForClimbSolenoid(Solenoid dropForClimbSolenoid) {
+        this.dropForClimbSolenoid = dropForClimbSolenoid;
+    }
+
+    public void toggleDriveSolenoid() {
         if (this.driveSolenoid.getState() == null) {
             logger.warn("Don't know drive solenoid state yet, can't toggle drive solenoid");
             return;
@@ -105,6 +124,22 @@ public class PneumaticSubsystem extends Subsystem {
             logger.trace("Calling toggleGripperSolenoidReverse");
             toggleGripperSolenoidReverse();
         }
+    }
+    
+    public void activateDropForDeliverySolenoid() {
+        this.dropForDeliverySolenoid.set(true);
+    }
+
+    public void deactivateDropForDeliverySolenoid() {
+        this.dropForDeliverySolenoid.set(false);
+    }
+    
+    public void activateDropForClimbSolenoid() {
+        this.dropForClimbSolenoid.set(true);
+    }
+
+    public void deactivateDropForClimbSolenoid() {
+        this.dropForClimbSolenoid.set(false);
     }
     
     public boolean isKickerOut() {
@@ -179,24 +214,7 @@ public class PneumaticSubsystem extends Subsystem {
         logger.trace("Running toggleKickerSolenoidOff");
         this.kickerSolenoid.toggleOff();
     }
-    
-    public void toggleCarriageSolenoidOff() {
-        logger.trace("Running toggleCarriageSolenoidOff");
-        this.carriageBiFunctionSolenoid.toggleOff();
-    }
-    
-    public void dropCarriageForDelivery() {
-        logger.trace("Running dropCarriageForDelivery");
-        this.carriageBiFunctionSolenoid.toggleReverse();
-        this.operatorDisplay.setFieldValue("Carriage", "DELIVERY");
-    }
-
-    public void dropCarriageForClimb() {
-        logger.trace("Running dropCarriageForClimb");
-        this.carriageBiFunctionSolenoid.toggleForward();
-        this.operatorDisplay.setFieldValue("Carriage", "CLIMB");
-    }
-
+        
     public void toggleElevatorShifterSolenoidReverse() {
         logger.trace("Running toggleElevatorShifterSolenoidReverse");
         this.elevatorShifterSolenoid.toggleReverse();

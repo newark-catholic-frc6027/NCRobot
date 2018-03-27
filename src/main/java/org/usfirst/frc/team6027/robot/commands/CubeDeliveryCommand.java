@@ -2,6 +2,8 @@ package org.usfirst.frc.team6027.robot.commands;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.usfirst.frc.team6027.robot.commands.autonomous.AutoCommandHelper;
+import org.usfirst.frc.team6027.robot.field.Field;
 import org.usfirst.frc.team6027.robot.subsystems.PneumaticSubsystem;
 
 import edu.wpi.first.wpilibj.Preferences;
@@ -34,14 +36,27 @@ public class CubeDeliveryCommand extends Command {
     private DeliveryMode deliveryMode = DeliveryMode.DropThenKick;
     private long dropKickMillisDelay = DEFAULT_DROPKICK_DELAY_MS;
     private Preferences prefs = Preferences.getInstance();
+    private boolean inAutonomous = false;
+    private Field field;
+    private boolean commandAborted = false;
 
     public CubeDeliveryCommand(DeliveryMode deliveryMode, long dropKickMillisDelay, PneumaticSubsystem pneumaticSubsystem) {
+        this(deliveryMode, dropKickMillisDelay, pneumaticSubsystem, null, false);
+    }
+
+    public CubeDeliveryCommand(DeliveryMode deliveryMode, long dropKickMillisDelay, PneumaticSubsystem pneumaticSubsystem, Field field) {
+        this(deliveryMode, dropKickMillisDelay, pneumaticSubsystem, field, false);
+    }
+    
+    public CubeDeliveryCommand(DeliveryMode deliveryMode, long dropKickMillisDelay, PneumaticSubsystem pneumaticSubsystem, Field field, boolean inAutonomous) {
         requires(pneumaticSubsystem);
         this.pneumaticSubsystem = pneumaticSubsystem;
         this.deliveryMode = deliveryMode;
         this.dropKickMillisDelay = dropKickMillisDelay;
+        this.field = field;
+        this.inAutonomous = inAutonomous;
     }
-    
+
     @Override
     protected void initialize() {
         logger.trace("CubeDeliveryCommand deliveryMode: {}, dropKickMillsDelay: {}", this.deliveryMode, this.dropKickMillisDelay);
@@ -54,10 +69,17 @@ public class CubeDeliveryCommand extends Command {
     
     @Override 
     public void execute() {
-        if (this.deliveryMode == DeliveryMode.DropThenKick) {
-            executeDropThenKick();
-        } else if (this.deliveryMode == DeliveryMode.KickThenDrop) {
-            executeKickThenDrop();
+        if (this.inAutonomous && AutoCommandHelper.hasFieldDataChangedSinceAutoStart(this.field)) {
+            logger.error("Won't execute CubeDelivery command because field game data has changed!");
+            this.commandAborted = true;
+        }
+        
+        if (! this.commandAborted) {
+            if (this.deliveryMode == DeliveryMode.DropThenKick) {
+                executeDropThenKick();
+            } else if (this.deliveryMode == DeliveryMode.KickThenDrop) {
+                executeKickThenDrop();
+            }
         }
     }
     
@@ -121,6 +143,11 @@ public class CubeDeliveryCommand extends Command {
     
     @Override
     protected boolean isFinished() {
+        if (this.commandAborted) {
+            logger.trace("CubeKickerCommand finished due to command abort");
+            return true;
+        }
+        
         long timeElapsedMs = System.currentTimeMillis() - this.timeStarted;
         if (this.executionComplete && ! this.pneumaticSubsystem.isKickerOut() && timeElapsedMs >= DELAY_TO_OFF_MS) {
             logger.trace("CubeKickerCommand finished");

@@ -1,5 +1,7 @@
 package org.usfirst.frc.team6027.robot.commands.autonomous;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.OperatorDisplay;
 import org.usfirst.frc.team6027.robot.commands.PneumaticsInitializationCommand;
 import org.usfirst.frc.team6027.robot.commands.autonomous.DriveStraightCommand.DriveDistanceMode;
@@ -13,7 +15,8 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class AutoDeliverToSwitchFront extends CommandGroup {
-    
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     private SensorService sensorService;
     private DrivetrainSubsystem drivetrainSubsystem;
     private PneumaticSubsystem pneumaticSubsystem;

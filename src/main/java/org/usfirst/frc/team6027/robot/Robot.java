@@ -107,7 +107,7 @@ public class Robot extends IterativeRobot {
     public void disabledPeriodic() {
         // Query for game data until we get something.
         // Make sure that there is no test data configured on the Driver Station!
-        boolean gameDataExists = pollForGameData();
+        // boolean gameDataExists = pollForGameData();
         Scheduler.getInstance().run();
         
         this.getDrivetrain().stopMotor();
@@ -121,9 +121,22 @@ public class Robot extends IterativeRobot {
         );
     }
 
+    protected boolean isInMatch() {
+        DriverStation ds = DriverStation.getInstance();
+        return ds.getMatchNumber() > 0 || ds.getMatchTime() > -0.1;
+    }
+    
     protected boolean pollForGameData() {
         if (! this.getField().hasAssignmentData()) {
-            String gameData = DriverStation.getInstance().getGameSpecificMessage();
+            String gameData = null;
+            if (this.isInMatch()) {
+                gameData = DriverStation.getInstance().getGameSpecificMessage();
+                logger.info("Read game data from DriverStation.  Value: '{}'", gameData);
+            } else {
+                gameData = this.prefs.getString("gameData", null);
+                logger.info("Read game data from PREFS.  Value: '{}'", gameData);
+            }
+            
             if (gameData != null && gameData.length() > 0) {
                 this.getField().doFieldAssignments(gameData);
                 return true;

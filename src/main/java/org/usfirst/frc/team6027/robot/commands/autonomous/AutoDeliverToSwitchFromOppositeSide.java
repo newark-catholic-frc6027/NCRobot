@@ -1,9 +1,12 @@
 package org.usfirst.frc.team6027.robot.commands.autonomous;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.OperatorDisplay;
 import org.usfirst.frc.team6027.robot.commands.PneumaticsInitializationCommand;
 import org.usfirst.frc.team6027.robot.commands.autonomous.DriveStraightCommand.DriveDistanceMode;
 import org.usfirst.frc.team6027.robot.commands.autonomous.TurnWhileDrivingCommand.TargetVector;
+import org.usfirst.frc.team6027.robot.field.Field;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import org.usfirst.frc.team6027.robot.subsystems.PneumaticSubsystem;
@@ -13,7 +16,8 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class AutoDeliverToSwitchFromOppositeSide extends CommandGroup {
-    
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     private SensorService sensorService;
     private DrivetrainSubsystem drivetrainSubsystem;
     private PneumaticSubsystem pneumaticSubsystem;
@@ -21,15 +25,18 @@ public class AutoDeliverToSwitchFromOppositeSide extends CommandGroup {
     private Preferences prefs = Preferences.getInstance();
     private StartingPositionSide startingSide;
 
+    private Field field;
+
 
     public AutoDeliverToSwitchFromOppositeSide(StartingPositionSide startingSide, SensorService sensorService, 
-            DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, OperatorDisplay operatorDisplay) {
+            DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, OperatorDisplay operatorDisplay, Field field) {
         
         this.sensorService = sensorService;
         this.drivetrainSubsystem = drivetrainSubsystem;
         this.pneumaticSubsystem = pneumaticSubsystem;
         this.operatorDisplay = operatorDisplay;
         this.startingSide = startingSide;
+        this.field = field;
         
         this.addSequential(new PneumaticsInitializationCommand(this.pneumaticSubsystem));
 
@@ -40,8 +47,8 @@ public class AutoDeliverToSwitchFromOppositeSide extends CommandGroup {
         this.addSequential(multiLegDriveCmd);
         this.addSequential(turnCommand);
         this.addSequential(driveToSwitchCmd);
-        this.addSequential(AutoCommandHelper.createDropCarriageForDeliveryCommand(this.pneumaticSubsystem));
-        this.addSequential(AutoCommandHelper.createCubeDeliveryCommand(this.getPneumaticSubsystem()));
+        this.addSequential(AutoCommandHelper.createDropCarriageForDeliveryCommand(this.pneumaticSubsystem, this.field));
+        this.addSequential(AutoCommandHelper.createCubeDeliveryCommand(this.getPneumaticSubsystem(), this.field));
     }
 
     protected Command createDriveToSwitchCommand() {

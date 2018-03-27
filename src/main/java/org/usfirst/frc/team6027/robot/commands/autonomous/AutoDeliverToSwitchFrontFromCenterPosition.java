@@ -1,10 +1,11 @@
 package org.usfirst.frc.team6027.robot.commands.autonomous;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.OperatorDisplay;
-import org.usfirst.frc.team6027.robot.commands.CubeDeliveryCommand;
 import org.usfirst.frc.team6027.robot.commands.PneumaticsInitializationCommand;
-import org.usfirst.frc.team6027.robot.commands.CubeDeliveryCommand.DeliveryMode;
 import org.usfirst.frc.team6027.robot.commands.autonomous.DriveStraightCommand.DriveDistanceMode;
+import org.usfirst.frc.team6027.robot.field.Field;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import org.usfirst.frc.team6027.robot.subsystems.PneumaticSubsystem;
@@ -14,7 +15,8 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class AutoDeliverToSwitchFrontFromCenterPosition extends CommandGroup {
-    
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     
     
     private SensorService sensorService;
@@ -23,32 +25,28 @@ public class AutoDeliverToSwitchFrontFromCenterPosition extends CommandGroup {
     private OperatorDisplay operatorDisplay;
     private Preferences prefs = Preferences.getInstance();
     private StartingPositionSide startingPositionSide;
+    private Field field;
 
 
     public AutoDeliverToSwitchFrontFromCenterPosition(StartingPositionSide startingSide, SensorService sensorService, 
-            DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, OperatorDisplay operatorDisplay) {
+            DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, OperatorDisplay operatorDisplay, Field field) {
         
         this.sensorService = sensorService;
         this.drivetrainSubsystem = drivetrainSubsystem;
         this.pneumaticSubsystem = pneumaticSubsystem;
         this.operatorDisplay = operatorDisplay;
         this.startingPositionSide = startingSide;
+        this.field = field;
           
         this.addSequential(new PneumaticsInitializationCommand(this.pneumaticSubsystem));
         
         Command multiLegDriveCmd = createMultiLegDriveCommand();
         Command driveToSwitchCmd = createDriveToSwitchCommand();
-        Command cubeDeliverCmd = createCubeDeliveryCommand();
 
         this.addSequential(multiLegDriveCmd);
         this.addSequential(driveToSwitchCmd);
-        this.addSequential(AutoCommandHelper.createDropCarriageForDeliveryCommand(this.pneumaticSubsystem));
-        this.addSequential(cubeDeliverCmd);
-    }
-
-    protected Command createCubeDeliveryCommand() {
-        Command cmd = new CubeDeliveryCommand(DeliveryMode.DropThenKick, 10, this.getPneumaticSubsystem());
-        return cmd;
+        this.addSequential(AutoCommandHelper.createDropCarriageForDeliveryCommand(this.pneumaticSubsystem, this.field));
+        this.addSequential(AutoCommandHelper.createCubeDeliveryCommand(pneumaticSubsystem, this.field));
     }
 
     protected Command createDriveToSwitchCommand() {

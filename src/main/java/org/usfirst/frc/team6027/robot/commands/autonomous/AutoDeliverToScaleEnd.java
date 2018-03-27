@@ -1,9 +1,12 @@
 package org.usfirst.frc.team6027.robot.commands.autonomous;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.OperatorDisplay;
 import org.usfirst.frc.team6027.robot.commands.PneumaticsInitializationCommand;
 import org.usfirst.frc.team6027.robot.commands.autonomous.DriveStraightCommand.DriveDistanceMode;
 import org.usfirst.frc.team6027.robot.commands.autonomous.TurnWhileDrivingCommand.TargetVector;
+import org.usfirst.frc.team6027.robot.field.Field;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import org.usfirst.frc.team6027.robot.subsystems.ElevatorSubsystem;
@@ -14,7 +17,8 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class AutoDeliverToScaleEnd extends CommandGroup {
-    
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     private SensorService sensorService;
     private DrivetrainSubsystem drivetrainSubsystem;
     private PneumaticSubsystem pneumaticSubsystem;
@@ -22,10 +26,12 @@ public class AutoDeliverToScaleEnd extends CommandGroup {
     private OperatorDisplay operatorDisplay;
     private Preferences prefs = Preferences.getInstance();
     private StartingPositionSide startingSide;
+    private Field field;
 
 
     public AutoDeliverToScaleEnd(StartingPositionSide startingSide, SensorService sensorService, 
-            DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevatorSubsystem, OperatorDisplay operatorDisplay) {
+            DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevatorSubsystem, 
+            OperatorDisplay operatorDisplay, Field field) {
         
         this.sensorService = sensorService;
         this.drivetrainSubsystem = drivetrainSubsystem;
@@ -33,6 +39,7 @@ public class AutoDeliverToScaleEnd extends CommandGroup {
         this.operatorDisplay = operatorDisplay;
         this.startingSide = startingSide;
         this.elevatorSubsystem = elevatorSubsystem;
+        this.field = field;
   
         this.addSequential(new PneumaticsInitializationCommand(this.pneumaticSubsystem));
         
@@ -44,8 +51,8 @@ public class AutoDeliverToScaleEnd extends CommandGroup {
         this.addSequential(AutoCommandHelper.createElevatorUpForDeliveryCommand(this.elevatorSubsystem, this.drivetrainSubsystem, this.getSensorService()));
         this.addSequential(turnCommand);
         this.addSequential(driveToScaleCmd);
-        this.addSequential(AutoCommandHelper.createDropCarriageForDeliveryCommand(this.pneumaticSubsystem));
-        this.addSequential(AutoCommandHelper.createCubeDeliveryCommand(this.getPneumaticSubsystem()));
+        this.addSequential(AutoCommandHelper.createDropCarriageForDeliveryCommand(this.pneumaticSubsystem, field));
+        this.addSequential(AutoCommandHelper.createCubeDeliveryCommand(this.getPneumaticSubsystem(), field));
     }
 
     protected Command createDriveToScaleCommand() {
