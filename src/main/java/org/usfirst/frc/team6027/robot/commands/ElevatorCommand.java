@@ -8,7 +8,6 @@ import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import org.usfirst.frc.team6027.robot.subsystems.ElevatorSubsystem;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 
@@ -28,8 +27,6 @@ public class ElevatorCommand extends Command {
     private ElevatorDirection direction = null;
     private ElevatorSubsystem elevator;
     private LimitSwitchSensors limitSwitches;
-    private DigitalInput topLimitSwitch;
-    private DigitalInput bottomLimitSwitch;
     private DrivetrainSubsystem driveTrain;
     
     private double power = 0.5;
@@ -40,8 +37,6 @@ public class ElevatorCommand extends Command {
         this.driveTrain = drivetrain;
         this.power = power;
         this.limitSwitches = sensorService.getLimitSwitchSensors();
-//        this.topLimitSwitch = this.limitSwitches.getLimitSwitch(LimitSwitchId.MastTop);
-//        this.bottomLimitSwitch = this.limitSwitches.getLimitSwitch(LimitSwitchId.MastBottom);
         
         this.setName(NAME);
         requires(elevator);
@@ -60,8 +55,8 @@ public class ElevatorCommand extends Command {
     @Override
     protected boolean isFinished() {
          
-        boolean bottomSwitchTripped = this.bottomLimitSwitch.get();
-        boolean topSwitchTripped = this.topLimitSwitch.get();
+        boolean bottomSwitchTripped = this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.MastBottom);
+        boolean topSwitchTripped = this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.MastTop);
 
         // Checking isGoingUp/Down may be affecting communication
         boolean done = (this.direction == ElevatorDirection.Up && this.elevator.isGoingUp() && topSwitchTripped) 
