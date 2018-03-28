@@ -60,7 +60,7 @@ public class ElevatorSubsystem extends Subsystem {
             double currentOutputAmps = this.elevatorGearBoxMaster.getOutputCurrent();
             exceeded = currentOutputAmps > maxMotorAmps;
             if (exceeded) {
-                logger.error("!!!! Elevator up stopped due to exceeding maxMotorAmps value of {}, currenOutputAmps: {}", maxMotorAmps, currentOutputAmps);
+                logger.error("!!!! Elevator UP exceeded maxMotorAmps value of {}, currentOutputAmps: {}", maxMotorAmps, currentOutputAmps);
             } else {
                 logger.trace("Elevator currentOutputAmps: {}, maxMotorAmps: {}", currentOutputAmps, maxMotorAmps);
             }
