@@ -377,7 +377,8 @@ public class AutonomousCommandManager {
                 startingSide,
                 this.sensorService, this.getDrivetrainSubsystem(), this.getPneumaticSubsystem(),
                 this.getElevatorSubsystem(),
-                this.operatorDisplay
+                this.operatorDisplay,
+                this.getField()
         );    
     }
 
@@ -397,7 +398,7 @@ public class AutonomousCommandManager {
 
     private Command makeDeliverToSwitchEndFromOppositeSideCommand(StartingPositionSide startingSide) {
         return new AutoDeliverToSwitchFromOppositeSide(startingSide, this.getSensorService(),
-                this.getDrivetrainSubsystem(), this.getPneumaticSubsystem(), this.getOperatorDisplay());
+                this.getDrivetrainSubsystem(), this.getPneumaticSubsystem(), this.getOperatorDisplay(), this.getField());
     }
     
     private Command makeDeliverToSwitchEndCommand(StartingPositionSide startingSide) {
@@ -405,7 +406,8 @@ public class AutonomousCommandManager {
                 startingSide,
                 this.sensorService, this.getDrivetrainSubsystem(), this.getPneumaticSubsystem(),
                 this.getElevatorSubsystem(),
-                this.operatorDisplay
+                this.operatorDisplay,
+                this.getField()
         );
     }
     
@@ -413,11 +415,13 @@ public class AutonomousCommandManager {
         return new AutoDeliverToScaleEndFromOppositeSide(startingSide, 
                 this.sensorService, this.getDrivetrainSubsystem(), 
                 this.getPneumaticSubsystem(), 
-                this.getElevatorSubsystem(), this.getOperatorDisplay()
+                this.getElevatorSubsystem(), this.getOperatorDisplay(),
+                this.getField()
         );
     }    
     private Command makeDeliverToSwitchFromCenterCommand(StartingPositionSide startingSide) {
-        return new AutoDeliverToSwitchFrontFromCenterPosition(startingSide, this.getSensorService(), this.getDrivetrainSubsystem(), this.getPneumaticSubsystem(), this.getOperatorDisplay());
+        return new AutoDeliverToSwitchFrontFromCenterPosition(startingSide, this.getSensorService(), 
+                this.getDrivetrainSubsystem(), this.getPneumaticSubsystem(), this.getOperatorDisplay(), this.getField());
     }
 
     private Command makeCrossLineFromCenterCommand() {

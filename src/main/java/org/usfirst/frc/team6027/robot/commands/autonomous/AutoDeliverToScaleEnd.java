@@ -1,13 +1,12 @@
 package org.usfirst.frc.team6027.robot.commands.autonomous;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.OperatorDisplay;
-import org.usfirst.frc.team6027.robot.commands.CubeDeliveryCommand;
-import org.usfirst.frc.team6027.robot.commands.CubeDeliveryCommand.DeliveryMode;
-import org.usfirst.frc.team6027.robot.commands.ElevatorCommand;
 import org.usfirst.frc.team6027.robot.commands.PneumaticsInitializationCommand;
-import org.usfirst.frc.team6027.robot.commands.ElevatorCommand.ElevatorDirection;
 import org.usfirst.frc.team6027.robot.commands.autonomous.DriveStraightCommand.DriveDistanceMode;
 import org.usfirst.frc.team6027.robot.commands.autonomous.TurnWhileDrivingCommand.TargetVector;
+import org.usfirst.frc.team6027.robot.field.Field;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import org.usfirst.frc.team6027.robot.subsystems.ElevatorSubsystem;
@@ -18,7 +17,8 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class AutoDeliverToScaleEnd extends CommandGroup {
-    
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     private SensorService sensorService;
     private DrivetrainSubsystem drivetrainSubsystem;
     private PneumaticSubsystem pneumaticSubsystem;
@@ -26,10 +26,12 @@ public class AutoDeliverToScaleEnd extends CommandGroup {
     private OperatorDisplay operatorDisplay;
     private Preferences prefs = Preferences.getInstance();
     private StartingPositionSide startingSide;
+    private Field field;
 
 
     public AutoDeliverToScaleEnd(StartingPositionSide startingSide, SensorService sensorService, 
-            DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevatorSubsystem, OperatorDisplay operatorDisplay) {
+            DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevatorSubsystem, 
+            OperatorDisplay operatorDisplay, Field field) {
         
         this.sensorService = sensorService;
         this.drivetrainSubsystem = drivetrainSubsystem;
@@ -37,33 +39,27 @@ public class AutoDeliverToScaleEnd extends CommandGroup {
         this.operatorDisplay = operatorDisplay;
         this.startingSide = startingSide;
         this.elevatorSubsystem = elevatorSubsystem;
+        this.field = field;
   
         this.addSequential(new PneumaticsInitializationCommand(this.pneumaticSubsystem));
         
         Command multiLegDriveCmd = createMultiLegDriveCommand();
-        Command elevatorUpCmd = createElevatorCommand();
         Command turnCommand = createTurnCommand();
         Command driveToScaleCmd = createDriveToScaleCommand();
-        Command cubeDeliverCmd = createCubeDeliveryCommand();
-
+                
         this.addSequential(multiLegDriveCmd);
-        this.addSequential(elevatorUpCmd);
-        this.addSequential(turnCommand);
+        this.addSequential(turnCommand);  // Turn toward scale
+        // Elevator should already be shifted into high gear
+        // Run elevator all the way down first
+        this.addSequential(AutoCommandHelper.createElevatorDownForDeliveryCommand(this.elevatorSubsystem, this.drivetrainSubsystem, this.getSensorService()));
+        // Drop carriage down
+        this.addSequential(AutoCommandHelper.createDropCarriageForDeliveryCommand(this.pneumaticSubsystem, field));
+        // Run elevator back up
+        this.addSequential(AutoCommandHelper.createElevatorUpForDeliveryCommand(this.elevatorSubsystem, this.drivetrainSubsystem, this.getSensorService()));
+        // Drive to scale and eject
         this.addSequential(driveToScaleCmd);
-        // TODO: need to add command to DROP carriage
-        this.addSequential(cubeDeliverCmd);
+        this.addSequential(AutoCommandHelper.createCubeDeliveryCommand(this.getPneumaticSubsystem(), field));
     }
-
-    protected Command createElevatorCommand() {
-        Command cmd = new ElevatorCommand(ElevatorDirection.Up, 1.0, this.getSensorService(), this.getElevatorSubsystem(), this.getDrivetrainSubsystem());
-        return cmd;
-    }
-    
-    protected Command createCubeDeliveryCommand() {
-        Command cmd = new CubeDeliveryCommand(DeliveryMode.DropThenKick, 10, this.getPneumaticSubsystem());
-        return cmd;
-    }
-
 
     protected Command createDriveToScaleCommand() {
         Command cmd = new DriveStraightCommand(

@@ -8,7 +8,6 @@ import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import org.usfirst.frc.team6027.robot.subsystems.ElevatorSubsystem;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 
@@ -18,6 +17,7 @@ public class ElevatorCommand extends Command {
     private Preferences prefs = Preferences.getInstance();
     protected static final int LOG_REDUCTION_MOD = 10;
     protected int execCount = 0;
+    protected long execStartTime = 0;
 
     
     public enum ElevatorDirection {
@@ -28,11 +28,10 @@ public class ElevatorCommand extends Command {
     private ElevatorDirection direction = null;
     private ElevatorSubsystem elevator;
     private LimitSwitchSensors limitSwitches;
-    private DigitalInput topLimitSwitch;
-    private DigitalInput bottomLimitSwitch;
     private DrivetrainSubsystem driveTrain;
     
     private double power = 0.5;
+    private long checkMotorAmpsThresholdMillis;
     
     public ElevatorCommand(ElevatorDirection direction, double power, SensorService sensorService, ElevatorSubsystem elevator, DrivetrainSubsystem drivetrain) {
         this.direction = direction;
@@ -40,8 +39,6 @@ public class ElevatorCommand extends Command {
         this.driveTrain = drivetrain;
         this.power = power;
         this.limitSwitches = sensorService.getLimitSwitchSensors();
-        this.topLimitSwitch = this.limitSwitches.getLimitSwitch(LimitSwitchId.MastTop);
-        this.bottomLimitSwitch = this.limitSwitches.getLimitSwitch(LimitSwitchId.MastBottom);
         
         this.setName(NAME);
         requires(elevator);
@@ -50,6 +47,8 @@ public class ElevatorCommand extends Command {
     @Override
     protected void initialize() {
         logger.info("Elevator Command starting...");
+        this.execStartTime = System.currentTimeMillis();
+        this.checkMotorAmpsThresholdMillis = this.prefs.getLong("elevatorCommand.checkMotorAmpsThresholdMillis", 1000);
     }
     
     @Override
@@ -57,24 +56,30 @@ public class ElevatorCommand extends Command {
         this.clearRequirements();
     }
     
+    protected boolean isUpwardMaxAmpsExceededWithDelay() {
+        long elapsedTime = System.currentTimeMillis() - this.execStartTime;
+        
+        if (elapsedTime > this.checkMotorAmpsThresholdMillis) {
+            return this.elevator.isUpwardMaxAmpsExceeded();
+        }
+        
+        return false;
+    }
+    
     @Override
     protected boolean isFinished() {
          
-        boolean bottomSwitchTripped = this.bottomLimitSwitch.get();
-        boolean topSwitchTripped = this.topLimitSwitch.get();
+        boolean bottomSwitchTripped = this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.MastBottom);
+        boolean topSwitchTripped = this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.MastTop);
 
         // Checking isGoingUp/Down may be affecting communication
-        boolean done = (this.direction == ElevatorDirection.Up && this.elevator.isGoingUp() && topSwitchTripped) 
+        boolean done = (this.direction == ElevatorDirection.Up && this.elevator.isGoingUp() && (topSwitchTripped || this.isUpwardMaxAmpsExceededWithDelay())) 
                            ||
                        (this.direction == ElevatorDirection.Down && this.elevator.isGoingDown() && bottomSwitchTripped);
-        /*
-        boolean done = (this.direction == ElevatorDirection.Up && topSwitchTripped) 
-                ||
-            (this.direction == ElevatorDirection.Down && bottomSwitchTripped);
-        */      
+
         if (done) {
-            logger.info(">>>>> Elevator command FINISHED. topSwitch: {}, bottomSwitch: {}", topSwitchTripped, bottomSwitchTripped);
             this.elevator.elevatorStop();
+            logger.info(">>>>> Elevator command FINISHED. topSwitch: {}, bottomSwitch: {}", topSwitchTripped, bottomSwitchTripped);
             this.clearRequirements();
         }
         return done;

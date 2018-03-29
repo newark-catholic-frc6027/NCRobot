@@ -5,13 +5,14 @@ import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.OperatorDisplay;
 import org.usfirst.frc.team6027.robot.OperatorInterface;
 import org.usfirst.frc.team6027.robot.commands.CubeDeliveryCommand.DeliveryMode;
-import org.usfirst.frc.team6027.robot.commands.ElevatorCommand.ElevatorDirection;
+import org.usfirst.frc.team6027.robot.commands.DropCarriageCommand.DropFunction;
 import org.usfirst.frc.team6027.robot.controls.XboxJoystick;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import org.usfirst.frc.team6027.robot.subsystems.ElevatorSubsystem;
 import org.usfirst.frc.team6027.robot.subsystems.PneumaticSubsystem;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
@@ -32,6 +33,7 @@ public class TeleopManager extends Command {
 
 	private JoystickButton shiftGearButton;
 	private JoystickButton leftBumperButton;
+	private JoystickButton backButton;
 	private JoystickButton aButton;
 	private JoystickButton bButton;
 	private JoystickButton yButton;
@@ -39,11 +41,6 @@ public class TeleopManager extends Command {
 
 	private ShiftGearCommand shiftGearCommand;
 	private ToggleGrippersCommand toggleGrippersCommand;
-	private CubeKickerCommand cubeKickerCommand;
-	private ElevatorCommand elevatorUpCommand;
-	private ElevatorCommand elevatorDownCommand;
-	private Command teleopElevatorUpCommand;
-    private Command teleopElevatorDownCommand;
 	
 	protected int execCount = 0;
 
@@ -64,13 +61,7 @@ public class TeleopManager extends Command {
 		// Create the commands we will be using during teleop
 		shiftGearCommand = new ShiftGearCommand(this.pneumaticSubsystem);
 		toggleGrippersCommand = new ToggleGrippersCommand(this.pneumaticSubsystem);
-		cubeKickerCommand = new CubeKickerCommand(this.pneumaticSubsystem);
 
-		/*
-		elevatorUpCommand = new ElevatorCommand(ElevatorDirection.Up, 1.0, this.sensorService, this.elevatorSubsystem);
-		elevatorDownCommand = new ElevatorCommand(ElevatorDirection.Down, 1.0, this.sensorService, this.elevatorSubsystem);
-		*/
-		
 		// Set up the commands on the Joystick buttons
 		initializeJoystick();
 	}
@@ -80,8 +71,8 @@ public class TeleopManager extends Command {
 		this.shiftGearButton = new JoystickButton(this.joystick, this.joystick.getRightBumperButtonNumber());
 		shiftGearButton.whenPressed(this.shiftGearCommand);
 
-		this.leftBumperButton = new JoystickButton(this.joystick, this.joystick.getLeftBumperButtonNumber());
-		this.leftBumperButton.whenPressed(new Command() {
+		this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());
+		this.yButton.whenPressed(new Command() {
             @Override
             protected boolean isFinished() {
                 return true;
@@ -107,13 +98,9 @@ public class TeleopManager extends Command {
 	            this.pneumaticSubsystem)
 	    );
 
-/*		
-		this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());
-		this.yButton.whenPressed(new ElevatorCommandGroup(new ElevatorCommand(ElevatorDirection.Up, 1.0, TeleopManager.this.sensorService, elevatorSubsystem)));
-		
-		this.xButton = new JoystickButton(this.joystick, this.joystick.getXButtonNumber());
-		this.xButton.whenPressed(new ElevatorCommandGroup(new ElevatorCommand(ElevatorDirection.Down, 1.0, TeleopManager.this.sensorService, elevatorSubsystem)));
-		*/
+	    this.backButton = new JoystickButton(this.joystick,  this.joystick.getBackButtonNumber());
+	    this.backButton.whenPressed(new PrepareForClimbCommand(this.pneumaticSubsystem));
+//	    this.backButton.whenPressed(new DropCarriageCommand(DropFunction.DropForDelivery, DriverStation.getInstance(), pneumaticSubsystem, null, false));
 		// Add new button assignments here
 	}
 
@@ -158,18 +145,8 @@ public class TeleopManager extends Command {
 
     private void runElevatorIfRequired() {
         if (this.joystick.getTriggerAxis(Hand.kLeft) > .05) {
-            /*
-            if (execCount % LOG_REDUCTION_MOD == 0) {
-                logger.trace("Left trigger: {}", this.joystick.getTriggerAxis(Hand.kLeft));
-            }
-            */
             this.elevatorSubsystem.elevatorDown(this.joystick.getTriggerAxis(Hand.kLeft));
         } else {
-            /*
-            if (execCount % LOG_REDUCTION_MOD == 0) {
-                logger.trace("Right trigger: {}", this.joystick.getTriggerAxis(Hand.kRight));
-            }
-            */
             this.elevatorSubsystem.elevatorUp(this.joystick.getTriggerAxis(Hand.kRight));
         }
     }
@@ -179,18 +156,4 @@ public class TeleopManager extends Command {
 	}
 
 
-    // TODO: remove after done testing
-	class ElevatorCommandGroup extends CommandGroup {
-	    public ElevatorCommandGroup(ElevatorCommand ecmd) {
-	        super();
-            TeleopManager.this.clearRequirements();
-            TeleopManager.this.requires(drivetrain);
-            this.addSequential(ecmd);
-	    }
-	    
-        public void end() {
-            TeleopManager.this.requires(elevatorSubsystem);
-        }
-	    
-	}
 }

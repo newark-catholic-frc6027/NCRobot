@@ -175,13 +175,23 @@ public class RobotConfigConstants {
 	public static final int SOLENOID_1_PORT_A = 1;
 	public static final int SOLENOID_1_PORT_B = 0;
 
-    /** Controlled by PCM_2 */
+    /** Controlled by PCM_1 */
     public static final int SOLENOID_2_PORT_A = 3;
     public static final int SOLENOID_2_PORT_B = 2;
     
-    /** Controlled by PCM_3 */
+    /** Controlled by PCM_1 */
     public static final int SOLENOID_3_PORT_A = 5;
     public static final int SOLENOID_3_PORT_B = 4;
+
+    /** Controlled by PCM_1 */
+    public static final int SOLENOID_4_PORT_A = 7;
+    public static final int SOLENOID_4_PORT_B = 6;
+    
+    /** Controlled by PCM_2 */
+    public static final int SOLENOID_5_PORT = 0;
+
+    /** Controlled by PCM_2 */
+    public static final int SOLENOID_6_PORT = 1;
     
     /*
      * Pressure sensor constants
@@ -203,9 +213,9 @@ public class RobotConfigConstants {
     /* set to 1 if inversion is not needed, -1 if inversion is needed */
     public final static int OPTIONAL_DRIVETRAIN_DIRECTION_INVERSION = 1;
     
-    public final static int LIMIT_SWITCH_1_CHANNEL = 8;
-    public final static int LIMIT_SWITCH_2_CHANNEL = 9;
-    
-    
-            
+    public final static int LIMIT_SWITCH_BOTTOM_A_CHANNEL = 8;
+    public final static int LIMIT_SWITCH_BOTTOM_B_CHANNEL = 7;
+
+    public final static int LIMIT_SWITCH_TOP_A_CHANNEL = 9;
+    public final static int LIMIT_SWITCH_TOP_B_CHANNEL = 6;
 }

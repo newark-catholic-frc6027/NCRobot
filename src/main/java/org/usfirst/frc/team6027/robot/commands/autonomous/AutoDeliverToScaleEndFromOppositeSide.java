@@ -1,13 +1,12 @@
 package org.usfirst.frc.team6027.robot.commands.autonomous;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.OperatorDisplay;
-import org.usfirst.frc.team6027.robot.commands.CubeDeliveryCommand;
-import org.usfirst.frc.team6027.robot.commands.CubeDeliveryCommand.DeliveryMode;
-import org.usfirst.frc.team6027.robot.commands.ElevatorCommand;
 import org.usfirst.frc.team6027.robot.commands.PneumaticsInitializationCommand;
-import org.usfirst.frc.team6027.robot.commands.ElevatorCommand.ElevatorDirection;
 import org.usfirst.frc.team6027.robot.commands.autonomous.DriveStraightCommand.DriveDistanceMode;
 import org.usfirst.frc.team6027.robot.commands.autonomous.TurnWhileDrivingCommand.TargetVector;
+import org.usfirst.frc.team6027.robot.field.Field;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import org.usfirst.frc.team6027.robot.subsystems.ElevatorSubsystem;
@@ -18,7 +17,8 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class AutoDeliverToScaleEndFromOppositeSide extends CommandGroup {
-    
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     private SensorService sensorService;
     private DrivetrainSubsystem drivetrainSubsystem;
     private PneumaticSubsystem pneumaticSubsystem;
@@ -27,9 +27,11 @@ public class AutoDeliverToScaleEndFromOppositeSide extends CommandGroup {
     private Preferences prefs = Preferences.getInstance();
     private StartingPositionSide startingSide;
 
+    private Field field;
+
 
     public AutoDeliverToScaleEndFromOppositeSide(StartingPositionSide startingSide, SensorService sensorService, 
-            DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevatorSubsystem, OperatorDisplay operatorDisplay) {
+            DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevatorSubsystem, OperatorDisplay operatorDisplay, Field field) {
         
         this.sensorService = sensorService;
         this.drivetrainSubsystem = drivetrainSubsystem;
@@ -37,31 +39,21 @@ public class AutoDeliverToScaleEndFromOppositeSide extends CommandGroup {
         this.operatorDisplay = operatorDisplay;
         this.startingSide = startingSide;
         this.elevatorSubsystem = elevatorSubsystem;
+        this.field = field;
   
         this.addSequential(new PneumaticsInitializationCommand(this.pneumaticSubsystem));
         
         Command multiLegDriveCmd = createMultiLegDriveCommand();
         Command turnCommand = createTurnCommand();
-        Command elevatorUpCmd = createElevatorCommand();
         Command driveToScaleCmd = createDriveToScaleCommand();
-        Command cubeDeliverCmd = createCubeDeliveryCommand();
-
+        
         this.addSequential(multiLegDriveCmd);
-        this.addSequential(elevatorUpCmd);
         this.addSequential(turnCommand);
+        this.addSequential(AutoCommandHelper.createElevatorDownForDeliveryCommand(this.elevatorSubsystem, this.drivetrainSubsystem, this.getSensorService()));
+        this.addSequential(AutoCommandHelper.createDropCarriageForDeliveryCommand(this.pneumaticSubsystem, this.field));
+        this.addSequential(AutoCommandHelper.createElevatorUpForDeliveryCommand(this.elevatorSubsystem, this.drivetrainSubsystem, this.getSensorService()));
         this.addSequential(driveToScaleCmd);
-        // TODO: need to add command to DROP carriage
-        this.addSequential(cubeDeliverCmd);
-    }
-
-    protected Command createElevatorCommand() {
-        Command cmd = new ElevatorCommand(ElevatorDirection.Up, 1.0, this.getSensorService(), this.getElevatorSubsystem(), this.getDrivetrainSubsystem());
-        return cmd;
-    }
-    
-    protected Command createCubeDeliveryCommand() {
-        Command cmd = new CubeDeliveryCommand(DeliveryMode.DropThenKick, 10, this.getPneumaticSubsystem());
-        return cmd;
+        this.addSequential(AutoCommandHelper.createCubeDeliveryCommand(this.getPneumaticSubsystem(), this.field));
     }
 
 

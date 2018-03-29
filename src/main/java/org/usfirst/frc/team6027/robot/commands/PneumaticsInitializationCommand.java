@@ -21,6 +21,10 @@ public class PneumaticsInitializationCommand extends Command {
     private boolean kickerSolenoidToggled = false;
     private boolean kickerSolenoidInitialized = false;
     
+    private boolean elevatorSolenoidToggled = false;
+    private boolean elevatorSolenoidInitialized = false;
+    
+    
     private PneumaticSubsystem pneumaticSubsystem;
     public PneumaticsInitializationCommand(PneumaticSubsystem subsys) {
         this.pneumaticSubsystem = subsys;
@@ -86,7 +90,24 @@ public class PneumaticsInitializationCommand extends Command {
             }
         }
         
-        this.initialized = driveSolenoidInitialized && gripperSolenoidInitialized && kickerSolenoidInitialized;
+        if (driveSolenoidInitialized && gripperSolenoidInitialized && kickerSolenoidToggled) {
+            if (! elevatorSolenoidToggled) {
+                logger.trace("Initializing Elevator Solenoid...");
+                // Reverse is HIGH for elevator.  We want to start in high gear.
+                this.pneumaticSubsystem.toggleElevatorShifterSolenoidReverse();
+                this.elevatorSolenoidToggled = true;
+            } else {
+                if (this.pneumaticSubsystem.getElevatorShifterSolenoid().get() == DoubleSolenoid.Value.kReverse) {
+                    elevatorSolenoidInitialized = true;
+                    this.pneumaticSubsystem.toggleElevatorShifterSolenoidOff();
+                    logger.trace("Elevator Solenoid initialized.");
+                } else {
+                    logger.trace("Elevator Solenoid not initialized yet");
+                }
+            }
+        }
+        
+        this.initialized = driveSolenoidInitialized && gripperSolenoidInitialized && kickerSolenoidInitialized && elevatorSolenoidInitialized;
     }
     
     @Override

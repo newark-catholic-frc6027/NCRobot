@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.commands.TeleopManager;
+import org.usfirst.frc.team6027.robot.commands.autonomous.AutoCommandHelper;
 import org.usfirst.frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
 import org.usfirst.frc.team6027.robot.commands.autonomous.NoOpCommand;
 import org.usfirst.frc.team6027.robot.commands.autonomous.AutonomousCommandManager.AutonomousPreference;
@@ -65,7 +66,7 @@ public class Robot extends IterativeRobot {
         this.setOperatorDisplay(new OperatorDisplaySmartDashboardImpl());
         this.setOperatorInterface(new OperatorInterface(this.getOperatorDisplay()));
         this.setDrivetrain(new DrivetrainSubsystem(this.getOperatorInterface()));
-        this.setElevatorSubsystem(new ElevatorSubsystem(this.getSensorService().getLimitSwitchSensors()));
+        this.setElevatorSubsystem(new ElevatorSubsystem(this.getSensorService().getLimitSwitchSensors(), this.getOperatorDisplay()));
         this.setPneumaticSubsystem(new PneumaticSubsystem(this.getOperatorDisplay()));
 
         // This ensures that the Teleop command is running whenever we are not in
@@ -107,7 +108,7 @@ public class Robot extends IterativeRobot {
     public void disabledPeriodic() {
         // Query for game data until we get something.
         // Make sure that there is no test data configured on the Driver Station!
-        boolean gameDataExists = pollForGameData();
+        // boolean gameDataExists = pollForGameData();
         Scheduler.getInstance().run();
         
         this.getDrivetrain().stopMotor();
@@ -121,9 +122,21 @@ public class Robot extends IterativeRobot {
         );
     }
 
+    protected boolean isInMatch() {
+        return AutoCommandHelper.isInMatch();
+    }
+    
     protected boolean pollForGameData() {
         if (! this.getField().hasAssignmentData()) {
-            String gameData = DriverStation.getInstance().getGameSpecificMessage();
+            String gameData = null;
+            if (this.isInMatch()) {
+                gameData = DriverStation.getInstance().getGameSpecificMessage();
+                logger.info("Read game data from DriverStation.  Value: '{}'", gameData);
+            } else {
+                gameData = this.prefs.getString("gameData", null);
+                logger.info("Read game data from PREFS.  Value: '{}'", gameData);
+            }
+            
             if (gameData != null && gameData.length() > 0) {
                 this.getField().doFieldAssignments(gameData);
                 return true;
@@ -148,7 +161,7 @@ public class Robot extends IterativeRobot {
         String preferredAutoScenario = this.getOperatorDisplay().getSelectedAutoScenario();
         String dontDoOption = this.getOperatorDisplay().getSelectedDontDoOption();
 
-        // Make sure we have the game data, even though we should already have it from disabledPeriodic method
+        // Make sure we have the game data
         while (! pollForGameData() && this.gameDataPollCount < 20 ) {
             try {
                 Thread.sleep(100);
@@ -167,7 +180,7 @@ public class Robot extends IterativeRobot {
         
         this.autonomousCommand = this.autoCommandManager.chooseCommand();
         
-        // schedule the autonomous command (example)
+        // schedule the autonomous command
         if (autonomousCommand != null && ! NoOpCommand.getInstance().equals(autonomousCommand) ) {
             this.elevatorSubsystem.initialize();
             autonomousCommand.start();
@@ -194,6 +207,8 @@ public class Robot extends IterativeRobot {
         // If elevatorSubsystem is already initialized, this will do nothing
         this.elevatorSubsystem.initialize();
         this.getPneumaticSubsystem().reset();
+        this.getOperatorDisplay().setFieldValue(OperatorDisplay.ELEVATOR_MAX, this.getElevatorSubsystem().isTopLimitSwitchTripped() ? "YES" : "NO");
+        this.getOperatorDisplay().setFieldValue(OperatorDisplay.ELEVATOR_MIN, this.getElevatorSubsystem().isBottomLimitSwitchTripped() ? "YES" : "NO");
         // This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to
         // continue until interrupted by another command, remove
@@ -300,6 +315,6 @@ public class Robot extends IterativeRobot {
         getOperatorDisplay().setFieldValue("Gyro Yaw Angle", this.sensorService.getGyroSensor().getYawAngle());
         getOperatorDisplay().setFieldValue("Air Pressure", this.sensorService.getAirPressureSensor().getAirPressurePsi());
         getOperatorDisplay().setFieldValue("Ultrasonic Distance (in)", this.sensorService.getUltrasonicSensor().getDistanceInches());
-        getOperatorDisplay().setFieldValue("Battery Voltage:", RobotController.getBatteryVoltage());
+        //getOperatorDisplay().setFieldValue("Battery Voltage:", RobotController.getBatteryVoltage());
     }
 }

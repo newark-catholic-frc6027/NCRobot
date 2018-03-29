@@ -4,67 +4,63 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.OperatorDisplay;
 import org.usfirst.frc.team6027.robot.commands.PneumaticsInitializationCommand;
-import org.usfirst.frc.team6027.robot.commands.StopMotorsCommand;
 import org.usfirst.frc.team6027.robot.commands.autonomous.DriveStraightCommand.DriveDistanceMode;
 import org.usfirst.frc.team6027.robot.commands.autonomous.TurnWhileDrivingCommand.TargetVector;
 import org.usfirst.frc.team6027.robot.field.Field;
 import org.usfirst.frc.team6027.robot.sensors.SensorService;
 import org.usfirst.frc.team6027.robot.subsystems.DrivetrainSubsystem;
-import org.usfirst.frc.team6027.robot.subsystems.ElevatorSubsystem;
 import org.usfirst.frc.team6027.robot.subsystems.PneumaticSubsystem;
 
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class AutoDeliverToSwitchEnd extends CommandGroup {
+public class AutoDeliverToSwitchFrontFasterFromCenterPosition extends CommandGroup {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    
+    
     private SensorService sensorService;
     private DrivetrainSubsystem drivetrainSubsystem;
     private PneumaticSubsystem pneumaticSubsystem;
-    private ElevatorSubsystem elevatorSubsystem;
     private OperatorDisplay operatorDisplay;
     private Preferences prefs = Preferences.getInstance();
-    private StartingPositionSide startingSide;
-
+    private StartingPositionSide startingPositionSide;
     private Field field;
 
 
-    public AutoDeliverToSwitchEnd(StartingPositionSide startingSide, SensorService sensorService, 
-            DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevatorSubsystem, OperatorDisplay operatorDisplay, Field field) {
+    public AutoDeliverToSwitchFrontFasterFromCenterPosition(StartingPositionSide startingSide, SensorService sensorService, 
+            DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, OperatorDisplay operatorDisplay, Field field) {
         
         this.sensorService = sensorService;
         this.drivetrainSubsystem = drivetrainSubsystem;
         this.pneumaticSubsystem = pneumaticSubsystem;
-        this.elevatorSubsystem = elevatorSubsystem;
         this.operatorDisplay = operatorDisplay;
-        this.startingSide = startingSide;
+        this.startingPositionSide = startingSide;
         this.field = field;
-
+          
         this.addSequential(new PneumaticsInitializationCommand(this.pneumaticSubsystem));
-
+        
         Command multiLegDriveCmd = createMultiLegDriveCommand();
-        Command turnCommand = createTurnCommand();
         Command driveToSwitchCmd = createDriveToSwitchCommand();
-        Command stopMotorsCommand = createStopMotorsCommand();
 
         this.addSequential(multiLegDriveCmd);
-        this.addSequential(turnCommand);
         this.addSequential(driveToSwitchCmd);
-        this.addSequential(stopMotorsCommand);
         this.addSequential(AutoCommandHelper.createDropCarriageForDeliveryCommand(this.pneumaticSubsystem, this.field));
-        this.addSequential(AutoCommandHelper.createCubeDeliveryCommand(this.getPneumaticSubsystem(), this.field));
-    }
-
-    protected Command createStopMotorsCommand() {
-        return new StopMotorsCommand(this.elevatorSubsystem, this.drivetrainSubsystem);
+        this.addSequential(AutoCommandHelper.createCubeDeliveryCommand(pneumaticSubsystem, this.field));
     }
 
     protected Command createDriveToSwitchCommand() {
+        // Value is negative because we are using ultrasonic
+        double leg4Distance = (
+                this.startingPositionSide == StartingPositionSide.Left ? 
+                        this.prefs.getDouble("E-L4-LC-Switch", -12.0) : // Left
+                        this.prefs.getDouble("F-L4-RC-Switch", -12.0)   // Right
+        );
+        
         Command cmd = new DriveStraightCommand(
                 this.sensorService, this.drivetrainSubsystem, this.operatorDisplay,
-                this.prefs.getDouble("C-L4-SS-Switch", -12.0),
+                leg4Distance,
                 DriveDistanceMode.DistanceFromObject, 
                 0.55
         );
@@ -72,24 +68,30 @@ public class AutoDeliverToSwitchEnd extends CommandGroup {
         
         return cmd;
     }
-
-
-    protected Command createTurnCommand() {
-        // When delivering to the left, need to turn robot to the right.  When delivering to the right, need to turn
-        // robot left
-        double angle = 90.0 * (this.startingSide == StartingPositionSide.Left ? 1.0 : -1.0);
-        
-        Command returnCommand = new TurnCommand(angle, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay);
-        return returnCommand;
-    }
     
     protected Command createMultiLegDriveCommand() {
-        double leg1Distance = this.prefs.getDouble("C-L1-SS-Switch", 12.0);
+        // Interpreting StartingPostionSide Left here as the side we are delivering to
+
         double leg1Angle = 0.0;
-        double leg2Distance = this.prefs.getDouble("C-L2-SS-Switch", 47.0);
-        double leg2Angle = 30.0 * (this.startingSide == StartingPositionSide.Right ? 1.0 : -1.0);
-        double leg3Distance = this.prefs.getDouble("C-L3-SS-Switch", 75.0);
+        double leg1Distance = (
+                this.startingPositionSide == StartingPositionSide.Left ? 
+                        this.prefs.getDouble("E-L1-LC-Switch", 40.0) : // Left
+                        this.prefs.getDouble("F-L1-RC-Switch", 40.0)   // Right
+        );
+        
+        double leg2Angle = (this.startingPositionSide == StartingPositionSide.Left ? -1.0 : 1.0) * 45.0;
+        double leg2Distance = (
+                this.startingPositionSide == StartingPositionSide.Left ? 
+                        this.prefs.getDouble("E-L2-LC-Switch", 55.0) : // Left
+                        this.prefs.getDouble("F-L2-RC-Switch", 35.0)   // Right
+        );
+        
         double leg3Angle = 0.0;
+        double leg3Distance = (
+                this.startingPositionSide == StartingPositionSide.Left ? 
+                        this.prefs.getDouble("E-L3-LC-Switch", 20.0) : // Left
+                        this.prefs.getDouble("F-L3-RC-Switch", 20.0)   // Right
+        );
 
         TargetVector[] turnVectors = new TargetVector[] { 
                 new TargetVector(leg1Angle, leg1Distance),
@@ -101,7 +103,7 @@ public class AutoDeliverToSwitchEnd extends CommandGroup {
         Command cmd = new TurnWhileDrivingCommand(
                 this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), 
                 turnVectors,
-                DriveDistanceMode.DistanceReadingOnEncoder, 0.7
+                DriveDistanceMode.DistanceReadingOnEncoder, 0.8
         );
         
         return cmd;
@@ -139,12 +141,12 @@ public class AutoDeliverToSwitchEnd extends CommandGroup {
 
 
     public StartingPositionSide getStartingPositionSide() {
-        return startingSide;
+        return startingPositionSide;
     }
 
 
     public void setStartingPositionSide(StartingPositionSide startingSide) {
-        this.startingSide = startingSide;
+        this.startingPositionSide = startingSide;
     }
 
 
