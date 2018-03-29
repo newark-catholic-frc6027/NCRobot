@@ -161,7 +161,7 @@ public class Robot extends IterativeRobot {
         String preferredAutoScenario = this.getOperatorDisplay().getSelectedAutoScenario();
         String dontDoOption = this.getOperatorDisplay().getSelectedDontDoOption();
 
-        // Make sure we have the game data, even though we should already have it from disabledPeriodic method
+        // Make sure we have the game data
         while (! pollForGameData() && this.gameDataPollCount < 20 ) {
             try {
                 Thread.sleep(100);
@@ -180,7 +180,7 @@ public class Robot extends IterativeRobot {
         
         this.autonomousCommand = this.autoCommandManager.chooseCommand();
         
-        // schedule the autonomous command (example)
+        // schedule the autonomous command
         if (autonomousCommand != null && ! NoOpCommand.getInstance().equals(autonomousCommand) ) {
             this.elevatorSubsystem.initialize();
             autonomousCommand.start();
