@@ -20,50 +20,52 @@ public class DrivetrainSubsystem extends Subsystem {
     private WPI_TalonSRX leftGearBoxMaster = new WPI_TalonSRX(RobotConfigConstants.LEFT_GEARBOX_CIM_1_ID);
     private WPI_TalonSRX rightGearBoxSlave1 = new WPI_TalonSRX(RobotConfigConstants.RIGHT_GEARBOX_CIM_2_ID);
     private WPI_TalonSRX leftGearBoxSlave1 = new WPI_TalonSRX(RobotConfigConstants.LEFT_GEARBOX_CIM_2_ID);
-    /* Removing this since we only have two motors for this build 
-    private WPI_TalonSRX rightGearBoxSlave2 = new WPI_TalonSRX(RobotConfigConstants.RIGHT_GEARBOX_CIM_3_ID);
-    private WPI_TalonSRX leftGearBoxSlave2 = new WPI_TalonSRX(RobotConfigConstants.LEFT_GEARBOX_CIM_3_ID);
-    */
-    
+    /*
+     * Removing this since we only have two motors for this build private
+     * WPI_TalonSRX rightGearBoxSlave2 = new
+     * WPI_TalonSRX(RobotConfigConstants.RIGHT_GEARBOX_CIM_3_ID); private
+     * WPI_TalonSRX leftGearBoxSlave2 = new
+     * WPI_TalonSRX(RobotConfigConstants.LEFT_GEARBOX_CIM_3_ID);
+     */
+
     private RobotDrive robotDrive = new RobotDrive(leftGearBoxMaster, rightGearBoxMaster);
-    
 
     private OperatorInterface operatorInterface;
 
-    public DrivetrainSubsystem(OperatorInterface operatorInterface){
+    public DrivetrainSubsystem(OperatorInterface operatorInterface) {
         this.operatorInterface = operatorInterface;
         this.initialize();
     }
 
-    protected void initialize () {
-    	this.rightGearBoxSlave1.follow(rightGearBoxMaster);
-    	this.leftGearBoxSlave1.follow(leftGearBoxMaster);
+    protected void initialize() {
+        this.rightGearBoxSlave1.follow(rightGearBoxMaster);
+        this.leftGearBoxSlave1.follow(leftGearBoxMaster);
 
-    	// Setting the speed controllers forward for our drivetrain
-    	boolean invert = RobotConfigConstants.OPTIONAL_DRIVETRAIN_DIRECTION_INVERSION == -1;
-    	
-    	this.rightGearBoxMaster.setInverted(invert);
+        // Setting the speed controllers forward for our drivetrain
+        boolean invert = RobotConfigConstants.OPTIONAL_DRIVETRAIN_DIRECTION_INVERSION == -1;
+
+        this.rightGearBoxMaster.setInverted(invert);
         this.rightGearBoxSlave1.setInverted(invert);
         this.leftGearBoxMaster.setInverted(invert);
         this.leftGearBoxSlave1.setInverted(invert);
-        
+
         this.stopMotor();
     }
 
     /**
-     * When the run method of the scheduler is called this method will be called.
+     * When the run method of the scheduler is called this method will be
+     * called.
      */
     @Override
     public void periodic() {
     }
-    
-    
+
     @Override
     protected void initDefaultCommand() {
     }
 
     @Override
-    public void setDefaultCommand(Command command){
+    public void setDefaultCommand(Command command) {
         super.setDefaultCommand(command);
     }
 
@@ -72,14 +74,14 @@ public class DrivetrainSubsystem extends Subsystem {
     }
 
     public void stopArcadeDrive() {
-        getRobotDrive().arcadeDrive(0,0);
+        getRobotDrive().arcadeDrive(0, 0);
         getRobotDrive().stopMotor();
     }
 
     public void drive(double outputMagnitude, double curve) {
         getRobotDrive().drive(outputMagnitude, curve);
     }
-    
+
     public OperatorInterface getOperatorInterface() {
         return operatorInterface;
     }
@@ -94,21 +96,21 @@ public class DrivetrainSubsystem extends Subsystem {
 
     public void setRobotDrive(RobotDrive robotDrive) {
         this.robotDrive = robotDrive;
-        
+
     }
 
     public void tankDrive(double leftValue, double rightValue) {
         getRobotDrive().tankDrive(leftValue, rightValue);
-        
+
     }
 
     public void stopMotor() {
-    	//Only reset masters ie. not slaves
+        // Only reset masters ie. not slaves
         this.leftGearBoxMaster.stopMotor();
-       
+
         this.rightGearBoxMaster.stopMotor();
-        
+
         getRobotDrive().stopMotor();
-        
+
     }
 }

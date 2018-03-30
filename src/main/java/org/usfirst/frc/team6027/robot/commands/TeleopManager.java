@@ -20,133 +20,133 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class TeleopManager extends Command {
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     protected static final int LOG_REDUCTION_MOD = 10;
 
-	private OperatorInterface operatorInterface;
-	private SensorService sensorService;
-	private XboxJoystick joystick;
-	private DrivetrainSubsystem drivetrain;
-	private Preferences prefs = Preferences.getInstance();
-	private PneumaticSubsystem pneumaticSubsystem;
+    private OperatorInterface operatorInterface;
+    private SensorService sensorService;
+    private XboxJoystick joystick;
+    private DrivetrainSubsystem drivetrain;
+    private Preferences prefs = Preferences.getInstance();
+    private PneumaticSubsystem pneumaticSubsystem;
     private ElevatorSubsystem elevatorSubsystem;
 
-	private JoystickButton shiftGearButton;
-	private JoystickButton leftBumperButton;
-	private JoystickButton backButton;
-	private JoystickButton aButton;
-	private JoystickButton bButton;
-	private JoystickButton yButton;
-	private JoystickButton xButton;
-	private JoystickButton startButton;
+    private JoystickButton shiftGearButton;
+    private JoystickButton leftBumperButton;
+    private JoystickButton backButton;
+    private JoystickButton aButton;
+    private JoystickButton bButton;
+    private JoystickButton yButton;
+    private JoystickButton xButton;
+    private JoystickButton startButton;
 
-	private ShiftGearCommand shiftGearCommand;
-	private ToggleGrippersCommand toggleGrippersCommand;
-	private ToggleShiftElevatorCommand toggleShiftElevatorCommand;
-	
-	protected int execCount = 0;
+    private ShiftGearCommand shiftGearCommand;
+    private ToggleGrippersCommand toggleGrippersCommand;
+    private ToggleShiftElevatorCommand toggleShiftElevatorCommand;
 
-	public TeleopManager(OperatorInterface operatorInterface, SensorService sensorService,
-			DrivetrainSubsystem drivetrain, PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevator) {
-		// Identify the subsystems we will be using in this command and this command
-		// only
-		requires(drivetrain);
-		requires(elevator);
+    protected int execCount = 0;
 
-		// Hang onto references of the components we will need during teleop
-		this.operatorInterface = operatorInterface;
-		this.sensorService = sensorService;
-		this.joystick = this.operatorInterface.getJoystick();
-		this.drivetrain = drivetrain;
-		this.pneumaticSubsystem = pneumaticSubsystem;
-		this.elevatorSubsystem = elevator;
-		// Create the commands we will be using during teleop
-		shiftGearCommand = new ShiftGearCommand(this.pneumaticSubsystem);
-		toggleGrippersCommand = new ToggleGrippersCommand(this.pneumaticSubsystem);
-		this.toggleShiftElevatorCommand = new ToggleShiftElevatorCommand(pneumaticSubsystem);
+    public TeleopManager(OperatorInterface operatorInterface, SensorService sensorService,
+            DrivetrainSubsystem drivetrain, PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevator) {
+        // Identify the subsystems we will be using in this command and this
+        // command
+        // only
+        requires(drivetrain);
+        requires(elevator);
 
-		// Set up the commands on the Joystick buttons
-		initializeJoystick();
-	}
+        // Hang onto references of the components we will need during teleop
+        this.operatorInterface = operatorInterface;
+        this.sensorService = sensorService;
+        this.joystick = this.operatorInterface.getJoystick();
+        this.drivetrain = drivetrain;
+        this.pneumaticSubsystem = pneumaticSubsystem;
+        this.elevatorSubsystem = elevator;
+        // Create the commands we will be using during teleop
+        shiftGearCommand = new ShiftGearCommand(this.pneumaticSubsystem);
+        toggleGrippersCommand = new ToggleGrippersCommand(this.pneumaticSubsystem);
+        this.toggleShiftElevatorCommand = new ToggleShiftElevatorCommand(pneumaticSubsystem);
 
-	protected void initializeJoystick() {
+        // Set up the commands on the Joystick buttons
+        initializeJoystick();
+    }
 
-		this.shiftGearButton = new JoystickButton(this.joystick, this.joystick.getRightBumperButtonNumber());
-		shiftGearButton.whenPressed(this.shiftGearCommand);
+    protected void initializeJoystick() {
 
-		this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());
-		this.yButton.whenPressed(new Command() {
+        this.shiftGearButton = new JoystickButton(this.joystick, this.joystick.getRightBumperButtonNumber());
+        shiftGearButton.whenPressed(this.shiftGearCommand);
+
+        this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());
+        this.yButton.whenPressed(new Command() {
             @Override
             protected boolean isFinished() {
                 return true;
             }
-		    
+
             protected void execute() {
-                sensorService.getGyroSensor().reset(); 
+                sensorService.getGyroSensor().reset();
                 sensorService.getEncoderSensors().reset();
             }
-		});
-		
-		this.aButton = new JoystickButton(this.joystick, this.joystick.getAButtonNumber());
-		this.aButton.whenPressed(this.toggleGrippersCommand);
-		
-		this.leftBumperButton = new JoystickButton(this.joystick, this.joystick.getLeftBumperButtonNumber());
-		this.leftBumperButton.whenPressed(this.toggleShiftElevatorCommand);
-		
-// for testing
-//      DeliveryMode.valueOf(this.prefs.getString("cubeDelivery.mode", DeliveryMode.DropThenKick.toString())), 
-//      this.prefs.getInt("cubeDelivery.msdelay", 10),
-		
+        });
+
+        this.aButton = new JoystickButton(this.joystick, this.joystick.getAButtonNumber());
+        this.aButton.whenPressed(this.toggleGrippersCommand);
+
+        this.leftBumperButton = new JoystickButton(this.joystick, this.joystick.getLeftBumperButtonNumber());
+        this.leftBumperButton.whenPressed(this.toggleShiftElevatorCommand);
+
+        // for testing
+        // DeliveryMode.valueOf(this.prefs.getString("cubeDelivery.mode",
+        // DeliveryMode.DropThenKick.toString())),
+        // this.prefs.getInt("cubeDelivery.msdelay", 10),
+
         this.xButton = new JoystickButton(this.joystick, this.joystick.getXButtonNumber());
-	    this.xButton.whenPressed(new CubeDeliveryCommand(
-	            DeliveryMode.DropThenKick,
-	            10,
-	            this.pneumaticSubsystem)
-	    );
+        this.xButton.whenPressed(new CubeDeliveryCommand(DeliveryMode.DropThenKick, 10, this.pneumaticSubsystem));
 
-	    this.backButton = new JoystickButton(this.joystick,  this.joystick.getBackButtonNumber());
-	    this.backButton.whenPressed(new PrepareForClimbCommand(this.pneumaticSubsystem));
-//	    this.backButton.whenPressed(new DropCarriageCommand(DropFunction.DropForDelivery, DriverStation.getInstance(), pneumaticSubsystem, null, false));
-		// Add new button assignments here
-	}
+        this.backButton = new JoystickButton(this.joystick, this.joystick.getBackButtonNumber());
+        this.backButton.whenPressed(new PrepareForClimbCommand(this.pneumaticSubsystem));
+        // this.backButton.whenPressed(new
+        // DropCarriageCommand(DropFunction.DropForDelivery,
+        // DriverStation.getInstance(), pneumaticSubsystem, null, false));
+        // Add new button assignments here
+    }
 
-	@Override
-	protected boolean isFinished() {
-		return false;
-	}
+    @Override
+    protected boolean isFinished() {
+        return false;
+    }
 
-	@Override
-	protected void end() {
-	    this.clearRequirements();
-		// This will only get called if isFinished returns true
-		// this.drivetrain.stopArcadeDrive();
-	}
+    @Override
+    protected void end() {
+        this.clearRequirements();
+        // This will only get called if isFinished returns true
+        // this.drivetrain.stopArcadeDrive();
+    }
 
-	@Override
-	protected void interrupted() {
-		logger.info("Teleop interrupted");
-	}
+    @Override
+    protected void interrupted() {
+        logger.info("Teleop interrupted");
+    }
 
-	@Override
-	protected void execute() {
-	    this.execCount++;
-	    this.drive();
-		this.runElevatorIfRequired();
+    @Override
+    protected void execute() {
+        this.execCount++;
+        this.drive();
+        this.runElevatorIfRequired();
 
-		// this.logData();
-	}
+        // this.logData();
+    }
 
-	private void drive() {
+    private void drive() {
         this.drivetrain.doArcadeDrive(this.joystick.getLeftAxis(), this.joystick.getRightAxis());
     }
 
     protected void logData() {
-     
+
         if (this.execCount % LOG_REDUCTION_MOD == 0) {
-            logger.trace("Ultrasonic dist: {}", 
-                    String.format("%.3f",this.sensorService.getUltrasonicSensor().getDistanceInches()));
+            logger.trace("Ultrasonic dist: {}",
+                    String.format("%.3f", this.sensorService.getUltrasonicSensor().getDistanceInches()));
         }
-        
+
     }
 
     private void runElevatorIfRequired() {
@@ -158,8 +158,7 @@ public class TeleopManager extends Command {
     }
 
     public OperatorDisplay getOperatorDisplay() {
-		return this.operatorInterface.getOperatorDisplay();
-	}
-
+        return this.operatorInterface.getOperatorDisplay();
+    }
 
 }

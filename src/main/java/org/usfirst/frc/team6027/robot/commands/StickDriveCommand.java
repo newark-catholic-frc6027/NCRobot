@@ -15,61 +15,59 @@ import edu.wpi.first.wpilibj.command.Command;
  * right joysticks on an XBox controller and sets them to arcade drive.
  */
 public class StickDriveCommand extends Command {
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private DrivetrainSubsystem drivetrain;
-	private OperatorInterface operatorInterface;
-	Preferences prefs = Preferences.getInstance();
-	double motorPower;
+    private DrivetrainSubsystem drivetrain;
+    private OperatorInterface operatorInterface;
+    Preferences prefs = Preferences.getInstance();
+    double motorPower;
 
-	/**
-	 * Requires DriveTrain
-	 */
-	public StickDriveCommand(DrivetrainSubsystem drivetrain, OperatorInterface operatorInterface) {
-		this.drivetrain = drivetrain;
-		this.operatorInterface = operatorInterface;
-		requires(this.drivetrain);
+    /**
+     * Requires DriveTrain
+     */
+    public StickDriveCommand(DrivetrainSubsystem drivetrain, OperatorInterface operatorInterface) {
+        this.drivetrain = drivetrain;
+        this.operatorInterface = operatorInterface;
+        requires(this.drivetrain);
 
-	}
+    }
 
-	protected void initialize() {
-		logger.info("Using stick drive");
-	}
+    protected void initialize() {
+        logger.info("Using stick drive");
+    }
 
-	protected void execute() {
-		motorPower = prefs.getDouble(OperatorDisplay.TELEOP_MOTOR_POWER_PREF, 1.0);
-		this.getDrivetrain().doArcadeDrive(
-		        motorPower * this.getOperatorInterface().getJoystick().getLeftAxis(),
-				this.getOperatorInterface().getJoystick().getRightAxis()
-		);
-	}
+    protected void execute() {
+        motorPower = prefs.getDouble(OperatorDisplay.TELEOP_MOTOR_POWER_PREF, 1.0);
+        this.getDrivetrain().doArcadeDrive(motorPower * this.getOperatorInterface().getJoystick().getLeftAxis(),
+                this.getOperatorInterface().getJoystick().getRightAxis());
+    }
 
-	protected boolean isFinished() {
-		return false;
-	}
+    protected boolean isFinished() {
+        return false;
+    }
 
-	@Override
-	protected void end() {
-		this.getDrivetrain().stopArcadeDrive();
-	}
+    @Override
+    protected void end() {
+        this.getDrivetrain().stopArcadeDrive();
+    }
 
-	protected void interrupted() {
-		logger.info("Stick drive interrupted");
-	}
+    protected void interrupted() {
+        logger.info("Stick drive interrupted");
+    }
 
-	public DrivetrainSubsystem getDrivetrain() {
-		return drivetrain;
-	}
+    public DrivetrainSubsystem getDrivetrain() {
+        return drivetrain;
+    }
 
-	public void setDrivetrain(DrivetrainSubsystem drivetrain) {
-		this.drivetrain = drivetrain;
-	}
+    public void setDrivetrain(DrivetrainSubsystem drivetrain) {
+        this.drivetrain = drivetrain;
+    }
 
-	public OperatorInterface getOperatorInterface() {
-		return operatorInterface;
-	}
+    public OperatorInterface getOperatorInterface() {
+        return operatorInterface;
+    }
 
-	public void setOperatorInterface(OperatorInterface operatorInterface) {
-		this.operatorInterface = operatorInterface;
-	}
+    public void setOperatorInterface(OperatorInterface operatorInterface) {
+        this.operatorInterface = operatorInterface;
+    }
 }
