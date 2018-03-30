@@ -109,6 +109,23 @@ public class PneumaticSubsystem extends Subsystem {
         }
 	}
 
+    public void toggleElevatorSolenoid() {
+        if (this.elevatorShifterSolenoid.getState() == null) {
+            logger.warn("Don't know elevator shifter solenoid state yet, can't toggle elevator solenoid");
+            return;
+        }
+        
+        this.operatorDisplay.setFieldValue("Elevator Solenoid State", this.elevatorShifterSolenoid.getState().name());
+
+        if (this.elevatorShifterSolenoid.getState() == DoubleSolenoid.Value.kReverse) {
+            logger.trace("Calling toggleSolenoidForward");
+            toggleElevatorShifterSolenoidForward();
+        } else {
+            logger.trace("Calling toggleSolenoidReverse");
+            toggleElevatorShifterSolenoidReverse();
+        }
+    }
+    
     public void toggleGripperSolenoid() {
         if (this.gripperSolenoid.getState() == null) {
             logger.warn("Don't know gripper solenoid state yet, can't toggle gripper solenoid");

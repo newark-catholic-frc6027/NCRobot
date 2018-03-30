@@ -38,9 +38,11 @@ public class TeleopManager extends Command {
 	private JoystickButton bButton;
 	private JoystickButton yButton;
 	private JoystickButton xButton;
+	private JoystickButton startButton;
 
 	private ShiftGearCommand shiftGearCommand;
 	private ToggleGrippersCommand toggleGrippersCommand;
+	private ToggleShiftElevatorCommand toggleShiftElevatorCommand;
 	
 	protected int execCount = 0;
 
@@ -61,6 +63,7 @@ public class TeleopManager extends Command {
 		// Create the commands we will be using during teleop
 		shiftGearCommand = new ShiftGearCommand(this.pneumaticSubsystem);
 		toggleGrippersCommand = new ToggleGrippersCommand(this.pneumaticSubsystem);
+		this.toggleShiftElevatorCommand = new ToggleShiftElevatorCommand(pneumaticSubsystem);
 
 		// Set up the commands on the Joystick buttons
 		initializeJoystick();
@@ -86,6 +89,9 @@ public class TeleopManager extends Command {
 		
 		this.aButton = new JoystickButton(this.joystick, this.joystick.getAButtonNumber());
 		this.aButton.whenPressed(this.toggleGrippersCommand);
+		
+		this.leftBumperButton = new JoystickButton(this.joystick, this.joystick.getLeftBumperButtonNumber());
+		this.leftBumperButton.whenPressed(this.toggleShiftElevatorCommand);
 		
 // for testing
 //      DeliveryMode.valueOf(this.prefs.getString("cubeDelivery.mode", DeliveryMode.DropThenKick.toString())), 
