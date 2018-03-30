@@ -1,76 +1,88 @@
 <xml version="1.0">
 <dashboard>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
+		<location x="752" y="407"/>
+		<property name="Text" value="Don't Do This"/>
+	</static-widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
+		<location x="751" y="242"/>
+		<property name="Text" value="Preferred Auto Scenario"/>
+	</static-widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
+		<location x="754" y="75"/>
+		<property name="Text" value="Station"/>
+	</static-widget>
+	<widget field="Elevator Solenoid State" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="196" y="633"/>
+	</widget>
 	<widget field="Elevator Shifter" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="641"/>
+		<location x="495" y="597"/>
 	</widget>
 	<widget field="Elevator MIN?" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="618"/>
+		<location x="252" y="598"/>
 	</widget>
 	<widget field="Elevator MAX?" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="595"/>
+		<location x="4" y="600"/>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.RobotPreferences">
-		<location x="928" y="211"/>
+		<location x="930" y="73"/>
 		<width>913</width>
-		<height>571</height>
+		<height>408</height>
 	</static-widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
-		<location x="2" y="2"/>
+		<location x="4" y="2"/>
 		<width>696</width>
 		<height>592</height>
 		<property name="Camera Choice" value=""/>
 	</static-widget>
-	<widget field="Battery Voltage:" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="74" y="820"/>
-	</widget>
 	<widget field="Solenoid State" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="353" y="843"/>
+		<location x="793" y="592"/>
 		<height>22</height>
 	</widget>
 	<widget field="Kicker Solenoid State" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="354" y="813"/>
+		<location x="755" y="560"/>
 	</widget>
 	<widget field="Gripper Solenoid State" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="70" y="849"/>
+		<location x="747" y="522"/>
 	</widget>
 	<widget field="Auto Scenario" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="741" y="330"/>
+		<location x="736" y="250"/>
 	</widget>
 	<widget field="Dont Do Option" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="741" y="503"/>
+		<location x="738" y="422"/>
 	</widget>
 	<widget field="Ultrasonic Distance (in)" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="1435" y="13"/>
 	</widget>
 	<widget field="Air Pressure" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="380" y="891"/>
+		<location x="1600" y="640"/>
 	</widget>
 	<widget field="Gyro Yaw Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="63" y="904"/>
+		<location x="786" y="640"/>
 	</widget>
 	<widget field="Gyro Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="386" y="934"/>
+		<location x="1022" y="640"/>
 	</widget>
 	<widget field="rightEncoder Raw" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="56" y="935"/>
+		<location x="1584" y="522"/>
 	</widget>
 	<widget field="leftEncoder Raw" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="633" y="944"/>
+		<location x="1583" y="560"/>
 	</widget>
 	<widget field="leftEncoder Distance" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="600" y="895"/>
+		<location x="1032" y="560"/>
 	</widget>
 	<widget field="leftEncoder Raw Values" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="630" y="869"/>
+		<location x="1301" y="560"/>
 	</widget>
 	<widget field="rightEncoder Distance" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="71" y="878"/>
+		<location x="1024" y="522"/>
 	</widget>
 	<widget field="rightEncoder Raw Values" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="627" y="834"/>
+		<location x="1293" y="522"/>
 	</widget>
 	<widget field="Position" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="742" y="149"/>
+		<location x="739" y="82"/>
 	</widget>
 	<widget field="Kicker" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="1200" y="13"/>
@@ -80,9 +92,6 @@
 	</widget>
 	<widget field="Speed" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="737" y="14"/>
-	</widget>
-	<widget field="PneumaticSubsystem" type="Subsystem" class="edu.wpi.first.smartdashboard.gui.elements.Subsystem">
-		<location x="631" y="800"/>
 	</widget>
 </dashboard>
 <live-window>
@@ -246,4 +255,6 @@
 		<height>313</height>
 	</widget>
 </live-window>
+	<hidden field="PneumaticSubsystem"/>
+	<hidden field="Battery Voltage:"/>
 </xml>
