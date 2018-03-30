@@ -1,7 +1,7 @@
 <xml version="1.0">
 <dashboard>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
-		<location x="752" y="407"/>
+		<location x="752" y="400"/>
 		<property name="Text" value="Don't Do This"/>
 	</static-widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
@@ -9,7 +9,7 @@
 		<property name="Text" value="Preferred Auto Scenario"/>
 	</static-widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
-		<location x="754" y="75"/>
+		<location x="752" y="80"/>
 		<property name="Text" value="Station"/>
 	</static-widget>
 	<widget field="Elevator Solenoid State" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
@@ -25,8 +25,8 @@
 		<location x="4" y="600"/>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.RobotPreferences">
-		<location x="930" y="73"/>
-		<width>913</width>
+		<location x="970" y="76"/>
+		<width>826</width>
 		<height>408</height>
 	</static-widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
@@ -46,10 +46,10 @@
 		<location x="747" y="522"/>
 	</widget>
 	<widget field="Auto Scenario" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="736" y="250"/>
+		<location x="752" y="256"/>
 	</widget>
 	<widget field="Dont Do Option" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="738" y="422"/>
+		<location x="752" y="416"/>
 	</widget>
 	<widget field="Ultrasonic Distance (in)" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="1435" y="13"/>
@@ -82,7 +82,7 @@
 		<location x="1293" y="522"/>
 	</widget>
 	<widget field="Position" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="739" y="82"/>
+		<location x="752" y="88"/>
 	</widget>
 	<widget field="Kicker" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="1200" y="13"/>
