@@ -26,7 +26,7 @@ public class LimitSwitchSensors {
     
     public LimitSwitchSensors() {
     }
-
+/*
     @Deprecated
     public boolean isLimitSwitchTripped(LimitSwitchId id) {
         boolean switchTripped = true;
@@ -39,13 +39,13 @@ public class LimitSwitchSensors {
         
         return switchTripped;
     }
-    
+  */  
     /**
      * TODO: Once all limit switches are installed, use this code
      * @param id
      * @return
      */
-    public boolean isLimitSwitchTrippedAlt(LimitSwitchId id) {
+    public boolean isLimitSwitchTripped(LimitSwitchId id) {
         boolean switchTripped = true;
         if (id == LimitSwitchId.MastTop) {
             switchTripped = this.limitSwitchTopA.get() && this.limitSwitchTopB.get();
