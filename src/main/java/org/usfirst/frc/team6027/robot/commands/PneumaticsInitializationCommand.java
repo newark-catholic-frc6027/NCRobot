@@ -120,7 +120,8 @@ public class PneumaticsInitializationCommand extends Command {
         this.initialized = 
             this.driveSolenoidInitialized = this.driveSolenoidToggled = 
             this.gripperSolenoidInitialized = this.gripperSolenoidToggled = 
-            this.kickerSolenoidInitialized = this.kickerSolenoidToggled = false;
+            this.kickerSolenoidInitialized = this.kickerSolenoidToggled = 
+            this.elevatorSolenoidInitialized = this.elevatorSolenoidToggled = false;
         
     }
     
