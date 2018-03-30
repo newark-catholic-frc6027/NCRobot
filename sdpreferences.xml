@@ -61,7 +61,7 @@
 		<location x="786" y="640"/>
 	</widget>
 	<widget field="Gyro Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1022" y="640"/>
+		<location x="1086" y="640"/>
 	</widget>
 	<widget field="rightEncoder Raw" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="1584" y="522"/>
