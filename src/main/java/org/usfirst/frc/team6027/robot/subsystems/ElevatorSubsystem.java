@@ -56,7 +56,7 @@ public class ElevatorSubsystem extends Subsystem {
     public boolean isUpwardMaxAmpsExceeded() {
         boolean exceeded = false;
         if (this.isGoingUp() && ! this.isTopLimitSwitchTripped()) {
-            double maxMotorAmps = this.prefs.getDouble("elevatorSubystem.maxMotorAmps", 12.0);
+            double maxMotorAmps = this.prefs.getDouble("elevatorSubystem.maxMotorAmps", 30.0);
             double currentOutputAmps = this.elevatorGearBoxMaster.getOutputCurrent();
             exceeded = currentOutputAmps > maxMotorAmps;
             if (exceeded) {

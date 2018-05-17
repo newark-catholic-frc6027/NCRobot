@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.usfirst.frc.team6027.robot.OperatorDisplay;
 import org.usfirst.frc.team6027.robot.commands.PneumaticsInitializationCommand;
+import org.usfirst.frc.team6027.robot.commands.ShiftGearCommand;
+import org.usfirst.frc.team6027.robot.commands.ShiftGearCommand.ShiftGearMode;
 import org.usfirst.frc.team6027.robot.commands.autonomous.DriveStraightCommand.DriveDistanceMode;
 import org.usfirst.frc.team6027.robot.commands.autonomous.TurnWhileDrivingCommand.TargetVector;
 import org.usfirst.frc.team6027.robot.field.Field;
@@ -43,15 +45,28 @@ public class AutoDeliverToScaleEndFromOppositeSide extends CommandGroup {
   
         this.addSequential(new PneumaticsInitializationCommand(this.pneumaticSubsystem));
         
-        Command multiLegDriveCmd = createMultiLegDriveCommand();
-        Command turnCommand = createTurnCommand();
+        Command shiftHighCmd1 = new ShiftGearCommand(this.pneumaticSubsystem, ShiftGearMode.High);
+        Command shiftHighCmd2 = new ShiftGearCommand(this.pneumaticSubsystem, ShiftGearMode.High);
+        Command shiftLowCmd1 = new ShiftGearCommand(this.pneumaticSubsystem, ShiftGearMode.Low);
+        Command shiftLowCmd2 = new ShiftGearCommand(this.pneumaticSubsystem, ShiftGearMode.Low);
+        Command multiLegDriveCmd1 = createMultiLegDriveCommand1(1.0);  
+        Command multiLegDriveCmd2 = createMultiLegDriveCommand2(1.0);  
+        Command multiLegDriveCmd3 = createMultiLegDriveCommand3(1.0);  
+        Command turnCommand1 = createTurnCommand1();
+        Command turnCommand2 = createTurnCommand2();
         Command driveToScaleCmd = createDriveToScaleCommand();
         
-        this.addSequential(multiLegDriveCmd);
-        this.addSequential(turnCommand);
-        this.addSequential(AutoCommandHelper.createElevatorDownForDeliveryCommand(this.elevatorSubsystem, this.drivetrainSubsystem, this.getSensorService()));
-        this.addSequential(AutoCommandHelper.createDropCarriageForDeliveryCommand(this.pneumaticSubsystem, this.field));
-        this.addSequential(AutoCommandHelper.createElevatorUpForDeliveryCommand(this.elevatorSubsystem, this.drivetrainSubsystem, this.getSensorService()));
+        this.addSequential(shiftHighCmd1);
+        this.addSequential(multiLegDriveCmd1);
+        this.addSequential(shiftLowCmd1);  // new
+        this.addSequential(turnCommand1);
+        this.addSequential(shiftHighCmd2);  // new
+        this.addSequential(multiLegDriveCmd2);
+        this.addSequential(shiftLowCmd2);  // new
+        this.addSequential(multiLegDriveCmd3);
+        this.addSequential(turnCommand2);
+        this.addParallel(AutoCommandHelper.createDropCarriageForDeliveryCommand(this.pneumaticSubsystem, this.field));
+        this.addParallel(AutoCommandHelper.createElevatorUpForDeliveryCommand(this.elevatorSubsystem, this.drivetrainSubsystem, this.getSensorService()));
         this.addSequential(driveToScaleCmd);
         this.addSequential(AutoCommandHelper.createCubeDeliveryCommand(this.getPneumaticSubsystem(), this.field));
     }
@@ -69,8 +84,16 @@ public class AutoDeliverToScaleEndFromOppositeSide extends CommandGroup {
         return cmd;
     }
 
+    protected Command createTurnCommand1() {
+        // When delivering to the left, need to turn robot to the right.  When delivering to the right, need to turn
+        // robot left
+        double angle = 90.0 * (this.startingSide == StartingPositionSide.Right ? -1.0 : 1.0);
+        
+        Command returnCommand = new TurnCommand(angle, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay);
+        return returnCommand;
+    }
 
-    protected Command createTurnCommand() {
+    protected Command createTurnCommand2() {
         // When delivering to the left, need to turn robot to the right.  When delivering to the right, need to turn
         // robot left
         double angle = 90.0 * (this.startingSide == StartingPositionSide.Right ? 1.0 : -1.0);
@@ -79,17 +102,47 @@ public class AutoDeliverToScaleEndFromOppositeSide extends CommandGroup {
         return returnCommand;
     }
     
-    protected Command createMultiLegDriveCommand() {
+    protected Command createMultiLegDriveCommand1(double power) {
         double leg1Distance = this.prefs.getDouble("B-L1-XS-Scale", 200.0);
         double leg1Angle = 0.0;
+
+        TargetVector[] turnVectors = new TargetVector[] { 
+                new TargetVector(leg1Angle, leg1Distance),
+                
+        };
+        
+        Command cmd = new TurnWhileDrivingCommand(
+                this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), 
+                turnVectors,
+                DriveDistanceMode.DistanceReadingOnEncoder, power
+        );
+        
+        return cmd;
+    }
+
+
+    protected Command createMultiLegDriveCommand2(double power) {
         double leg2Distance = this.prefs.getDouble("B-L2-XS-Scale", 220.0);
         double leg2Angle = 90.0 * (this.startingSide == StartingPositionSide.Right ? -1.0 : 1.0);
+
+        TargetVector[] turnVectors = new TargetVector[] { 
+                new TargetVector(leg2Angle, leg2Distance)
+        };
+        
+        Command cmd = new TurnWhileDrivingCommand(
+                this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), 
+                turnVectors,
+                DriveDistanceMode.DistanceReadingOnEncoder, power
+        );
+        
+        return cmd;
+    }
+    
+    protected Command createMultiLegDriveCommand3(double power) {
         double leg3Distance = this.prefs.getDouble("B-L3-XS-Scale", 70.0);
         double leg3Angle = 0.0;
 
         TargetVector[] turnVectors = new TargetVector[] { 
-                new TargetVector(leg1Angle, leg1Distance),
-                new TargetVector(leg2Angle, leg2Distance),
                 new TargetVector(leg3Angle, leg3Distance),
                 
         };
@@ -97,13 +150,11 @@ public class AutoDeliverToScaleEndFromOppositeSide extends CommandGroup {
         Command cmd = new TurnWhileDrivingCommand(
                 this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), 
                 turnVectors,
-                DriveDistanceMode.DistanceReadingOnEncoder, 0.9
+                DriveDistanceMode.DistanceReadingOnEncoder, power
         );
         
         return cmd;
     }
-
-
 
     public DrivetrainSubsystem getDrivetrainSubsystem() {
         return drivetrainSubsystem;

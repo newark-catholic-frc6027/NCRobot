@@ -12,6 +12,10 @@ import edu.wpi.first.wpilibj.command.Command;
  * Toggles the drivetain shifter from HIGH to LOW or LOW to HIGH.
  */
 public class ShiftGearCommand extends Command {
+    public enum ShiftGearMode {
+        Low,
+        High
+    }
     /** The delay in milliseconds before we allow the command to finish.  This builds in a small delay to allow the
      * solenoid to finish toggling before we turn it back off. */
     public final static int DELAY_TO_OFF_MS = 250;
@@ -23,6 +27,7 @@ public class ShiftGearCommand extends Command {
     private long timeStarted;
     private DoubleSolenoid shifterSolenoid;
     private Value initialShifterState;
+    private ShiftGearMode mode;
 
 
     public ShiftGearCommand(PneumaticSubsystem pneumaticSubsystem) {
@@ -31,6 +36,11 @@ public class ShiftGearCommand extends Command {
         this.shifterSolenoid = this.pneumaticSubsystem.getDriveSolenoid();
         this.initialShifterState = this.shifterSolenoid.get();
 
+    }
+    
+    public ShiftGearCommand(PneumaticSubsystem pneumaticSubsystem, ShiftGearMode mode) {
+        this(pneumaticSubsystem);
+        this.mode = mode;
     }
     
     @Override
@@ -43,12 +53,20 @@ public class ShiftGearCommand extends Command {
     public void execute() {
         if (! executionComplete) {
             logger.trace("Running ShiftGearCommand");
-            this.pneumaticSubsystem.toggleDriveSolenoid();
-            timeStarted = System.currentTimeMillis();
-            // We only want to run once, so keep a boolean to make sure we don't run again until 
-            // the delay period has expired
-            this.executionComplete = true;
+            if (this.mode == null) {
+                this.pneumaticSubsystem.toggleDriveSolenoid();
+            } else if (this.mode == ShiftGearMode.High) {
+                this.pneumaticSubsystem.toggleDriveSolenoidReverse();
+            } else if (this.mode == ShiftGearMode.Low) {
+                this.pneumaticSubsystem.toggleDriveSolenoidForward();
+            } else {
+                logger.warn("Shift Gear doing nothing");
+            }
         }
+        timeStarted = System.currentTimeMillis();
+        // We only want to run once, so keep a boolean to make sure we don't run again until 
+        // the delay period has expired
+        this.executionComplete = true;
     }
     
     

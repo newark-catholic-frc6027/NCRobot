@@ -104,6 +104,9 @@ public class TeleopManager extends Command {
 
         this.backButton = new JoystickButton(this.joystick, this.joystick.getBackButtonNumber());
         this.backButton.whenPressed(new PrepareForClimbCommand(this.pneumaticSubsystem));
+        
+        this.startButton = new JoystickButton(this.joystick, this.joystick.getStartButtonNumber());
+        this.startButton.whenPressed(new DropCarriageCommand(DropFunction.DropForDelivery, DriverStation.getInstance(), this.pneumaticSubsystem, null ));
         // this.backButton.whenPressed(new
         // DropCarriageCommand(DropFunction.DropForDelivery,
         // DriverStation.getInstance(), pneumaticSubsystem, null, false));
