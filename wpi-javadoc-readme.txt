@@ -1,0 +1,7 @@
+Command I used to generate WPI javadocs
+   ./gradlew wpiJavadoc
+
+That command fails, but generates an options file in the wpi-doc dir that can be used to get the classpath.
+The classpath can then be used in this command:
+
+C:\Users\Public\frc2019\jdk\bin\javadoc --frames --source-path wpi-sources -d wpi-doc -subpackages edu -classpath 'C:\\Projects\\nc-robot-2019\\nc-robot\\build\\classes\\java\\main;C:\\Projects\\nc-robot-2019\\nc-robot\\build\\resources\\main;C:\\Users\\Public\\frc2019\\maven\\edu\\wpi\\first\\wpilibj\\wpilibj-java\\2019.1.1\\wpilibj-java-2019.1.1.jar;C:\\Users\\Public\\frc2019\\maven\\edu\\wpi\\first\\ntcore\\ntcore-java\\2019.1.1\\ntcore-java-2019.1.1.jar;C:\\Users\\Public\\frc2019\\maven\\edu\\wpi\\first\\wpiutil\\wpiutil-java\\2019.1.1\\wpiutil-java-2019.1.1.jar;C:\\Users\\Public\\frc2019\\maven\\edu\\wpi\\first\\thirdparty\\frc2019\\opencv\\opencv-java\\3.4.4-4\\opencv-java-3.4.4-4.jar;C:\\Users\\Public\\frc2019\\maven\\edu\\wpi\\first\\cscore\\cscore-java\\2019.1.1\\cscore-java-2019.1.1.jar;C:\\Users\\Public\\frc2019\\maven\\edu\\wpi\\first\\cameraserver\\cameraserver-java\\2019.1.1\\cameraserver-java-2019.1.1.jar;C:\\Users\\Public\\frc2019\\maven\\edu\\wpi\\first\\hal\\hal-java\\2019.1.1\\hal-java-2019.1.1.jar'
