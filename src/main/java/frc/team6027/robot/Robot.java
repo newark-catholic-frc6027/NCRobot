@@ -7,6 +7,9 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import frc.team6027.robot.commands.TeleopManager;
@@ -52,6 +55,9 @@ public class Robot extends TimedRobot {
     
     private int teleopExecCount = 0;
     private int autoExecCount = 0;
+
+    private NetworkTable visionTable = null;
+    private NetworkTableEntry blobResultEntry = null;
     
     /**
      * This function is run when the robot is first started up and should be used
@@ -71,12 +77,14 @@ public class Robot extends TimedRobot {
         // This ensures that the Teleop command is running whenever we are not in
         // autonomous mode
         TeleopManager teleOpCommand = new TeleopManager(this.operatorInterface, this.sensorService,
-                this.getDrivetrain(), this.pneumaticSubsystem, this.elevatorSubsystem);
+                this.getDrivetrain(), this.pneumaticSubsystem, this.elevatorSubsystem, this.operatorDisplay);
         this.getDrivetrain().setDefaultCommand(teleOpCommand);
         
         AutonomousCommandManager.initAutoScenarioDisplayValues(this.getOperatorDisplay());
         AutonomousCommandManager.initDontDoOptionDisplayValues(this.getOperatorDisplay());
         
+        this.visionTable = NetworkTableInstance.getDefault().getTable("vision");
+        this.blobResultEntry = this.visionTable.getEntry("blobResult");
 //        this.getPneumaticSubsystem().reset();
     }
 
@@ -229,6 +237,8 @@ public class Robot extends TimedRobot {
         if (this.teleopExecCount % 17 == 0) {
             this.updateOperatorDisplay();
         }
+
+        this.getOperatorDisplay().setFieldValue("blobResult", this.blobResultEntry.getDouble(-8888.88));
     }
 
     /**
