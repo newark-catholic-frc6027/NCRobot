@@ -57,7 +57,9 @@ public class Robot extends TimedRobot {
     private int autoExecCount = 0;
 
     private NetworkTable visionTable = null;
-    private NetworkTableEntry blobResultEntry = null;
+    private NetworkTableEntry contoursCenterXEntry = null;
+    private NetworkTableEntry contoursCenterYEntry = null;
+    private NetworkTableEntry contourCount = null;
     
     /**
      * This function is run when the robot is first started up and should be used
@@ -84,7 +86,9 @@ public class Robot extends TimedRobot {
         AutonomousCommandManager.initDontDoOptionDisplayValues(this.getOperatorDisplay());
         
         this.visionTable = NetworkTableInstance.getDefault().getTable("vision");
-        this.blobResultEntry = this.visionTable.getEntry("blobResult");
+        this.contoursCenterXEntry = this.visionTable.getEntry("contoursCenterX");
+        this.contoursCenterYEntry = this.visionTable.getEntry("contoursCenterY");
+        this.contourCount = this.visionTable.getEntry("numContours");
 //        this.getPneumaticSubsystem().reset();
     }
 
@@ -238,7 +242,8 @@ public class Robot extends TimedRobot {
             this.updateOperatorDisplay();
         }
 
-        this.getOperatorDisplay().setFieldValue("blobResult", this.blobResultEntry.getDouble(-8888.88));
+        this.getOperatorDisplay().setFieldValue("centerOfContours", this.contoursCenterXEntry.getDouble(-1) + "," + this.contoursCenterYEntry.getDouble(-1));
+        this.getOperatorDisplay().setFieldValue("numberOfContours", this.contourCount.getDouble(0));
     }
 
     /**

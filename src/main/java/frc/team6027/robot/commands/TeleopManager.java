@@ -30,6 +30,8 @@ public class TeleopManager extends Command {
     private Preferences prefs = Preferences.getInstance();
     private PneumaticSubsystem pneumaticSubsystem;
     private ElevatorSubsystem elevatorSubsystem;
+    private OperatorDisplay operatorDisplay;
+
 
     private JoystickButton shiftGearButton;
     private JoystickButton leftBumperButton;
@@ -47,7 +49,8 @@ public class TeleopManager extends Command {
     protected int execCount = 0;
 
     public TeleopManager(OperatorInterface operatorInterface, SensorService sensorService,
-            DrivetrainSubsystem drivetrain, PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevator) {
+            DrivetrainSubsystem drivetrain, PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevator,
+            OperatorDisplay operatorDisplay) {
         // Identify the subsystems we will be using in this command and this
         // command
         // only
@@ -61,6 +64,7 @@ public class TeleopManager extends Command {
         this.drivetrain = drivetrain;
         this.pneumaticSubsystem = pneumaticSubsystem;
         this.elevatorSubsystem = elevator;
+        this.operatorDisplay = operatorDisplay;
         // Create the commands we will be using during teleop
         shiftGearCommand = new ShiftGearCommand(this.pneumaticSubsystem);
         toggleGrippersCommand = new ToggleGrippersCommand(this.pneumaticSubsystem);
