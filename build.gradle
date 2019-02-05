@@ -54,6 +54,7 @@ dependencies {
     compile wpi.deps.vendor.java()
     compile 'com.ctre.phoenix:api-java:5.12.0'
     compile 'com.ctre.phoenix:wpiapi-java:5.12.0'
+    compile 'com.revrobotics.frc:SparkMax-java:1.0.28'
     compile 'com.kauailabs.navx.frc:navx-java:3.1.344'
     compile 'org.apache.logging.log4j:log4j:2.11.1'
     compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.11.1'
