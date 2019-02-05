@@ -49,7 +49,7 @@ import edu.wpi.first.wpilibj.SerialPort.Port;
                               [REAR]
  * </pre>
  */
-public class RobotConfigConstants {
+public class RobotConfigConstants2019 {
 
     /**
      * The device identifier for the Talon SRX speed controller right gear box

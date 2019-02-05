@@ -247,7 +247,7 @@ public class Robot extends TimedRobot {
             this.updateOperatorDisplay();
         }
 
-        this.getOperatorDisplay().setFieldValue("blobResult", this.blobResultEntry.getDouble(-8888.88));
+//        this.getOperatorDisplay().setFieldValue("blobResult", this.blobResultEntry.getDouble(-8888.88));
     }
 
     /**
