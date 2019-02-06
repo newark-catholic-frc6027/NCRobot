@@ -21,9 +21,9 @@ public class DrivetrainSubsystem2019 extends Subsystem {
 //    private WPI_TalonSRX rightGearBoxMaster = new WPI_TalonSRX(RobotConfigConstants.RIGHT_GEARBOX_CIM_1_ID);
 //    private WPI_TalonSRX leftGearBoxMaster = new WPI_TalonSRX(RobotConfigConstants.LEFT_GEARBOX_CIM_1_ID);
     private CANSparkMax rightGearBoxMasterMotor = new CANSparkMax(
-        34, MotorType.kBrushless);
+        23, MotorType.kBrushless);
     private CANSparkMax leftGearBoxMasterMotor = new CANSparkMax(
-        36, MotorType.kBrushless);
+        21, MotorType.kBrushless);
     
 
     //m_rightMotor = new CANSparkMax(rightDeviceID, MotorType.kBrushless);
