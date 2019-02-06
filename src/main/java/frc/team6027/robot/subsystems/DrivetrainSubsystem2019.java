@@ -21,11 +21,15 @@ public class DrivetrainSubsystem2019 extends Subsystem {
 //    private WPI_TalonSRX rightGearBoxMaster = new WPI_TalonSRX(RobotConfigConstants.RIGHT_GEARBOX_CIM_1_ID);
 //    private WPI_TalonSRX leftGearBoxMaster = new WPI_TalonSRX(RobotConfigConstants.LEFT_GEARBOX_CIM_1_ID);
     private CANSparkMax rightGearBoxMasterMotor = new CANSparkMax(
-        23, MotorType.kBrushless);
+        RobotConfigConstants.RIGHT_GEARBOX_CIM_1_ID, MotorType.kBrushless);
     private CANSparkMax leftGearBoxMasterMotor = new CANSparkMax(
-        21, MotorType.kBrushless);
+        RobotConfigConstants.LEFT_GEARBOX_CIM_1_ID, MotorType.kBrushless);
     
-
+// Added by Russ (trying to slave the second motors)
+    private CANSparkMax rightGearBoxSlave1 = new CANSparkMax(
+        RobotConfigConstants.RIGHT_GEARBOX_CIM_2_ID, MotorType.kBrushless);
+    private CANSparkMax leftGearBoxSlave1 = new CANSparkMax(
+        RobotConfigConstants.LEFT_GEARBOX_CIM_2_ID, MotorType.kBrushless);
     //m_rightMotor = new CANSparkMax(rightDeviceID, MotorType.kBrushless);
 
     /*
@@ -52,10 +56,10 @@ public class DrivetrainSubsystem2019 extends Subsystem {
     }
 
     protected void initialize() {
-        /*
-        this.rightGearBoxSlave1.follow(rightGearBoxMaster);
-        this.leftGearBoxSlave1.follow(leftGearBoxMaster);
-*/
+        
+        this.rightGearBoxSlave1.follow(rightGearBoxMasterMotor);
+        this.leftGearBoxSlave1.follow(leftGearBoxMasterMotor);
+
         // Setting the speed controllers forward for our drivetrain
         boolean invert = RobotConfigConstants.OPTIONAL_DRIVETRAIN_DIRECTION_INVERSION == -1;
 

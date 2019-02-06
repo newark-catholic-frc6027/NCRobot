@@ -60,7 +60,7 @@ public class RobotConfigConstants2019 {
      *     1 2
      * </pre>
      */
-    public static final int RIGHT_GEARBOX_CIM_1_ID = 36;
+    public static final int RIGHT_GEARBOX_CIM_1_ID = 23;
 
     /**
      * The device identifier for the Talon SRX speed controller right gear box
@@ -71,7 +71,7 @@ public class RobotConfigConstants2019 {
      *     1 2
      * </pre>
      */
-    public static final int RIGHT_GEARBOX_CIM_2_ID = 37;
+    public static final int RIGHT_GEARBOX_CIM_2_ID = 22;
 
     /**
      * The device identifier for the Talon SRX speed controller right gear box
@@ -93,7 +93,7 @@ public class RobotConfigConstants2019 {
      *     1 2
      * </pre>
      */
-    public static final int LEFT_GEARBOX_CIM_1_ID = 33;
+    public static final int LEFT_GEARBOX_CIM_1_ID = 21;
 
     /**
      * The device identifier for the Talon SRX speed controller left gear box
@@ -104,7 +104,7 @@ public class RobotConfigConstants2019 {
      *     1 2
      * </pre>
      */
-    public static final int LEFT_GEARBOX_CIM_2_ID = 32;
+    public static final int LEFT_GEARBOX_CIM_2_ID = 20;
 
     /**
      * The device identifier for the Talon SRX speed controller left gear box
