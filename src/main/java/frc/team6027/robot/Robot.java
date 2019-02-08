@@ -329,6 +329,7 @@ public class Robot extends TimedRobot {
         getOperatorDisplay().setFieldValue("Gyro Yaw Angle", this.sensorService.getGyroSensor().getYawAngle());
         getOperatorDisplay().setFieldValue("Air Pressure", this.sensorService.getAirPressureSensor().getAirPressurePsi());
         getOperatorDisplay().setFieldValue("Ultrasonic Distance (in)", this.sensorService.getUltrasonicSensor().getDistanceInches());
+        getOperatorDisplay().setFieldValue("Contour Center", this.contoursCenterXEntry);
         //getOperatorDisplay().setFieldValue("Battery Voltage:", RobotController.getBatteryVoltage());
     }
 }
