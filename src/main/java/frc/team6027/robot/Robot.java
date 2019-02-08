@@ -7,9 +7,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import frc.team6027.robot.commands.TeleopManager;
@@ -18,6 +15,9 @@ import frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
 import frc.team6027.robot.commands.autonomous.NoOpCommand;
 import frc.team6027.robot.commands.autonomous.AutonomousCommandManager.AutonomousPreference;
 import frc.team6027.robot.commands.autonomous.AutonomousCommandManager.DontDoOption;
+import frc.team6027.robot.data.DataHub;
+import frc.team6027.robot.data.DataHubNetworkTableImpl;
+import frc.team6027.robot.data.DataHubRegistry;
 import frc.team6027.robot.field.Field;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
@@ -56,11 +56,8 @@ public class Robot extends TimedRobot {
     private int teleopExecCount = 0;
     private int autoExecCount = 0;
 
-    private NetworkTable visionTable = null;
-    private NetworkTableEntry contoursCenterXEntry = null;
-    private NetworkTableEntry contoursCenterYEntry = null;
-    private NetworkTableEntry contourCount = null;
-    
+    private DataHub visionData;
+   
     /**
      * This function is run when the robot is first started up and should be used
      * for any initialization code.
@@ -85,11 +82,8 @@ public class Robot extends TimedRobot {
         AutonomousCommandManager.initAutoScenarioDisplayValues(this.getOperatorDisplay());
         AutonomousCommandManager.initDontDoOptionDisplayValues(this.getOperatorDisplay());
         
-        this.visionTable = NetworkTableInstance.getDefault().getTable("vision");
-        this.contoursCenterXEntry = this.visionTable.getEntry("contoursCenterX");
-        this.contoursCenterYEntry = this.visionTable.getEntry("contoursCenterY");
-        this.contourCount = this.visionTable.getEntry("numContours");
-//        this.getPneumaticSubsystem().reset();
+        this.visionData = new DataHubNetworkTableImpl(DataHubRegistry.VISION_KEY);
+        DataHubRegistry.instance().register(this.visionData);
     }
 
 
@@ -242,8 +236,8 @@ public class Robot extends TimedRobot {
             this.updateOperatorDisplay();
         }
 
-        this.getOperatorDisplay().setFieldValue("centerOfContours", this.contoursCenterXEntry.getDouble(-1) + "," + this.contoursCenterYEntry.getDouble(-1));
-        this.getOperatorDisplay().setFieldValue("numberOfContours", this.contourCount.getDouble(0));
+        this.getOperatorDisplay().setFieldValue("centerOfContours", this.visionData.getDouble("contoursCenterX", -1.0) );
+        this.getOperatorDisplay().setFieldValue("numberOfContours", this.visionData.getDouble("numContours", 0.0));
     }
 
     /**

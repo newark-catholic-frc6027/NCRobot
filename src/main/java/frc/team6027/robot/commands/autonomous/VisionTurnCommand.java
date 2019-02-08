@@ -3,6 +3,9 @@ package frc.team6027.robot.commands.autonomous;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import frc.team6027.robot.OperatorDisplay;
+import frc.team6027.robot.RobotConfigConstants;
+import frc.team6027.robot.data.DataHub;
+import frc.team6027.robot.data.DataHubRegistry;
 import frc.team6027.robot.sensors.PIDCapableGyro;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
@@ -41,6 +44,8 @@ public class VisionTurnCommand extends Command implements PIDOutput {
 	private double initialGyroAngle;
 	private int execCount = 0;
 
+	private DataHub visionData;
+
 	public VisionTurnCommand(SensorService sensorService, DrivetrainSubsystem drivetrain,
 			OperatorDisplay operatorDisplay) {
 		requires(drivetrain);
@@ -55,7 +60,7 @@ public class VisionTurnCommand extends Command implements PIDOutput {
 		this.initialGyroAngle = this.gyro.getYawAngle();
 		this.startTime = System.currentTimeMillis();
         this.setName(NAME);
-
+	    this.visionData = DataHubRegistry.instance().get(DataHubRegistry.VISION_KEY);
 		
 	}
 
@@ -64,7 +69,7 @@ public class VisionTurnCommand extends Command implements PIDOutput {
         double ultraDistance = this.ultrasonicSensor.getDistanceInches();
             
         // ContoursCenterXEntry x value of the center between the two contours-- The "c" variable in the trig calculation atan(c/a)
-        double centerContour = 130; //Connect to network table here
+        double centerContour = this.visionData.getDouble(RobotConfigConstants.CONTOUR_CENTER_X, 160.0);
 
         //Calculated off center angle -- result of atan(c/a) 
         double offAngle = Math.atan(centerContour/ultraDistance);
