@@ -72,7 +72,7 @@ public class VisionTurnCommand extends Command implements PIDOutput {
         double centerContour = this.visionData.getDouble(RobotConfigConstants.CONTOURS_CENTER_X, 160.0);
 
 		//Calculate how far off from center -- The "c" variable in the trig calculation atan(c/a)
-		double offDistance = Math.abs(centerContour-160);
+		double offDistance = centerContour-160;
 
 		//Calculated off center angle -- result of atan(c/a) 
 		//TODO: Guard against divide by zero
