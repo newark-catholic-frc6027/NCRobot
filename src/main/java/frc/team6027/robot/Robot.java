@@ -15,9 +15,9 @@ import frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
 import frc.team6027.robot.commands.autonomous.NoOpCommand;
 import frc.team6027.robot.commands.autonomous.AutonomousCommandManager.AutonomousPreference;
 import frc.team6027.robot.commands.autonomous.AutonomousCommandManager.DontDoOption;
-import frc.team6027.robot.data.DataHub;
-import frc.team6027.robot.data.DataHubNetworkTableImpl;
-import frc.team6027.robot.data.DataHubRegistry;
+import frc.team6027.robot.data.Datahub;
+import frc.team6027.robot.data.DatahubNetworkTableImpl;
+import frc.team6027.robot.data.DatahubRegistry;
 import frc.team6027.robot.field.Field;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
@@ -56,7 +56,7 @@ public class Robot extends TimedRobot {
     private int teleopExecCount = 0;
     private int autoExecCount = 0;
 
-    private DataHub visionData;
+    private Datahub visionData;
    
     /**
      * This function is run when the robot is first started up and should be used
@@ -73,8 +73,8 @@ public class Robot extends TimedRobot {
         this.setElevatorSubsystem(new ElevatorSubsystem(this.getSensorService().getLimitSwitchSensors(), this.getOperatorDisplay()));
         this.setPneumaticSubsystem(new PneumaticSubsystem(this.getOperatorDisplay()));
 
-        this.visionData = new DataHubNetworkTableImpl(DataHubRegistry.VISION_KEY);
-        DataHubRegistry.instance().register(this.visionData);
+        this.visionData = new DatahubNetworkTableImpl(DatahubRegistry.VISION_KEY);
+        DatahubRegistry.instance().register(this.visionData);
 
         // This ensures that the Teleop command is running whenever we are not in
         // autonomous mode

@@ -10,7 +10,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
-public class DataHubNetworkTableImpl implements DataHub {
+public class DatahubNetworkTableImpl implements Datahub {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private String tableName;
@@ -18,7 +18,7 @@ public class DataHubNetworkTableImpl implements DataHub {
     private Map<String, NetworkTableEntry> ntEntryCache = new HashMap<>();
 
 
-    public DataHubNetworkTableImpl(String tableName) {
+    public DatahubNetworkTableImpl(String tableName) {
         this.tableName = tableName;
         this.networkTable = this.getNetworkTable();
     }

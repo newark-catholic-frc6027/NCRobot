@@ -1,6 +1,6 @@
 package frc.team6027.robot.data;
 
-public interface DataHub {
+public interface Datahub {
     String getName();
     String getString(String key);
     String getString(String key, String defaultValue);

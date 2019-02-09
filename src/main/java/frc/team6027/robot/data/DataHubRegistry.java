@@ -3,30 +3,30 @@ package frc.team6027.robot.data;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DataHubRegistry {
+public class DatahubRegistry {
     public static final String VISION_KEY = "vision"; 
 
-    private Map<String, DataHub> registry = new HashMap<>();
+    private Map<String, Datahub> registry = new HashMap<>();
 
-    private static DataHubRegistry instance;
+    private static DatahubRegistry instance;
 
-    public synchronized static DataHubRegistry instance() {
+    public synchronized static DatahubRegistry instance() {
         if (instance == null) {
-            instance = new DataHubRegistry();
+            instance = new DatahubRegistry();
         }
 
         return instance;
     }
 
-    public void register(DataHub dataHub) {
-        this.register(dataHub.getName(), dataHub);
+    public void register(Datahub datahub) {
+        this.register(datahub.getName(), datahub);
     }
 
-    public void register(String key, DataHub dataHub) {
-        this.registry.put(key, dataHub);
+    public void register(String key, Datahub datahub) {
+        this.registry.put(key, datahub);
     }
 
-    public DataHub get(String key) {
+    public Datahub get(String key) {
         return this.registry.get(key);
     }
 }
