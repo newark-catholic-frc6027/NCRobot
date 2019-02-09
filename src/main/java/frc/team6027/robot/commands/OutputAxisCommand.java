@@ -1,7 +1,7 @@
 package frc.team6027.robot.commands;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.controls.XboxJoystick;
 
 import edu.wpi.first.wpilibj.GenericHID.Hand;
@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class OutputAxisCommand extends Command {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LogManager.getLogger(getClass());
 
     XboxJoystick joystick;
     public OutputAxisCommand(XboxJoystick joystick) {

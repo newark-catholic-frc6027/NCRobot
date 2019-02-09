@@ -1,8 +1,8 @@
 package frc.team6027.robot.commands;
 
 import java.lang.Math;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.OperatorInterface;
 import frc.team6027.robot.commands.CubeDeliveryCommand.DeliveryMode;
@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class TeleopManager extends Command {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LogManager.getLogger(getClass());
     protected static final int LOG_REDUCTION_MOD = 10;
 
     private OperatorInterface operatorInterface;

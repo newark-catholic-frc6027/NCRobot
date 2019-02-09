@@ -7,8 +7,8 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.commands.TeleopManager;
 import frc.team6027.robot.commands.autonomous.AutoCommandHelper;
 import frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
@@ -35,7 +35,7 @@ public class Robot extends TimedRobot {
     public static final double ROBOT_WIDTH_INCHES = 27.75;
     public static final double ROBOT_LENGTH_INCHES = 32.0;
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LogManager.getLogger(getClass());
 
     private OperatorInterface operatorInterface;
     private OperatorDisplay operatorDisplay;

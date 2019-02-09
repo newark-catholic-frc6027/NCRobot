@@ -1,7 +1,7 @@
 package frc.team6027.robot.commands;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.sensors.LimitSwitchSensors;
 import frc.team6027.robot.sensors.LimitSwitchSensors.LimitSwitchId;
 import frc.team6027.robot.sensors.SensorService;
@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class ElevatorCommand extends Command {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LogManager.getLogger(getClass());
     public final static String NAME = "Elevator Command";
     private Preferences prefs = Preferences.getInstance();
     protected static final int LOG_REDUCTION_MOD = 10;

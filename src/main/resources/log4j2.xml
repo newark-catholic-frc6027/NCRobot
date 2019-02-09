@@ -7,11 +7,11 @@
   </Appenders>
   
   <Loggers>
-    <Logger name="org.usfirst.frc.team6027" level="trace" additivity="false">
+    <Logger name="frc.team6027" level="trace" additivity="false">
       <AppenderRef ref="Console"/>
     </Logger>
 
-    <Logger name="org.usfirst.frc.team6027.robot.subsystems.ElevatorSubsystem" level="info" additivity="false">
+    <Logger name="frc.team6027.robot.subsystems.ElevatorSubsystem" level="info" additivity="false">
       <AppenderRef ref="Console"/>
     </Logger>
     

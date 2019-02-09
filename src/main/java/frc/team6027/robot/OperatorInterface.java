@@ -1,7 +1,7 @@
 package frc.team6027.robot;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.controls.XboxJoystick;
 
 /**
@@ -11,7 +11,7 @@ import frc.team6027.robot.controls.XboxJoystick;
  */
 public class OperatorInterface {
 	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LogManager.getLogger(getClass());
 
 	private XboxJoystick joystick = new XboxJoystick();
 	private OperatorDisplay operatorDisplay;
