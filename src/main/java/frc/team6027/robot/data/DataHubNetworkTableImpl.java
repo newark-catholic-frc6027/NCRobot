@@ -3,11 +3,15 @@ package frc.team6027.robot.data;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class DataHubNetworkTableImpl implements DataHub {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private String tableName;
     private NetworkTable networkTable;
@@ -16,7 +20,7 @@ public class DataHubNetworkTableImpl implements DataHub {
 
     public DataHubNetworkTableImpl(String tableName) {
         this.tableName = tableName;
-        this.networkTable = NetworkTableInstance.getDefault().getTable(this.tableName);
+        this.networkTable = this.getNetworkTable();
     }
 
     @Override
@@ -28,7 +32,11 @@ public class DataHubNetworkTableImpl implements DataHub {
     @Override
     public String getString(String key, String defaultValue) {
         NetworkTableEntry entry = this.getEntry(key);
-        return entry.getString(defaultValue);
+        String returnValue = defaultValue;
+        if (entry != null) {
+            returnValue = entry.getString(defaultValue);
+        }
+        return returnValue;
     }
 
     @Override
@@ -39,14 +47,31 @@ public class DataHubNetworkTableImpl implements DataHub {
     @Override
     public Double getDouble(String key, Double defaultValue) {
         NetworkTableEntry entry = this.getEntry(key);
-        return entry.getDouble(defaultValue);
+        Double returnValue = defaultValue;
+        if (entry != null) {
+            returnValue =  entry.getDouble(defaultValue);
+        }
+        return returnValue;
     }
 
+    protected NetworkTable getNetworkTable() {
+        if (this.networkTable == null) {
+            this.networkTable = NetworkTableInstance.getDefault().getTable(this.tableName);
+        }
+
+        return this.networkTable;
+    }
+    
     protected NetworkTableEntry getEntry(String key) {
         NetworkTableEntry entry = null;
         if (! this.ntEntryCache.containsKey(key)) {
-            entry = this.networkTable.getEntry(key);
-            this.ntEntryCache.put(key, entry);
+            NetworkTable nt = this.getNetworkTable();
+            if (nt != null) {
+                entry = nt.getEntry(key);
+                this.ntEntryCache.put(key, entry);
+            } else {
+                logger.warn("Failed to get entry '{}' from network table '{}'", key, this.tableName);
+            }
         } else {
             entry = this.ntEntryCache.get(key);
         }
