@@ -219,5 +219,5 @@ public class RobotConfigConstants {
     public final static int LIMIT_SWITCH_TOP_B_CHANNEL = 6;
 
 
-    public final static String CONTOUR_CENTER_X = "contourCenterX";
+    public final static String CONTOURS_CENTER_X = "contoursCenterX";
 }

@@ -8,6 +8,7 @@ import frc.team6027.robot.OperatorInterface;
 import frc.team6027.robot.commands.CubeDeliveryCommand.DeliveryMode;
 import frc.team6027.robot.commands.DropCarriageCommand.DropFunction;
 import frc.team6027.robot.commands.autonomous.TurnCommand;
+import frc.team6027.robot.commands.autonomous.VisionTurnCommand;
 import frc.team6027.robot.sensors.PIDCapableGyro;
 import frc.team6027.robot.controls.XboxJoystick;
 import frc.team6027.robot.sensors.SensorService;
@@ -35,8 +36,8 @@ public class TeleopManager extends Command {
     private PneumaticSubsystem pneumaticSubsystem;
     private ElevatorSubsystem elevatorSubsystem;
     private OperatorDisplay operatorDisplay;
-    private UltrasonicSensor ultrasonicSensor;
-    private PIDCapableGyro gyro;
+    
+    
 
     //private VisionTurnCommand visionTurnCommand;
 
@@ -68,9 +69,10 @@ public class TeleopManager extends Command {
         requires(elevator);
 
         // Hang onto references of the components we will need during teleop
-        this.gyro = this.sensorService.getGyroSensor();
-        this.operatorInterface = operatorInterface;
         this.sensorService = sensorService;
+        
+        this.operatorInterface = operatorInterface;
+        
         this.joystick = this.operatorInterface.getJoystick();
         this.drivetrain = drivetrain;
         this.pneumaticSubsystem = pneumaticSubsystem;
@@ -79,7 +81,7 @@ public class TeleopManager extends Command {
         // Create the commands we will be using during teleop
         shiftGearCommand = new ShiftGearCommand(this.pneumaticSubsystem);
         toggleGrippersCommand = new ToggleGrippersCommand(this.pneumaticSubsystem);
-        this.ultrasonicSensor = new UltrasonicSensor();
+        
         this.toggleShiftElevatorCommand = new ToggleShiftElevatorCommand(pneumaticSubsystem);
         //this.visionTurnCommand=new VisionTurnCommand();
 
@@ -92,7 +94,9 @@ public class TeleopManager extends Command {
         this.shiftGearButton = new JoystickButton(this.joystick, this.joystick.getRightBumperButtonNumber());
         shiftGearButton.whenPressed(this.shiftGearCommand);
 
-        this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());        
+        this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());   
+        this.yButton.whenPressed(new VisionTurnCommand(this.sensorService, this.drivetrain, this.operatorDisplay));    
+        /*
         this.yButton.whenPressed(new Command(){   
             @Override
             protected boolean isFinished() {
@@ -106,6 +110,7 @@ public class TeleopManager extends Command {
             }
 
         });
+        */
             
         
         
@@ -134,24 +139,7 @@ public class TeleopManager extends Command {
         // DriverStation.getInstance(), pneumaticSubsystem, null, false));
         // Add new button assignments here
     }
-
-    /*
-    protected double adjustedAngle() {
-        //Distance to wall -- The "a" variable in the trig calculation atan(c/a)
-        double ultraDistance = this.ultrasonicSensor.getDistanceInches();
-            
-        // ContoursCenterXEntry x value of the center between the two contours-- The "c" variable in the trig calculation atan(c/a)
-        double centerContour = 130; //Connect to network table here
-
-        //Calculated off center angle -- result of atan(c/a) 
-        double offAngle = Math.atan(centerContour/ultraDistance);
-
-        //Calculated angle to turn the robot -- current gyro heading + offAngle
-        double adjustedAngle = this.gyro.getYawAngle() + offAngle;
-
-        return adjustedAngle;
-    }
-    */
+    
     @Override
     protected boolean isFinished() {
         return false;

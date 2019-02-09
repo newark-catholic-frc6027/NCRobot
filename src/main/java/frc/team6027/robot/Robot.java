@@ -73,6 +73,9 @@ public class Robot extends TimedRobot {
         this.setElevatorSubsystem(new ElevatorSubsystem(this.getSensorService().getLimitSwitchSensors(), this.getOperatorDisplay()));
         this.setPneumaticSubsystem(new PneumaticSubsystem(this.getOperatorDisplay()));
 
+        this.visionData = new DataHubNetworkTableImpl(DataHubRegistry.VISION_KEY);
+        DataHubRegistry.instance().register(this.visionData);
+
         // This ensures that the Teleop command is running whenever we are not in
         // autonomous mode
         TeleopManager teleOpCommand = new TeleopManager(this.operatorInterface, this.sensorService,
@@ -82,8 +85,6 @@ public class Robot extends TimedRobot {
         AutonomousCommandManager.initAutoScenarioDisplayValues(this.getOperatorDisplay());
         AutonomousCommandManager.initDontDoOptionDisplayValues(this.getOperatorDisplay());
         
-        this.visionData = new DataHubNetworkTableImpl(DataHubRegistry.VISION_KEY);
-        DataHubRegistry.instance().register(this.visionData);
     }
 
 

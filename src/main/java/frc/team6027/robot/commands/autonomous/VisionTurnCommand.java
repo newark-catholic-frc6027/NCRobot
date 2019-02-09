@@ -66,23 +66,30 @@ public class VisionTurnCommand extends Command implements PIDOutput {
 
 	protected double adjustedAngle() {
 		//Distance to wall -- The "a" variable in the trig calculation atan(c/a)
-        double ultraDistance = this.ultrasonicSensor.getDistanceInches();
+        double ultraDistance = this.sensorService.getUltrasonicSensor().getDistanceInches();
             
-        // ContoursCenterXEntry x value of the center between the two contours-- The "c" variable in the trig calculation atan(c/a)
-        double centerContour = this.visionData.getDouble(RobotConfigConstants.CONTOUR_CENTER_X, 160.0);
+        // ContoursCenterXEntry x value of the center between the two contours-- 
+        double centerContour = this.visionData.getDouble(RobotConfigConstants.CONTOURS_CENTER_X, 160.0);
 
-        //Calculated off center angle -- result of atan(c/a) 
-        double offAngle = Math.atan(centerContour/ultraDistance);
+		//Calculate how far off from center -- The "c" variable in the trig calculation atan(c/a)
+		double offDistance = Math.abs(centerContour-160);
+
+		//Calculated off center angle -- result of atan(c/a) 
+		//TODO: Guard against divide by zero
+        double offAngle = Math.atan(offDistance/Math.abs(ultraDistance))*180/Math.PI;
 
         //Calculated angle to turn the robot -- current gyro heading + offAngle
-		double adjustedAngle = this.gyro.getYawAngle() + offAngle;
+		double adjustedAngle = this.sensorService.getGyroSensor().getYawAngle() + offAngle;
 
+		logger.info(">>> off Angle: {}", offAngle);
 		logger.info(">>> Adjusted angle: {}", adjustedAngle);
-
-		return 45; //adjustedAngle;
+		logger.info(">>> Off Set Distance: {}", offDistance);
+		return adjustedAngle;
 	}
 	@Override
 	protected void initialize() {
+		this.targetAngle = adjustedAngle();
+		initPIDController();
 	    logger.info(">>> Turn Command starting, target angle: {}, initial gyro angle", this.targetAngle, this.initialGyroAngle);
 	}
 
@@ -116,8 +123,7 @@ public class VisionTurnCommand extends Command implements PIDOutput {
 	}
 
 	protected void execute() {
-		this.targetAngle = adjustedAngle();
-		initPIDController();
+		
         this.execCount++;
 		long currentElapsedExecutionMs = System.currentTimeMillis() - this.startTime;
 		/*
