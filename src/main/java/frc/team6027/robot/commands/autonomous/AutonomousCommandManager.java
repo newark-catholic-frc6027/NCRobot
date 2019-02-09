@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.field.Field;
 import frc.team6027.robot.field.Field.PlatePosition;
@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public class AutonomousCommandManager {
     
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LogManager.getLogger(getClass());
 
     public enum DontDoOption {
         NoPreference("NO SELECTION"),

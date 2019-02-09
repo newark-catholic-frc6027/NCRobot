@@ -1,7 +1,7 @@
 package frc.team6027.robot.commands.autonomous;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.Preferences;
 
 public class TurnWhileDrivingCommand extends DriveStraightCommand implements PIDOutput {
     public static final String NAME = "Turn While Driving";
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LogManager.getLogger(getClass());
     private Preferences prefs = Preferences.getInstance();
 
     protected TargetVector[] targetVectors;

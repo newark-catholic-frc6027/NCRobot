@@ -1,7 +1,7 @@
 package frc.team6027.robot.commands;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.OperatorInterface;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.command.Command;
  * right joysticks on an XBox controller and sets them to arcade drive.
  */
 public class StickDriveCommand extends Command {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LogManager.getLogger(getClass());
 
     private DrivetrainSubsystem drivetrain;
     private OperatorInterface operatorInterface;

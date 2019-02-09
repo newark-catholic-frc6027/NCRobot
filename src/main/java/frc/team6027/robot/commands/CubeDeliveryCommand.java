@@ -1,7 +1,7 @@
 package frc.team6027.robot.commands;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.commands.autonomous.AutoCommandHelper;
 import frc.team6027.robot.field.Field;
 import frc.team6027.robot.subsystems.PneumaticSubsystem;
@@ -26,7 +26,7 @@ public class CubeDeliveryCommand extends Command {
     
     protected boolean executionComplete = false;
     protected boolean kickerAskedToRetract = false;
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LogManager.getLogger(getClass());
 
     private PneumaticSubsystem pneumaticSubsystem;
     private long timeStarted;

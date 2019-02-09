@@ -1,7 +1,7 @@
 package frc.team6027.robot.sensors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.RobotConfigConstants;
 
 import com.kauailabs.navx.frc.AHRS;
@@ -9,7 +9,7 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.PIDSource;
 
 public class NavxGyroSensor implements PIDCapableGyro {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LogManager.getLogger(getClass());
 
     protected AHRS ahrs;
 

@@ -1,7 +1,7 @@
 package frc.team6027.robot.commands.autonomous;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.sensors.PIDCapableGyro;
 import frc.team6027.robot.sensors.SensorService;
@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public class TurnCommand extends Command implements PIDOutput {
     public static final String NAME = "Turn";
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LogManager.getLogger(getClass());
 	protected static final double PID_PROPORTIONAL_COEFFICIENT = 0.005;
 	protected static final double PID_INTEGRAL_COEFFICIENT = 0.00;
 	protected static final double PID_DERIVATIVE_COEFFICIENT = 0.00;
