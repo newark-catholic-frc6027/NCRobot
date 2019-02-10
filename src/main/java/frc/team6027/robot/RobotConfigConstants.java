@@ -220,4 +220,7 @@ public class RobotConfigConstants {
 
 
     public final static String CONTOURS_CENTER_X = "contoursCenterX";
+    public final static String CONTOUR_AREA_LEFT = "contourAreaLeft";
+    public final static String CONTOUR_AREA_RIGHT = "contourAreaRight";
+
 }
