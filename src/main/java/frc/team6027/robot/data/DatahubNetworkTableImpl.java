@@ -40,6 +40,16 @@ public class DatahubNetworkTableImpl implements Datahub {
     }
 
     @Override
+    public Float getFloat(String key) {
+        return this.getDouble(key).floatValue();
+    }
+
+    @Override
+    public Float getFloat(String key, Float defaultValue) {
+        return this.getDouble(key, (double) defaultValue).floatValue();
+    }
+
+    @Override
     public Double getDouble(String key) {
         return this.getDouble(key, -1.0);
     }
@@ -95,5 +105,6 @@ public class DatahubNetworkTableImpl implements Datahub {
     public String getName() {
         return this.tableName;
     }
+
 
 }
