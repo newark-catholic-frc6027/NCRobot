@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class VisionTurnCommand extends Command implements PIDOutput {
-    public static final String NAME = "Turn";
+    public static final String NAME = "VisionTurn";
 	private final Logger logger = LogManager.getLogger(getClass());
 	protected static final double PID_PROPORTIONAL_COEFFICIENT = 0.005;
 	protected static final double PID_INTEGRAL_COEFFICIENT = 0.00;

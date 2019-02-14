@@ -1,18 +1,14 @@
 package frc.team6027.robot.commands;
 
-import java.lang.Math;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.OperatorInterface;
 import frc.team6027.robot.commands.CubeDeliveryCommand.DeliveryMode;
 import frc.team6027.robot.commands.DropCarriageCommand.DropFunction;
-import frc.team6027.robot.commands.autonomous.TurnCommand;
-import frc.team6027.robot.commands.autonomous.VisionTurnCommand;
-import frc.team6027.robot.sensors.PIDCapableGyro;
+import frc.team6027.robot.commands.autonomous.AutoDriveToVisionTarget;
 import frc.team6027.robot.controls.XboxJoystick;
 import frc.team6027.robot.sensors.SensorService;
-import frc.team6027.robot.sensors.UltrasonicSensor;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import frc.team6027.robot.subsystems.ElevatorSubsystem;
 import frc.team6027.robot.subsystems.PneumaticSubsystem;
@@ -95,7 +91,7 @@ public class TeleopManager extends Command {
         shiftGearButton.whenPressed(this.shiftGearCommand);
 
         this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());   
-        this.yButton.whenPressed(new VisionTurnCommand(this.sensorService, this.drivetrain, this.operatorDisplay));    
+        this.yButton.whenPressed(new AutoDriveToVisionTarget(8.0, 5.0, this.sensorService, this.drivetrain, this.operatorDisplay));    
         /*
         this.yButton.whenPressed(new Command(){   
             @Override
