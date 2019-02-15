@@ -28,7 +28,6 @@ public class AutoDriveToVisionTarget extends CommandGroup {
     public AutoDriveToVisionTarget(double stopDistanceFromTarget, double drivePower,
         SensorService sensorService, DrivetrainSubsystem drivetrain,
         OperatorDisplay operatorDisplay) {
-    
         this.stopDistanceFromTarget = stopDistanceFromTarget;
         this.sensorService = sensorService;
         this.drivetrain = drivetrain;
@@ -36,9 +35,7 @@ public class AutoDriveToVisionTarget extends CommandGroup {
         this.drivePower = drivePower;
     }
 
-    @Override
-	protected void initialize() {
-        super.initialize();
+	protected void prepare(){
 
         this.curVisionDistanceToTarget = this.sensorService.getCurDistToVisionTarget();
         this.numAngleAdjustmentStops = Math.round((float) this.curVisionDistanceToTarget) / VISION_TURN_LEG_INCHES_INCREMENT;
@@ -60,10 +57,26 @@ public class AutoDriveToVisionTarget extends CommandGroup {
             }
         }
     }
+
+    @Override
+    protected void execute() {
+        this.logger.debug("Execute invoked");
+        super.execute();    
+    }
+
+    @Override
+    public void start() {
+        this.prepare();
+        super.start();
+    }
     
     @Override
     protected boolean isFinished() {
         // TODO: Add logic to check for Joystick button press to cancel the command
-        return super.isFinished();
+        boolean isFinished = super.isFinished();
+        if (isFinished) {
+            this.logger.debug("isFinished = true");
+        }
+        return isFinished;
     }
 }

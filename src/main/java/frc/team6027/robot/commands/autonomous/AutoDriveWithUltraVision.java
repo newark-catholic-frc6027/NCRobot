@@ -51,16 +51,20 @@ public class AutoDriveWithUltraVision extends CommandGroup {
 
 	}
 
-	@Override
-	protected void initialize() {
+	
+	protected void prepare() {
         this.curVisionDistanceToTarget = this.sensorService.getCurDistToVisionTarget();
         this.targetAngle = this.sensorService.getCurAngleHeadingToVisionTarget();
         this.addSequential(new TurnCommand(this.targetAngle, this.sensorService, this.drivetrain, this.operatorDisplay));
         this.addSequential(new DriveStraightCommand(this.sensorService, this.drivetrain, this.operatorDisplay, 
             this.maxTravelDistance, DriveDistanceMode.DistanceReadingOnEncoder, this.drivePower));
-        super.initialize();
 	}
 
+    @Override
+    public void start() {
+        this.prepare();
+        super.start();
+    }
 
 	@Override
 	protected boolean isFinished() {
