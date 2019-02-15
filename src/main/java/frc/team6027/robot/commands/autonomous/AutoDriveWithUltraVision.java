@@ -47,8 +47,6 @@ public class AutoDriveWithUltraVision extends CommandGroup {
         this.maxTravelDistance = maxTravelDistance;
 
         this.setName(NAME);
-        requires(drivetrain);
-
 	}
 
 	
