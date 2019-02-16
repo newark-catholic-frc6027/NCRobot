@@ -16,7 +16,6 @@ import frc.team6027.robot.sensors.UltrasonicSensor;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import frc.team6027.robot.subsystems.ElevatorSubsystem;
 import frc.team6027.robot.subsystems.PneumaticSubsystem;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Preferences;
@@ -31,6 +30,7 @@ public class TeleopManager extends Command {
     private OperatorInterface operatorInterface;
     private SensorService sensorService;
     private XboxJoystick joystick;
+    private XboxJoystick joystick2;
     private DrivetrainSubsystem drivetrain;
     private Preferences prefs = Preferences.getInstance();
     private PneumaticSubsystem pneumaticSubsystem;
@@ -51,9 +51,13 @@ public class TeleopManager extends Command {
     private JoystickButton xButton;
     private JoystickButton startButton;
 
+    private JoystickButton yButton2;
+    
+
     private ShiftGearCommand shiftGearCommand;
     private ToggleGrippersCommand toggleGrippersCommand;
     private ToggleShiftElevatorCommand toggleShiftElevatorCommand;
+    
 
     protected int execCount = 0;
 
@@ -73,11 +77,13 @@ public class TeleopManager extends Command {
         
         this.operatorInterface = operatorInterface;
         
-        this.joystick = this.operatorInterface.getJoystick();
+        this.joystick = this.operatorInterface.getJoystick1();
+        this.joystick2 = this.operatorInterface.getJoystick2();
         this.drivetrain = drivetrain;
         this.pneumaticSubsystem = pneumaticSubsystem;
         this.elevatorSubsystem = elevator;
         this.operatorDisplay = operatorDisplay;
+                                                                                                         
         // Create the commands we will be using during teleop
         shiftGearCommand = new ShiftGearCommand(this.pneumaticSubsystem);
         toggleGrippersCommand = new ToggleGrippersCommand(this.pneumaticSubsystem);
@@ -87,6 +93,7 @@ public class TeleopManager extends Command {
 
         // Set up the commands on the Joystick buttons
         initializeJoystick();
+        initializeJoystick2();
     }
 
     protected void initializeJoystick() {
@@ -140,6 +147,14 @@ public class TeleopManager extends Command {
         // Add new button assignments here
     }
     
+   
+   
+      protected void initializeJoystick2() {
+        this.yButton2 = new JoystickButton(this.joystick2, this.joystick2.getYButtonNumber());   
+        this.yButton2.whenPressed(new PrintMessageCommand("yButtonWasPressed"));  
+    
+    } 
+
     @Override
     protected boolean isFinished() {
         return false;
