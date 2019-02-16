@@ -14,7 +14,7 @@ public class AutoDriveToVisionTarget extends CommandGroup {
     private final Logger logger = LogManager.getLogger(getClass());
 
     // TODO: Read from Robot Preferences
-    protected static final int VISION_TURN_LEG_INCHES_INCREMENT = 48;
+    protected static final double VISION_TURN_LEG_INCHES_INCREMENT = 48.0;
 
     protected SensorService sensorService;
     protected DrivetrainSubsystem drivetrain;
@@ -33,23 +33,27 @@ public class AutoDriveToVisionTarget extends CommandGroup {
         this.drivetrain = drivetrain;
         this.operatorDisplay = operatorDisplay;
         this.drivePower = drivePower;
+        prepare();
     }
 
 	protected void prepare(){
 
-        this.curVisionDistanceToTarget = this.sensorService.getCurDistToVisionTarget();
-        this.numAngleAdjustmentStops = Math.round((float) this.curVisionDistanceToTarget) / VISION_TURN_LEG_INCHES_INCREMENT;
+        this.curVisionDistanceToTarget = 70.0;// this.sensorService.getCurDistToVisionTarget();
+        this.numAngleAdjustmentStops = (int) (Math.round(this.curVisionDistanceToTarget) / VISION_TURN_LEG_INCHES_INCREMENT);
 
         logger.info("Initializing AutoDriveToVisionTarget command with {} angle adjustment stops " + 
             "and curVisionDistanceToTarget={}", this.numAngleAdjustmentStops, this.curVisionDistanceToTarget);
 
         for (int i = this.numAngleAdjustmentStops; i >= 0 ; i--) {
             if (i == 0) {
+                logger.debug("Added last drive command, stopDistanceFromTarget={}", this.stopDistanceFromTarget);
                 this.addSequential(new AutoDriveWithUltraVision(
                     20*12 /* use large value so that it will use stopDistanceFromTarget for stopping*/, 
                     this.stopDistanceFromTarget, this.drivePower, 
                     this.sensorService, this.drivetrain, this.operatorDisplay ));
             } else {
+                logger.debug("Added drive command, distance = {}, stopDistanceFromTarget={}", VISION_TURN_LEG_INCHES_INCREMENT,
+                    this.stopDistanceFromTarget);
                 this.addSequential(new AutoDriveWithUltraVision(
                     VISION_TURN_LEG_INCHES_INCREMENT,
                     this.stopDistanceFromTarget, this.drivePower, 
@@ -60,13 +64,14 @@ public class AutoDriveToVisionTarget extends CommandGroup {
 
     @Override
     protected void execute() {
-        this.logger.debug("Execute invoked");
+//        this.logger.debug("Execute invoked");
         super.execute();    
     }
 
     @Override
     public void start() {
-        this.prepare();
+//        this.logger.debug("start() invoked");
+//        this.prepare();
         super.start();
     }
     

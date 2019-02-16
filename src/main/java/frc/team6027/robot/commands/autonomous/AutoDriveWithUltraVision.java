@@ -47,41 +47,52 @@ public class AutoDriveWithUltraVision extends CommandGroup {
         this.maxTravelDistance = maxTravelDistance;
 
         this.setName(NAME);
-        requires(drivetrain);
-
+        prepare();
 	}
 
 	
 	protected void prepare() {
-        this.curVisionDistanceToTarget = this.sensorService.getCurDistToVisionTarget();
+        this.curVisionDistanceToTarget = 70.0;//this.sensorService.getCurDistToVisionTarget();
         this.targetAngle = this.sensorService.getCurAngleHeadingToVisionTarget();
+        this.logger.info("Adding TurnCommand and DriveStraightCommand");
         this.addSequential(new TurnCommand(this.targetAngle, this.sensorService, this.drivetrain, this.operatorDisplay));
         this.addSequential(new DriveStraightCommand(this.sensorService, this.drivetrain, this.operatorDisplay, 
-            this.maxTravelDistance, DriveDistanceMode.DistanceReadingOnEncoder, this.drivePower));
+            this.stopDistanceFromTarget*-1, DriveDistanceMode.DistanceFromObject, this.drivePower));
 	}
 
     @Override
     public void start() {
-        this.prepare();
+//        this.logger.info("Started.  targetAngle={}", this.targetAngle);
+//        this.prepare();
         super.start();
     }
 
+    @Override
+    protected void execute() {
+///        this.logger.info("Execute invoked");
+        super.execute();
+    }
 	@Override
 	protected boolean isFinished() {
         if (super.isFinished()) {
+            this.logger.info("super.isFinished = true.");
             return true;
         } else {
+            this.logger.info("isFinished, checking distance to target. curVisionDistanceToTarget = {}, ultrasonicDistance = {}", 
+                this.curVisionDistanceToTarget, this.ultrasonic.getDistanceInches());
             this.curVisionDistanceToTarget = this.sensorService.getCurDistToVisionTarget();
             if (this.curVisionDistanceToTarget <= this.stopDistanceFromTarget) {
                 logger.info("Stopping since curVisionDistanceToTarget is: {}", this.curVisionDistanceToTarget);
-                this.cancel();
+                //this.cancel();
                 return true;
             }
 
             double ultrasonicDistance = Math.abs(this.ultrasonic.getDistanceInches());
-            if (ultrasonicDistance <= this.stopDistanceFromTarget) {
+            if (ultrasonicDistance < 130.0 &&
+                ultrasonicDistance > 2.0 &&
+                ultrasonicDistance <= this.stopDistanceFromTarget) {
                 logger.info("Stopping since ultrasonicDistance is: {}", ultrasonicDistance);
-                this.cancel();
+                // this.cancel();
                 return true;
             }
         }
