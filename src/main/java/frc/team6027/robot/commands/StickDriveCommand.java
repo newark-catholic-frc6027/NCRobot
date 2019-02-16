@@ -38,8 +38,8 @@ public class StickDriveCommand extends Command {
 
     protected void execute() {
         motorPower = prefs.getDouble(OperatorDisplay.TELEOP_MOTOR_POWER_PREF, 1.0);
-        this.getDrivetrain().doArcadeDrive(motorPower * this.getOperatorInterface().getJoystick().getLeftAxis(),
-                this.getOperatorInterface().getJoystick().getRightAxis());
+        this.getDrivetrain().doArcadeDrive(motorPower * this.getOperatorInterface().getJoystick1().getLeftAxis(),
+                this.getOperatorInterface().getJoystick1().getRightAxis());
     }
 
     protected boolean isFinished() {

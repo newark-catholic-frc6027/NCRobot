@@ -115,8 +115,11 @@ public class RobotConfigConstants {
      * the FRC Driver Station. It is used on construction of a new Joystick
      * object.
      */
-    public static final int JOYSTICK_PORT_NUMBER = 0;
+    public static final int JOYSTICK1_PORT_NUMBER = 0;
 
+    public static final int JOYSTICK2_PORT_NUMBER = 1;
+    
+   
     /**
      * The first DIO channel that the right optical encoder is assigned to.
      */

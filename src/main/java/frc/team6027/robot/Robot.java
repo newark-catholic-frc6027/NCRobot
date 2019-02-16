@@ -94,12 +94,12 @@ public class Robot extends TimedRobot {
 
     protected void outputBanner() {
         logger.info(">>>>> Newark Catholic Team 6027 Robot started! <<<<<");
-        logger.info("	     ________.____    ._____________      ___ ___  ");
-        logger.info("	    /  _____/|    |   |__\\__    ___/___  /   |   \\ ");
-        logger.info("	   /   \\  ___|    |   |  | |    |_/ ___\\/    ~    \\");
-        logger.info("	   \\    \\_\\  \\    |___|  | |    |\\  \\___\\    Y    /");
-        logger.info("	    \\______  /_______ \\__| |____| \\___  >\\___|_  / ");
-        logger.info("	           \\/        \\/               \\/       \\/ "); 
+        logger.info("	     ___  ________    ___   _____  ");
+        logger.info("	    /   |/_  __/ /   /   | / ___/ ");
+        logger.info("	   / /| | / / / /   / /| | |__ | ");
+        logger.info("	  / ___ |/ / / /___/ ___ |___/ / ");
+        logger.info("	 /_/  |_/_/ /_____/_/  |_/____/   ");
+        logger.info("	  "); 
     }
 
     /**

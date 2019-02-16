@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.XboxController;
 public class XboxJoystick extends XboxController {
     
     public XboxJoystick() {
-        this(RobotConfigConstants.JOYSTICK_PORT_NUMBER);
+        this(RobotConfigConstants.JOYSTICK1_PORT_NUMBER);
     }
     
     public XboxJoystick(int port) {
