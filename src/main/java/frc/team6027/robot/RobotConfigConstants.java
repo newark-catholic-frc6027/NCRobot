@@ -12,41 +12,32 @@ import edu.wpi.first.wpilibj.SerialPort.Port;
  * 
  * 
  * <pre>
-                      CONTROLLER BOARD LAYOUT
-                              [FRONT]
-    L                                                         R
-    ===========================================================
-    |                                                         |
-    |                       ---------                         |
-    |                      |   PDB   |                        |
-    |     SRX              |         |              SRX       |
-    |    ------            |         |             ------     |
-    |   |  30  |           |         |            |  34  |    |
-    |    ------            |    1    |             ------     |
-    |    ------            |         |             ------     |
-    |   |  31  |           |         |            |  35  |    |
-    |    ------            |         |             ------     |
-    |    ------            |         |             ------     |
-    |   |  32  |            ---------             |  36  |    |
-    |    ------                                    ------     |
-    |    ------                                    ------     |
-    |   |  33  |                                  |  37  |    |
-    |    ------                                    ------     |
-    |                                                         |
-    |  ----                                                   |
-    | | 10 | PCM                                              |
-    |  ----                                                   |
-    |                                                         | 
-    |  ----                                                   |
-    | |  0 | PCM                                              |
-    |  ----                                                   |
-    |                                                         |
-    |                                                         |
-    |                                                         |
-    |                                                         |
-    ===========================================================
-    L                                                         R
-                              [REAR]
+                              CONTROLLER BOARD LAYOUT
+                                     [FRONT]
+    L                                                                      R
+    ========================================================================
+    |                                                        VRM     PCM   |
+    |                                                       -----   -----  |
+    |                                                      |     | |  0? | | 
+    |                                    SPARK              -----   -----  |
+    |                            ----  ----  ----  ----       ---------    |
+    |                           |    ||    ||    ||    |     |   PDB   |   |
+    |                           | 20 || 21 || 22 || 23 |     |         |   |
+    |                           |    ||    ||    ||    |     |         |   |
+    |                            ----  ----  ----  ----      |         |   |
+    |                                                        |    1?   |   |
+    |                            ----------------------      |         |   |
+    |                           |                      |     |         |   |
+    |            SRX            |                      |     |         |   |
+    |  ----  ----  ----  ----   |         RIO          |     |         |   |
+    | |    ||    ||    ||    |  |          +           |     |         |   |
+    | | 30 || 31 || 32 || 33 |  |         NAVX         |      ---------    |
+    | |    ||    ||    ||    |  |                      |                   |
+    |  ----  ----  ----  ----   |                      |                   |
+    |                            ----------------------                    |
+    ========================================================================
+    L                                                                      R
+                                     [REAR]
  * </pre>
  */
 public class RobotConfigConstants {
@@ -60,7 +51,7 @@ public class RobotConfigConstants {
      *     1 2
      * </pre>
      */
-    public static final int RIGHT_GEARBOX_CIM_1_ID = 36;
+    public static final int RIGHT_GEARBOX_CIM_1_ID = 23;
 
     /**
      * The device identifier for the Talon SRX speed controller right gear box
@@ -71,7 +62,7 @@ public class RobotConfigConstants {
      *     1 2
      * </pre>
      */
-    public static final int RIGHT_GEARBOX_CIM_2_ID = 37;
+    public static final int RIGHT_GEARBOX_CIM_2_ID = 22;
 
     /**
      * The device identifier for the Talon SRX speed controller right gear box
@@ -93,7 +84,7 @@ public class RobotConfigConstants {
      *     1 2
      * </pre>
      */
-    public static final int LEFT_GEARBOX_CIM_1_ID = 33;
+    public static final int LEFT_GEARBOX_CIM_1_ID = 21;
 
     /**
      * The device identifier for the Talon SRX speed controller left gear box
@@ -104,7 +95,7 @@ public class RobotConfigConstants {
      *     1 2
      * </pre>
      */
-    public static final int LEFT_GEARBOX_CIM_2_ID = 32;
+    public static final int LEFT_GEARBOX_CIM_2_ID = 20;
 
     /**
      * The device identifier for the Talon SRX speed controller left gear box

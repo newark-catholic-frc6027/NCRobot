@@ -56,13 +56,13 @@ public class TeleopManager extends Command {
     
 
     public TeleopManager(OperatorInterface operatorInterface, SensorService sensorService,
-            DrivetrainSubsystem drivetrain, PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevator,
+            DrivetrainSubsystem drivetrain, /*PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevator,*/
             OperatorDisplay operatorDisplay) {
         // Identify the subsystems we will be using in this command and this
         // command
         // only
         requires(drivetrain);
-        requires(elevator);
+//        requires(elevator);
 
         // Hang onto references of the components we will need during teleop
         this.sensorService = sensorService;
@@ -71,8 +71,8 @@ public class TeleopManager extends Command {
         
         this.joystick = this.operatorInterface.getJoystick();
         this.drivetrain = drivetrain;
-        this.pneumaticSubsystem = pneumaticSubsystem;
-        this.elevatorSubsystem = elevator;
+//        this.pneumaticSubsystem = pneumaticSubsystem;
+//        this.elevatorSubsystem = elevator;
         this.operatorDisplay = operatorDisplay;
         // Create the commands we will be using during teleop
         shiftGearCommand = new ShiftGearCommand(this.pneumaticSubsystem);
