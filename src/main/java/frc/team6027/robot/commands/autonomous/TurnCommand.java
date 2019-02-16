@@ -24,22 +24,27 @@ public class TurnCommand extends Command implements PIDOutput {
 	protected static final double PID_TOLERANCE_DEGREES = 2.0;
 	protected static final double DRIVE_POWER = 0.7;
 	
-	private Preferences prefs = Preferences.getInstance();
-	private long executionStartThreshold = this.prefs.getLong("turnCommand.execStartThreshold", 500);
-	private double pidAngleStopThreshold = this.prefs.getDouble("turnCommand.pidAngleStopThreshold", 0.1);
-	private PIDController pidController;
+	protected Preferences prefs = Preferences.getInstance();
+	protected long executionStartThreshold = this.prefs.getLong("turnCommand.execStartThreshold", 500);
+	protected double pidAngleStopThreshold = this.prefs.getDouble("turnCommand.pidAngleStopThreshold", 0.1);
+	protected PIDController pidController;
 
-	private SensorService sensorService;
-	private PIDCapableGyro gyro;
+	protected SensorService sensorService;
+	protected PIDCapableGyro gyro;
 
-	private DrivetrainSubsystem drivetrain;
-	private double targetAngle;
+	protected DrivetrainSubsystem drivetrain;
+	protected double targetAngle;
 
-	private double pidLoopCalculationOutput;
-	private OperatorDisplay operatorDisplay;
-	private long startTime;
-	private double initialGyroAngle;
-	private int execCount = 0;
+	protected double pidLoopCalculationOutput;
+	protected OperatorDisplay operatorDisplay;
+	protected long startTime;
+	protected double initialGyroAngle;
+	protected int execCount = 0;
+
+	public TurnCommand(SensorService sensorService, DrivetrainSubsystem drivetrain,
+		OperatorDisplay operatorDisplay) {
+		this(-1, sensorService, drivetrain, operatorDisplay);
+	}
 
 	public TurnCommand(double angle, SensorService sensorService, DrivetrainSubsystem drivetrain,
 			OperatorDisplay operatorDisplay) {
@@ -54,11 +59,11 @@ public class TurnCommand extends Command implements PIDOutput {
 		this.startTime = System.currentTimeMillis();
         this.setName(NAME);
 
-		initPIDController();
 	}
 
 	@Override
 	protected void initialize() {
+		initPIDController();
 	    logger.info(">>> Turn Command starting, target angle: {}, initial gyro angle", this.targetAngle, this.initialGyroAngle);
 	}
 

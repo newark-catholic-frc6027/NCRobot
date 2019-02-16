@@ -1,18 +1,14 @@
 package frc.team6027.robot.commands;
 
-import java.lang.Math;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.OperatorInterface;
 import frc.team6027.robot.commands.CubeDeliveryCommand.DeliveryMode;
 import frc.team6027.robot.commands.DropCarriageCommand.DropFunction;
-import frc.team6027.robot.commands.autonomous.TurnCommand;
-import frc.team6027.robot.commands.autonomous.VisionTurnCommand;
-import frc.team6027.robot.sensors.PIDCapableGyro;
+import frc.team6027.robot.commands.autonomous.AutoDriveToVisionTarget;
 import frc.team6027.robot.controls.XboxJoystick;
 import frc.team6027.robot.sensors.SensorService;
-import frc.team6027.robot.sensors.UltrasonicSensor;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import frc.team6027.robot.subsystems.ElevatorSubsystem;
 import frc.team6027.robot.subsystems.PneumaticSubsystem;
@@ -64,13 +60,13 @@ public class TeleopManager extends Command {
     
 
     public TeleopManager(OperatorInterface operatorInterface, SensorService sensorService,
-            DrivetrainSubsystem drivetrain, PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevator,
+            DrivetrainSubsystem drivetrain, /*PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevator,*/
             OperatorDisplay operatorDisplay) {
         // Identify the subsystems we will be using in this command and this
         // command
         // only
         requires(drivetrain);
-        requires(elevator);
+//        requires(elevator);
 
         // Hang onto references of the components we will need during teleop
         this.sensorService = sensorService;
@@ -80,8 +76,8 @@ public class TeleopManager extends Command {
         this.joystick = this.operatorInterface.getJoystick1();
         this.joystick2 = this.operatorInterface.getJoystick2();
         this.drivetrain = drivetrain;
-        this.pneumaticSubsystem = pneumaticSubsystem;
-        this.elevatorSubsystem = elevator;
+//        this.pneumaticSubsystem = pneumaticSubsystem;
+//        this.elevatorSubsystem = elevator;
         this.operatorDisplay = operatorDisplay;
                                                                                                          
         // Create the commands we will be using during teleop
@@ -102,7 +98,7 @@ public class TeleopManager extends Command {
         shiftGearButton.whenPressed(this.shiftGearCommand);
 
         this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());   
-        this.yButton.whenPressed(new VisionTurnCommand(this.sensorService, this.drivetrain, this.operatorDisplay));    
+        this.yButton.whenPressed(new AutoDriveToVisionTarget(24.0, 0.6, this.sensorService, this.drivetrain, this.operatorDisplay));    
         /*
         this.yButton.whenPressed(new Command(){   
             @Override
