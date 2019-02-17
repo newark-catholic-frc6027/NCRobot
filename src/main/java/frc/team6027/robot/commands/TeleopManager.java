@@ -60,7 +60,7 @@ public class TeleopManager extends Command {
     
 
     public TeleopManager(OperatorInterface operatorInterface, SensorService sensorService,
-            DrivetrainSubsystem drivetrain, /*PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevator,*/
+            DrivetrainSubsystem drivetrain, RearLiftSubsystem rearLiftSubsystem, /*PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevator,*/
             OperatorDisplay operatorDisplay) {
         // Identify the subsystems we will be using in this command and this
         // command
@@ -75,6 +75,7 @@ public class TeleopManager extends Command {
         
         this.joystick = this.operatorInterface.getJoystick1();
 //        this.joystick2 = this.operatorInterface.getJoystick2();
+        this.rearLiftSubsystem = rearLiftSubsystem;
         this.drivetrain = drivetrain;
 //        this.pneumaticSubsystem = pneumaticSubsystem;
 //        this.elevatorSubsystem = elevator;
@@ -96,6 +97,9 @@ public class TeleopManager extends Command {
     }
 
     protected void initializeJoystick() {
+        this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());   
+        this.yButton.whenPressed(new AutoDriveToVisionTarget(24.0, 0.6, this.sensorService, this.drivetrain,this.operatorDisplay));    
+        
 /*
         this.shiftGearButton = new JoystickButton(this.joystick, this.joystick.getRightBumperButtonNumber());
         shiftGearButton.whenPressed(this.shiftGearCommand);
@@ -177,7 +181,7 @@ public class TeleopManager extends Command {
     protected void execute() {
         this.execCount++;
         this.drive();
-//        this.runElevatorIfRequired();
+        this.runRearLiftIfRequired();
 
         // this.logData();
     }
@@ -195,6 +199,14 @@ public class TeleopManager extends Command {
         }
 
     }
+    private void runRearLiftIfRequired() {
+        if (this.joystick.getTriggerAxis(Hand.kLeft) > .05) {
+            this.rearLiftSubsystem.rearLiftDown(this.joystick.getTriggerAxis(Hand.kLeft));
+        } else {
+            this.rearLiftSubsystem.rearLiftUp(this.joystick.getTriggerAxis(Hand.kRight));
+        }
+    }
+
 /*
     private void runElevatorIfRequired() {
         if (this.joystick.getTriggerAxis(Hand.kLeft) > .05) {

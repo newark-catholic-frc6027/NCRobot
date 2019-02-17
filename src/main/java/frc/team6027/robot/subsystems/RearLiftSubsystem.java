@@ -41,11 +41,11 @@ public class RearLiftSubsystem extends Subsystem {
     @Override
     public void periodic() {
         if (this.initialized) {
-            if (this.isGoingUp()) {
-                if ( this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.RearLiftUp) ) {
-                    this.stopMotor();
-                }
-            } else if (this.isGoingDown() && this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.RearLiftDown)) {
+            if (this.isGoingUp() && 
+                (this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.RearLiftUp) || this.isUpwardMaxAmpsExceeded())) {
+                this.stopMotor();
+            } else if (this.isGoingDown() && 
+                (this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.RearLiftDown) || this.isDownwardMaxAmpsExceeded())) {
                 this.stopMotor();
             }
             
@@ -56,11 +56,27 @@ public class RearLiftSubsystem extends Subsystem {
     public boolean isUpwardMaxAmpsExceeded() {
         boolean exceeded = false;
         if (this.isGoingUp() && ! this.isUpLimitSwitchTripped()) {
-            double maxMotorAmps = this.prefs.getDouble("rearLiftSubsystem.maxMotorAmps", 30.0);
+            double maxMotorAmps = this.prefs.getDouble("rearLiftSubsystem.maxMotorAmps", 10.0);
             double currentOutputAmps = this.rearLiftGearBoxMaster.getOutputCurrent();
             exceeded = currentOutputAmps > maxMotorAmps;
             if (exceeded) {
                 logger.error("!!!! REAR LIFT UP exceeded maxMotorAmps value of {}, currentOutputAmps: {}", maxMotorAmps, currentOutputAmps);
+            } else {
+                logger.trace("REAR LIFT currentOutputAmps: {}, maxMotorAmps: {}", currentOutputAmps, maxMotorAmps);
+            }
+        }
+        
+        return exceeded;
+    }
+
+    public boolean isDownwardMaxAmpsExceeded() {
+        boolean exceeded = false;
+        if (this.isGoingDown() && ! this.isDownLimitSwitchTripped()) {
+            double maxMotorAmps = this.prefs.getDouble("rearLiftSubsystem.maxMotorAmps", 10.0);
+            double currentOutputAmps = this.rearLiftGearBoxMaster.getOutputCurrent();
+            exceeded = currentOutputAmps > maxMotorAmps;
+            if (exceeded) {
+                logger.error("!!!! REAR LIFT DOWN exceeded maxMotorAmps value of {}, currentOutputAmps: {}", maxMotorAmps, currentOutputAmps);
             } else {
                 logger.trace("REAR LIFT currentOutputAmps: {}, maxMotorAmps: {}", currentOutputAmps, maxMotorAmps);
             }

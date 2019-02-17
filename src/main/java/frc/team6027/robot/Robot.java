@@ -21,6 +21,7 @@ import frc.team6027.robot.data.DatahubRegistry;
 import frc.team6027.robot.field.Field;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
+import frc.team6027.robot.subsystems.RearLiftSubsystem;
 
 /**
  * The Virtual Machine is configured to automatically run this class, and to
@@ -41,6 +42,8 @@ public class Robot extends TimedRobot {
     private Command autonomousCommand;
 
     private DrivetrainSubsystem drivetrain;
+    private RearLiftSubsystem rearLiftSubsystem;
+
     /*
     private PneumaticSubsystem pneumaticSubsystem;
     private ElevatorSubsystem elevatorSubsystem;
@@ -74,6 +77,7 @@ public class Robot extends TimedRobot {
         this.setOperatorDisplay(new OperatorDisplaySmartDashboardImpl());
         this.setOperatorInterface(new OperatorInterface(this.getOperatorDisplay()));
         this.setDrivetrain(new DrivetrainSubsystem(this.getOperatorInterface()));
+        this.setRearLift(new RearLiftSubsystem(this.sensorService.getLimitSwitchSensors(), operatorDisplay));
 //        this.setElevatorSubsystem(new ElevatorSubsystem(this.getSensorService().getLimitSwitchSensors(), this.getOperatorDisplay()));
 //        this.setPneumaticSubsystem(new PneumaticSubsystem(this.getOperatorDisplay()));
 
@@ -83,7 +87,7 @@ public class Robot extends TimedRobot {
         // This ensures that the Teleop command is running whenever we are not in
         // autonomous mode
         TeleopManager teleOpCommand = new TeleopManager(this.operatorInterface, this.sensorService,
-                this.getDrivetrain(), this.operatorDisplay);
+                this.getDrivetrain(), this.getRearLift(), this.getOperatorDisplay());
         this.getDrivetrain().setDefaultCommand(teleOpCommand);
         /*
         AutonomousCommandManager.initAutoScenarioDisplayValues(this.getOperatorDisplay());
@@ -215,6 +219,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        this.getRearLift().initialize();
         // If elevatorSubsystem is already initialized, this will do nothing
 //        this.elevatorSubsystem.initialize();
 //        this.getPneumaticSubsystem().reset();
@@ -276,6 +281,14 @@ public class Robot extends TimedRobot {
 
     public void setDrivetrain(DrivetrainSubsystem drivetrain) {
         this.drivetrain = drivetrain;
+    }
+
+    public RearLiftSubsystem getRearLift() {
+        return this.rearLiftSubsystem;
+    }
+
+    public void setRearLift(RearLiftSubsystem rearLift) {
+        this.rearLiftSubsystem = rearLift;
     }
 
     /*
