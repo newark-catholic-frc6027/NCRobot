@@ -23,6 +23,7 @@ public class RearLiftSubsystem extends Subsystem {
     private Preferences prefs = Preferences.getInstance();
     
     private boolean initialized = false;
+    protected double maxMotorAmps = 10.0;
     
     public RearLiftSubsystem(LimitSwitchSensors limitSwitches, OperatorDisplay operatorDisplay) {
         this.limitSwitches = limitSwitches;
@@ -32,6 +33,7 @@ public class RearLiftSubsystem extends Subsystem {
     public void initialize() {
         this.initialized = true;
         this.rearLiftGearBoxMaster.stopMotor();
+        this.maxMotorAmps = this.prefs.getDouble("rearLiftSubsystem.maxMotorAmps", 10.0);
     }
     
     @Override
@@ -56,9 +58,8 @@ public class RearLiftSubsystem extends Subsystem {
     public boolean isUpwardMaxAmpsExceeded() {
         boolean exceeded = false;
         if (this.isGoingUp() && ! this.isUpLimitSwitchTripped()) {
-            double maxMotorAmps = this.prefs.getDouble("rearLiftSubsystem.maxMotorAmps", 10.0);
             double currentOutputAmps = this.rearLiftGearBoxMaster.getOutputCurrent();
-            exceeded = currentOutputAmps > maxMotorAmps;
+            exceeded = currentOutputAmps > this.maxMotorAmps;
             if (exceeded) {
                 logger.error("!!!! REAR LIFT UP exceeded maxMotorAmps value of {}, currentOutputAmps: {}", maxMotorAmps, currentOutputAmps);
             } else {
@@ -72,9 +73,8 @@ public class RearLiftSubsystem extends Subsystem {
     public boolean isDownwardMaxAmpsExceeded() {
         boolean exceeded = false;
         if (this.isGoingDown() && ! this.isDownLimitSwitchTripped()) {
-            double maxMotorAmps = this.prefs.getDouble("rearLiftSubsystem.maxMotorAmps", 10.0);
             double currentOutputAmps = this.rearLiftGearBoxMaster.getOutputCurrent();
-            exceeded = currentOutputAmps > maxMotorAmps;
+            exceeded = currentOutputAmps > this.maxMotorAmps;
             if (exceeded) {
                 logger.error("!!!! REAR LIFT DOWN exceeded maxMotorAmps value of {}, currentOutputAmps: {}", maxMotorAmps, currentOutputAmps);
             } else {
