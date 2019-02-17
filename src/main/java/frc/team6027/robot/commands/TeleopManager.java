@@ -10,6 +10,7 @@ import frc.team6027.robot.commands.autonomous.AutoDriveToVisionTarget;
 import frc.team6027.robot.controls.XboxJoystick;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
+import frc.team6027.robot.subsystems.ElevatorSubsystem;
 import frc.team6027.robot.subsystems.PneumaticSubsystem;
 import frc.team6027.robot.subsystems.RearLiftSubsystem;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -31,6 +32,7 @@ public class TeleopManager extends Command {
     private Preferences prefs = Preferences.getInstance();
     private PneumaticSubsystem pneumaticSubsystem;
     private RearLiftSubsystem rearLiftSubsystem;
+    private ElevatorSubsystem elevatorSubsystem;
     private OperatorDisplay operatorDisplay;
     
     
@@ -60,13 +62,13 @@ public class TeleopManager extends Command {
     
 
     public TeleopManager(OperatorInterface operatorInterface, SensorService sensorService,
-            DrivetrainSubsystem drivetrain, RearLiftSubsystem rearLiftSubsystem, /*PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevator,*/
+            DrivetrainSubsystem drivetrain, RearLiftSubsystem rearLiftSubsystem, /*PneumaticSubsystem pneumaticSubsystem,*/ ElevatorSubsystem elevator,
             OperatorDisplay operatorDisplay) {
         // Identify the subsystems we will be using in this command and this
         // command
         // only
         requires(drivetrain);
-//        requires(elevator);
+        requires(elevator);
 
         // Hang onto references of the components we will need during teleop
         this.sensorService = sensorService;
@@ -74,11 +76,11 @@ public class TeleopManager extends Command {
         this.operatorInterface = operatorInterface;
         
         this.joystick = this.operatorInterface.getJoystick1();
-//        this.joystick2 = this.operatorInterface.getJoystick2();
+        this.joystick2 = this.operatorInterface.getJoystick2();
         this.rearLiftSubsystem = rearLiftSubsystem;
         this.drivetrain = drivetrain;
 //        this.pneumaticSubsystem = pneumaticSubsystem;
-//        this.elevatorSubsystem = elevator;
+        this.elevatorSubsystem = elevator;
         this.operatorDisplay = operatorDisplay;
                                                                                                          
         // Create the commands we will be using during teleop
@@ -93,12 +95,12 @@ public class TeleopManager extends Command {
 
         // Set up the commands on the Joystick buttons
         initializeJoystick();
-//        initializeJoystick2();
+        initializeJoystick2();
     }
 
     protected void initializeJoystick() {
-        this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());   
-        this.yButton.whenPressed(new AutoDriveToVisionTarget(24.0, 0.6, this.sensorService, this.drivetrain,this.operatorDisplay));    
+//        this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());   
+//        this.yButton.whenPressed(new AutoDriveToVisionTarget(24.0, 0.6, this.sensorService, this.drivetrain,this.operatorDisplay));    
         
 /*
         this.shiftGearButton = new JoystickButton(this.joystick, this.joystick.getRightBumperButtonNumber());
@@ -154,9 +156,9 @@ public class TeleopManager extends Command {
     
    
    
-      protected void initializeJoystick2() {
-        this.yButton2 = new JoystickButton(this.joystick2, this.joystick2.getYButtonNumber());   
-        this.yButton2.whenPressed(new PrintMessageCommand("yButtonWasPressed"));  
+    protected void initializeJoystick2() {
+//        this.yButton2 = new JoystickButton(this.joystick2, this.joystick2.getYButtonNumber());   
+//        this.yButton2.whenPressed(new PrintMessageCommand("yButtonWasPressed"));  
     
     } 
 
@@ -182,6 +184,8 @@ public class TeleopManager extends Command {
         this.execCount++;
         this.drive();
         this.runRearLiftIfRequired();
+        this.runMastSlideIfRequired();
+        this.runElevatorIfRequired();
 
         // this.logData();
     }
@@ -207,15 +211,22 @@ public class TeleopManager extends Command {
         }
     }
 
-/*
-    private void runElevatorIfRequired() {
-        if (this.joystick.getTriggerAxis(Hand.kLeft) > .05) {
-            this.elevatorSubsystem.elevatorDown(this.joystick.getTriggerAxis(Hand.kLeft));
+    private void runMastSlideIfRequired() {
+        if (this.joystick2.getTriggerAxis(Hand.kLeft) > .05) {
+            this.elevatorSubsystem.mastForward(this.joystick2.getTriggerAxis(Hand.kLeft));
         } else {
-            this.elevatorSubsystem.elevatorUp(this.joystick.getTriggerAxis(Hand.kRight));
+            this.elevatorSubsystem.mastBackward(this.joystick2.getTriggerAxis(Hand.kRight));
         }
     }
-*/ 
+
+    private void runElevatorIfRequired() {
+        if (this.joystick2.getRightAxis() > .05) {
+            this.elevatorSubsystem.elevatorDown(this.joystick2.getRightAxis());
+        } else {
+            this.elevatorSubsystem.elevatorUp(this.joystick2.getRightAxis());
+        }
+    }
+
     public OperatorDisplay getOperatorDisplay() {
         return this.operatorInterface.getOperatorDisplay();
     }

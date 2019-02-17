@@ -21,6 +21,7 @@ import frc.team6027.robot.data.DatahubRegistry;
 import frc.team6027.robot.field.Field;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
+import frc.team6027.robot.subsystems.ElevatorSubsystem;
 import frc.team6027.robot.subsystems.RearLiftSubsystem;
 
 /**
@@ -46,8 +47,9 @@ public class Robot extends TimedRobot {
 
     /*
     private PneumaticSubsystem pneumaticSubsystem;
-    private ElevatorSubsystem elevatorSubsystem;
     */
+    private ElevatorSubsystem elevatorSubsystem;
+    
     private SensorService sensorService;
 
     /*
@@ -78,7 +80,7 @@ public class Robot extends TimedRobot {
         this.setOperatorInterface(new OperatorInterface(this.getOperatorDisplay()));
         this.setDrivetrain(new DrivetrainSubsystem(this.getOperatorInterface()));
         this.setRearLift(new RearLiftSubsystem(this.sensorService.getLimitSwitchSensors(), operatorDisplay));
-//        this.setElevatorSubsystem(new ElevatorSubsystem(this.getSensorService().getLimitSwitchSensors(), this.getOperatorDisplay()));
+        this.setElevatorSubsystem(new ElevatorSubsystem(this.getSensorService().getLimitSwitchSensors(), this.getOperatorDisplay()));
 //        this.setPneumaticSubsystem(new PneumaticSubsystem(this.getOperatorDisplay()));
 
         this.visionData = new DatahubNetworkTableImpl(DatahubRegistry.VISION_KEY);
@@ -87,7 +89,7 @@ public class Robot extends TimedRobot {
         // This ensures that the Teleop command is running whenever we are not in
         // autonomous mode
         TeleopManager teleOpCommand = new TeleopManager(this.operatorInterface, this.sensorService,
-                this.getDrivetrain(), this.getRearLift(), this.getOperatorDisplay());
+                this.getDrivetrain(), this.getRearLift(), this.getElevatorSubsystem(), this.getOperatorDisplay());
         this.getDrivetrain().setDefaultCommand(teleOpCommand);
         /*
         AutonomousCommandManager.initAutoScenarioDisplayValues(this.getOperatorDisplay());
@@ -126,7 +128,8 @@ public class Robot extends TimedRobot {
         Scheduler.getInstance().run();
         
         this.getDrivetrain().stopMotor();
-//        this.getElevatorSubsystem().elevatorStop();
+        this.getElevatorSubsystem().elevatorStop();
+        this.getElevatorSubsystem().mastSlideStop();
 
     }
 /*
@@ -221,7 +224,7 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         this.getRearLift().initialize();
         // If elevatorSubsystem is already initialized, this will do nothing
-//        this.elevatorSubsystem.initialize();
+        this.elevatorSubsystem.initialize();
 //        this.getPneumaticSubsystem().reset();
 //        this.getOperatorDisplay().setFieldValue(OperatorDisplay.ELEVATOR_MAX, this.getElevatorSubsystem().isTopLimitSwitchTripped() ? "YES" : "NO");
 //        this.getOperatorDisplay().setFieldValue(OperatorDisplay.ELEVATOR_MIN, this.getElevatorSubsystem().isBottomLimitSwitchTripped() ? "YES" : "NO");
@@ -299,7 +302,7 @@ public class Robot extends TimedRobot {
     public void setPneumaticSubsystem(PneumaticSubsystem pneumaticSubsystem) {
         this.pneumaticSubsystem = pneumaticSubsystem;
     }
-
+*/
     public ElevatorSubsystem getElevatorSubsystem() {
         return elevatorSubsystem;
     }
@@ -308,7 +311,6 @@ public class Robot extends TimedRobot {
     public void setElevatorSubsystem(ElevatorSubsystem elevatorSubsystem) {
         this.elevatorSubsystem = elevatorSubsystem;
     }
-*/
 
     public SensorService getSensorService() {
         return sensorService;

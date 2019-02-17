@@ -18,6 +18,9 @@
     <Logger name="frc.team6027.robot.subsystems.ElevatorSubsystem" level="info" additivity="false">
       <AppenderRef ref="Console"/>
     </Logger>
+    <Logger name="frc.team6027.robot.subsystems.RearLiftSubsystem" level="info" additivity="false">
+      <AppenderRef ref="Console"/>
+    </Logger>
     
     <Root level="info">
       <AppenderRef ref="Console"/>

@@ -13,20 +13,23 @@ public class LimitSwitchSensors {
         RearLiftUp,
         RearLiftDown,
         MastTop,
-        MastBottom
+        MastBottom,
+        MastForward,
+        MastBackward
     }
     
     
-    private DigitalInput limitSwitchBottomA = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_BOTTOM_A_CHANNEL); // bottom a
-    private DigitalInput limitSwitchBottomB = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_BOTTOM_B_CHANNEL); // bottom b
-    private DigitalInput limitSwitchTopA = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_TOP_A_CHANNEL); // top a
-    private DigitalInput limitSwitchTopB = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_TOP_B_CHANNEL); // top b
-    /*
+    private DigitalInput mastBottom = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_MAST_BOTTOM_CHANNEL); // bottom a
+//    private DigitalInput limitSwitchBottomB = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_BOTTOM_B_CHANNEL); // bottom b
+    private DigitalInput mastTop = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_MAST_TOP_CHANNEL);
+//    private DigitalInput limitSwitchTopB = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_TOP_B_CHANNEL); // top b
     private DigitalInput rearLiftUp = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_REAR_LIFT_UP_CHANNEL);
     private DigitalInput rearLiftDown = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_REAR_LIFT_DOWN_CHANNEL);
-*/
+
+    private DigitalInput mastForward = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_MAST_FORWARD_CHANNEL);
+    private DigitalInput mastBackward = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_MAST_BACKWARD_CHANNEL);
     
-    private Map<LimitSwitchId, DigitalInput> limitSwitchMap = new HashMap<>();
+//    private Map<LimitSwitchId, DigitalInput> limitSwitchMap = new HashMap<>();
     
     
     public LimitSwitchSensors() {
@@ -52,10 +55,26 @@ public class LimitSwitchSensors {
      */
     public boolean isLimitSwitchTripped(LimitSwitchId id) {
         boolean switchTripped = true;
-        if (id == LimitSwitchId.MastTop) {
-            switchTripped = this.limitSwitchTopA.get() && this.limitSwitchTopB.get();
-        } else if (id == LimitSwitchId.MastBottom) {
-            switchTripped = this.limitSwitchBottomA.get() && this.limitSwitchBottomB.get();
+        switch (id) {
+            case MastTop:
+                switchTripped = this.mastTop.get();
+                break;
+            case MastBottom:
+                switchTripped = this.mastBottom.get();
+                break;
+            case RearLiftDown:
+                switchTripped = this.rearLiftDown.get();
+                break;
+            case RearLiftUp:
+                switchTripped = this.rearLiftUp.get();
+                break;
+            case MastForward:
+                switchTripped = this.mastForward.get();
+                break;
+            case MastBackward:
+                switchTripped = this.mastBackward.get();
+                break;
+    
         }
         
         return switchTripped;

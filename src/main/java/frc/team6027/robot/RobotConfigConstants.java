@@ -108,7 +108,9 @@ public class RobotConfigConstants {
      */
     public static final int LEFT_GEARBOX_CIM_3_ID = -1; // not currently used
 
-    public static final int ELEVATOR_GEARBOX_CIM_1_ID = 31;
+    public static final int ELEVATOR_GEARBOX_CIM_1_ID = 32;
+
+    public static final int MAST_SLIDE_GEARBOX_CIM_1_ID = 31;
 
     public static final int REAR_LIFT_GEARBOX_MINICIM_ID = 30;
 
@@ -208,15 +210,19 @@ public class RobotConfigConstants {
     /* set to 1 if inversion is not needed, -1 if inversion is needed */
     public final static int OPTIONAL_DRIVETRAIN_DIRECTION_INVERSION = 1;
 
-	public static final int LIMIT_SWITCH_REAR_LIFT_UP_CHANNEL = -1;
-    public static final int LIMIT_SWITCH_REAR_LIFT_DOWN_CHANNEL = -1;
+	public static final int LIMIT_SWITCH_REAR_LIFT_UP_CHANNEL = 9;
+    public static final int LIMIT_SWITCH_REAR_LIFT_DOWN_CHANNEL = 8;
     
-    public final static int LIMIT_SWITCH_BOTTOM_A_CHANNEL = 8;
-    public final static int LIMIT_SWITCH_BOTTOM_B_CHANNEL = 7;
+    public final static int LIMIT_SWITCH_MAST_BOTTOM_CHANNEL = 10;
+//    public final static int LIMIT_SWITCH_BOTTOM_A_CHANNEL = 8;
+//    public final static int LIMIT_SWITCH_BOTTOM_B_CHANNEL = 7;
 
-    public final static int LIMIT_SWITCH_TOP_A_CHANNEL = 9;
-    public final static int LIMIT_SWITCH_TOP_B_CHANNEL = 6;
+    public final static int LIMIT_SWITCH_MAST_TOP_CHANNEL = 11;
+//    public final static int LIMIT_SWITCH_TOP_A_CHANNEL = 9;
+//    public final static int LIMIT_SWITCH_TOP_B_CHANNEL = 6;
 
+    public final static int LIMIT_SWITCH_MAST_FORWARD_CHANNEL = 12;
+    public final static int LIMIT_SWITCH_MAST_BACKWARD_CHANNEL = 13;
 
     public final static String CONTOURS_CENTER_X = "contoursCenterX";
     public final static String CONTOUR_AREA_LEFT = "contourAreaLeft";

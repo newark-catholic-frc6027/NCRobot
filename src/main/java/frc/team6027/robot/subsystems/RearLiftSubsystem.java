@@ -44,10 +44,10 @@ public class RearLiftSubsystem extends Subsystem {
     public void periodic() {
         if (this.initialized) {
             if (this.isGoingUp() && 
-                (this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.RearLiftUp) || this.isUpwardMaxAmpsExceeded())) {
+                (/*this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.RearLiftUp) ||*/ this.isUpwardMaxAmpsExceeded())) {
                 this.stopMotor();
             } else if (this.isGoingDown() && 
-                (this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.RearLiftDown) || this.isDownwardMaxAmpsExceeded())) {
+                (/*this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.RearLiftDown) ||*/ this.isDownwardMaxAmpsExceeded())) {
                 this.stopMotor();
             }
             
@@ -104,8 +104,8 @@ public class RearLiftSubsystem extends Subsystem {
     public void rearLiftUp(double power) {
         double adjustedPower = power > 0.0 ? power * -1 : power;
 
-        logger.trace("REAR LIFT UP power: {}, adjustedPower: {}, topLimitTripped? {}", power, adjustedPower, this.isUpLimitSwitchTripped());
-        if (Math.abs(adjustedPower) > .05 && ! this.isUpLimitSwitchTripped()) {
+//        logger.trace("REAR LIFT UP power: {}, adjustedPower: {}, topLimitTripped? {}", power, adjustedPower, this.isUpLimitSwitchTripped());
+        if (Math.abs(adjustedPower) > .05 /*&& ! this.isUpLimitSwitchTripped()*/) {
             logger.trace("REAR LIFT UP, running motor: {}", adjustedPower);
             this.rearLiftGearBoxMaster.set(adjustedPower);
             this.operatorDisplay.setFieldValue(OperatorDisplay.REAR_LIFT_MAX, "NO");
@@ -118,13 +118,13 @@ public class RearLiftSubsystem extends Subsystem {
     
     public void rearLiftDown(double power) {
         double adjustedPower = power > 0.0 ? power : power * -1;
-        logger.trace("REAR LIFT DOWN power: {}, adjustedPower: {}, downLimitTripped? {}", power, adjustedPower, this.isDownLimitSwitchTripped());
-        if (Math.abs(adjustedPower) > .05 && ! this.isDownLimitSwitchTripped()) {
+//        logger.trace("REAR LIFT DOWN power: {}, adjustedPower: {}, downLimitTripped? {}", power, adjustedPower, this.isDownLimitSwitchTripped());
+        if (Math.abs(adjustedPower) > .05 /*&& ! this.isDownLimitSwitchTripped()*/) {
             logger.trace("REAR LIFT DOWN, running motor: {}", adjustedPower);
             this.rearLiftGearBoxMaster.set(adjustedPower);
             this.operatorDisplay.setFieldValue(OperatorDisplay.REAR_LIFT_MIN, "NO");
         } else {
-            logger.trace("RearLiftDown --> stopping");
+            logger.trace("REAR LIFT DOWN --> stopping");
             this.stopMotor();
             this.operatorDisplay.setFieldValue(OperatorDisplay.REAR_LIFT_MIN, "YES");
         }

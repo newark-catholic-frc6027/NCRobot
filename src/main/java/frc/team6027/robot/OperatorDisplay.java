@@ -17,6 +17,10 @@ public interface OperatorDisplay {
     public static final String DISTANCE_FIELD_NAME = "Distance";
 	public static final String REAR_LIFT_MAX = "Rear Lift MAX?";
 	public static final String REAR_LIFT_MIN = "Rear Lift MIN?";
+	public static final String ELEVATOR_MAX = "Elevator MAX?";
+    public static final String ELEVATOR_MIN = "Elevator MIN?";
+    public static final String MAST_FORWARD_MAX = "Mast Forward MAX?";
+    public static final String MAST_BACKWARD_MAX = "Mast Backward MAX?";
     
     
     public enum ChooserName {
