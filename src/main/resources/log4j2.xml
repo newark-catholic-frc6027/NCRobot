@@ -5,32 +5,34 @@
       <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %c{1} - %msg%n"/>
     </Console>
 
-    <RollingFile name="MyFile" fileName="/home/admin/lvuser/atlas.log">
-      <FileName>/home/admin/lvuser/atlas.log</FileName>
-       <FilePattern>/home/admin/lvuser/%d{yyyy-MM-dd-hh}-%i.atlas.log.zip</FilePattern> 
+    <RollingFile name="robotLogFile" fileName="/home/lvuser/log/robot.log"
+      filePattern="/home/lvuser/log/%d{yyyy-MM-dd-hh}-%i.robot.log.zip">
       <PatternLayout> 
           <Pattern>%d{HH:mm:ss.SSS} [%t] %-5level %c{1} - %msg%n</Pattern>
-      <PatternLayout>
+      </PatternLayout>
       <Policies>
-        <SizeBasedTriggerPolicy size="3 MB'/>">
-      <Policies>
-   </Appenders>
+        <SizeBasedTriggeringPolicy size="3 MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="3"/>
+    </RollingFile>
+
+    <Async name="Async" shutdownTimeout="1000">
+      <AppenderRef ref="robotLogFile"/>
+    </Async>    
+  </Appenders>
   
   <Loggers>
-    <Logger name="frc.team6027" level="trace" additivity="false">
-      <AppenderRef ref="Console"/>
+    <Logger name="frc.team6027" level="trace">
     </Logger>
 
-    <Logger name="frc.team6027.robot.subsystems.ElevatorSubsystem" level="info" additivity="false">
-      <AppenderRef ref="Console"/>
+    <Logger name="frc.team6027.robot.subsystems.ElevatorSubsystem" level="info">
     </Logger>
-    <Logger name="frc.team6027.robot.subsystems.RearLiftSubsystem" level="info" additivity="false">
-      <AppenderRef ref="Console"/>
+    <Logger name="frc.team6027.robot.subsystems.RearLiftSubsystem" level="info">
     </Logger>
     
     <Root level="info">
       <AppenderRef ref="Console"/>
-      <AppenderRef ref="MyFile"/>
+      <AppenderRef ref="robotLogFile"/>
     </Root>
   </Loggers>
 </Configuration>
