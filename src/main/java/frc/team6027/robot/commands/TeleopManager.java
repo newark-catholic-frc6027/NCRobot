@@ -91,7 +91,8 @@ public class TeleopManager extends Command {
         shiftGearButton.whenPressed(this.shiftGearCommand);
 
         this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());   
-        this.yButton.whenPressed(new AutoDriveToVisionTarget(24.0, 0.6, this.sensorService, this.drivetrain, this.operatorDisplay));    
+//        this.yButton.whenPressed(new AutoDriveToVisionTarget(24.0, 0.6, this.sensorService, this.drivetrain, this.operatorDisplay));    
+        this.yButton.whenPressed(new AutoDriveToVisionTarget(24.0, 0.6, this.sensorService, this.drivetrain,this.operatorDisplay));    
         /*
         this.yButton.whenPressed(new Command(){   
             @Override

@@ -6,11 +6,13 @@ import org.apache.logging.log4j.Logger;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.RobotConfigConstants;
+import frc.team6027.robot.commands.FlexCommand;
+import frc.team6027.robot.commands.autonomous.DriveStraightCommand.DriveDistanceMode;
 import frc.team6027.robot.data.Datahub;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 
-public class AutoDriveToVisionTarget extends CommandGroup {
+public class AutoDriveToVisionTarget extends FlexCommand {
     private final Logger logger = LogManager.getLogger(getClass());
 
     // TODO: Read from Robot Preferences
@@ -33,12 +35,13 @@ public class AutoDriveToVisionTarget extends CommandGroup {
         this.drivetrain = drivetrain;
         this.operatorDisplay = operatorDisplay;
         this.drivePower = drivePower;
-        prepare();
     }
 
+    @Override
 	protected void prepare(){
+        super.prepare();
 
-        this.curVisionDistanceToTarget = 70.0;// this.sensorService.getCurDistToVisionTarget();
+        this.curVisionDistanceToTarget = this.sensorService.getCurDistToVisionTarget();
         this.numAngleAdjustmentStops = (int) (Math.round(this.curVisionDistanceToTarget) / VISION_TURN_LEG_INCHES_INCREMENT);
 
         logger.info("Initializing AutoDriveToVisionTarget command with {} angle adjustment stops " + 
@@ -46,42 +49,22 @@ public class AutoDriveToVisionTarget extends CommandGroup {
 
         for (int i = this.numAngleAdjustmentStops; i >= 0 ; i--) {
             if (i == 0) {
+                this.addDriveCommands(-1.0);
                 logger.debug("Added last drive command, stopDistanceFromTarget={}", this.stopDistanceFromTarget);
-                this.addSequential(new AutoDriveWithUltraVision(
-                    20*12 /* use large value so that it will use stopDistanceFromTarget for stopping*/, 
-                    this.stopDistanceFromTarget, this.drivePower, 
-                    this.sensorService, this.drivetrain, this.operatorDisplay ));
             } else {
+                this.addDriveCommands(VISION_TURN_LEG_INCHES_INCREMENT);
                 logger.debug("Added drive command, distance = {}, stopDistanceFromTarget={}", VISION_TURN_LEG_INCHES_INCREMENT,
                     this.stopDistanceFromTarget);
-                this.addSequential(new AutoDriveWithUltraVision(
-                    VISION_TURN_LEG_INCHES_INCREMENT,
-                    this.stopDistanceFromTarget, this.drivePower, 
-                    this.sensorService, this.drivetrain, this.operatorDisplay ));
             }
         }
     }
 
-    @Override
-    protected void execute() {
-//        this.logger.debug("Execute invoked");
-        super.execute();    
-    }
+    protected void addDriveCommands(double maxDriveDistance) {
+        this.commandGroup.addSequential(new VisionTurnCommand(this.sensorService, this.drivetrain, this.operatorDisplay));
 
-    @Override
-    public void start() {
-//        this.logger.debug("start() invoked");
-//        this.prepare();
-        super.start();
-    }
-    
-    @Override
-    protected boolean isFinished() {
-        // TODO: Add logic to check for Joystick button press to cancel the command
-        boolean isFinished = super.isFinished();
-        if (isFinished) {
-            this.logger.debug("isFinished = true");
-        }
-        return isFinished;
+        DriveDistanceMode mode = maxDriveDistance >= 0 ? DriveDistanceMode.DistanceReadingOnEncoder : DriveDistanceMode.DistanceFromObject;
+        double distance = maxDriveDistance >= 0 ? maxDriveDistance * -1 : this.stopDistanceFromTarget;
+        this.commandGroup.addSequential(
+            new DriveStraightCommand(this.sensorService, this.drivetrain, this.operatorDisplay, distance, mode, this.drivePower));
     }
 }
