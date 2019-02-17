@@ -57,92 +57,19 @@ public class VisionTurnCommand extends Command implements PIDOutput {
 		//this.targetAngle = adjustedAngle;
 		this.operatorDisplay = operatorDisplay;
 //		this.gyro.reset();
-		this.initialGyroAngle = this.gyro.getYawAngle();
 		this.startTime = System.currentTimeMillis();
         this.setName(NAME);
 	    this.visionData = DatahubRegistry.instance().get(DatahubRegistry.VISION_KEY);
-		
-	}
-
-	protected double adjustedAngle() {
-		return this.adjustedAngle(false);
-	}
-
-	protected double adjustedAngle(boolean useVision) {
-
-		if (useVision) {
-			double contourAreaAvg = 
-				(this.visionData.getDouble(RobotConfigConstants.CONTOUR_AREA_LEFT, 0.0) +
-				this.visionData.getDouble(RobotConfigConstants.CONTOUR_AREA_RIGHT, 0.0)) / 2.0;
-			
-			// ContoursCenterXEntry x value of the center between the two contours-- 
-			double centerContour = this.visionData.getDouble(RobotConfigConstants.CONTOURS_CENTER_X, 160.0);
-
-			//Calculate how far off from center -- The "c" variable in the trig calculation atan(c/a)
-			double offDistancePixels = centerContour-160;
-
-//			double visionDistanceInches = (27.03 * contourAreaAvg) - 7237.3;
-//			double visionDistanceInches = Math.exp((-1.0/2.2397) * Math.log((contourAreaAvg/2496228.572)));
-			double a1 = 191.58159;
-			double a2 = 5.98129;
-			double x0 = 78.95908;
-			double p = 0.69955;
-			double visionDistanceInches = a2 + ((a1-a2)/(1+Math.pow(contourAreaAvg/x0, p)));
-			
-			double xFieldOfViewInches = (0.875 * visionDistanceInches) + 1.5;
-			double pixelsToInchesConversionFactor = xFieldOfViewInches/320;
-			double offDistanceInches = offDistancePixels * pixelsToInchesConversionFactor;
-
-			//Calculated off center angle -- result of atan(c/a) 
-			//TODO: Guard against divide by zero
-			double offAngle = Math.atan(offDistanceInches/visionDistanceInches)*180/Math.PI;
-
-			//Calculated angle to turn the robot -- current gyro heading + offAngle
-			double adjustedAngle = this.sensorService.getGyroSensor().getYawAngle() + offAngle;
-
-			logger.info(">>> off Angle: {}", offAngle);
-			logger.info(">>> Adjusted angle: {}", adjustedAngle);
-			logger.info(">>> Off Set Distance: {}", offDistancePixels);
-			return adjustedAngle;
-
-		} else {
-			//Distance to wall -- The "a" variable in the trig calculation atan(c/a)
-			double ultraDistance = Math.abs(this.sensorService.getUltrasonicSensor().getDistanceInches());
-				
-			// ContoursCenterXEntry x value of the center between the two contours-- 
-			double centerContour = this.visionData.getDouble(RobotConfigConstants.CONTOURS_CENTER_X, 160.0);
-
-			//Calculate how far off from center -- The "c" variable in the trig calculation atan(c/a)
-			double offDistancePixels = centerContour-160;
-
-			// Field of view in inches
-			double xFieldOfViewInches = (0.875 * ultraDistance) + 1.5;
-			double pixelsToInchesConversionFactor = xFieldOfViewInches/320;
-			double offDistanceInches = offDistancePixels * pixelsToInchesConversionFactor;
-
-			//Calculated off center angle -- result of atan(c/a) 
-			//TODO: Guard against divide by zero
-			double offAngle = Math.atan(offDistanceInches/ultraDistance)*180/Math.PI;
-
-			//Calculated angle to turn the robot -- current gyro heading + offAngle
-			double adjustedAngle = this.sensorService.getGyroSensor().getYawAngle() + offAngle;
-
-			logger.info(">>> off Angle: {}", offAngle);
-			logger.info(">>> Adjusted angle: {}", adjustedAngle);
-			logger.info(">>> Off Set Distance: {}", offDistancePixels);
-			return adjustedAngle;
-
-		}
-
-
 	}
 
 
 	@Override
-	protected void initialize() {
-		this.targetAngle = adjustedAngle(true);
+	public void start() {
+		this.targetAngle = this.sensorService.getCurAngleHeadingToVisionTarget();
 		initPIDController();
 	    logger.info(">>> Turn Command starting, target angle: {}, initial gyro angle", this.targetAngle, this.initialGyroAngle);
+	
+		super.start();
 	}
 
 	protected void initPIDController() {
