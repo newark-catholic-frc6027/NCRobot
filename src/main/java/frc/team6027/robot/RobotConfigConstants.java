@@ -51,7 +51,7 @@ public class RobotConfigConstants {
      *     1 2
      * </pre>
      */
-    public static final int RIGHT_GEARBOX_CIM_1_ID = 23;
+    public static final int RIGHT_GEARBOX_MASTER_CIM_1_ID = 22;
 
     /**
      * The device identifier for the Talon SRX speed controller right gear box
@@ -62,7 +62,7 @@ public class RobotConfigConstants {
      *     1 2
      * </pre>
      */
-    public static final int RIGHT_GEARBOX_CIM_2_ID = 22;
+    public static final int RIGHT_GEARBOX_SLAVE_CIM_2_ID = 23;
 
     /**
      * The device identifier for the Talon SRX speed controller right gear box
@@ -84,7 +84,7 @@ public class RobotConfigConstants {
      *     1 2
      * </pre>
      */
-    public static final int LEFT_GEARBOX_CIM_1_ID = 21;
+    public static final int LEFT_GEARBOX_MASTER_CIM_1_ID = 21;
 
     /**
      * The device identifier for the Talon SRX speed controller left gear box
@@ -95,7 +95,7 @@ public class RobotConfigConstants {
      *     1 2
      * </pre>
      */
-    public static final int LEFT_GEARBOX_CIM_2_ID = 20;
+    public static final int LEFT_GEARBOX_SLAVE_CIM_2_ID = 20;
 
     /**
      * The device identifier for the Talon SRX speed controller left gear box
@@ -109,6 +109,8 @@ public class RobotConfigConstants {
     public static final int LEFT_GEARBOX_CIM_3_ID = -1; // not currently used
 
     public static final int ELEVATOR_GEARBOX_CIM_1_ID = 31;
+
+    public static final int REAR_LIFT_GEARBOX_MINICIM_ID = 30;
 
     /**
      * The joystick port number corresponds to the 'USB Order' serial number on
@@ -206,6 +208,9 @@ public class RobotConfigConstants {
     /* set to 1 if inversion is not needed, -1 if inversion is needed */
     public final static int OPTIONAL_DRIVETRAIN_DIRECTION_INVERSION = 1;
 
+	public static final int LIMIT_SWITCH_REAR_LIFT_UP_CHANNEL = -1;
+    public static final int LIMIT_SWITCH_REAR_LIFT_DOWN_CHANNEL = -1;
+    
     public final static int LIMIT_SWITCH_BOTTOM_A_CHANNEL = 8;
     public final static int LIMIT_SWITCH_BOTTOM_B_CHANNEL = 7;
 
@@ -217,5 +222,6 @@ public class RobotConfigConstants {
     public final static String CONTOUR_AREA_LEFT = "contourAreaLeft";
     public final static String CONTOUR_AREA_RIGHT = "contourAreaRight";
     public final static String DISTANCE_TO_TARGET_INCHES = "distanceToTargetInches";
+
 
 }

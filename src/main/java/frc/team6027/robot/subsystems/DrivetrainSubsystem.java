@@ -21,15 +21,17 @@ public class DrivetrainSubsystem extends Subsystem {
 //    private WPI_TalonSRX rightGearBoxMaster = new WPI_TalonSRX(RobotConfigConstants.RIGHT_GEARBOX_CIM_1_ID);
 //    private WPI_TalonSRX leftGearBoxMaster = new WPI_TalonSRX(RobotConfigConstants.LEFT_GEARBOX_CIM_1_ID);
     private CANSparkMax rightGearBoxMasterMotor = new CANSparkMax(
-        RobotConfigConstants.RIGHT_GEARBOX_CIM_1_ID, MotorType.kBrushless);
+        RobotConfigConstants.RIGHT_GEARBOX_SLAVE_CIM_2_ID, MotorType.kBrushless);
     private CANSparkMax leftGearBoxMasterMotor = new CANSparkMax(
-        RobotConfigConstants.LEFT_GEARBOX_CIM_1_ID, MotorType.kBrushless);
+        RobotConfigConstants.LEFT_GEARBOX_SLAVE_CIM_2_ID, MotorType.kBrushless);
     
 // Added by Russ (trying to slave the second motors)
+/*
     private CANSparkMax rightGearBoxSlave1 = new CANSparkMax(
-        RobotConfigConstants.RIGHT_GEARBOX_CIM_2_ID, MotorType.kBrushless);
+        RobotConfigConstants.RIGHT_GEARBOX_SLAVE_CIM_2_ID, MotorType.kBrushless);
     private CANSparkMax leftGearBoxSlave1 = new CANSparkMax(
-        RobotConfigConstants.LEFT_GEARBOX_CIM_2_ID, MotorType.kBrushless);
+        RobotConfigConstants.LEFT_GEARBOX_SLAVE_CIM_2_ID, MotorType.kBrushless);
+*/
     //m_rightMotor = new CANSparkMax(rightDeviceID, MotorType.kBrushless);
 
     /*
@@ -57,8 +59,8 @@ public class DrivetrainSubsystem extends Subsystem {
 
     protected void initialize() {
         
-        this.rightGearBoxSlave1.follow(rightGearBoxMasterMotor);
-        this.leftGearBoxSlave1.follow(leftGearBoxMasterMotor);
+//        this.rightGearBoxSlave1.follow(rightGearBoxMasterMotor);
+//        this.leftGearBoxSlave1.follow(leftGearBoxMasterMotor);
 
         // Setting the speed controllers forward for our drivetrain
         boolean invert = RobotConfigConstants.OPTIONAL_DRIVETRAIN_DIRECTION_INVERSION == -1;
@@ -90,6 +92,7 @@ public class DrivetrainSubsystem extends Subsystem {
 
     public void doArcadeDrive(double forwardValue, double rotateValue) {
         getRobotDrive().arcadeDrive(forwardValue, rotateValue);
+//        this.stopMotor();
     }
 
     public void stopArcadeDrive() {

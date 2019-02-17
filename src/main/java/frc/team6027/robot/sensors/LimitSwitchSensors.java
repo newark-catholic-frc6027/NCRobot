@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 public class LimitSwitchSensors {
 
     public enum LimitSwitchId {
+        RearLiftUp,
+        RearLiftDown,
         MastTop,
         MastBottom
     }
@@ -19,7 +21,10 @@ public class LimitSwitchSensors {
     private DigitalInput limitSwitchBottomB = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_BOTTOM_B_CHANNEL); // bottom b
     private DigitalInput limitSwitchTopA = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_TOP_A_CHANNEL); // top a
     private DigitalInput limitSwitchTopB = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_TOP_B_CHANNEL); // top b
-    
+    /*
+    private DigitalInput rearLiftUp = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_REAR_LIFT_UP_CHANNEL);
+    private DigitalInput rearLiftDown = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_REAR_LIFT_DOWN_CHANNEL);
+*/
     
     private Map<LimitSwitchId, DigitalInput> limitSwitchMap = new HashMap<>();
     
