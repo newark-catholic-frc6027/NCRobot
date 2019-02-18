@@ -106,7 +106,7 @@ public class RearLiftSubsystem extends Subsystem {
 
 //        logger.trace("REAR LIFT UP power: {}, adjustedPower: {}, topLimitTripped? {}", power, adjustedPower, this.isUpLimitSwitchTripped());
         if (Math.abs(adjustedPower) > .05 /*&& ! this.isUpLimitSwitchTripped()*/) {
-            logger.trace("REAR LIFT UP, running motor: {}", adjustedPower);
+            logger.trace("REAR LIFT UP, running motor. Power: {}, amps: {}", adjustedPower, this.rearLiftGearBoxMaster.getOutputCurrent());
             this.rearLiftGearBoxMaster.set(adjustedPower);
             this.operatorDisplay.setFieldValue(OperatorDisplay.REAR_LIFT_MAX, "NO");
         } else {
@@ -120,7 +120,7 @@ public class RearLiftSubsystem extends Subsystem {
         double adjustedPower = power > 0.0 ? power : power * -1;
 //        logger.trace("REAR LIFT DOWN power: {}, adjustedPower: {}, downLimitTripped? {}", power, adjustedPower, this.isDownLimitSwitchTripped());
         if (Math.abs(adjustedPower) > .05 /*&& ! this.isDownLimitSwitchTripped()*/) {
-            logger.trace("REAR LIFT DOWN, running motor: {}", adjustedPower);
+            logger.trace("REAR LIFT DOWN, running motor. Power: {}, amps: {}", adjustedPower, this.rearLiftGearBoxMaster.getOutputCurrent());
             this.rearLiftGearBoxMaster.set(adjustedPower);
             this.operatorDisplay.setFieldValue(OperatorDisplay.REAR_LIFT_MIN, "NO");
         } else {
