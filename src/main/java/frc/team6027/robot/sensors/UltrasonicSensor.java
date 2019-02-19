@@ -1,7 +1,5 @@
 package frc.team6027.robot.sensors;
 
-import frc.team6027.robot.RobotConfigConstants;
-
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Ultrasonic;
@@ -10,11 +8,7 @@ public class UltrasonicSensor implements PIDSource {
     
     private Ultrasonic ultrasonic;
     
-    public UltrasonicSensor() {
-        this(RobotConfigConstants.ULTRASONIC_PING_CHANNEL, RobotConfigConstants.ULTRASONIC_ECHO_CHANNEL);
-    }
-    
-    public UltrasonicSensor(int pingChannel, int echoChannel) {
+    UltrasonicSensor(int pingChannel, int echoChannel) {
         this.ultrasonic = new Ultrasonic(pingChannel, echoChannel);
         this.ultrasonic.setAutomaticMode(true);
     }

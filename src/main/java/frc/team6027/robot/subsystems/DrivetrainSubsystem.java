@@ -5,9 +5,19 @@ import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorInterface;
 import frc.team6027.robot.RobotConfigConstants;
 // import com.ctre.CANTalon;
+import frc.team6027.robot.sensors.SensorService;
+import frc.team6027.robot.sensors.EncoderSensors.EncoderKey;
+import frc.team6027.robot.sensors.MotorEncoder;
+import frc.team6027.robot.sensors.MotorEncoderCANImpl;
+import frc.team6027.robot.sensors.MotorPIDController;
+import frc.team6027.robot.sensors.MotorPIDControllerCANImpl;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.RobotDrive;
@@ -16,6 +26,11 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class DrivetrainSubsystem extends Subsystem {
+    public enum MotorKey {
+        MotorLeft,
+        MotorRight
+    }
+
     @SuppressWarnings("unused")
     private final Logger logger = LogManager.getLogger(getClass());
 
@@ -55,10 +70,33 @@ public class DrivetrainSubsystem extends Subsystem {
     private OperatorInterface operatorInterface;
 
     public DrivetrainSubsystem(OperatorInterface operatorInterface) {
+        this(operatorInterface, null);
+    }
+
+    public DrivetrainSubsystem(OperatorInterface operatorInterface, SensorService sensorService) {
         this.operatorInterface = operatorInterface;
+        if (sensorService != null) {
+            this.registerMotorEncoders(sensorService);
+        }        
         this.initialize();
     }
 
+	public void registerMotorEncoders(SensorService sensorService) {
+        Map<EncoderKey, MotorEncoder> encoderMap = new HashMap<>();
+        encoderMap.put(EncoderKey.DriveMotorLeft, new MotorEncoderCANImpl(this.leftGearBoxMasterMotor.getEncoder()));
+        encoderMap.put(EncoderKey.DriveMotorRight, new MotorEncoderCANImpl(this.rightGearBoxMasterMotor.getEncoder()));
+        sensorService.addMotorEncoders(encoderMap);
+	}
+
+    public MotorPIDController getPIDController(MotorKey key) {
+        if (key == MotorKey.MotorLeft) {
+            return new MotorPIDControllerCANImpl(this.leftGearBoxMasterMotor.getPIDController());
+        } else if (key == MotorKey.MotorRight) {
+            return new MotorPIDControllerCANImpl(this.rightGearBoxMasterMotor.getPIDController());
+        } else {
+            return null;
+        }
+    }
     protected void initialize() {
         this.rightGearBoxSlave1.follow(this.rightGearBoxMasterMotor);
         this.leftGearBoxSlave1.follow(this.leftGearBoxMasterMotor);
@@ -94,7 +132,7 @@ public class DrivetrainSubsystem extends Subsystem {
     }
 
     public void doArcadeDrive(double forwardValue, double rotateValue) {
-        getRobotDrive().arcadeDrive(forwardValue, rotateValue);
+        getRobotDrive().arcadeDrive(forwardValue, -1 * rotateValue);
 //        this.stopMotor();
     }
 
@@ -141,4 +179,5 @@ public class DrivetrainSubsystem extends Subsystem {
         getRobotDrive().stopMotor();
 
     }
+
 }

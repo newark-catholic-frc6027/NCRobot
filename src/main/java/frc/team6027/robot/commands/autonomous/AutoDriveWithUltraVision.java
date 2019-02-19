@@ -10,6 +10,7 @@ import frc.team6027.robot.data.DatahubRegistry;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import frc.team6027.robot.sensors.UltrasonicSensor;
+import frc.team6027.robot.sensors.UltrasonicSensorManager.UltrasonicSensorKey;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
@@ -44,7 +45,7 @@ public class AutoDriveWithUltraVision extends Command {
         this.drivetrain = drivetrain;
         this.operatorDisplay = operatorDisplay;
         this.drivePower = drivePower;
-        this.ultrasonic = sensorService.getUltrasonicSensor();
+        this.ultrasonic = sensorService.getUltrasonicSensor(UltrasonicSensorKey.Front);
 		
         this.visionData = DatahubRegistry.instance().get(DatahubRegistry.VISION_KEY);
         this.stopDistanceFromTarget = stopDistanceFromTarget;

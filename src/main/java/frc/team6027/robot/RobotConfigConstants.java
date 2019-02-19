@@ -199,8 +199,11 @@ public class RobotConfigConstants {
     /*
      * Ultrasonic sensor constants
      */
-    public static final int ULTRASONIC_PING_CHANNEL = 4;
-    public static final int ULTRASONIC_ECHO_CHANNEL = 5;
+    public static final int ULTRASONIC_FRONT_PING_CHANNEL = 0;
+    public static final int ULTRASONIC_FRONT_ECHO_CHANNEL = 1;
+
+    public static final int ULTRASONIC_BACK_PING_CHANNEL = 2;
+    public static final int ULTRASONIC_BACK_ECHO_CHANNEL = 3;
 
     /* set to 1 if inversion is not needed, -1 if inversion is needed */
     public final static int OPTIONAL_LEFT_JOYSTICK_INVERSION = -1;
@@ -209,20 +212,12 @@ public class RobotConfigConstants {
 
     /* set to 1 if inversion is not needed, -1 if inversion is needed */
     public final static int OPTIONAL_DRIVETRAIN_DIRECTION_INVERSION = 1;
-
-	public static final int LIMIT_SWITCH_REAR_LIFT_UP_CHANNEL = 9;
-    public static final int LIMIT_SWITCH_REAR_LIFT_DOWN_CHANNEL = 8;
     
-    public final static int LIMIT_SWITCH_MAST_BOTTOM_CHANNEL = 10;
-//    public final static int LIMIT_SWITCH_BOTTOM_A_CHANNEL = 8;
-//    public final static int LIMIT_SWITCH_BOTTOM_B_CHANNEL = 7;
+    public final static int LIMIT_SWITCH_MAST_BOTTOM_CHANNEL = 6;
+    public final static int LIMIT_SWITCH_MAST_TOP_CHANNEL = 7;
 
-    public final static int LIMIT_SWITCH_MAST_TOP_CHANNEL = 11;
-//    public final static int LIMIT_SWITCH_TOP_A_CHANNEL = 9;
-//    public final static int LIMIT_SWITCH_TOP_B_CHANNEL = 6;
-
-    public final static int LIMIT_SWITCH_MAST_FORWARD_CHANNEL = 12;
-    public final static int LIMIT_SWITCH_MAST_BACKWARD_CHANNEL = 13;
+    public final static int LIMIT_SWITCH_MAST_SLIDE_FORWARD_CHANNEL = 8;
+    public final static int LIMIT_SWITCH_MAST_SLIDE_BACKWARD_CHANNEL = 9;
 
     public final static String CONTOURS_CENTER_X = "contoursCenterX";
     public final static String CONTOUR_AREA_LEFT = "contourAreaLeft";

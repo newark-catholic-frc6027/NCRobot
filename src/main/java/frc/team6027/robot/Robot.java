@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.commands.TeleopManager;
 import frc.team6027.robot.commands.autonomous.AutoCommandHelper;
-//import frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
+import frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
 import frc.team6027.robot.commands.autonomous.NoOpCommand;
 //import frc.team6027.robot.commands.autonomous.AutonomousCommandManager.AutonomousPreference;
 //import frc.team6027.robot.commands.autonomous.AutonomousCommandManager.DontDoOption;
@@ -20,9 +20,9 @@ import frc.team6027.robot.data.DatahubNetworkTableImpl;
 import frc.team6027.robot.data.DatahubRegistry;
 import frc.team6027.robot.field.Field;
 import frc.team6027.robot.sensors.SensorService;
+import frc.team6027.robot.sensors.EncoderSensors.EncoderKey;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import frc.team6027.robot.subsystems.ElevatorSubsystem;
-import frc.team6027.robot.subsystems.RearLiftSubsystem;
 
 /**
  * The Virtual Machine is configured to automatically run this class, and to
@@ -57,9 +57,7 @@ public class Robot extends TimedRobot {
     */
 
     private Preferences prefs = Preferences.getInstance();
-    /*
     private AutonomousCommandManager autoCommandManager;
-    */
 
     private int teleopExecCount = 0;
     private int autoExecCount = 0;
@@ -77,7 +75,11 @@ public class Robot extends TimedRobot {
         this.setSensorService(new SensorService());
         this.setOperatorDisplay(new OperatorDisplaySmartDashboardImpl());
         this.setOperatorInterface(new OperatorInterface(this.getOperatorDisplay()));
-        this.setDrivetrain(new DrivetrainSubsystem(this.getOperatorInterface()));
+        this.setDrivetrain(
+            new DrivetrainSubsystem(this.getOperatorInterface(), this.getSensorService())
+        );
+        this.drivetrain.registerMotorEncoders(this.sensorService);
+
 //        this.setRearLift(new RearLiftSubsystem(this.sensorService.getLimitSwitchSensors(), operatorDisplay));
         this.setElevatorSubsystem(new ElevatorSubsystem(this.getSensorService().getLimitSwitchSensors(), this.getOperatorDisplay()));
 //        this.setPneumaticSubsystem(new PneumaticSubsystem(this.getOperatorDisplay()));
@@ -172,6 +174,25 @@ public class Robot extends TimedRobot {
 */
     @Override
     public void autonomousInit() {
+        this.sensorService.resetAll();
+
+        this.autoCommandManager = new AutonomousCommandManager(
+            this.getSensorService(),
+            this.getDrivetrain(),
+            this.getElevatorSubsystem(),
+            this.getOperatorDisplay()
+        );
+
+        this.autonomousCommand = this.autoCommandManager.chooseCommand();
+
+        if (autonomousCommand != null && ! NoOpCommand.getInstance().equals(autonomousCommand) ) {
+            // TODO: 
+            this.elevatorSubsystem.initialize();
+            autonomousCommand.start();
+        } else {
+            logger.warn("No autonomous command to run!");
+        }
+
 //        this.getPneumaticSubsystem().reset();
 /*
         applyStationPosition();
@@ -205,6 +226,7 @@ public class Robot extends TimedRobot {
             logger.warn("No autonomous command to run!");
         }
 */
+
     }
 
     /**
@@ -328,12 +350,14 @@ public class Robot extends TimedRobot {
     }
 */
     public void updateOperatorDisplay() {
-        getOperatorDisplay().setFieldValue("rightEncoder Raw Values",
-                this.sensorService.getEncoderSensors().getRightEncoder().getRaw());
+        getOperatorDisplay().setFieldValue("rightMotorEncoder Raw Values",
+                this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorRight).getPosition());
+        getOperatorDisplay().setFieldValue("leftMotorEncoder Raw Values",
+            this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorLeft).getPosition());
+        /*
+
         getOperatorDisplay().setFieldValue("rightEncoder Distance",
                 this.sensorService.getEncoderSensors().getRightEncoder().getDistance());
-        getOperatorDisplay().setFieldValue("leftEncoder Raw Values",
-                this.sensorService.getEncoderSensors().getLeftEncoder().getRaw());
         getOperatorDisplay().setFieldValue("leftEncoder Distance",
                 this.sensorService.getEncoderSensors().getLeftEncoder().getDistance());
         getOperatorDisplay().setFieldValue("leftEncoder Raw",

@@ -10,24 +10,22 @@ import edu.wpi.first.wpilibj.DigitalInput;
 public class LimitSwitchSensors {
 
     public enum LimitSwitchId {
-        RearLiftUp,
-        RearLiftDown,
-        MastTop,
-        MastBottom,
-        MastForward,
-        MastBackward
+        MastTop,      /* 7 */
+        MastBottom,   /* 6 */
+        MastSlideForward, /* 8 */
+        MastSlideBackward /* 9 */
     }
+
+    // Ultrasonic front - 0
+
     
     
     private DigitalInput mastBottom = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_MAST_BOTTOM_CHANNEL); // bottom a
 //    private DigitalInput limitSwitchBottomB = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_BOTTOM_B_CHANNEL); // bottom b
     private DigitalInput mastTop = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_MAST_TOP_CHANNEL);
-//    private DigitalInput limitSwitchTopB = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_TOP_B_CHANNEL); // top b
-    private DigitalInput rearLiftUp = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_REAR_LIFT_UP_CHANNEL);
-    private DigitalInput rearLiftDown = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_REAR_LIFT_DOWN_CHANNEL);
 
-    private DigitalInput mastForward = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_MAST_FORWARD_CHANNEL);
-    private DigitalInput mastBackward = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_MAST_BACKWARD_CHANNEL);
+    private DigitalInput mastForward = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_MAST_SLIDE_FORWARD_CHANNEL);
+    private DigitalInput mastBackward = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_MAST_SLIDE_BACKWARD_CHANNEL);
     
 //    private Map<LimitSwitchId, DigitalInput> limitSwitchMap = new HashMap<>();
     
@@ -62,16 +60,10 @@ public class LimitSwitchSensors {
             case MastBottom:
                 switchTripped = this.mastBottom.get();
                 break;
-            case RearLiftDown:
-                switchTripped = this.rearLiftDown.get();
-                break;
-            case RearLiftUp:
-                switchTripped = this.rearLiftUp.get();
-                break;
-            case MastForward:
+            case MastSlideForward:
                 switchTripped = this.mastForward.get();
                 break;
-            case MastBackward:
+            case MastSlideBackward:
                 switchTripped = this.mastBackward.get();
                 break;
     

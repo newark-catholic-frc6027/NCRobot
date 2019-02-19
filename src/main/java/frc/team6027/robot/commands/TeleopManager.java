@@ -9,10 +9,10 @@ import frc.team6027.robot.commands.DropCarriageCommand.DropFunction;
 import frc.team6027.robot.commands.autonomous.AutoDriveToVisionTarget;
 import frc.team6027.robot.controls.XboxJoystick;
 import frc.team6027.robot.sensors.SensorService;
+import frc.team6027.robot.sensors.UltrasonicSensorManager.UltrasonicSensorKey;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import frc.team6027.robot.subsystems.ElevatorSubsystem;
 import frc.team6027.robot.subsystems.PneumaticSubsystem;
-import frc.team6027.robot.subsystems.RearLiftSubsystem;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Preferences;
@@ -197,7 +197,7 @@ public class TeleopManager extends Command {
 
         if (this.execCount % LOG_REDUCTION_MOD == 0) {
             logger.trace("Ultrasonic dist: {}",
-                    String.format("%.3f", this.sensorService.getUltrasonicSensor().getDistanceInches()));
+                    String.format("%.3f", this.sensorService.getUltrasonicSensor(UltrasonicSensorKey.Front).getDistanceInches()));
         }
 
     }

@@ -56,10 +56,10 @@ public class ElevatorSubsystem extends Subsystem {
             }
 
             if (this.isGoingForward()) {
-                if ( this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.MastForward) ) {
+                if ( this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.MastSlideForward) ) {
                     this.mastSlideStop();
                 }
-            } else if (this.isGoingBackward() && this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.MastBackward)) {
+            } else if (this.isGoingBackward() && this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.MastSlideBackward)) {
                 this.mastSlideStop();
             }
            
@@ -154,11 +154,11 @@ public class ElevatorSubsystem extends Subsystem {
     }
 
     public boolean isForwardLimitSwitchTripped() {
-        return this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.MastForward);
+        return this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.MastSlideForward);
     }
 
     public boolean isBackwardLimitSwitchTripped() {
-        return this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.MastBackward);
+        return this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.MastSlideBackward);
     }
 
     public void mastForward(double power) {

@@ -5,6 +5,10 @@ import org.apache.logging.log4j.Logger;
 import frc.team6027.robot.RobotConfigConstants;
 import frc.team6027.robot.data.Datahub;
 import frc.team6027.robot.data.DatahubRegistry;
+import frc.team6027.robot.sensors.EncoderSensors.EncoderKey;
+import frc.team6027.robot.sensors.UltrasonicSensorManager.UltrasonicSensorKey;
+
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 
@@ -14,7 +18,7 @@ public class SensorService {
     private EncoderSensors encoderSensors;
     private PIDCapableGyro gyroSensor;
     private AirPressureSensor airPressureSensor;
-    private UltrasonicSensor ultrasonicSensor;
+    private UltrasonicSensorManager ultrasonicSensorManager;
     private CameraSensors cameraSensor;
     private LimitSwitchSensors limitSwitchSensors;
     protected Datahub visionData;
@@ -23,11 +27,15 @@ public class SensorService {
         this.encoderSensors = new EncoderSensors();
         this.gyroSensor = new NavxGyroSensor();
         this.airPressureSensor = new AirPressureSensor();
-        this.ultrasonicSensor = new UltrasonicSensor();
+        this.ultrasonicSensorManager = new UltrasonicSensorManager();
         this.cameraSensor = new CameraSensors();
         this.limitSwitchSensors = new LimitSwitchSensors();
     }
 
+    public void addMotorEncoders(Map<EncoderKey, MotorEncoder> encoders) {
+        this.encoderSensors.registerEncoders(encoders);
+    }
+    
     public EncoderSensors getEncoderSensors() {
         return encoderSensors;
     }
@@ -40,8 +48,8 @@ public class SensorService {
         return airPressureSensor;
     }
 
-    public UltrasonicSensor getUltrasonicSensor() {
-        return ultrasonicSensor;
+    public UltrasonicSensor getUltrasonicSensor(UltrasonicSensorKey key) {
+        return ultrasonicSensorManager.getSensor(key);
     }
 
     public CameraSensors getCameraSensor() {
@@ -94,7 +102,7 @@ public class SensorService {
 
         double distance = visionData.getDouble(RobotConfigConstants.DISTANCE_TO_TARGET_INCHES, -1.0);
         if (distance < 0 && withUltrasonicFallback) {
-            double ultdistance = Math.abs(this.getUltrasonicSensor().getDistanceInches());
+            double ultdistance = Math.abs(this.getUltrasonicSensor(UltrasonicSensorKey.Front).getDistanceInches());
             logger.warn("Vision distance returned was {}, using ultrasonic distance reading of {}", distance, ultdistance);
             distance = ultdistance;
         }

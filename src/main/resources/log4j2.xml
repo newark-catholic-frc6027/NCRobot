@@ -29,6 +29,9 @@
     </Logger>
     <Logger name="frc.team6027.robot.subsystems.RearLiftSubsystem" level="info">
     </Logger>
+
+    <Logger name="frc.team6027.robot.commands.TeleopManager" level="debug">
+    </Logger>
     
     <Root level="info">
       <AppenderRef ref="Console"/>
