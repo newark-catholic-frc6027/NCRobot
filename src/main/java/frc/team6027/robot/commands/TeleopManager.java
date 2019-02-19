@@ -7,6 +7,7 @@ import frc.team6027.robot.OperatorInterface;
 import frc.team6027.robot.commands.CubeDeliveryCommand.DeliveryMode;
 import frc.team6027.robot.commands.DropCarriageCommand.DropFunction;
 import frc.team6027.robot.commands.autonomous.AutoDriveToVisionTarget;
+import frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
 import frc.team6027.robot.controls.XboxJoystick;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.sensors.UltrasonicSensorManager.UltrasonicSensorKey;
@@ -99,7 +100,19 @@ public class TeleopManager extends Command {
 
     protected void initializeJoystick() {
         this.leftBumperButton = new JoystickButton(this.joystick, this.joystick.getLeftBumperButtonNumber());   
-        this.leftBumperButton.whenPressed(new PrintMessageCommand("LeftBumperWasPressed"));  
+        this.leftBumperButton.whenPressed(new Command() {
+            @Override
+            public void execute() {
+                AutonomousCommandManager.instance().killCurrent();
+            }
+            
+
+            @Override
+            protected boolean isFinished() {
+                return true;
+            }
+
+        });  
 //        this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());   
 //        this.yButton.whenPressed(new AutoDriveToVisionTarget(24.0, 0.6, this.sensorService, this.drivetrain,this.operatorDisplay));    
         
