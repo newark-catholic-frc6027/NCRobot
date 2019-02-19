@@ -203,10 +203,15 @@ public class TeleopManager extends Command {
     }
 
     private void runMastSlideIfRequired() {
-        if (this.joystick2.getTriggerAxis(Hand.kLeft) > .05) {
-            this.elevatorSubsystem.mastForward(this.joystick2.getTriggerAxis(Hand.kLeft));
-        } else {
-            this.elevatorSubsystem.mastBackward(this.joystick2.getTriggerAxis(Hand.kRight));
+        logger.trace("POV0: {}", this.joystick.getPOV(0));
+        // POV(0) return an angle for the pad based on which direction was pressed   
+        int povValue = this.joystick.getPOV(0);
+        if (povValue >= 225 && povValue <= 315) {
+            logger.info("Mast Backward: {}", povValue);
+            this.elevatorSubsystem.mastBackward(1.0);
+        } else if (povValue >= 45 && povValue <= 135) {
+            logger.info("Mast Forward: {}", povValue);
+            this.elevatorSubsystem.mastForward(1.0);
         }
     }
 
