@@ -98,6 +98,8 @@ public class TeleopManager extends Command {
     }
 
     protected void initializeJoystick() {
+        this.leftBumperButton = new JoystickButton(this.joystick, this.joystick.getLeftBumperButtonNumber());   
+        this.leftBumperButton.whenPressed(new PrintMessageCommand("LeftBumperWasPressed"));  
 //        this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());   
 //        this.yButton.whenPressed(new AutoDriveToVisionTarget(24.0, 0.6, this.sensorService, this.drivetrain,this.operatorDisplay));    
         
@@ -156,8 +158,8 @@ public class TeleopManager extends Command {
    
    
     protected void initializeJoystick2() {
-//        this.yButton2 = new JoystickButton(this.joystick2, this.joystick2.getYButtonNumber());   
-//        this.yButton2.whenPressed(new PrintMessageCommand("yButtonWasPressed"));  
+        this.yButton2 = new JoystickButton(this.joystick2, this.joystick2.getYButtonNumber());   
+        this.yButton2.whenPressed(new PrintMessageCommand("yButtonWasPressed"));  
     
     } 
 
