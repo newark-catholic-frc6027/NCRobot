@@ -20,12 +20,14 @@ public class UltrasonicSensorManager {
                 RobotConfigConstants.ULTRASONIC_FRONT_ECHO_CHANNEL
             )
         );
+        /* TODO
         this.sensorRegistry.put(UltrasonicSensorKey.Back, 
             new UltrasonicSensor(
                 RobotConfigConstants.ULTRASONIC_BACK_PING_CHANNEL,
                 RobotConfigConstants.ULTRASONIC_BACK_ECHO_CHANNEL
             )
         );
+        */
     }
 
     public UltrasonicSensorManager(Map<UltrasonicSensorKey, UltrasonicSensor> ultrasonics) {

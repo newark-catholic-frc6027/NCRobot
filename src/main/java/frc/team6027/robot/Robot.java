@@ -176,7 +176,7 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         this.sensorService.resetAll();
 
-        this.autoCommandManager = new AutonomousCommandManager(
+        this.autoCommandManager = AutonomousCommandManager.instance().initialize(
             this.getSensorService(),
             this.getDrivetrain(),
             this.getElevatorSubsystem(),

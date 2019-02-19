@@ -20,6 +20,9 @@ import edu.wpi.first.wpilibj.command.Command;
 public class AutonomousCommandManager {
     
     private final Logger logger = LogManager.getLogger(getClass());
+    private static AutonomousCommandManager instance = new AutonomousCommandManager();
+    private boolean initialized = false;
+    private AutoCommand currentAutoCommand;
 /*
     public enum DontDoOption {
         NoPreference("NO SELECTION"),
@@ -87,20 +90,45 @@ public class AutonomousCommandManager {
     private Map<String,Command> commandsByName = new HashMap<>();
     private ElevatorSubsystem elevatorSubsystem;
     
+    public static AutonomousCommandManager instance() {
+        return instance;    
+    }
+
+    private AutonomousCommandManager() {
+    }
     // SensorService sensorService, DrivetrainSubsystem drivetrainSubsystem,
     // OperatorDisplay operatorDisplay
-    public AutonomousCommandManager(/*AutonomousPreference preferredAutoScenario, Field field,*/ 
+    public AutonomousCommandManager initialize(/*AutonomousPreference preferredAutoScenario, Field field,*/ 
             SensorService sensorService, 
             DrivetrainSubsystem drivetrainSubsystem, /*PneumaticSubsystem pneumaticSubsystem,*/ 
             ElevatorSubsystem elevatorSubsystem, OperatorDisplay operatorDisplay) {
 //        this.preferredAutoScenario = preferredAutoScenario;
 //        this.field = field;
-        this.sensorService = sensorService;
-        this.drivetrainSubsystem = drivetrainSubsystem;
-//        this.pneumaticSubsystem = pneumaticSubsystem;
-        this.elevatorSubsystem = elevatorSubsystem;
-        this.operatorDisplay = operatorDisplay;
+        if (! this.initialized) {
+            this.sensorService = sensorService;
+            this.drivetrainSubsystem = drivetrainSubsystem;
+    //        this.pneumaticSubsystem = pneumaticSubsystem;
+            this.elevatorSubsystem = elevatorSubsystem;
+            this.operatorDisplay = operatorDisplay;
+        }
+        
+        return this;
     }
+
+    /**
+     * Sends a kill signal to current Auto command
+     */
+    public void killCurrent() {
+        if (this.currentAutoCommand != null) {
+            this.logger.warn("Kill signal set on command {}", this.currentAutoCommand.getClass().getSimpleName());
+            this.currentAutoCommand.kill();
+        }
+    }
+
+    public void setCurrent(AutoCommand command) {
+        this.currentAutoCommand = command;
+    }
+
 /*    
     public static void initAutoScenarioDisplayValues(OperatorDisplay operatorDisplay) {
         operatorDisplay.registerAutoScenario(AutonomousPreference.CrossLine.displayName());
