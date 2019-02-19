@@ -191,7 +191,7 @@ public class ElevatorSubsystem extends Subsystem {
     }
     
     public void elevatorUp(double power) {
-        double adjustedPower = power > 0.0 ? power * -1 : power;
+        double adjustedPower = power;// > 0.0 ? power * -1 : power;
 
         logger.trace("ElevatorUP power: {}, adjustedPower: {}, topLimitTripped? {}", power, adjustedPower, this.isTopLimitSwitchTripped());
         if (Math.abs(adjustedPower) > .05 /*&& ! this.isTopLimitSwitchTripped()*/) {
@@ -206,7 +206,7 @@ public class ElevatorSubsystem extends Subsystem {
     }
     
     public void elevatorDown(double power) {
-        double adjustedPower = power > 0.0 ? power : power * -1;
+        double adjustedPower = power > 0.0 ? power * -1 : power;// * -1;
         logger.trace("Elevator DOWN power: {}, adjustedPower: {}, bottomLimitTripped? {}", power, adjustedPower, this.isBottomLimitSwitchTripped());
         if (Math.abs(adjustedPower) > .05 /*&& ! this.isBottomLimitSwitchTripped()*/) {
             logger.trace("Elevator DOWN, running motor: {}", adjustedPower);

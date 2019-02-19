@@ -13,6 +13,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class DrivetrainSubsystem extends Subsystem {
     @SuppressWarnings("unused")
@@ -48,7 +49,8 @@ public class DrivetrainSubsystem extends Subsystem {
      */
 
 //    private RobotDrive robotDrive = new RobotDrive(leftGearBoxMaster, rightGearBoxMaster);
-    private RobotDrive robotDrive = new RobotDrive(leftGearBoxMasterMotor, rightGearBoxMasterMotor);
+    //private RobotDrive robotDrive = new RobotDrive(leftGearBoxMasterMotor, rightGearBoxMasterMotor);
+    private DifferentialDrive robotDrive = null;
 
     private OperatorInterface operatorInterface;
 
@@ -58,9 +60,10 @@ public class DrivetrainSubsystem extends Subsystem {
     }
 
     protected void initialize() {
-        
-        this.rightGearBoxSlave1.follow(rightGearBoxMasterMotor);
-        this.leftGearBoxSlave1.follow(leftGearBoxMasterMotor);
+        this.rightGearBoxSlave1.follow(this.rightGearBoxMasterMotor);
+        this.leftGearBoxSlave1.follow(this.leftGearBoxMasterMotor);
+
+        this.robotDrive = new DifferentialDrive(leftGearBoxMasterMotor, rightGearBoxMasterMotor);
 
         // Setting the speed controllers forward for our drivetrain
         boolean invert = RobotConfigConstants.OPTIONAL_DRIVETRAIN_DIRECTION_INVERSION == -1;
@@ -99,11 +102,11 @@ public class DrivetrainSubsystem extends Subsystem {
         getRobotDrive().arcadeDrive(0, 0);
         getRobotDrive().stopMotor();
     }
-
+/*
     public void drive(double outputMagnitude, double curve) {
         getRobotDrive().drive(outputMagnitude, curve);
     }
-
+*/
     public OperatorInterface getOperatorInterface() {
         return operatorInterface;
     }
@@ -112,11 +115,11 @@ public class DrivetrainSubsystem extends Subsystem {
         this.operatorInterface = operatorInterface;
     }
 
-    protected RobotDrive getRobotDrive() {
+    protected DifferentialDrive getRobotDrive() {
         return robotDrive;
     }
 
-    public void setRobotDrive(RobotDrive robotDrive) {
+    public void setRobotDrive(DifferentialDrive robotDrive) {
         this.robotDrive = robotDrive;
 
     }

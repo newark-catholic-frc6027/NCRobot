@@ -31,7 +31,6 @@ public class TeleopManager extends Command {
     private DrivetrainSubsystem drivetrain;
     private Preferences prefs = Preferences.getInstance();
     private PneumaticSubsystem pneumaticSubsystem;
-    private RearLiftSubsystem rearLiftSubsystem;
     private ElevatorSubsystem elevatorSubsystem;
     private OperatorDisplay operatorDisplay;
     
@@ -62,7 +61,7 @@ public class TeleopManager extends Command {
     
 
     public TeleopManager(OperatorInterface operatorInterface, SensorService sensorService,
-            DrivetrainSubsystem drivetrain, RearLiftSubsystem rearLiftSubsystem, /*PneumaticSubsystem pneumaticSubsystem,*/ ElevatorSubsystem elevator,
+            DrivetrainSubsystem drivetrain, /*PneumaticSubsystem pneumaticSubsystem,*/ ElevatorSubsystem elevator,
             OperatorDisplay operatorDisplay) {
         // Identify the subsystems we will be using in this command and this
         // command
@@ -77,7 +76,7 @@ public class TeleopManager extends Command {
         
         this.joystick = this.operatorInterface.getJoystick1();
         this.joystick2 = this.operatorInterface.getJoystick2();
-        this.rearLiftSubsystem = rearLiftSubsystem;
+//        this.rearLiftSubsystem = rearLiftSubsystem;
         this.drivetrain = drivetrain;
 //        this.pneumaticSubsystem = pneumaticSubsystem;
         this.elevatorSubsystem = elevator;
@@ -183,7 +182,6 @@ public class TeleopManager extends Command {
     protected void execute() {
         this.execCount++;
         this.drive();
-        this.runRearLiftIfRequired();
         this.runMastSlideIfRequired();
         this.runElevatorIfRequired();
 
@@ -203,13 +201,6 @@ public class TeleopManager extends Command {
         }
 
     }
-    private void runRearLiftIfRequired() {
-        if (this.joystick.getTriggerAxis(Hand.kLeft) > .05) {
-            this.rearLiftSubsystem.rearLiftDown(this.joystick.getTriggerAxis(Hand.kLeft));
-        } else {
-            this.rearLiftSubsystem.rearLiftUp(this.joystick.getTriggerAxis(Hand.kRight));
-        }
-    }
 
     private void runMastSlideIfRequired() {
         if (this.joystick2.getTriggerAxis(Hand.kLeft) > .05) {
@@ -220,10 +211,10 @@ public class TeleopManager extends Command {
     }
 
     private void runElevatorIfRequired() {
-        if (this.joystick2.getRightAxis() > .05) {
-            this.elevatorSubsystem.elevatorDown(this.joystick2.getRightAxis());
+        if (this.joystick.getTriggerAxis(Hand.kLeft) > .05) {
+            this.elevatorSubsystem.elevatorDown(this.joystick.getTriggerAxis(Hand.kLeft));
         } else {
-            this.elevatorSubsystem.elevatorUp(this.joystick2.getRightAxis());
+            this.elevatorSubsystem.elevatorUp(this.joystick.getTriggerAxis(Hand.kRight));
         }
     }
 
