@@ -22,7 +22,7 @@ public class AutonomousCommandManager {
     private final Logger logger = LogManager.getLogger(getClass());
     private static AutonomousCommandManager instance = new AutonomousCommandManager();
     private boolean initialized = false;
-    private AutoCommand currentAutoCommand;
+    private KillableAutoCommand currentAutoCommand;
 /*
     public enum DontDoOption {
         NoPreference("NO SELECTION"),
@@ -125,7 +125,7 @@ public class AutonomousCommandManager {
         }
     }
 
-    public void setCurrent(AutoCommand command) {
+    public void setCurrent(KillableAutoCommand command) {
         this.currentAutoCommand = command;
     }
 

@@ -10,7 +10,7 @@ import frc.team6027.robot.subsystems.PneumaticSubsystem;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class AutoCrossLineFromCenterCommand extends CommandGroup {
+public class AutoCrossLineFromCenterCommand extends CommandGroup implements KillableAutoCommand {
     private Preferences prefs = Preferences.getInstance();
 
     public AutoCrossLineFromCenterCommand(SensorService sensorService, DrivetrainSubsystem drivetrain, 
@@ -24,5 +24,11 @@ public class AutoCrossLineFromCenterCommand extends CommandGroup {
                     distance, 
                     DriveDistanceMode.DistanceFromObject, .40) 
         );
+    }
+
+    @Override
+    public void start() {
+        this.registerOnStart();
+        super.start();
     }
 }

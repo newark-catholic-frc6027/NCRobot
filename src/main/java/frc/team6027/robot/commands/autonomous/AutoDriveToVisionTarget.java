@@ -12,7 +12,7 @@ import frc.team6027.robot.data.Datahub;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 
-public class AutoDriveToVisionTarget extends FlexCommand {
+public class AutoDriveToVisionTarget extends FlexCommand implements KillableAutoCommand {
     private final Logger logger = LogManager.getLogger(getClass());
 
     // TODO: Read from Robot Preferences
@@ -67,4 +67,11 @@ public class AutoDriveToVisionTarget extends FlexCommand {
         this.commandGroup.addSequential(
             new DriveStraightCommand(this.sensorService, this.drivetrain, this.operatorDisplay, distance, mode, this.drivePower));
     }
+
+    @Override
+    public void start() {
+        this.registerOnStart();
+        super.start();
+    }
+    
 }
