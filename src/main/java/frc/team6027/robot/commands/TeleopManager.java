@@ -89,7 +89,7 @@ public class TeleopManager extends Command {
         toggleGrippersCommand = new ToggleGrippersCommand(this.pneumaticSubsystem);
         */
         /*
-        this.toggleShiftElevatorCommand = new ToggleShiftElevatorCommand(pneumaticSubsystem);
+        this.toggleShiftElevatorCommand = new ToggleShiftElevatorCommand(pneumaticSubsvystem);
         */
         //this.visionTurnCommand=new VisionTurnCommand();
 
@@ -113,6 +113,22 @@ public class TeleopManager extends Command {
             }
 
         });  
+        this.aButton = new JoystickButton(this.joystick, this.joystick.getAButtonNumber());   
+        this.aButton.whileHeld(new Command() {
+            @Override
+            public void execute() {
+                
+            
+        
+
+        this.bButton = new JoystickButton(this.joystick, this.joystick.getBButtonNumber());   
+        this.bButton.whileHeld(new Command() {
+            @Override
+            public void execute() {
+
+            }
+        }
+
 //        this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());   
 //        this.yButton.whenPressed(new AutoDriveToVisionTarget(24.0, 0.6, this.sensorService, this.drivetrain,this.operatorDisplay));    
         
