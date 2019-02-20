@@ -21,6 +21,7 @@ import frc.team6027.robot.data.DatahubRegistry;
 import frc.team6027.robot.field.Field;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.sensors.EncoderSensors.EncoderKey;
+import frc.team6027.robot.subsystems.ArmSubsystem;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import frc.team6027.robot.subsystems.ElevatorSubsystem;
 
@@ -48,6 +49,7 @@ public class Robot extends TimedRobot {
     private PneumaticSubsystem pneumaticSubsystem;
     */
     private ElevatorSubsystem elevatorSubsystem;
+    private ArmSubsystem armSubsystem;
     
     private SensorService sensorService;
 
@@ -80,6 +82,7 @@ public class Robot extends TimedRobot {
         );
         this.drivetrain.registerMotorEncoders(this.sensorService);
 
+        this.setArmSubsystem(new ArmSubsystem(this.getOperatorInterface()));
 //        this.setRearLift(new RearLiftSubsystem(this.sensorService.getLimitSwitchSensors(), operatorDisplay));
         this.setElevatorSubsystem(new ElevatorSubsystem(this.getSensorService().getLimitSwitchSensors(), this.getOperatorDisplay()));
 //        this.setPneumaticSubsystem(new PneumaticSubsystem(this.getOperatorDisplay()));
@@ -90,13 +93,14 @@ public class Robot extends TimedRobot {
         // This ensures that the Teleop command is running whenever we are not in
         // autonomous mode
         TeleopManager teleOpCommand = new TeleopManager(this.operatorInterface, this.sensorService,
-                this.getDrivetrain(), this.getElevatorSubsystem(), this.getOperatorDisplay());
+                this.getDrivetrain(), this.getArmSubsystem(), this.getElevatorSubsystem(), this.getOperatorDisplay());
         this.getDrivetrain().setDefaultCommand(teleOpCommand);
         /*
         AutonomousCommandManager.initAutoScenarioDisplayValues(this.getOperatorDisplay());
         AutonomousCommandManager.initDontDoOptionDisplayValues(this.getOperatorDisplay());
         */
     }
+
 
 
     protected void outputBanner() {
@@ -306,6 +310,15 @@ public class Robot extends TimedRobot {
     public void setDrivetrain(DrivetrainSubsystem drivetrain) {
         this.drivetrain = drivetrain;
     }
+
+    public void setArmSubsystem(ArmSubsystem armSubsystem) {
+        this.armSubsystem = armSubsystem;
+    }
+
+    public ArmSubsystem getArmSubsystem() {
+        return this.armSubsystem;
+    }
+
 /*
     public RearLiftSubsystem getRearLift() {
         return this.rearLiftSubsystem;

@@ -22,7 +22,7 @@ public class TurnCommand extends Command implements PIDOutput {
 	/* This tuning parameter indicates how close to "on target" the */
 	/* PID Controller will attempt to get. */
 	protected static final double PID_TOLERANCE_DEGREES = 2.0;
-	protected static final double DRIVE_POWER = 0.4;
+	protected static final double DRIVE_POWER = 0.3;
 	
 	protected Preferences prefs = Preferences.getInstance();
 	protected long executionStartThreshold = this.prefs.getLong("turnCommand.execStartThreshold", 500);

@@ -11,6 +11,7 @@ import frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
 import frc.team6027.robot.controls.XboxJoystick;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.sensors.UltrasonicSensorManager.UltrasonicSensorKey;
+import frc.team6027.robot.subsystems.ArmSubsystem;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import frc.team6027.robot.subsystems.ElevatorSubsystem;
 import frc.team6027.robot.subsystems.PneumaticSubsystem;
@@ -33,6 +34,7 @@ public class TeleopManager extends Command {
     private Preferences prefs = Preferences.getInstance();
     private PneumaticSubsystem pneumaticSubsystem;
     private ElevatorSubsystem elevatorSubsystem;
+    private ArmSubsystem armSubsystem;
     private OperatorDisplay operatorDisplay;
     
     
@@ -62,13 +64,14 @@ public class TeleopManager extends Command {
     
 
     public TeleopManager(OperatorInterface operatorInterface, SensorService sensorService,
-            DrivetrainSubsystem drivetrain, /*PneumaticSubsystem pneumaticSubsystem,*/ ElevatorSubsystem elevator,
+            DrivetrainSubsystem drivetrain, ArmSubsystem armSubsystem, /*PneumaticSubsystem pneumaticSubsystem,*/ ElevatorSubsystem elevator,
             OperatorDisplay operatorDisplay) {
         // Identify the subsystems we will be using in this command and this
         // command
         // only
         requires(drivetrain);
         requires(elevator);
+        requires(armSubsystem);
 
         // Hang onto references of the components we will need during teleop
         this.sensorService = sensorService;
@@ -81,6 +84,7 @@ public class TeleopManager extends Command {
         this.drivetrain = drivetrain;
 //        this.pneumaticSubsystem = pneumaticSubsystem;
         this.elevatorSubsystem = elevator;
+        this.armSubsystem = armSubsystem;
         this.operatorDisplay = operatorDisplay;
                                                                                                          
         // Create the commands we will be using during teleop
