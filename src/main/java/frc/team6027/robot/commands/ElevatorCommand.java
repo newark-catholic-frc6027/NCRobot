@@ -65,6 +65,16 @@ public class ElevatorCommand extends Command {
         
         return false;
     }
+
+    protected boolean isDownwardMaxAmpsExceededWithDelay() {
+        long elapsedTime = System.currentTimeMillis() - this.execStartTime;
+        
+        if (elapsedTime > this.checkMotorAmpsThresholdMillis) {
+            return this.elevator.isDownwardMaxAmpsExceeded();
+        }
+        
+        return false;
+    }
     
     @Override
     protected boolean isFinished() {
@@ -75,7 +85,7 @@ public class ElevatorCommand extends Command {
         // Checking isGoingUp/Down may be affecting communication
         boolean done = (this.direction == ElevatorDirection.Up && this.elevator.isGoingUp() && (topSwitchTripped || this.isUpwardMaxAmpsExceededWithDelay())) 
                            ||
-                       (this.direction == ElevatorDirection.Down && this.elevator.isGoingDown() && bottomSwitchTripped);
+                       (this.direction == ElevatorDirection.Down && this.elevator.isGoingDown() && (bottomSwitchTripped || this.isDownwardMaxAmpsExceededWithDelay()));
 
         if (done) {
             this.elevator.elevatorStop();
@@ -95,7 +105,7 @@ public class ElevatorCommand extends Command {
             logger.error("Elevator Execute stopped!  Direction not set!");
         }
         // Be explicit in order to try reduce motor "Output not updated often enough" warnings
-        this.driveTrain.stopMotor();
+        //this.driveTrain.stopMotor();
     }
 
     

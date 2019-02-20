@@ -431,11 +431,12 @@ public class AutonomousCommandManager {
                 this.getPneumaticSubsystem(), this.getOperatorDisplay());
     }
 
+    /*
     private Command makeDeliverToSwitchEndFromOppositeSideCommand(StartingPositionSide startingSide) {
         return new AutoDeliverToSwitchFromOppositeSide(startingSide, this.getSensorService(),
                 this.getDrivetrainSubsystem(), this.getPneumaticSubsystem(), this.getOperatorDisplay(), this.getField());
     }
-    
+    */
     /*
     private Command makeDeliverToSwitchEndCommand(StartingPositionSide startingSide) {
         return new AutoDeliverToSwitchEnd(

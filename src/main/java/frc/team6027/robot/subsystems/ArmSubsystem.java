@@ -67,7 +67,7 @@ public class ArmSubsystem extends Subsystem {
     }
 
     public void spin(double power, MotorDirection spinDirection) {
-        this.mainMotor.set(spinDirection == MotorDirection.Out ? power : power * -1);
+        this.mainMotor.set(spinDirection == MotorDirection.Out ? power * -1 : power);
     }
 
     public void stop() {

@@ -99,7 +99,7 @@ public class ElevatorSubsystem extends Subsystem {
 
     public boolean isForwardMaxAmpsExceeded() {
         boolean exceeded = false;
-        if (this.isGoingForward() /*&& ! this.isForwardLimitSwitchTripped()*/) {
+        if (this.isGoingForward() && ! this.isForwardLimitSwitchTripped()) {
             double currentOutputAmps = this.mastSlideGearBoxMaster.getOutputCurrent();
             exceeded = currentOutputAmps > this.maxSlideMotorAmps;
             if (exceeded) {
@@ -114,7 +114,7 @@ public class ElevatorSubsystem extends Subsystem {
 
     public boolean isBackwardMaxAmpsExceeded() {
         boolean exceeded = false;
-        if (this.isGoingBackward() /*&& ! this.isBackwardLimitSwitchTripped()*/) {
+        if (this.isGoingBackward() && ! this.isBackwardLimitSwitchTripped()) {
             double currentOutputAmps = this.mastSlideGearBoxMaster.getOutputCurrent();
             exceeded = currentOutputAmps > this.maxSlideMotorAmps;
             if (exceeded) {
@@ -164,8 +164,8 @@ public class ElevatorSubsystem extends Subsystem {
     public void mastForward(double power) {
         double adjustedPower = power > 0.0 ? power * -1 : power;
 
-        logger.trace("MastForward power: {}, adjustedPower: {}, topLimitTripped? {}", power, adjustedPower, this.isForwardLimitSwitchTripped());
-        if (Math.abs(adjustedPower) > .05 /*&& ! this.isForwardLimitSwitchTripped()*/) {
+        logger.trace("MastForward power: {}, adjustedPower: {}, forwardLimitTripped? {}", power, adjustedPower, this.isForwardLimitSwitchTripped());
+        if (Math.abs(adjustedPower) > .05 && ! this.isForwardLimitSwitchTripped()) {
             logger.trace("Mast FORWARD, running motor: {}", adjustedPower);
             this.mastSlideGearBoxMaster.set(adjustedPower);
             this.operatorDisplay.setFieldValue(OperatorDisplay.MAST_FORWARD_MAX, "NO");
@@ -178,8 +178,8 @@ public class ElevatorSubsystem extends Subsystem {
     
     public void mastBackward(double power) {
         double adjustedPower = power > 0.0 ? power : power * -1;
-        logger.trace("MastBackward power: {}, adjustedPower: {}, bottomLimitTripped? {}", power, adjustedPower, this.isBackwardLimitSwitchTripped());
-        if (Math.abs(adjustedPower) > .05 /*&& ! this.isBottomLimitSwitchTripped()*/) {
+        logger.trace("MastBackward power: {}, adjustedPower: {}, backLimitTripped? {}", power, adjustedPower, this.isBackwardLimitSwitchTripped());
+        if (Math.abs(adjustedPower) > .05 && ! this.isBottomLimitSwitchTripped()) {
             logger.trace("Mast BACKWARD, running motor: {}", adjustedPower);
             this.mastSlideGearBoxMaster.set(adjustedPower);
             this.operatorDisplay.setFieldValue(OperatorDisplay.MAST_BACKWARD_MAX, "NO");
@@ -194,7 +194,7 @@ public class ElevatorSubsystem extends Subsystem {
         double adjustedPower = power;// > 0.0 ? power * -1 : power;
 
         logger.trace("ElevatorUP power: {}, adjustedPower: {}, topLimitTripped? {}", power, adjustedPower, this.isTopLimitSwitchTripped());
-        if (Math.abs(adjustedPower) > .05 /*&& ! this.isTopLimitSwitchTripped()*/) {
+        if (Math.abs(adjustedPower) > .05 && ! this.isTopLimitSwitchTripped()) {
             logger.trace("Elevator UP, running motor: {}", adjustedPower);
             this.elevatorGearBoxMaster.set(adjustedPower);
             this.operatorDisplay.setFieldValue(OperatorDisplay.ELEVATOR_MAX, "NO");
@@ -208,7 +208,7 @@ public class ElevatorSubsystem extends Subsystem {
     public void elevatorDown(double power) {
         double adjustedPower = power > 0.0 ? power * -1 : power;// * -1;
         logger.trace("Elevator DOWN power: {}, adjustedPower: {}, bottomLimitTripped? {}", power, adjustedPower, this.isBottomLimitSwitchTripped());
-        if (Math.abs(adjustedPower) > .05 /*&& ! this.isBottomLimitSwitchTripped()*/) {
+        if (Math.abs(adjustedPower) > .05 && ! this.isBottomLimitSwitchTripped()) {
             logger.trace("Elevator DOWN, running motor: {}", adjustedPower);
             this.elevatorGearBoxMaster.set(adjustedPower);
             this.operatorDisplay.setFieldValue(OperatorDisplay.ELEVATOR_MIN, "NO");

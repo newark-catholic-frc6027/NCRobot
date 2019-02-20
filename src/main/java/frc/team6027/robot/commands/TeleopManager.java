@@ -4,8 +4,10 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.OperatorInterface;
+/*
 import frc.team6027.robot.commands.CubeDeliveryCommand.DeliveryMode;
 import frc.team6027.robot.commands.DropCarriageCommand.DropFunction;
+*/
 import frc.team6027.robot.commands.autonomous.AutoDriveToVisionTarget;
 import frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
 import frc.team6027.robot.controls.XboxJoystick;
@@ -52,12 +54,15 @@ public class TeleopManager extends Command {
     private JoystickButton xButton;
     private JoystickButton startButton;
 
+    private JoystickButton aButton2;
+    private JoystickButton bButton2;
+    private JoystickButton xButton2;
     private JoystickButton yButton2;
     
 
     private ShiftGearCommand shiftGearCommand;
-    private ToggleGrippersCommand toggleGrippersCommand;
-    private ToggleShiftElevatorCommand toggleShiftElevatorCommand;
+    private ToggleArmRotateCommand toggleGrippersCommand;
+    // private ToggleShiftElevatorCommand toggleShiftElevatorCommand;
     
 
     protected int execCount = 0;
@@ -110,7 +115,6 @@ public class TeleopManager extends Command {
             public void execute() {
                 AutonomousCommandManager.instance().killCurrent();
             }
-            
 
             @Override
             protected boolean isFinished() {
@@ -124,6 +128,7 @@ public class TeleopManager extends Command {
         this.bButton = new JoystickButton(this.joystick, this.joystick.getBButtonNumber());   
         this.bButton.whileHeld(new ArmMotorCommand(this.armSubsystem, MotorDirection.Out));
         
+
 
 //        this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());   
 //        this.yButton.whenPressed(new AutoDriveToVisionTarget(24.0, 0.6, this.sensorService, this.drivetrain,this.operatorDisplay));    
@@ -183,9 +188,25 @@ public class TeleopManager extends Command {
    
    
     protected void initializeJoystick2() {
+
+        // TODO: reassign, only for testing mast
+        this.xButton2 = new JoystickButton(this.joystick2, this.joystick2.getXButtonNumber());   
+        this.xButton2.whenPressed(new ElevatorCommand(ElevatorCommand.ElevatorDirection.Down, 
+            .5, this.sensorService, this.elevatorSubsystem, this.drivetrain));
+
         this.yButton2 = new JoystickButton(this.joystick2, this.joystick2.getYButtonNumber());   
-        this.yButton2.whenPressed(new PrintMessageCommand("yButtonWasPressed"));  
+        this.yButton2.whenPressed(new ElevatorCommand(ElevatorCommand.ElevatorDirection.Up, 
+            .5, this.sensorService, this.elevatorSubsystem, this.drivetrain));  
     
+        this.aButton2 = new JoystickButton(this.joystick2, this.joystick2.getAButtonNumber());
+        this.aButton2.whenPressed(new SlideMastCommand(SlideMastCommand.SlideMastDirection.Backward, 
+            1.0, this.sensorService, this.elevatorSubsystem, this.drivetrain));
+
+
+        this.bButton2 = new JoystickButton(this.joystick2, this.joystick2.getBButtonNumber());
+        this.bButton2.whenPressed(new SlideMastCommand(SlideMastCommand.SlideMastDirection.Forward, 
+            1.0, this.sensorService, this.elevatorSubsystem, this.drivetrain));
+      
     } 
 
     @Override

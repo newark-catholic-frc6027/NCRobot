@@ -15,14 +15,8 @@ public class PneumaticsInitializationCommand extends Command {
     private boolean driveSolenoidToggled = false;
     private boolean driveSolenoidInitialized = false;
     
-    private boolean gripperSolenoidToggled = false;
-    private boolean gripperSolenoidInitialized = false;
-    
-    private boolean kickerSolenoidToggled = false;
-    private boolean kickerSolenoidInitialized = false;
-    
-    private boolean elevatorSolenoidToggled = false;
-    private boolean elevatorSolenoidInitialized = false;
+    private boolean armRotateSolenoidToggled = false;
+    private boolean armRotateSolenoidInitialized = false;
     
     
     private PneumaticSubsystem pneumaticSubsystem;
@@ -58,56 +52,22 @@ public class PneumaticsInitializationCommand extends Command {
         }
         
         if (driveSolenoidInitialized) {
-            if (! gripperSolenoidToggled) {
-                logger.trace("Initializing Gripper Solenoid...");
-                this.pneumaticSubsystem.toggleGripperSolenoidForward();
-                this.gripperSolenoidToggled = true;
+            if (! armRotateSolenoidToggled) {
+                logger.trace("Initializing Arm rotate Solenoid...");
+                this.pneumaticSubsystem.toggleArmRotateSolenoidForward();
+                this.armRotateSolenoidToggled = true;
             } else {
-                if (this.pneumaticSubsystem.getGripperSolenoid().get() == DoubleSolenoid.Value.kForward) {
-                    gripperSolenoidInitialized = true;
-                    this.pneumaticSubsystem.toggleGripperSolenoidOff();
-                    logger.trace("Gripper Solenoid initialized.");
+                if (this.pneumaticSubsystem.getArmRotateSolenoid().get() == DoubleSolenoid.Value.kForward) {
+                    armRotateSolenoidInitialized = true;
+                    this.pneumaticSubsystem.toggleArmRotateSolenoidOff();
+                    logger.trace("Arm Rotate Solenoid initialized.");
                 } else {
-                    logger.trace("Gripper Solenoid not initialized yet");
+                    logger.trace("Arm Rotate Solenoid not initialized yet");
                 }
             }
         }
         
-
-        if (driveSolenoidInitialized && gripperSolenoidInitialized) {
-            if (! kickerSolenoidToggled) {
-                logger.trace("Initializing Kicker Solenoid...");
-                this.pneumaticSubsystem.toggleKickerSolenoidForward();
-                this.kickerSolenoidToggled = true;
-            } else {
-                if (this.pneumaticSubsystem.getKickerSolenoid().get() == DoubleSolenoid.Value.kForward) {
-                    kickerSolenoidInitialized = true;
-                    this.pneumaticSubsystem.toggleKickerSolenoidOff();
-                    logger.trace("Kicker Solenoid initialized.");
-                } else {
-                    logger.trace("Kicker Solenoid not initialized yet");
-                }
-            }
-        }
-        
-        if (driveSolenoidInitialized && gripperSolenoidInitialized && kickerSolenoidToggled) {
-            if (! elevatorSolenoidToggled) {
-                logger.trace("Initializing Elevator Solenoid...");
-                // Reverse is HIGH for elevator.  We want to start in high gear.
-                this.pneumaticSubsystem.toggleElevatorShifterSolenoidReverse();
-                this.elevatorSolenoidToggled = true;
-            } else {
-                if (this.pneumaticSubsystem.getElevatorShifterSolenoid().get() == DoubleSolenoid.Value.kReverse) {
-                    elevatorSolenoidInitialized = true;
-                    this.pneumaticSubsystem.toggleElevatorShifterSolenoidOff();
-                    logger.trace("Elevator Solenoid initialized.");
-                } else {
-                    logger.trace("Elevator Solenoid not initialized yet");
-                }
-            }
-        }
-        
-        this.initialized = driveSolenoidInitialized && gripperSolenoidInitialized && kickerSolenoidInitialized && elevatorSolenoidInitialized;
+        this.initialized = driveSolenoidInitialized && armRotateSolenoidInitialized;
     }
     
     @Override
@@ -119,10 +79,7 @@ public class PneumaticsInitializationCommand extends Command {
         logger.info("Pneumatics end method called");
         this.initialized = 
             this.driveSolenoidInitialized = this.driveSolenoidToggled = 
-            this.gripperSolenoidInitialized = this.gripperSolenoidToggled = 
-            this.kickerSolenoidInitialized = this.kickerSolenoidToggled = 
-            this.elevatorSolenoidInitialized = this.elevatorSolenoidToggled = false;
-        
+            this.armRotateSolenoidInitialized = this.armRotateSolenoidToggled = false;
     }
     
 }

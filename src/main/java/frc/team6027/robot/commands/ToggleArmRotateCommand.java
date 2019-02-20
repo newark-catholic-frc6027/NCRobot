@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Command;
 
-public class ToggleGrippersCommand extends Command {
+public class ToggleArmRotateCommand extends Command {
     /** The delay in milliseconds before we allow the command to finish.  This builds in a small delay to allow the
      * solenoid to finish toggling before we turn it back off. */
     public final static int DELAY_TO_OFF_MS = 250;
@@ -19,16 +19,16 @@ public class ToggleGrippersCommand extends Command {
     private final Logger logger = LogManager.getLogger(getClass());
 
     private PneumaticSubsystem pneumaticSubsystem;
-    private DoubleSolenoid gripperSolenoid;
+    private DoubleSolenoid armRotateSolenoid;
     
     private long timeStarted;
-    private Value initialGripperState;
+    private Value initialArmRotateState;
     
-    public ToggleGrippersCommand(PneumaticSubsystem pneumaticSubsystem) {
+    public ToggleArmRotateCommand(PneumaticSubsystem pneumaticSubsystem) {
         requires(pneumaticSubsystem);
         this.pneumaticSubsystem = pneumaticSubsystem;
-        this.gripperSolenoid = this.pneumaticSubsystem.getGripperSolenoid();
-        this.initialGripperState = this.gripperSolenoid.get();
+        this.armRotateSolenoid = this.pneumaticSubsystem.getArmRotateSolenoid();
+        this.initialArmRotateState = this.armRotateSolenoid.get();
     }
     
     @Override
@@ -40,8 +40,8 @@ public class ToggleGrippersCommand extends Command {
     @Override 
     public void execute() {
         if (! executionComplete) {
-            logger.trace("Running ToggleGrippersCommand");
-            this.pneumaticSubsystem.toggleGripperSolenoid();
+            logger.trace("Running ToggleArmRotateCommand");
+            this.pneumaticSubsystem.toggleArmRotateSolenoid();
             timeStarted = System.currentTimeMillis();
             // We only want to run once, so keep a boolean to make sure we don't run again until 
             // the delay period has expired
@@ -53,8 +53,8 @@ public class ToggleGrippersCommand extends Command {
     @Override
     protected boolean isFinished() {
         long timeElapsedMs = System.currentTimeMillis() - this.timeStarted;
-        if (this.gripperSolenoid.get() != this.initialGripperState || timeElapsedMs >= DELAY_TO_OFF_MS) {
-            logger.trace("ToggleGrippersCommand finished");
+        if (this.armRotateSolenoid.get() != this.initialArmRotateState || timeElapsedMs >= DELAY_TO_OFF_MS) {
+            logger.trace("ToggleArmRotateCommand finished");
             return true;
         } else {
             return false;
@@ -65,7 +65,7 @@ public class ToggleGrippersCommand extends Command {
     protected void end() {
         // Reset our state for when we run again
         this.executionComplete = false;
-        this.pneumaticSubsystem.toggleGripperSolenoidOff();
+        this.pneumaticSubsystem.toggleArmRotateSolenoidOff();
     }
 
 }
