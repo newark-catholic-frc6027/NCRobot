@@ -15,6 +15,7 @@ import frc.team6027.robot.subsystems.ArmSubsystem;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import frc.team6027.robot.subsystems.ElevatorSubsystem;
 import frc.team6027.robot.subsystems.PneumaticSubsystem;
+import frc.team6027.robot.subsystems.ArmSubsystem.MotorDirection;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Preferences;
@@ -118,20 +119,11 @@ public class TeleopManager extends Command {
 
         });  
         this.aButton = new JoystickButton(this.joystick, this.joystick.getAButtonNumber());   
-        this.aButton.whileHeld(new Command() {
-            @Override
-            public void execute() {
-                
-            
-        
+        this.aButton.whileHeld(new ArmMotorCommand(this.armSubsystem, MotorDirection.In));
 
         this.bButton = new JoystickButton(this.joystick, this.joystick.getBButtonNumber());   
-        this.bButton.whileHeld(new Command() {
-            @Override
-            public void execute() {
-
-            }
-        }
+        this.bButton.whileHeld(new ArmMotorCommand(this.armSubsystem, MotorDirection.Out));
+        
 
 //        this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());   
 //        this.yButton.whenPressed(new AutoDriveToVisionTarget(24.0, 0.6, this.sensorService, this.drivetrain,this.operatorDisplay));    
