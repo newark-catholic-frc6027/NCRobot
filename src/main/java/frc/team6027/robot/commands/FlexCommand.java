@@ -37,6 +37,11 @@ public class FlexCommand extends Command {
         return this.commandGroup.isFinished();
     }
 
+    @Override
+    public void cancel() {
+        this.commandGroup.cancel();
+    }
+
 
     public static class DummyCommand extends Command {
         private final Logger logger = LogManager.getLogger(getClass());
