@@ -13,6 +13,7 @@ import frc.team6027.robot.commands.TeleopManager;
 import frc.team6027.robot.commands.autonomous.AutoCommandHelper;
 import frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
 import frc.team6027.robot.commands.autonomous.NoOpCommand;
+import frc.team6027.robot.commands.autonomous.TurnCommand;
 //import frc.team6027.robot.commands.autonomous.AutonomousCommandManager.AutonomousPreference;
 //import frc.team6027.robot.commands.autonomous.AutonomousCommandManager.DontDoOption;
 import frc.team6027.robot.data.Datahub;
@@ -95,12 +96,23 @@ public class Robot extends TimedRobot {
         TeleopManager teleOpCommand = new TeleopManager(this.operatorInterface, this.sensorService,
                 this.getDrivetrain(), this.getArmSubsystem(), this.getElevatorSubsystem(), this.getOperatorDisplay());
         this.getDrivetrain().setDefaultCommand(teleOpCommand);
+
+        this.autoCommandManager = AutonomousCommandManager.instance();
+        this.autoCommandManager.initialize(
+            this.getSensorService(),
+            this.getDrivetrain(),
+            this.getElevatorSubsystem(),
+            this.getOperatorDisplay()
+        );
+
+        this.autoCommandManager.initOperatorDisplayCommands();
+        this.sensorService.resetAll();
+
         /*
         AutonomousCommandManager.initAutoScenarioDisplayValues(this.getOperatorDisplay());
         AutonomousCommandManager.initDontDoOptionDisplayValues(this.getOperatorDisplay());
         */
     }
-
 
 
     protected void outputBanner() {
@@ -178,14 +190,10 @@ public class Robot extends TimedRobot {
 */
     @Override
     public void autonomousInit() {
+        // TODO: Need to add code to shift into high gear at start
+
         this.sensorService.resetAll();
 
-        this.autoCommandManager = AutonomousCommandManager.instance().initialize(
-            this.getSensorService(),
-            this.getDrivetrain(),
-            this.getElevatorSubsystem(),
-            this.getOperatorDisplay()
-        );
 
         this.autonomousCommand = this.autoCommandManager.chooseCommand();
 
@@ -277,6 +285,9 @@ public class Robot extends TimedRobot {
 
         this.getOperatorDisplay().setFieldValue("centerOfContours", this.visionData.getDouble("contoursCenterX", -1.0) );
         this.getOperatorDisplay().setFieldValue("numberOfContours", this.visionData.getDouble("numContours", 0.0));
+        this.getOperatorDisplay().setFieldValue("elevatorEncoder Inches", this.sensorService.getElevatorHeightInches());
+        this.getOperatorDisplay().setFieldValue("elevatorEncoder", this.sensorService.getEncoderSensors().getElevatorEncoder().getRaw());
+
     }
 
     /**
@@ -367,6 +378,10 @@ public class Robot extends TimedRobot {
                 this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorRight).getPosition());
         getOperatorDisplay().setFieldValue("leftMotorEncoder Raw Values",
             this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorLeft).getPosition());
+            
+        getOperatorDisplay().setFieldValue("Gyro Angle", this.sensorService.getGyroSensor().getAngle());
+        getOperatorDisplay().setFieldValue("Gyro Yaw Angle", this.sensorService.getGyroSensor().getYawAngle());
+        
         /*
 
         getOperatorDisplay().setFieldValue("rightEncoder Distance",
@@ -378,8 +393,6 @@ public class Robot extends TimedRobot {
         getOperatorDisplay().setFieldValue("rightEncoder Raw",
                 this.sensorService.getEncoderSensors().getRightEncoder().getRaw());
                 /*
-        getOperatorDisplay().setFieldValue("Gyro Angle", this.sensorService.getGyroSensor().getAngle());
-        getOperatorDisplay().setFieldValue("Gyro Yaw Angle", this.sensorService.getGyroSensor().getYawAngle());
         getOperatorDisplay().setFieldValue("Air Pressure", this.sensorService.getAirPressureSensor().getAirPressurePsi());
         getOperatorDisplay().setFieldValue("Ultrasonic Distance (in)", this.sensorService.getUltrasonicSensor().getDistanceInches());
         //getOperatorDisplay().setFieldValue("Contour Center", this.contoursCenterXEntry.getDouble(defaultValue));

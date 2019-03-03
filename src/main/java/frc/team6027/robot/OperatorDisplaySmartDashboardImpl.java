@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 import edu.wpi.first.wpilibj.NamedSendable;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -58,6 +59,11 @@ public class OperatorDisplaySmartDashboardImpl implements OperatorDisplay {
     public void setData(NamedSendable sendable) {
         SmartDashboard.putData(sendable);
     }
+
+    @Override
+    public void setData(String name, Command command) {
+        SmartDashboard.putData(name, command);
+	}
 
     @Override
     public void setFieldValue(String fieldName, Double numValue) {
@@ -121,6 +127,7 @@ public class OperatorDisplaySmartDashboardImpl implements OperatorDisplay {
     public String getSelectedDontDoOption() {
         return (String) this.dontDoOptionChooser.getSelected();
     }
+
 
 
 

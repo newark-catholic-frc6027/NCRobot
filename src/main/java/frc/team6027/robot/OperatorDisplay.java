@@ -1,6 +1,7 @@
 package frc.team6027.robot;
 
 import edu.wpi.first.wpilibj.NamedSendable;
+import edu.wpi.first.wpilibj.command.Command;
 
 /**
  * An interface used to define the operations necessary for displaying information and feedback to the robot human 
@@ -58,7 +59,8 @@ public interface OperatorDisplay {
 
 //    public void setNumericFieldValue(String fieldName, int numValue);
 
-    public void setData(NamedSendable sendable);
+    void setData(NamedSendable sendable);
+    void setData(String name, Command command);
 
     void setFieldValue(String fieldName, Double numValue);
 
@@ -67,6 +69,7 @@ public interface OperatorDisplay {
     void setFieldValue(String fieldName, String value);
 
     void setFieldValue(String fieldName, boolean value);
+
 
     void registerAutoScenario(String displayName);
     void registerAutoScenario(String displayName, boolean isDefaultCommand);

@@ -28,7 +28,7 @@ public class AutoCrossLineFromCenterCommand extends CommandGroup implements Kill
 
     @Override
     public void start() {
-        this.registerOnStart();
+        this.registerAsKillable();
         super.start();
     }
 }

@@ -141,6 +141,24 @@ public class RobotConfigConstants {
      * The second DIO channel that the left optical encoder is assigned to.
      */
     public static final int LEFT_OPTICAL_ENCODER_DIO_CHANNEL_B = 1;
+
+    /**
+     * 
+     */
+    public static final int ELEVATOR_ENCODER_DIO_CHANNEL_A = 8;
+
+    /**
+     * 
+     */
+    public static final int ELEVATOR_ENCODER_DIO_CHANNEL_B = 9;
+    
+    
+    public final static int LIMIT_SWITCH_MAST_BOTTOM_CHANNEL = 6;
+    public final static int LIMIT_SWITCH_MAST_TOP_CHANNEL = 7;
+
+    public final static int LIMIT_SWITCH_MAST_SLIDE_FORWARD_CHANNEL = 4;
+    public final static int LIMIT_SWITCH_MAST_SLIDE_BACKWARD_CHANNEL = 5;
+
     /**
      * The identifier of the left analog joystick on the Xbox controller used
      * for ArcadeDrive
@@ -201,12 +219,6 @@ public class RobotConfigConstants {
 
     /* set to 1 if inversion is not needed, -1 if inversion is needed */
     public final static int OPTIONAL_DRIVETRAIN_DIRECTION_INVERSION = 1;
-    
-    public final static int LIMIT_SWITCH_MAST_BOTTOM_CHANNEL = 6;
-    public final static int LIMIT_SWITCH_MAST_TOP_CHANNEL = 7;
-
-    public final static int LIMIT_SWITCH_MAST_SLIDE_FORWARD_CHANNEL = 8;
-    public final static int LIMIT_SWITCH_MAST_SLIDE_BACKWARD_CHANNEL = 9;
 
     public final static String CONTOURS_CENTER_X = "contoursCenterX";
     public final static String CONTOUR_AREA_LEFT = "contourAreaLeft";

@@ -23,6 +23,7 @@ public class AutonomousCommandManager {
     private static AutonomousCommandManager instance = new AutonomousCommandManager();
     private boolean initialized = false;
     private KillableAutoCommand currentAutoCommand;
+
 /*
     public enum DontDoOption {
         NoPreference("NO SELECTION"),
@@ -465,5 +466,20 @@ public class AutonomousCommandManager {
         return new AutoCrossLineFromCenterCommand(this.getSensorService(), this.getDrivetrainSubsystem(), 
                 this.getPneumaticSubsystem(), this.getOperatorDisplay()); 
     }
+
+	public void initOperatorDisplayCommands() {
+        this.getOperatorDisplay().setData("Turn", new TurnCommand("turnButton.angle", this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
+        this.getOperatorDisplay().setData("Reset Elevator Encoder", new Command() {
+
+            @Override
+            protected boolean isFinished() {
+                return true;
+            }
+
+            protected void execute() {
+                AutonomousCommandManager.this.getSensorService().getEncoderSensors().getElevatorEncoder().reset();
+            }
+        });
+	}
     
 }

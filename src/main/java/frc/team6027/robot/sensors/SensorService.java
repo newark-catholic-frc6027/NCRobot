@@ -69,7 +69,13 @@ public class SensorService {
     }
 
 
-
+    public double getElevatorHeightInches() {
+        double elevatorEncoderRawValue = this.encoderSensors.getElevatorEncoder().getRaw();
+        double heightInches = (EncoderSensors.ELEVATOR_ENCODER_EQUATION_M_FACTOR * elevatorEncoderRawValue) 
+            + EncoderSensors.ELEVATOR_ENCODER_EQUATION_B;
+        return heightInches;
+    }
+    
     public double getCurAngleHeadingToVisionTarget() {
         Datahub visionData = this.getVisionDatahub();
     

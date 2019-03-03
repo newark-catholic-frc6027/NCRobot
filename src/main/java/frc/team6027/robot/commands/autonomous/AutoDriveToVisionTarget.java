@@ -70,7 +70,7 @@ public class AutoDriveToVisionTarget extends FlexCommand implements KillableAuto
 
     @Override
     public void start() {
-        this.registerOnStart();
+        this.registerAsKillable();
         super.start();
     }
     
