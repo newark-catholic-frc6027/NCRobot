@@ -13,15 +13,16 @@ import edu.wpi.first.wpilibj.command.Command;
 public class SlideMastCommand extends Command {
     private final Logger logger = LogManager.getLogger(getClass());
     public final static String NAME = "Slide Mast Command";
+    public enum SlideMastDirection {
+        Forward,
+        Backward
+    };
+
     private Preferences prefs = Preferences.getInstance();
     protected static final int LOG_REDUCTION_MOD = 10;
     protected int execCount = 0;
     protected long execStartTime = 0;
     
-    public enum SlideMastDirection {
-        Forward,
-        Backward
-    };
     
     private SlideMastDirection direction = null;
     private ElevatorSubsystem elevator;
