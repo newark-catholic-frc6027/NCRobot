@@ -70,8 +70,6 @@ public class ArmSubsystem extends Subsystem {
 
     public void stopMotor() {
         this.mainMotor.stopMotor();
-//        getRobotDrive().stopMotor();
-
     }
 
 }
