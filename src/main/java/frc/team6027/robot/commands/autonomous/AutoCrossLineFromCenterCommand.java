@@ -1,8 +1,9 @@
 package frc.team6027.robot.commands.autonomous;
 
 import frc.team6027.robot.OperatorDisplay;
+import frc.team6027.robot.commands.DriveStraightCommand;
 import frc.team6027.robot.commands.PneumaticsInitializationCommand;
-import frc.team6027.robot.commands.autonomous.DriveStraightCommand.DriveDistanceMode;
+import frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import frc.team6027.robot.subsystems.PneumaticSubsystem;

@@ -13,7 +13,7 @@ import frc.team6027.robot.commands.TeleopManager;
 import frc.team6027.robot.commands.autonomous.AutoCommandHelper;
 import frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
 import frc.team6027.robot.commands.autonomous.NoOpCommand;
-import frc.team6027.robot.commands.autonomous.TurnCommand;
+import frc.team6027.robot.commands.TurnCommand;
 //import frc.team6027.robot.commands.autonomous.AutonomousCommandManager.AutonomousPreference;
 //import frc.team6027.robot.commands.autonomous.AutonomousCommandManager.DontDoOption;
 import frc.team6027.robot.data.Datahub;

@@ -1,4 +1,4 @@
-package frc.team6027.robot.commands.autonomous;
+package frc.team6027.robot.commands;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -99,6 +99,14 @@ public class VisionTurnCommand extends Command implements PIDOutput {
 	    } else {
 	        return false;
 	    }
+	}
+
+	@Override
+	public void cancel() {
+		if (this.pidController != null) {
+			this.pidController.disable();
+		}
+		super.cancel();
 	}
 
 	protected void execute() {

@@ -1,4 +1,4 @@
-package frc.team6027.robot.commands.autonomous;
+package frc.team6027.robot.commands;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
