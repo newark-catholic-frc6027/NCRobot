@@ -65,9 +65,9 @@ public class VisionTurnCommand extends Command implements PIDOutput {
 
 	@Override
 	public void start() {
+	    logger.info(">>> Turn Command starting, target angle: {}, initial gyro angle", this.targetAngle, this.initialGyroAngle);
 		this.targetAngle = this.sensorService.getCurAngleHeadingToVisionTarget();
 		initPIDController();
-	    logger.info(">>> Turn Command starting, target angle: {}, initial gyro angle", this.targetAngle, this.initialGyroAngle);
 	
 		super.start();
 	}
@@ -90,7 +90,6 @@ public class VisionTurnCommand extends Command implements PIDOutput {
 	protected boolean isFinished() {
 	    
 	    if (this.pidController.onTarget()
-//        if (Math.abs(this.gyro.getYawAngle() - this.targetAngle) <= 2
                 && Math.abs(this.gyro.getRate()) <= pidAngleStopThreshold) {
             logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Turn done, angle={}", this.sensorService.getGyroSensor().getYawAngle());
 	        
