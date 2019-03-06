@@ -8,12 +8,14 @@ import frc.team6027.robot.sensors.MotorPIDController;
 import frc.team6027.robot.sensors.PIDCapableGyro;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.sensors.UltrasonicSensor;
+import frc.team6027.robot.sensors.EncoderSensors.EncoderKey;
 import frc.team6027.robot.sensors.UltrasonicSensorManager.UltrasonicSensorKey;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem.MotorKey;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDInterface;
 import edu.wpi.first.wpilibj.PIDOutput;
+import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 
@@ -68,9 +70,12 @@ public class DriveStraightCommand extends Command implements PIDOutput {
     private Double drivePower;
     private double currentAngleHeading = 0.0;
 
+    private String driveDistancePrefName;
+    private String drivePowerPrefName;
+
     public DriveStraightCommand(SensorService sensorService, DrivetrainSubsystem drivetrainSubsystem,
-            OperatorDisplay operatorDisplay, double driveDistance, DriveDistanceMode driveUntil, double drivePower) {
-        this(sensorService, drivetrainSubsystem, operatorDisplay, driveDistance, driveUntil, drivePower, null);
+            OperatorDisplay operatorDisplay, Double driveDistance, DriveDistanceMode driveUntil, Double drivePower) {
+        this(driveDistance, driveUntil, drivePower, null, sensorService, drivetrainSubsystem, operatorDisplay);
     }
 
     /**
@@ -89,29 +94,54 @@ public class DriveStraightCommand extends Command implements PIDOutput {
      *   at 1.10 * driveDistance.  If driveDistance in this case was -20.0, the distance PID controller would take over at 
      *   1.10 * -20.0 = -22.0.
      */
-    public DriveStraightCommand(SensorService sensorService, DrivetrainSubsystem drivetrainSubsystem,
-            OperatorDisplay operatorDisplay, double driveDistance, DriveDistanceMode driveUntil, double drivePower, Double distancePidCutoverPercent) {
+    public DriveStraightCommand(Double driveDistance, DriveDistanceMode driveUntil, 
+        Double drivePower, Double distancePidCutoverPercent,
+        SensorService sensorService, DrivetrainSubsystem drivetrainSubsystem,
+        OperatorDisplay operatorDisplay) {
     
         requires(drivetrainSubsystem);
+        if (driveUntil != null) {
+            this.driveDistanceMode = driveUntil;
+            logger.info("DriveDistanceMode is: {}, target distance is: {}", driveUntil, driveDistance);
+        }
+        this.distancePidCutoverPercent = distancePidCutoverPercent;
+        this.driveDistance = driveDistance;
+
         this.drivePower = drivePower;
         this.sensorService = sensorService;
         this.encoderSensors = this.sensorService.getEncoderSensors();
         this.ultrasonicSensor = this.sensorService.getUltrasonicSensor(UltrasonicSensorKey.Front);
         this.gyro = this.sensorService.getGyroSensor();
         this.drivetrainSubsystem = drivetrainSubsystem;
-        this.driveDistance = driveDistance;
         this.operatorDisplay = operatorDisplay;
-        if (driveUntil != null) {
-            this.driveDistanceMode = driveUntil;
-            logger.info("DriveDistanceMode is: {}, target distance is: {}", driveUntil, driveDistance);
-        }
-        this.distancePidCutoverPercent = distancePidCutoverPercent;
         
         this.setName(NAME);
     }
-    
-    @Override
-    protected void initialize() {
+    public DriveStraightCommand(String driveDistancePrefName, DriveDistanceMode driveUntil, 
+        String drivePowerPrefName, Double distancePidCutoverPercent,
+        SensorService sensorService, DrivetrainSubsystem drivetrainSubsystem,
+        OperatorDisplay operatorDisplay) {
+
+        this((Double) null, driveUntil, null, null, sensorService, drivetrainSubsystem, operatorDisplay);
+        // TODO: Left off here
+    }
+
+
+	@Override
+	public void cancel() {
+		if (this.gyroPidController != null) {
+			this.gyroPidController.disable();
+        }
+        
+		if (this.distancePidController != null) {
+			this.distancePidController.disable();
+        }
+		super.cancel();
+	}
+
+	protected void reset() {
+        this.execCount = 0;
+        
         this.encoderSensors.reset();
         if (this.drivePower == null) {
         	this.drivePower = this.prefs.getDouble("POWER.driveStraightCommand.power", DRIVE_POWER);
@@ -136,6 +166,28 @@ public class DriveStraightCommand extends Command implements PIDOutput {
         initDistancePIDController();
         
         logger.info("DriveStraightCommand target distance: {}", this.driveDistance);
+/*
+		this.initialGyroAngle = this.gyro.getYawAngle();
+
+		if (this.anglePrefName != null) {
+			this.targetAngle = this.prefs.getDouble(this.anglePrefName, 0.0);
+		}
+
+		this.turnMinPower = prefs.getDouble("turnCommand.minPower", .20);
+		this.adjustedPower = prefs.getDouble("turnCommand.adjustedPower", 0.3);
+        initPIDController();
+*/        
+	}
+
+	@Override
+	public void start() {
+		logger.info(">>> Drive Straight Command starting, initial gyro angle: {}", this.currentAngleHeading);
+		this.reset();
+		super.start();
+	}
+
+    @Override
+    protected void initialize() {
     }
     
     protected void initDistancePIDController() {
@@ -148,23 +200,26 @@ public class DriveStraightCommand extends Command implements PIDOutput {
             absoluteDist =  this.sensorService.getEncoderSensors().getLeftEncoder().getPosition() + this.driveDistance;
         }
 
+        // PIDSource is either the ultrasonic sensor or the left motor encoder
+        PIDSource pidSource = this.getDriveDistanceMode() == DriveDistanceMode.DistanceFromObject ?
+            this.sensorService.getUltrasonicSensor(UltrasonicSensorKey.Front) : 
+            this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorLeft);
+        
         this.distancePidController = new PIDController(p, i, d, ff, 
-                this.getDriveDistanceMode() == DriveDistanceMode.DistanceFromObject ?
-                        this.sensorService.getUltrasonicSensor(UltrasonicSensorKey.Front) : this.sensorService.getEncoderSensors().getLeftEncoder(),
+                pidSource,
                 new DistancePidOutputHandler()
         );
 
         // this.distancePidController = this.drivetrainSubsystem.getPIDController(MotorKey.MotorLeft);
         this.distancePidController.setPID(p, i, d);
-//        this.distancePidController.setFeedForward(ff);
         this.distancePidController.setSetpoint(absoluteDist);
 //?        this.distancePidController.setInputRange(-50.0 * 12.0, 50.0 * 12.0);
-//?        this.distancePidController.setContinuous(true);
+        this.distancePidController.setContinuous(true);
         
         // TODO: change input and output ranges
         this.distancePidController.setOutputRange(-1* getDrivePower(), getDrivePower());
-//?        this.distancePidController.setAbsoluteTolerance(DISTANCE_PID_TOLERANCE);
-//?        this.distancePidController.enable();
+        this.distancePidController.setAbsoluteTolerance(DISTANCE_PID_TOLERANCE);
+        this.distancePidController.enable();
         
     }
     

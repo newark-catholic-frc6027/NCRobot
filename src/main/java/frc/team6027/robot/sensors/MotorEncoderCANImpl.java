@@ -8,14 +8,25 @@ public class MotorEncoderCANImpl implements MotorEncoder<CANEncoder> {
 
     private CANEncoder encoder;
     private double mark;
+    private boolean negate = false;
 
     public MotorEncoderCANImpl(CANEncoder encoder) {
         this.encoder = encoder;
     }
 
+    public MotorEncoderCANImpl(CANEncoder encoder, boolean negate) {
+        this.encoder = encoder;
+        this.negate = negate;
+        this.mark = this.getPosition();
+    }
+
     @Override
     public double getPosition() {
-        return this.encoder.getPosition();
+        return (negate ? -1 : 1) * this.encoder.getPosition();
+    }
+
+    public double getRelativePosition() {
+        return this.getPosition() - this.getLastMarkPosition();
     }
 
     @Override
@@ -30,8 +41,15 @@ public class MotorEncoderCANImpl implements MotorEncoder<CANEncoder> {
 
     @Override
     public double getDistance() {
+        // TODO: FIX
         return this.getPosition() - this.getLastMarkPosition();
     }
+
+    public double getRelativeDistance() {
+        // TODO: FIX
+        return this.getPosition() - this.getLastMarkPosition();
+    }
+
 
 	@Override
 	public double getLastMarkPosition() {

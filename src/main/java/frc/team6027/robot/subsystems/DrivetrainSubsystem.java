@@ -84,7 +84,8 @@ public class DrivetrainSubsystem extends Subsystem {
 	public void registerMotorEncoders(SensorService sensorService) {
         Map<EncoderKey, MotorEncoder> encoderMap = new HashMap<>();
         encoderMap.put(EncoderKey.DriveMotorLeft, new MotorEncoderCANImpl(this.leftGearBoxMasterMotor.getEncoder()));
-        encoderMap.put(EncoderKey.DriveMotorRight, new MotorEncoderCANImpl(this.rightGearBoxMasterMotor.getEncoder()));
+        // Right motor needs negated
+        encoderMap.put(EncoderKey.DriveMotorRight, new MotorEncoderCANImpl(this.rightGearBoxMasterMotor.getEncoder(), true));
         sensorService.addMotorEncoders(encoderMap);
 	}
 

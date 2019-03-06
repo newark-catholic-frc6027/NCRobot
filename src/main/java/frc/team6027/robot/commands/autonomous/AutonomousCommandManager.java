@@ -7,10 +7,13 @@ import java.util.Map;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
+import frc.team6027.robot.commands.DriveStraightCommand;
 import frc.team6027.robot.commands.TurnCommand;
+import frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
 import frc.team6027.robot.field.Field;
 import frc.team6027.robot.field.Field.PlatePosition;
 import frc.team6027.robot.sensors.SensorService;
+import frc.team6027.robot.sensors.EncoderSensors.EncoderKey;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import frc.team6027.robot.subsystems.ElevatorSubsystem;
 import frc.team6027.robot.subsystems.PneumaticSubsystem;
@@ -481,6 +484,24 @@ public class AutonomousCommandManager {
                 AutonomousCommandManager.this.getSensorService().getEncoderSensors().getElevatorEncoder().reset();
             }
         });
+
+        this.getOperatorDisplay().setData("Drive Straight w/Ultrasonic", 
+            new DriveStraightCommand(this.sensorService, this.drivetrainSubsystem, 
+                this.operatorDisplay, 12.0, DriveDistanceMode.DistanceFromObject, 0.7)
+        );
+
+        this.getOperatorDisplay().setData("Reset Motor Encoders", new Command() {
+            @Override
+            protected boolean isFinished() {
+                return true;
+            }
+
+            protected void execute() {
+                AutonomousCommandManager.this.getSensorService().getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorLeft).reset();
+                AutonomousCommandManager.this.getSensorService().getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorRight).reset();
+            }
+        });
+
 	}
     
 }

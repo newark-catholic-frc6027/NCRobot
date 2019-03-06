@@ -22,6 +22,7 @@ import frc.team6027.robot.data.DatahubRegistry;
 import frc.team6027.robot.field.Field;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.sensors.EncoderSensors.EncoderKey;
+import frc.team6027.robot.sensors.UltrasonicSensorManager.UltrasonicSensorKey;
 import frc.team6027.robot.subsystems.ArmSubsystem;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import frc.team6027.robot.subsystems.ElevatorSubsystem;
@@ -375,13 +376,14 @@ public class Robot extends TimedRobot {
 */
     public void updateOperatorDisplay() {
         getOperatorDisplay().setFieldValue("rightMotorEncoder Raw Values",
-                this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorRight).getPosition());
+                this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorRight).getRelativePosition());
         getOperatorDisplay().setFieldValue("leftMotorEncoder Raw Values",
-            this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorLeft).getPosition());
+            this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorLeft).getRelativePosition());
             
         getOperatorDisplay().setFieldValue("Gyro Angle", this.sensorService.getGyroSensor().getAngle());
         getOperatorDisplay().setFieldValue("Gyro Yaw Angle", this.sensorService.getGyroSensor().getYawAngle());
         
+        getOperatorDisplay().setFieldValue("Ultrasonic", this.sensorService.getUltrasonicSensor(UltrasonicSensorKey.Front).getDistanceInches());
         /*
 
         getOperatorDisplay().setFieldValue("rightEncoder Distance",
