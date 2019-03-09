@@ -131,10 +131,10 @@ public class TeleopManager extends Command {
 
         });  */
         this.rightBumperButton = new JoystickButton(this.joystick, this.joystick.getRightBumperButtonNumber());   
-        this.aButton.whileHeld(new ArmMotorCommand(this.armSubsystem, MotorDirection.In));
+        this.rightBumperButton.whileHeld(new ArmMotorCommand(this.armSubsystem, MotorDirection.In));
 
         this.leftBumperButton = new JoystickButton(this.joystick, this.joystick.getLeftBumperButtonNumber());   
-        this.bButton.whileHeld(new ArmMotorCommand(this.armSubsystem, MotorDirection.Out));
+        this.leftBumperButton.whileHeld(new ArmMotorCommand(this.armSubsystem, MotorDirection.Out));
         
         this.backButton = new JoystickButton(this.joystick, this.joystick.getBackButtonNumber());
         try {
