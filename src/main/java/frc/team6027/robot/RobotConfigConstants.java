@@ -137,11 +137,21 @@ public class RobotConfigConstants {
     public static final int ELEVATOR_ENCODER_DIO_CHANNEL_B = 9;
     
     
-    public final static int LIMIT_SWITCH_MAST_BOTTOM_CHANNEL = 6;
-    public final static int LIMIT_SWITCH_MAST_TOP_CHANNEL = 7;
+    public final static int LIMIT_SWITCH_MAST_BOTTOM_DIO_CHANNEL = 6;
+    public final static int LIMIT_SWITCH_MAST_TOP_DIO_CHANNEL = 7;
 
-    public final static int LIMIT_SWITCH_MAST_SLIDE_FORWARD_CHANNEL = 4;
-    public final static int LIMIT_SWITCH_MAST_SLIDE_BACKWARD_CHANNEL = 5;
+    public final static int LIMIT_SWITCH_MAST_SLIDE_FORWARD_DIO_CHANNEL = 4;
+    public final static int LIMIT_SWITCH_MAST_SLIDE_BACKWARD_DIO_CHANNEL = 5;
+
+        /*
+     * Ultrasonic sensor constants
+     */
+    public static final int ULTRASONIC_FRONT_PING_DIO_CHANNEL = 0;
+    public static final int ULTRASONIC_FRONT_ECHO_DIO_CHANNEL = 1;
+
+    public static final int ULTRASONIC_BACK_PING_DIO_CHANNEL = 2;
+    public static final int ULTRASONIC_BACK_ECHO_DIO_CHANNEL = 3;
+
 
     /**
      * The identifier of the left analog joystick on the Xbox controller used
@@ -187,14 +197,6 @@ public class RobotConfigConstants {
      */
     public static final int PRESSURE_SENSOR_PORT = 7;
 
-    /*
-     * Ultrasonic sensor constants
-     */
-    public static final int ULTRASONIC_FRONT_PING_CHANNEL = 0;
-    public static final int ULTRASONIC_FRONT_ECHO_CHANNEL = 1;
-
-    public static final int ULTRASONIC_BACK_PING_CHANNEL = 2;
-    public static final int ULTRASONIC_BACK_ECHO_CHANNEL = 3;
 
     /* set to 1 if inversion is not needed, -1 if inversion is needed */
     public final static int OPTIONAL_LEFT_JOYSTICK_INVERSION = -1;

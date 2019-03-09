@@ -16,8 +16,8 @@ public class UltrasonicSensorManager {
     public UltrasonicSensorManager() {
         this.sensorRegistry.put(UltrasonicSensorKey.Front, 
             new UltrasonicSensor(
-                RobotConfigConstants.ULTRASONIC_FRONT_PING_CHANNEL,
-                RobotConfigConstants.ULTRASONIC_FRONT_ECHO_CHANNEL
+                RobotConfigConstants.ULTRASONIC_FRONT_PING_DIO_CHANNEL,
+                RobotConfigConstants.ULTRASONIC_FRONT_ECHO_DIO_CHANNEL
             )
         );
         /* TODO

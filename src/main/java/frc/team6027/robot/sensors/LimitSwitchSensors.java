@@ -20,12 +20,12 @@ public class LimitSwitchSensors {
 
     
     
-    private DigitalInput mastBottom = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_MAST_BOTTOM_CHANNEL); // bottom a
+    private DigitalInput mastBottom = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_MAST_BOTTOM_DIO_CHANNEL); // bottom a
 //    private DigitalInput limitSwitchBottomB = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_BOTTOM_B_CHANNEL); // bottom b
-    private DigitalInput mastTop = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_MAST_TOP_CHANNEL);
+    private DigitalInput mastTop = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_MAST_TOP_DIO_CHANNEL);
 
-    private DigitalInput mastForward = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_MAST_SLIDE_FORWARD_CHANNEL);
-    private DigitalInput mastBackward = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_MAST_SLIDE_BACKWARD_CHANNEL);
+    private DigitalInput mastForward = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_MAST_SLIDE_FORWARD_DIO_CHANNEL);
+    private DigitalInput mastBackward = new DigitalInput(RobotConfigConstants.LIMIT_SWITCH_MAST_SLIDE_BACKWARD_DIO_CHANNEL);
     
 //    private Map<LimitSwitchId, DigitalInput> limitSwitchMap = new HashMap<>();
     

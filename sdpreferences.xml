@@ -19,7 +19,7 @@
 		<location x="1038" y="623"/>
 	</widget>
 	<widget field="Reset Elevator Encoder" type="Command" class="edu.wpi.first.smartdashboard.gui.elements.Command">
-		<location x="745" y="36"/>
+		<location x="1199" y="34"/>
 	</widget>
 	<widget field="elevatorEncoder Inches" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="724" y="621"/>
@@ -29,6 +29,9 @@
 	</widget>
 	<widget field="Turn" type="Command" class="edu.wpi.first.smartdashboard.gui.elements.Command">
 		<location x="604" y="39"/>
+	</widget>
+	<widget field="Drive Str8 w/Ult" type="Command" class="edu.wpi.first.smartdashboard.gui.elements.Command">
+		<location x="769" y="36"/>
 	</widget>
 	<widget field="Mast Backward MAX?" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="720"/>
@@ -69,6 +72,17 @@
 	<widget field="ElevatorSubsystem" type="Subsystem" class="edu.wpi.first.smartdashboard.gui.elements.Subsystem">
 		<location x="495" y="701"/>
 	</widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.RobotPreferences">
+		<location x="518" y="81"/>
+		<width>621</width>
+		<height>390</height>
+	</static-widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
+		<location x="1" y="45"/>
+		<width>465</width>
+		<height>327</height>
+		<property name="Camera Choice" value=""/>
+	</static-widget>
 </dashboard>
 <live-window>
 </live-window>

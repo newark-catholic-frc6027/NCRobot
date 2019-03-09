@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.OperatorInterface;
+import frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
 /*
 import frc.team6027.robot.commands.CubeDeliveryCommand.DeliveryMode;
 import frc.team6027.robot.commands.DropCarriageCommand.DropFunction;
@@ -134,7 +135,9 @@ public class TeleopManager extends Command {
         this.bButton = new JoystickButton(this.joystick, this.joystick.getBButtonNumber());   
         this.bButton.whileHeld(new ArmMotorCommand(this.armSubsystem, MotorDirection.Out));
         
-
+        this.backButton.toggleWhenPressed( new DriveStraightCommand(this.sensorService, this.drivetrain, 
+            this.operatorDisplay, 12.0, DriveDistanceMode.DistanceFromObject, 0.7)
+        );
 
 //        this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());   
 //        this.yButton.whenPressed(new AutoDriveToVisionTarget(24.0, 0.6, this.sensorService, this.drivetrain,this.operatorDisplay));    
