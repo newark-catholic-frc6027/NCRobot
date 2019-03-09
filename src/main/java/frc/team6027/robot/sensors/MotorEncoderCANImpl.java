@@ -41,13 +41,13 @@ public class MotorEncoderCANImpl implements MotorEncoder<CANEncoder> {
 
     @Override
     public double getDistance() {
-        // TODO: FIX
-        return this.getPosition() - this.getLastMarkPosition();
+        double dist = 1.127532 * this.getPosition();
+        return dist;
     }
 
     public double getRelativeDistance() {
-        // TODO: FIX
-        return this.getPosition() - this.getLastMarkPosition();
+        double dist = 1.127532 * this.getRelativePosition();
+        return dist;
     }
 
 

@@ -485,7 +485,7 @@ public class AutonomousCommandManager {
             }
         });
 
-        this.getOperatorDisplay().setData("Drive Straight w/Ultrasonic", 
+        this.getOperatorDisplay().setData("Drive Str8 w/Ult", 
             new DriveStraightCommand(this.sensorService, this.drivetrainSubsystem, 
                 this.operatorDisplay, 12.0, DriveDistanceMode.DistanceFromObject, 0.7)
         );
@@ -502,6 +502,6 @@ public class AutonomousCommandManager {
             }
         });
 
-	}
-    
+ 	}
+                       
 }

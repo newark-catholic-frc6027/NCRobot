@@ -379,6 +379,14 @@ public class Robot extends TimedRobot {
                 this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorRight).getRelativePosition());
         getOperatorDisplay().setFieldValue("leftMotorEncoder Raw Values",
             this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorLeft).getRelativePosition());
+
+        getOperatorDisplay().setFieldValue("leftMotorEncoder Distance",
+            this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorLeft).getRelativeDistance());
+        getOperatorDisplay().setFieldValue("rightMotorEncoder Distance",
+            this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorRight).getRelativeDistance());
+        getOperatorDisplay().setFieldValue("avg Encoder Distance",
+            this.sensorService.getEncoderSensors().getAvgEncoderRelativeDistance());
+
             
         getOperatorDisplay().setFieldValue("Gyro Angle", this.sensorService.getGyroSensor().getAngle());
         getOperatorDisplay().setFieldValue("Gyro Yaw Angle", this.sensorService.getGyroSensor().getYawAngle());

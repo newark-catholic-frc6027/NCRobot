@@ -23,10 +23,10 @@ public class DriveStraightCommand extends Command implements PIDOutput {
     public final static String NAME = "Drive Straight";
     
     private final Logger logger = LogManager.getLogger(getClass());
-    protected static final double PID_PROPORTIONAL_COEFFICIENT = 0.0356;
-    protected static final double PID_INTEGRAL_COEFFICIENT = 0.000;
+    protected static final double PID_PROPORTIONAL_COEFFICIENT = 0.005;
+    protected static final double PID_INTEGRAL_COEFFICIENT = 0.00;
     protected static final double PID_DERIVATIVE_COEFFICIENT = 0.00;
-    protected static final double PID_FEED_FORWARD_TERM = 0.0;
+    protected static final double PID_FEED_FORWARD_TERM = 0.5;
 
     protected static final double GYRO_PID_TOLERANCE = 1.0;  // degrees
     protected static final double GYRO_PID_PROPORTIONAL_COEFFICIENT = .01;
@@ -38,10 +38,7 @@ public class DriveStraightCommand extends Command implements PIDOutput {
     protected static final int LOG_REDUCTION_MOD = 10;
     protected static final int EXEC_LOG_REDUCTION_MOD = 4;
 
-
     protected static final double DRIVE_POWER = 0.7;
-
-
 
     public enum DriveDistanceMode {
         DistanceReadingOnEncoder,
@@ -54,7 +51,7 @@ public class DriveStraightCommand extends Command implements PIDOutput {
     protected PIDCapableGyro gyro;
     protected DrivetrainSubsystem drivetrainSubsystem;
     protected OperatorDisplay operatorDisplay;
-    private double driveDistance;
+    private Double driveDistance;
     private double currentDistance = 0;
     private DriveDistanceMode driveDistanceMode = DriveDistanceMode.DistanceReadingOnEncoder;
     protected PIDController gyroPidController;
@@ -117,25 +114,21 @@ public class DriveStraightCommand extends Command implements PIDOutput {
         
         this.setName(NAME);
     }
+    
     public DriveStraightCommand(String driveDistancePrefName, DriveDistanceMode driveUntil, 
         String drivePowerPrefName, Double distancePidCutoverPercent,
         SensorService sensorService, DrivetrainSubsystem drivetrainSubsystem,
         OperatorDisplay operatorDisplay) {
 
         this((Double) null, driveUntil, null, null, sensorService, drivetrainSubsystem, operatorDisplay);
-        // TODO: Left off here
+        this.driveDistancePrefName = driveDistancePrefName;
+        this.drivePowerPrefName = drivePowerPrefName;
     }
 
 
 	@Override
 	public void cancel() {
-		if (this.gyroPidController != null) {
-			this.gyroPidController.disable();
-        }
-        
-		if (this.distancePidController != null) {
-			this.distancePidController.disable();
-        }
+        this.disablePidControllers();
 		super.cancel();
 	}
 
@@ -144,8 +137,28 @@ public class DriveStraightCommand extends Command implements PIDOutput {
         
         this.encoderSensors.reset();
         if (this.drivePower == null) {
-        	this.drivePower = this.prefs.getDouble("POWER.driveStraightCommand.power", DRIVE_POWER);
+            if (this.drivePowerPrefName != null) {
+                this.drivePower = this.prefs.getDouble(this.drivePowerPrefName, DRIVE_POWER);
+                this.logger.info("Drive power set to {} from preference '{}''", this.drivePower, this.drivePowerPrefName);
+            } else {
+                this.drivePower = this.prefs.getDouble("POWER.driveStraightCommand.power", DRIVE_POWER);
+                this.logger.info("Drive power set to {} from preference '{}''", this.drivePower, "POWER.driveStraightCommand.power");
+            }
+        } else {
+            this.logger.info("Using power passed into command: {}", this.drivePower);
         }
+
+        if (this.driveDistance == null) {
+            if (this.driveDistancePrefName != null) {
+                this.driveDistance = this.prefs.getDouble(this.driveDistancePrefName, 0.0);
+                this.logger.info("Drive distance set to {} from preference '{}''", this.driveDistance, this.driveDistancePrefName);
+            }
+        }
+
+        if (this.driveDistance == null) {
+            this.logger.error("Drive distance not passed into command or set from preference!");
+        }
+
         this.currentAngleHeading =  this.gyro.getYawAngle();
 
         if ( this.distancePidCutoverPercent != null) {
@@ -242,9 +255,20 @@ public class DriveStraightCommand extends Command implements PIDOutput {
         gyroPidController.enable();
     }
     
+    protected void disablePidControllers() {
+        if (this.distancePidController != null) {
+            this.distancePidController.disable();
+        }
+
+        if (this.gyroPidController != null) {
+            this.gyroPidController.disable();
+        }
+
+    }
     
     @Override
     protected boolean isFinished() {
+        boolean finished = false;
         if (this.distancePidCutoverPoint == null) {
             // In this case, we aren't using the distance PID to determine when to stop, only using raw sensor readings
             if (this.driveDistanceMode == DriveDistanceMode.DistanceReadingOnEncoder) {
@@ -253,22 +277,19 @@ public class DriveStraightCommand extends Command implements PIDOutput {
                     
                     this.drivetrainSubsystem.stopMotor();
                     logger.info(">>>>>>>>>>>>>>>>> NON-PID >>>>>>>>>>>>>>>>>>> DriveStraight done, distance={}", this.encoderSensors.getLeftEncoder().getDistance());
-                    return true;
-                } else {
-                    return false;
+                    finished = true;
                 }
             } else if (this.driveDistanceMode == DriveDistanceMode.DistanceFromObject) {
                 double distanceToObject = this.ultrasonicSensor.getDistanceInches();
                 // TODO put distance constant in preference
                 if (distanceToObject >= this.driveDistance && !(distanceToObject > 1.94 && distanceToObject < 1.95)  ) {
                     this.drivetrainSubsystem.stopMotor();
+                    this.disablePidControllers();
                     logger.info(">>>>>>>>>>>>>>>>> NON-PID >>>>>>>>>>>>>>>>>>> DriveStraight done, distance from object={}", this.ultrasonicSensor.getDistanceInches());
-                    return true;
-                } else {
-                    return false;
+                    finished = true;
                 }
             } else {
-                return true;
+                finished = true;
             }
             
         } else {
@@ -279,19 +300,22 @@ public class DriveStraightCommand extends Command implements PIDOutput {
             } else if (this.driveDistanceMode == DriveDistanceMode.DistanceFromObject) {
                 distanceReading =  this.ultrasonicSensor.getDistanceInches();
             } else {
-                return true;
+                finished = true;
             }
             
-            // TODO: need to implement wtih CAN
-            if (true /*this.distancePidController.onTarget()*/) {
+            if (this.distancePidController.onTarget()) {
                 this.drivetrainSubsystem.stopMotor();
                 logger.info(">>>>>>>>>>>>>>>>> PID >>>>>>>>>>>>>>>>>>> DriveStraight done, distance={}", distanceReading);
-                return true;
-            } else {
-                return false;
+                finished = true;
             }
 
         }
+
+        if (finished) {
+            this.disablePidControllers();
+        }
+
+        return finished;
     }
 
     @Override

@@ -108,6 +108,21 @@ public class EncoderSensors {
         return this.encoderRegistry.get(EncoderKey.DriveMotorLeft);
     }
     
+    public double getAvgEncoderRelativeDistance() {
+        double leftDist = this.getLeftEncoder().getRelativeDistance();
+        double rightDist = this.getRightEncoder().getRelativeDistance();
+
+        return (leftDist + rightDist) / 2.0;
+    }
+
+    public double getAvgEncoderDistance() {
+        double leftDist = this.getLeftEncoder().getDistance();
+        double rightDist = this.getRightEncoder().getDistance();
+
+        return (leftDist + rightDist) / 2.0;
+    }
+
+    
     public Encoder getElevatorEncoder() {
         return this.elevatorEncoder;
     }
