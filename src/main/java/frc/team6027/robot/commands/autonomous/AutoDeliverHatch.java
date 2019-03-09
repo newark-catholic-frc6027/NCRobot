@@ -44,13 +44,18 @@ public class AutoDeliverHatch extends CommandGroup {
         this.elevatorSubsystem = elevatorSubsystem;
         this.field = field;
   
-        this.addSequential(new PneumaticsInitializationCommand(this.pneumaticSubsystem));
-        
-        this.addSequential(new DriveStraightCommand("A-L1-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "A-P1-Storm-Hatch", 
-            null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
+//        this.addSequential(new PneumaticsInitializationCommand(this.pneumaticSubsystem));
+/*
+        this.addSequential( new DriveStraightCommand(this.sensorService, this.drivetrainSubsystem, 
+            this.operatorDisplay, 36.0, DriveDistanceMode.DistanceFromObject, 0.5)
         );
+*/        
+        this.addSequential(new DriveStraightCommand("A-L1-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, 
+            "A-P1-Storm-Hatch", null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
+        );
+
         this.addSequential(new TurnCommand("A-A1-Storm-Hatch", this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
-        this.addSequential(new DriveStraightCommand("A-L2-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "A-P1-Storm-Hatch", 
+        this.addSequential(new DriveStraightCommand("A-L2-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "A-P2-Storm-Hatch", 
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
         );
 

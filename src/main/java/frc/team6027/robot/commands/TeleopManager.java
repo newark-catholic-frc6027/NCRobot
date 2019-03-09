@@ -137,14 +137,16 @@ public class TeleopManager extends Command {
         this.leftBumperButton.whileHeld(new ArmMotorCommand(this.armSubsystem, MotorDirection.Out));
         
         this.backButton = new JoystickButton(this.joystick, this.joystick.getBackButtonNumber());
+        
         try {
             Command cmd = new DriveStraightCommand(this.sensorService, this.drivetrain, 
-                this.operatorDisplay, 36.0, DriveDistanceMode.DistanceFromObject, 0.);
+                this.operatorDisplay, 36.0, DriveDistanceMode.DistanceFromObject, 0.5);
             this.logger.info("sensorservice: {}, drivetrain: {}, operatorDisplay: {}", this.sensorService, this.drivetrain, this.operatorDisplay);
             this.backButton.toggleWhenPressed(cmd);
         } catch (Exception ex ) {
             this.logger.error("", ex);
         }
+        
 //        this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());   
 //        this.yButton.whenPressed(new AutoDriveToVisionTarget(24.0, 0.6, this.sensorService, this.drivetrain,this.operatorDisplay));    
         

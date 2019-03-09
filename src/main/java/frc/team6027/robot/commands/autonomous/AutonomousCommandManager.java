@@ -502,6 +502,9 @@ public class AutonomousCommandManager {
             }
         });
 
+        this.getOperatorDisplay().setData("Hatch", new AutoDeliverHatch(StartingPositionSide.Left, this.sensorService, this.drivetrainSubsystem, 
+           this.pneumaticSubsystem, this.elevatorSubsystem, this.operatorDisplay, this.field));
+
  	}
                        
 }

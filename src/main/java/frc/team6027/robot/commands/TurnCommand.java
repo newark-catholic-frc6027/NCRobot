@@ -44,6 +44,7 @@ public class TurnCommand extends Command implements PIDOutput {
 	protected double turnPower;
 	protected double turnMinPower;
 	protected double adjustedPower;
+    protected boolean isReset = false;
 
 	public TurnCommand(String anglePrefName, SensorService sensorService, DrivetrainSubsystem drivetrain,
 		OperatorDisplay operatorDisplay) {
@@ -94,7 +95,8 @@ public class TurnCommand extends Command implements PIDOutput {
             && Math.abs(this.gyro.getRate()) <= pidAngleStopThreshold) {
             logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Turn done, angle={}", this.sensorService.getGyroSensor().getYawAngle());
 	        
-            pidController.disable();
+			pidController.disable();
+			this.isReset = false;
             return true;
 	    } else {
 	        return false;
@@ -103,6 +105,8 @@ public class TurnCommand extends Command implements PIDOutput {
 
 	@Override
 	public void cancel() {
+		this.isReset = false;
+
 		if (this.pidController != null) {
 			this.pidController.disable();
 		}
@@ -110,6 +114,12 @@ public class TurnCommand extends Command implements PIDOutput {
 	}
 
 	protected void reset() {
+        if (isReset) {
+            this.logger.info("Not reset since reset has already been run");
+            return;
+		}
+		this.isReset = true;
+
 		this.execCount = 0;
 		this.startTime = System.currentTimeMillis();
 		this.initialGyroAngle = this.gyro.getYawAngle();
@@ -129,6 +139,11 @@ public class TurnCommand extends Command implements PIDOutput {
 		this.reset();
 		super.start();
 	}
+
+    @Override
+    protected void initialize() {
+        reset();
+    }
 
 	protected void execute() {
         this.execCount++;
