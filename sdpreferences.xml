@@ -72,8 +72,4 @@
 </dashboard>
 <live-window>
 </live-window>
-	<hidden field="leftEncoder Raw"/>
-	<hidden field="Ultrasonic Distance (in)"/>
-	<hidden field="Air Pressure"/>
-	<hidden field="rightEncoder Raw"/>
 </xml>
