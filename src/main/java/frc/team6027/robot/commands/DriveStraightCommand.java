@@ -226,7 +226,7 @@ public class DriveStraightCommand extends Command implements PIDOutput {
         // this.distancePidController = this.drivetrainSubsystem.getPIDController(MotorKey.MotorLeft);
         this.distancePidController.setPID(p, i, d);
         this.distancePidController.setSetpoint(absoluteDist);
-//?        this.distancePidController.setInputRange(-50.0 * 12.0, 50.0 * 12.0);
+        this.distancePidController.setInputRange(-50.0 * 12.0, 50.0 * 12.0);
         this.distancePidController.setContinuous(true);
         
         // TODO: change input and output ranges
@@ -282,7 +282,7 @@ public class DriveStraightCommand extends Command implements PIDOutput {
             } else if (this.driveDistanceMode == DriveDistanceMode.DistanceFromObject) {
                 double distanceToObject = this.ultrasonicSensor.getDistanceInches();
                 // TODO put distance constant in preference
-                if (distanceToObject >= this.driveDistance && !(distanceToObject > 1.94 && distanceToObject < 1.95)  ) {
+                if (distanceToObject <= this.driveDistance && !(distanceToObject > 1.94 && distanceToObject < 1.95)  ) {
                     this.drivetrainSubsystem.stopMotor();
                     this.disablePidControllers();
                     logger.info(">>>>>>>>>>>>>>>>> NON-PID >>>>>>>>>>>>>>>>>>> DriveStraight done, distance from object={}", this.ultrasonicSensor.getDistanceInches());
