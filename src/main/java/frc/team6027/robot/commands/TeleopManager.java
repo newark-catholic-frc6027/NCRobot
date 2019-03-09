@@ -1,6 +1,9 @@
 package frc.team6027.robot.commands;
 
 import org.apache.logging.log4j.Logger;
+
+
+
 import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.OperatorInterface;
@@ -58,6 +61,9 @@ public class TeleopManager extends Command {
     private JoystickButton bButton2;
     private JoystickButton xButton2;
     private JoystickButton yButton2;
+    private JoystickButton leftBumperButton2;
+    private JoystickButton rightBumperButton2;
+
     
 
     private ShiftGearCommand shiftGearCommand;
@@ -195,17 +201,20 @@ public class TeleopManager extends Command {
             .5, this.sensorService, this.elevatorSubsystem, this.drivetrain));
 
         this.yButton2 = new JoystickButton(this.joystick2, this.joystick2.getYButtonNumber());   
-        this.yButton2.whenPressed(new ElevatorCommand(ElevatorCommand.ElevatorDirection.Up, 
-            .5, this.sensorService, this.elevatorSubsystem, this.drivetrain));  
+        this.yButton2.whenPressed(new PrintMessageCommand("ybutton has pressed down and completed the press of the ybutton"));  
     
         this.aButton2 = new JoystickButton(this.joystick2, this.joystick2.getAButtonNumber());
-        this.aButton2.whenPressed(new SlideMastCommand(SlideMastCommand.SlideMastDirection.Backward, 
-            1.0, this.sensorService, this.elevatorSubsystem, this.drivetrain));
+        this.aButton2.whenPressed(new PrintMessageCommand("abutton has pressed down and completed the press of the abutton"));
 
 
         this.bButton2 = new JoystickButton(this.joystick2, this.joystick2.getBButtonNumber());
-        this.bButton2.whenPressed(new SlideMastCommand(SlideMastCommand.SlideMastDirection.Forward, 
-            1.0, this.sensorService, this.elevatorSubsystem, this.drivetrain));
+        this.bButton2.whenPressed(new PrintMessageCommand("bbutton has pressed down and completed the press of the bbutton"));
+
+        this.leftBumperButton2 = new JoystickButton(this.joystick2, this.joystick2.getLeftBumperButtonNumber());
+        this.leftBumperButton2.whenPressed(new PrintMessageCommand("left bumper has pressed down and completed the press of the left bumper"));
+        
+        this.rightBumperButton2 = new JoystickButton(this.joystick2, this.joystick2.getRightBumperButtonNumber());
+        this.rightBumperButton2.whenPressed(new PrintMessageCommand("right bumper has pressed down and completed the press of the right bumper"));
       
     } 
 
