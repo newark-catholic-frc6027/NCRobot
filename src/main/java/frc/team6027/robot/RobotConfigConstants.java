@@ -113,7 +113,7 @@ public class RobotConfigConstants {
 
     public static final int MAST_SLIDE_GEARBOX_CIM_1_ID = 31;
 
-    public static final int ARM_MOTOR_CIM_1_ID = 30;
+    public static final int ARM_MOTOR_CIM_1_ID = 31;
 
     /**
      * The joystick port number corresponds to the 'USB Order' serial number on

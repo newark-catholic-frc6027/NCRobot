@@ -51,6 +51,7 @@ public class TeleopManager extends Command {
 
     private JoystickButton shiftGearButton;
     private JoystickButton leftBumperButton;
+    private JoystickButton rightBumperButton;
     private JoystickButton backButton;
     private JoystickButton aButton;
     private JoystickButton bButton;
@@ -116,29 +117,29 @@ public class TeleopManager extends Command {
     }
 
     protected void initializeJoystick() {
-        this.leftBumperButton = new JoystickButton(this.joystick, this.joystick.getLeftBumperButtonNumber());   
-        this.leftBumperButton.whenPressed(new Command() {
+   /*    this.leftBumperButton = new JoystickButton(this.joystick, this.joystick.getLeftBumperButtonNumber());   
+       this.leftBumperButton.whenPressed(new Command() {
             @Override
             public void execute() {
                 AutonomousCommandManager.instance().killCurrent();
-            }
+           }
 
             @Override
             protected boolean isFinished() {
                 return true;
             }
 
-        });  
-        this.aButton = new JoystickButton(this.joystick, this.joystick.getAButtonNumber());   
-        this.aButton.whileHeld(new ArmMotorCommand(this.armSubsystem, MotorDirection.In));
+        });  */
+        this.rightBumperButton = new JoystickButton(this.joystick, this.joystick.getRightBumperButtonNumber());   
+        this.rightBumperButton.whileHeld(new ArmMotorCommand(this.armSubsystem, MotorDirection.In));
 
-        this.bButton = new JoystickButton(this.joystick, this.joystick.getBButtonNumber());   
-        this.bButton.whileHeld(new ArmMotorCommand(this.armSubsystem, MotorDirection.Out));
+        this.leftBumperButton = new JoystickButton(this.joystick, this.joystick.getLeftBumperButtonNumber());   
+        this.leftBumperButton.whileHeld(new ArmMotorCommand(this.armSubsystem, MotorDirection.Out));
         
         this.backButton = new JoystickButton(this.joystick, this.joystick.getBackButtonNumber());
         try {
             Command cmd = new DriveStraightCommand(this.sensorService, this.drivetrain, 
-                this.operatorDisplay, 12.0, DriveDistanceMode.DistanceFromObject, 0.7);
+                this.operatorDisplay, 36.0, DriveDistanceMode.DistanceFromObject, 0.);
             this.logger.info("sensorservice: {}, drivetrain: {}, operatorDisplay: {}", this.sensorService, this.drivetrain, this.operatorDisplay);
             this.backButton.toggleWhenPressed(cmd);
         } catch (Exception ex ) {
