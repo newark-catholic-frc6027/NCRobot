@@ -138,7 +138,7 @@ public class TeleopManager extends Command {
         this.backButton = new JoystickButton(this.joystick, this.joystick.getBackButtonNumber());
         try {
             Command cmd = new DriveStraightCommand(this.sensorService, this.drivetrain, 
-                this.operatorDisplay, 12.0, DriveDistanceMode.DistanceFromObject, 0.7);
+                this.operatorDisplay, 36.0, DriveDistanceMode.DistanceFromObject, 0.5);
             this.logger.info("sensorservice: {}, drivetrain: {}, operatorDisplay: {}", this.sensorService, this.drivetrain, this.operatorDisplay);
             this.backButton.toggleWhenPressed(cmd);
         } catch (Exception ex ) {
