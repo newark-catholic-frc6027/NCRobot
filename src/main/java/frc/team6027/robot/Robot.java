@@ -283,12 +283,6 @@ public class Robot extends TimedRobot {
         if (this.teleopExecCount % 17 == 0) {
             this.updateOperatorDisplay();
         }
-
-        this.getOperatorDisplay().setFieldValue("centerOfContours", this.visionData.getDouble("contoursCenterX", -1.0) );
-        this.getOperatorDisplay().setFieldValue("numberOfContours", this.visionData.getDouble("numContours", 0.0));
-        this.getOperatorDisplay().setFieldValue("elevatorEncoder Inches", this.sensorService.getElevatorHeightInches());
-        this.getOperatorDisplay().setFieldValue("elevatorEncoder", this.sensorService.getEncoderSensors().getElevatorEncoder().getRaw());
-
     }
 
     /**
@@ -375,38 +369,46 @@ public class Robot extends TimedRobot {
     }
 */
     public void updateOperatorDisplay() {
-        getOperatorDisplay().setFieldValue("rightMotorEncoder Raw Values",
+        /*
+        getOperatorDisplay().setFieldValue("Right Motor Enc Raw",
                 this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorRight).getRelativePosition());
-        getOperatorDisplay().setFieldValue("leftMotorEncoder Raw Values",
+        getOperatorDisplay().setFieldValue("Left Motor Enc Raw",
             this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorLeft).getRelativePosition());
+        */
 
-        getOperatorDisplay().setFieldValue("leftMotorEncoder Distance",
+        OperatorDisplay disp = this.getOperatorDisplay();
+        disp.setFieldValue("Center of Contours", this.visionData.getDouble("contoursCenterX", -1.0) );
+        disp.setFieldValue("# of Contours", this.visionData.getDouble("numContours", 0.0));
+        disp.setFieldValue("Elevator Dist", this.sensorService.getElevatorHeightInches());
+        disp.setFieldValue("Elevator Raw", this.sensorService.getEncoderSensors().getElevatorEncoder().getRaw());
+
+        disp.setFieldValue("Left Motor Dist",
             this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorLeft).getRelativeDistance());
-        getOperatorDisplay().setFieldValue("rightMotorEncoder Distance",
+        disp.setFieldValue("Right Motor Dist",
             this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorRight).getRelativeDistance());
-        getOperatorDisplay().setFieldValue("avg Encoder Distance",
+        disp.setFieldValue("Avg Motor Dist",
             this.sensorService.getEncoderSensors().getAvgEncoderRelativeDistance());
 
             
-        getOperatorDisplay().setFieldValue("Gyro Angle", this.sensorService.getGyroSensor().getAngle());
-        getOperatorDisplay().setFieldValue("Gyro Yaw Angle", this.sensorService.getGyroSensor().getYawAngle());
+        disp.setFieldValue("Gyro Angle", this.sensorService.getGyroSensor().getAngle());
+        disp.setFieldValue("Gyro Yaw Angle", this.sensorService.getGyroSensor().getYawAngle());
         
-        getOperatorDisplay().setFieldValue("Ultrasonic", this.sensorService.getUltrasonicSensor(UltrasonicSensorKey.Front).getDistanceInches());
+        disp.setFieldValue("Ultrasonic Dist", this.sensorService.getUltrasonicSensor(UltrasonicSensorKey.Front).getDistanceInches());
         /*
 
-        getOperatorDisplay().setFieldValue("rightEncoder Distance",
+        disp.setFieldValue("rightEncoder Distance",
                 this.sensorService.getEncoderSensors().getRightEncoder().getDistance());
-        getOperatorDisplay().setFieldValue("leftEncoder Distance",
+        disp.setFieldValue("leftEncoder Distance",
                 this.sensorService.getEncoderSensors().getLeftEncoder().getDistance());
-        getOperatorDisplay().setFieldValue("leftEncoder Raw",
+        disp.setFieldValue("leftEncoder Raw",
                 this.sensorService.getEncoderSensors().getLeftEncoder().getRaw());
-        getOperatorDisplay().setFieldValue("rightEncoder Raw",
+        disp.setFieldValue("rightEncoder Raw",
                 this.sensorService.getEncoderSensors().getRightEncoder().getRaw());
                 /*
-        getOperatorDisplay().setFieldValue("Air Pressure", this.sensorService.getAirPressureSensor().getAirPressurePsi());
-        getOperatorDisplay().setFieldValue("Ultrasonic Distance (in)", this.sensorService.getUltrasonicSensor().getDistanceInches());
-        //getOperatorDisplay().setFieldValue("Contour Center", this.contoursCenterXEntry.getDouble(defaultValue));
-        //getOperatorDisplay().setFieldValue("Battery Voltage:", RobotController.getBatteryVoltage());
+        disp.setFieldValue("Air Pressure", this.sensorService.getAirPressureSensor().getAirPressurePsi());
+        disp.setFieldValue("Ultrasonic Distance (in)", this.sensorService.getUltrasonicSensor().getDistanceInches());
+        //disp.setFieldValue("Contour Center", this.contoursCenterXEntry.getDouble(defaultValue));
+        //disp.setFieldValue("Battery Voltage:", RobotController.getBatteryVoltage());
         */
     }
 }

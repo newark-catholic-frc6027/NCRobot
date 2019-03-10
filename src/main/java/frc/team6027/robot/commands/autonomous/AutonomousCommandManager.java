@@ -1,6 +1,5 @@
 package frc.team6027.robot.commands.autonomous;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,7 +10,6 @@ import frc.team6027.robot.commands.DriveStraightCommand;
 import frc.team6027.robot.commands.TurnCommand;
 import frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
 import frc.team6027.robot.field.Field;
-import frc.team6027.robot.field.Field.PlatePosition;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.sensors.EncoderSensors.EncoderKey;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
