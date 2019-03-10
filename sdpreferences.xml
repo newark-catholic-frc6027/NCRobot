@@ -1,67 +1,46 @@
 <xml version="1.0">
 <dashboard>
-	<widget field="avg Encoder Distance" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="420" y="553"/>
-	</widget>
-	<widget field="rightMotorEncoder Distance" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="389" y="527"/>
-	</widget>
-	<widget field="leftMotorEncoder Distance" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="394" y="503"/>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
+		<location x="653" y="18"/>
+		<property name="Text" value="Auto Start Position"/>
+	</static-widget>
+	<widget field="Hatch" type="Command" class="edu.wpi.first.smartdashboard.gui.elements.Command">
+		<location x="713" y="274"/>
 	</widget>
 	<widget field="Dont Do Option" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
 		<location x="0" y="0"/>
 	</widget>
 	<widget field="Reset Motor Encoders" type="Command" class="edu.wpi.first.smartdashboard.gui.elements.Command">
-		<location x="973" y="37"/>
+		<location x="635" y="214"/>
 	</widget>
 	<widget field="Ultrasonic" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1038" y="623"/>
+		<location x="870" y="594"/>
 	</widget>
 	<widget field="Reset Elevator Encoder" type="Command" class="edu.wpi.first.smartdashboard.gui.elements.Command">
-		<location x="1199" y="34"/>
-	</widget>
-	<widget field="elevatorEncoder Inches" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="724" y="621"/>
-	</widget>
-	<widget field="elevatorEncoder" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="329" y="688"/>
+		<location x="628" y="245"/>
 	</widget>
 	<widget field="Turn" type="Command" class="edu.wpi.first.smartdashboard.gui.elements.Command">
-		<location x="604" y="39"/>
+		<location x="719" y="150"/>
 	</widget>
 	<widget field="Drive Str8 w/Ult" type="Command" class="edu.wpi.first.smartdashboard.gui.elements.Command">
-		<location x="769" y="36"/>
+		<location x="663" y="182"/>
 	</widget>
 	<widget field="Mast Backward MAX?" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="720"/>
+		<location x="1137" y="602"/>
 	</widget>
 	<widget field="Mast Forward MAX?" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="700"/>
-	</widget>
-	<widget field="leftMotorEncoder Raw Values" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1085" y="504"/>
-		<height>21</height>
-	</widget>
-	<widget field="rightMotorEncoder Raw Values" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1081" y="532"/>
-	</widget>
-	<widget field="numberOfContours" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="708" y="584"/>
-	</widget>
-	<widget field="centerOfContours" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="711" y="552"/>
+		<location x="1144" y="575"/>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.RobotPreferences">
-		<location x="518" y="81"/>
+		<location x="1029" y="5"/>
 		<width>621</width>
 		<height>390</height>
 	</static-widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
-		<location x="1" y="45"/>
-		<width>465</width>
-		<height>327</height>
-		<property name="Camera Choice" value=""/>
+		<location x="8" y="98"/>
+		<width>618</width>
+		<height>492</height>
+		<property name="Camera Choice" value="rPi Camera 0"/>
 	</static-widget>
 	<widget field="Gyro Yaw Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="895" y="505"/>
@@ -69,21 +48,91 @@
 	<widget field="Gyro Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="724" y="508"/>
 	</widget>
-	<widget field="ElevatorSubsystem" type="Subsystem" class="edu.wpi.first.smartdashboard.gui.elements.Subsystem">
-		<location x="495" y="701"/>
+	<widget field="Position" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
+		<location x="640" y="28"/>
 	</widget>
-	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.RobotPreferences">
-		<location x="518" y="81"/>
-		<width>621</width>
-		<height>390</height>
-	</static-widget>
-	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
-		<location x="1" y="45"/>
-		<width>465</width>
-		<height>327</height>
-		<property name="Camera Choice" value=""/>
-	</static-widget>
+	<widget field="Elevator MAX?" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="1097" y="427"/>
+	</widget>
+	<widget field="Elevator MIN?" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="935" y="451"/>
+	</widget>
 </dashboard>
 <live-window>
+	<widget field="DrivetrainSubsystem" type="LW Subsystem" class="edu.wpi.first.smartdashboard.livewindow.elements.LWSubsystem">
+		<location x="13" y="29"/>
+	</widget>
+	<widget field="ElevatorSubsystem" type="LW Subsystem" class="edu.wpi.first.smartdashboard.livewindow.elements.LWSubsystem">
+		<location x="16" y="3"/>
+	</widget>
+	<widget field="ArmSubsystem" type="LW Subsystem" class="edu.wpi.first.smartdashboard.livewindow.elements.LWSubsystem">
+		<location x="14" y="14"/>
+	</widget>
+	<widget field="Ungrouped" type="LW Subsystem" class="edu.wpi.first.smartdashboard.livewindow.elements.LWSubsystem">
+		<widget field="Talon SRX [31]" type="Speed Controller" class="edu.wpi.first.smartdashboard.livewindow.elements.SpeedController">
+			<location x="6" y="16"/>
+			<height>45</height>
+			<width>297</width>
+		</widget>
+		<widget field="DigitalInput[5]" type="Digital Input" class="edu.wpi.first.smartdashboard.livewindow.elements.DigitalInputDisplay">
+			<location x="6" y="61"/>
+			<height>20</height>
+			<width>297</width>
+		</widget>
+		<widget field="DigitalInput[7]" type="Digital Input" class="edu.wpi.first.smartdashboard.livewindow.elements.DigitalInputDisplay">
+			<location x="6" y="81"/>
+			<height>20</height>
+			<width>297</width>
+		</widget>
+		<widget field="AnalogInput[7]" type="Analog Input" class="edu.wpi.first.smartdashboard.livewindow.elements.SingleNumberDisplay">
+			<location x="6" y="101"/>
+			<height>20</height>
+			<width>297</width>
+		</widget>
+		<widget field="DigitalInput[6]" type="Digital Input" class="edu.wpi.first.smartdashboard.livewindow.elements.DigitalInputDisplay">
+			<location x="6" y="121"/>
+			<height>20</height>
+			<width>297</width>
+		</widget>
+		<widget field="Ultrasonic[1]" type="Ultrasonic" class="edu.wpi.first.smartdashboard.livewindow.elements.SingleNumberDisplay">
+			<location x="6" y="141"/>
+			<height>20</height>
+			<width>297</width>
+		</widget>
+		<widget field="DigitalInput[4]" type="Digital Input" class="edu.wpi.first.smartdashboard.livewindow.elements.DigitalInputDisplay">
+			<location x="6" y="161"/>
+			<height>20</height>
+			<width>297</width>
+		</widget>
+		<widget field="Encoder[0]" type="Quadrature Encoder" class="edu.wpi.first.smartdashboard.livewindow.elements.EncoderDisplay">
+			<location x="6" y="181"/>
+			<height>97</height>
+			<width>297</width>
+		</widget>
+		<widget field="Talon SRX [32]" type="Speed Controller" class="edu.wpi.first.smartdashboard.livewindow.elements.SpeedController">
+			<location x="6" y="278"/>
+			<height>45</height>
+			<width>297</width>
+		</widget>
+		<widget field="Talon SRX [30]" type="Speed Controller" class="edu.wpi.first.smartdashboard.livewindow.elements.SpeedController">
+			<location x="6" y="323"/>
+			<height>45</height>
+			<width>297</width>
+		</widget>
+		<location x="23" y="2"/>
+		<width>309</width>
+		<height>374</height>
+	</widget>
 </live-window>
+	<hidden field="avg Encoder Distance"/>
+	<hidden field="leftMotorEncoder Raw Values"/>
+	<hidden field="elevatorEncoder Inches"/>
+	<hidden field="ElevatorSubsystem"/>
+	<hidden field="rightMotorEncoder Raw Values"/>
+	<hidden field="Auto Scenario"/>
+	<hidden field="rightMotorEncoder Distance"/>
+	<hidden field="centerOfContours"/>
+	<hidden field="leftMotorEncoder Distance"/>
+	<hidden field="elevatorEncoder"/>
+	<hidden field="numberOfContours"/>
 </xml>
