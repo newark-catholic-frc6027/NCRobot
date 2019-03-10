@@ -65,7 +65,7 @@ public class PneumaticSubsystem extends Subsystem {
             return;
         }
 
-        this.operatorDisplay.setFieldValue("Solenoid State", this.driveSolenoid.getState().name());
+        this.operatorDisplay.setFieldValue("Drive Sol. State", this.driveSolenoid.getState().name());
 
         if (this.driveSolenoid.getState() == DoubleSolenoid.Value.kReverse) {
             logger.trace("Calling toggleSolenoidForward");
@@ -82,7 +82,7 @@ public class PneumaticSubsystem extends Subsystem {
             return;
         }
 
-        this.operatorDisplay.setFieldValue("Arm Rotate Solenoid State", this.armRotateSolenoid.getState().name());
+        this.operatorDisplay.setFieldValue("Arm Rotate Sol. State", this.armRotateSolenoid.getState().name());
 
         if (this.armRotateSolenoid.getState() == DoubleSolenoid.Value.kReverse) {
             logger.trace("Calling toggleArmRotateSolenoidRotate-CW");

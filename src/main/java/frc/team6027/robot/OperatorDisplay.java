@@ -9,15 +9,6 @@ import edu.wpi.first.wpilibj.command.Command;
  * to the robot driver.
  */
 public interface OperatorDisplay {
-    public static final String PID_LOOP_OUPUT_LABEL = "PID Loop Output Value";
-    public static final String TELEOP_MOTOR_POWER_PREF = "teleopMotorPower";
-    public static final String GAME_DATA_LABEL = "Field Assignments";
-    /**
-     * The name of the field representing how far the robot has traveled.
-     */
-    public static final String DISTANCE_FIELD_NAME = "Distance";
-	public static final String REAR_LIFT_MAX = "Rear Lift MAX?";
-	public static final String REAR_LIFT_MIN = "Rear Lift MIN?";
 	public static final String ELEVATOR_MAX = "Elevator MAX?";
     public static final String ELEVATOR_MIN = "Elevator MIN?";
     public static final String MAST_FORWARD_MAX = "Mast Forward MAX?";
