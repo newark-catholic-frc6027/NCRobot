@@ -41,7 +41,8 @@ public class TurnCommand extends Command implements PIDOutput {
 	protected double initialGyroAngle;
 	protected int execCount = 0;
 	protected String anglePrefName = null;
-	protected double turnPower;
+	protected Double turnPower;
+	protected String turnPowerPrefName = null;
 	protected double turnMinPower;
 	protected double adjustedPower;
     protected boolean isReset = false;
@@ -52,6 +53,13 @@ public class TurnCommand extends Command implements PIDOutput {
 		this.anglePrefName = anglePrefName;
 	}
 
+	public TurnCommand(String anglePrefName, SensorService sensorService, DrivetrainSubsystem drivetrain,
+		OperatorDisplay operatorDisplay, String powerPrefName) {
+		this(sensorService, drivetrain, operatorDisplay);
+		this.anglePrefName = anglePrefName;
+		this.turnPowerPrefName = powerPrefName;
+	}
+
 	public TurnCommand(SensorService sensorService, DrivetrainSubsystem drivetrain,
 		OperatorDisplay operatorDisplay) {
 		this(-1, sensorService, drivetrain, operatorDisplay);
@@ -59,14 +67,21 @@ public class TurnCommand extends Command implements PIDOutput {
 
 	public TurnCommand(double angle, SensorService sensorService, DrivetrainSubsystem drivetrain,
 			OperatorDisplay operatorDisplay) {
+		this(angle, sensorService, drivetrain, operatorDisplay, null);
+	}
+	
+	public TurnCommand(double angle, SensorService sensorService, DrivetrainSubsystem drivetrain,
+			OperatorDisplay operatorDisplay, Double power) {
 		requires(drivetrain);
 		this.sensorService = sensorService;
 		this.gyro = this.sensorService.getGyroSensor();
 		this.drivetrain = drivetrain;
 		this.targetAngle = angle;
 		this.operatorDisplay = operatorDisplay;
-        this.setName(NAME);
-
+		if (null != power) {
+			this.turnPower = power;
+		}
+		this.setName(NAME);
 	}
 
 	protected void initPIDController() {
@@ -79,7 +94,14 @@ public class TurnCommand extends Command implements PIDOutput {
 				this.prefs.getDouble("turnCommand.dCoeff", PID_DERIVATIVE_COEFFICIENT),
 				this.prefs.getDouble("turnCommand.feedForward", PID_FEED_FORWARD_TERM),
 				this.sensorService.getGyroSensor().getPIDSource(), this);
-		this.turnPower = this.prefs.getDouble("turnCommand.turnPower", .1);
+		if (this.turnPowerPrefName == null) {
+			if (this.turnPower == null) {
+				this.turnPower = this.prefs.getDouble("turnCommand.turnPower", .1);
+			}
+		} else {
+			this.turnPower = this.prefs.getDouble(this.turnPowerPrefName, .1);
+		}
+
 		pidController.setInputRange(-180.0, 180.0);
 		pidController.setOutputRange(-1* this.turnPower, this.turnPower);
 		pidController.setAbsoluteTolerance(PID_TOLERANCE_DEGREES);
@@ -135,8 +157,9 @@ public class TurnCommand extends Command implements PIDOutput {
 
 	@Override
 	public void start() {
-		logger.info(">>> Turn Command starting, target angle: {}, initial gyro angle", this.targetAngle, this.initialGyroAngle);
 		this.reset();
+		logger.info(">>> Turn Command starting, target angle: {}, initial gyro angle: {}, turnMinPower: {}", 
+		    this.targetAngle, this.initialGyroAngle, this.turnMinPower);
 		super.start();
 	}
 
@@ -155,20 +178,19 @@ public class TurnCommand extends Command implements PIDOutput {
 		
 		leftPower = pidOutput;
 		double angleDelta = Math.abs(this.targetAngle - this.gyro.getYawAngle());
+		boolean powerDroppedBelowMin = Math.abs(leftPower) <= this.turnMinPower;
 		// If we are between X and 1.5 * X degrees of our target and our power has dropped under a minimum threshold
 		// increase power to an adjusted value in order to get the PID loop going again.
 		if (angleDelta > PID_TOLERANCE_DEGREES) {
-			if (angleDelta < 1.5 * PID_TOLERANCE_DEGREES) {
-				if (Math.abs(leftPower) <= this.turnMinPower) {
-					leftPower  = leftPower < 0.0 ? -1 * this.adjustedPower : this.adjustedPower;
-					logger.info("Power increased to: {}", leftPower);
-				}
+			if ((angleDelta < 1.5 * PID_TOLERANCE_DEGREES && powerDroppedBelowMin) || powerDroppedBelowMin) {
+				leftPower  = leftPower < 0.0 ? -1 * this.adjustedPower : this.adjustedPower;
+				logger.info("Power increased to: {}", leftPower);
 			}
 		}
 
 		rightPower = -1 * leftPower;
 			
-		if (this.execCount % 20 == 0) {
+		if (this.execCount % 4 == 0) {
 			logger.trace("yaw: {}, pid: {}, gyro rate: {}, leftPower: {}, rightPower: {}", 
 					String.format("%.3f",this.gyro.getYawAngle()), 
 					String.format("%.3f",this.pidLoopCalculationOutput), 

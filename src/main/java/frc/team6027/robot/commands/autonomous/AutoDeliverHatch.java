@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.commands.DriveStraightCommand;
 import frc.team6027.robot.commands.PneumaticsInitializationCommand;
+import frc.team6027.robot.commands.ResetSensorsCommand;
 import frc.team6027.robot.commands.TurnCommand;
 import frc.team6027.robot.commands.TurnWhileDrivingCommand;
 import frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
@@ -49,15 +50,99 @@ public class AutoDeliverHatch extends CommandGroup {
         this.addSequential( new DriveStraightCommand(this.sensorService, this.drivetrainSubsystem, 
             this.operatorDisplay, 36.0, DriveDistanceMode.DistanceFromObject, 0.5)
         );
-*/        
-        this.addSequential(new DriveStraightCommand("A-L1-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, 
-            "A-P1-Storm-Hatch", null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
+*/       
+        /*
+        double leg1Distance = this.prefs.getDouble("A-L1-Storm-Hatch", -48.0);
+        double leg1Angle = 0.0;
+        double leg2Distance = this.prefs.getDouble("A-L2-Storm-Hatch", 47.0);
+        double leg2Angle = this.prefs.getDouble("A-A1-Storm-Hatch", 120.0);//30.0 * (this.startingSide == StartingPositionSide.Right ? 1.0 : -1.0);
+        //double leg3Distance = this.prefs.getDouble("A-L3-SS-Scale", 220.0);
+        //double leg3Angle = 0.0;
+
+        TargetVector[] targetVectors = new TargetVector[] { 
+                new TargetVector(leg1Angle, leg1Distance),
+                new TargetVector(leg2Angle, leg2Distance),
+                //new TargetVector(leg3Angle, leg3Distance),
+                
+        };
+
+        this.addSequential(new TurnWhileDrivingCommand(sensorService, drivetrainSubsystem, operatorDisplay, targetVectors, 
+            DriveDistanceMode.DistanceReadingOnEncoder, .4));
+            */
+
+        // TODO: Initialize Pneumatics
+        this.addSequential(new ResetSensorsCommand(this.sensorService));
+        this.addSequential(new DriveStraightCommand("A-L1-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "A-P1-Storm-Hatch", 
+            null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
         );
 
-        this.addSequential(new TurnCommand("A-A1-Storm-Hatch", this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
+        this.addSequential(new TurnCommand("A-A1-Storm-Hatch", this.sensorService, this.drivetrainSubsystem, this.operatorDisplay, "A-A1P1-Storm-Hatch"));
+
         this.addSequential(new DriveStraightCommand("A-L2-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "A-P2-Storm-Hatch", 
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
         );
+        this.addSequential(new TurnCommand("A-A2-Storm-Hatch", this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
+
+        // TODO: replace this with Vision commands
+        this.addSequential(new DriveStraightCommand("A-L3-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "A-P3-Storm-Hatch", 
+            null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
+        );
+
+        // TODO: Ensure arm isn't blocking camera
+        // TODO: Drive to rocket with vision
+        // TODO: Raise arm to top of rocket
+        // TODO: Deliver Hatch
+        // TODO: Lower arm to proper position
+/*
+        this.addSequential(new Command() {
+            long finishTime = -1;
+            @Override
+            public void start() {
+                finishTime = System.currentTimeMillis() + 500;
+            }
+            @Override
+            public void execute() {
+                if (finishTime == -1) {
+                    finishTime = System.currentTimeMillis() + 500;
+                }
+            }
+
+            @Override
+            protected boolean isFinished() {
+                boolean finished = System.currentTimeMillis() >= finishTime;
+                if (finished) {
+                    finishTime = -1;
+                }
+                return finished;
+            }
+
+        });
+        */
+        // Back up from rocket
+        this.addSequential(new DriveStraightCommand("A-L4-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "A-P4-Storm-Hatch", 
+            null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
+        );
+        this.addSequential(new TurnCommand("A-A3-Storm-Hatch", this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
+
+        this.addSequential(new DriveStraightCommand("A-L5-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "A-P5-Storm-Hatch", 
+            null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
+        );
+        this.addSequential(new DriveStraightCommand("A-L6-Storm-Hatch", DriveDistanceMode.DistanceFromObject, "A-P6-Storm-Hatch", 
+            null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
+        );
+
+
+        // TODO: Set arm to proper position
+        // TODO: Pick up hatch
+        
+        // -> TODO: Back up using encoder
+        // -> TODO: Turn to face rocket
+        // -> TODO: Drive to rocket using encoder
+        
+        // TODO: Ensure arm isn't blocking camera
+        // TODO: Drive to rocket with vision
+        // TODO: Raise arm to top of rocket
+        // TODO: Deliver Hatch
 
 //        Command multiLegDriveCmd = createMultiLegDriveCommand();
 //        Command turnCommand = createTurnCommand();
@@ -86,6 +171,12 @@ public class AutoDeliverHatch extends CommandGroup {
         return cmd;
     }
 */
+
+    @Override
+    public void start() {
+        this.logger.info(">>>>>>>>>>>>>>>>>>>> AutoDeliverHatch command starting...");
+        super.start();
+    }
 
     protected Command createTurnCommand() {
         // When delivering to the left, need to turn robot to the right.  When delivering to the right, need to turn

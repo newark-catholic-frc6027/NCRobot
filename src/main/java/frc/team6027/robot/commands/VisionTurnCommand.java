@@ -27,24 +27,24 @@ public class VisionTurnCommand extends Command implements PIDOutput {
 	protected static final double PID_TOLERANCE_DEGREES = 2.0;
 	protected static final double DRIVE_POWER = 0.7;
 	
-	private Preferences prefs = Preferences.getInstance();
-	private long executionStartThreshold = this.prefs.getLong("visionturnCommand.execStartThreshold", 500);
-	private double pidAngleStopThreshold = this.prefs.getDouble("visionturnCommand.pidAngleStopThreshold", 0.1);
-	private PIDController pidController;
+	protected Preferences prefs = Preferences.getInstance();
+	protected long executionStartThreshold = this.prefs.getLong("visionturnCommand.execStartThreshold", 500);
+	protected double pidAngleStopThreshold = this.prefs.getDouble("visionturnCommand.pidAngleStopThreshold", 0.1);
+	protected PIDController pidController;
 
-	private SensorService sensorService;
-	private PIDCapableGyro gyro;
-	private UltrasonicSensor ultrasonicSensor;
-	private DrivetrainSubsystem drivetrain;
-	private double targetAngle;
+	protected SensorService sensorService;
+	protected PIDCapableGyro gyro;
+	protected UltrasonicSensor ultrasonicSensor;
+	protected DrivetrainSubsystem drivetrain;
+	protected double targetAngle;
 
-	private double pidLoopCalculationOutput;
-	private OperatorDisplay operatorDisplay;
-	private long startTime;
-	private double initialGyroAngle;
-	private int execCount = 0;
+	protected double pidLoopCalculationOutput;
+	protected OperatorDisplay operatorDisplay;
+	protected long startTime;
+	protected double initialGyroAngle;
+	protected int execCount = 0;
 
-	private Datahub visionData;
+	protected Datahub visionData;
 
 	public VisionTurnCommand(SensorService sensorService, DrivetrainSubsystem drivetrain,
 			OperatorDisplay operatorDisplay) {

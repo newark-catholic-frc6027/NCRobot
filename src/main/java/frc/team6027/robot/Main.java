@@ -8,6 +8,8 @@
 package frc.team6027.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Do NOT add any static variables to this class, or any initialization at all.
@@ -15,6 +17,8 @@ import edu.wpi.first.wpilibj.RobotBase;
  * change the parameter class to the startRobot call.
  */
 public final class Main {
+  private final static Logger logger = LogManager.getLogger(Main.class);
+
   private Main() {
   }
 
@@ -24,6 +28,11 @@ public final class Main {
    * <p>If you change your main robot class, change the parameter type.
    */
   public static void main(String... args) {
-    RobotBase.startRobot(Robot::new);
+    try {
+      RobotBase.startRobot(Robot::new);
+    } catch (Throwable ex) {
+      logger.error("", ex);
+      throw ex;
+    }
   }
 }

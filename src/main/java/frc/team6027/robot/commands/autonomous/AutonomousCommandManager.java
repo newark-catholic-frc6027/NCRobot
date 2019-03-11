@@ -8,6 +8,8 @@ import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.commands.DriveStraightCommand;
 import frc.team6027.robot.commands.TurnCommand;
+import frc.team6027.robot.commands.VisionTurnCommand;
+import frc.team6027.robot.commands.VisionTurnCommand2;
 import frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
 import frc.team6027.robot.field.Field;
 import frc.team6027.robot.sensors.SensorService;
@@ -502,6 +504,8 @@ public class AutonomousCommandManager {
 
         this.getOperatorDisplay().setData("Hatch", new AutoDeliverHatch(StartingPositionSide.Left, this.sensorService, this.drivetrainSubsystem, 
            this.pneumaticSubsystem, this.elevatorSubsystem, this.operatorDisplay, this.field));
+
+        this.getOperatorDisplay().setData("Vision Turn", new VisionTurnCommand2(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay, "visionTurnCommand.power"));
 
  	}
                        
