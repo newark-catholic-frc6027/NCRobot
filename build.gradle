@@ -100,3 +100,9 @@ task wpiJavadoc(type: Javadoc) {
     options.addStringOption('--frames')
 
 }
+
+task(runRobotServer, dependsOn: 'classes', type: JavaExec) {
+    main = 'frc.team6027.robot.RobotStatusServer'
+    classpath = sourceSets.main.runtimeClasspath
+    systemProperty 'log4j.configurationFile', './src/main/resources/log4j2-local.xml'
+}

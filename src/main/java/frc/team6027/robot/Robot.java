@@ -67,6 +67,7 @@ public class Robot extends TimedRobot {
     private int autoExecCount = 0;
 
     private Datahub visionData;
+    private RobotStatusServer robotStatusServer;
    
     /**
      * This function is run when the robot is first started up and should be used
@@ -88,7 +89,6 @@ public class Robot extends TimedRobot {
 //        this.setRearLift(new RearLiftSubsystem(this.sensorService.getLimitSwitchSensors(), operatorDisplay));
         this.setElevatorSubsystem(new ElevatorSubsystem(this.getSensorService().getLimitSwitchSensors(), this.getOperatorDisplay()));
 //        this.setPneumaticSubsystem(new PneumaticSubsystem(this.getOperatorDisplay()));
-
         this.visionData = new DatahubNetworkTableImpl(DatahubRegistry.VISION_KEY);
         DatahubRegistry.instance().register(this.visionData);
 
@@ -108,6 +108,11 @@ public class Robot extends TimedRobot {
 
         this.autoCommandManager.initOperatorDisplayCommands();
         this.sensorService.resetAll();
+
+        // Start a SocketServer to listen for client ping requests.  This allows us
+        // to let other processes (such as vision) know that the robot server is ready
+        this.robotStatusServer = new RobotStatusServer();
+        this.robotStatusServer.start();
 
         /*
         AutonomousCommandManager.initAutoScenarioDisplayValues(this.getOperatorDisplay());
