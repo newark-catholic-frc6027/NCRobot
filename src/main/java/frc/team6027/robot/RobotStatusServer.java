@@ -12,7 +12,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class RobotStatusServer {
-    public static final int DEFAULT_ROBOT_SERVER_PORT = 6060;
+    // As far as I know, available "team use" ports are numbered 5800-5810
+    public static final int DEFAULT_ROBOT_SERVER_PORT = 5801;
     private final Logger logger = LogManager.getLogger(getClass());
 
     protected boolean stopped = false;
