@@ -55,10 +55,10 @@ public class LimitSwitchSensors {
         boolean switchTripped = true;
         switch (id) {
             case MastTop:
-                switchTripped = this.mastTop.get();
+                switchTripped = ! this.mastTop.get();
                 break;
             case MastBottom:
-                switchTripped = this.mastBottom.get();
+                switchTripped = ! this.mastBottom.get();
                 break;
             case MastSlideForward:
                 switchTripped = this.mastForward.get();

@@ -137,8 +137,8 @@ public class RobotConfigConstants {
     public static final int ELEVATOR_ENCODER_DIO_CHANNEL_B = 9;
     
     
-    public final static int LIMIT_SWITCH_MAST_BOTTOM_DIO_CHANNEL = 6;
-    public final static int LIMIT_SWITCH_MAST_TOP_DIO_CHANNEL = 7;
+    public final static int LIMIT_SWITCH_MAST_BOTTOM_DIO_CHANNEL = 7;
+    public final static int LIMIT_SWITCH_MAST_TOP_DIO_CHANNEL = 6;
 
     public final static int LIMIT_SWITCH_MAST_SLIDE_FORWARD_DIO_CHANNEL = 4;
     public final static int LIMIT_SWITCH_MAST_SLIDE_BACKWARD_DIO_CHANNEL = 5;

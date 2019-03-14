@@ -25,7 +25,7 @@
     <Logger name="frc.team6027" level="trace">
     </Logger>
 
-    <Logger name="frc.team6027.robot.subsystems.ElevatorSubsystem" level="info">
+    <Logger name="frc.team6027.robot.subsystems.ElevatorSubsystem" level="debug">
     </Logger>
     <Logger name="frc.team6027.robot.subsystems.RearLiftSubsystem" level="info">
     </Logger>

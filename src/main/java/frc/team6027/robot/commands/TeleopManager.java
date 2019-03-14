@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.Scheduler;
 
 public class TeleopManager extends Command {
     private final Logger logger = LogManager.getLogger(getClass());
@@ -84,7 +85,6 @@ public class TeleopManager extends Command {
         // command
         // only
         requires(drivetrain);
-        requires(elevator);
         requires(armSubsystem);
 
         // Hang onto references of the components we will need during teleop
@@ -139,9 +139,8 @@ public class TeleopManager extends Command {
         this.backButton = new JoystickButton(this.joystick, this.joystick.getBackButtonNumber());
         
         try {
-            Command cmd = new DriveStraightCommand(this.sensorService, this.drivetrain, 
-                this.operatorDisplay, 36.0, DriveDistanceMode.DistanceFromObject, 0.5);
-            this.logger.info("sensorservice: {}, drivetrain: {}, operatorDisplay: {}", this.sensorService, this.drivetrain, this.operatorDisplay);
+            Command cmd =new ElevatorCommand("elevatorCommand.height", "elevatorCommand.power", this.sensorService, this.elevatorSubsystem);
+            // this.logger.info("sensorservice: {}, drivetrain: {}, operatorDisplay: {}", this.sensorService, this.drivetrain, this.operatorDisplay);
             this.backButton.toggleWhenPressed(cmd);
         } catch (Exception ex ) {
             this.logger.error("", ex);
@@ -209,7 +208,7 @@ public class TeleopManager extends Command {
         // TODO: reassign, only for testing mast
         this.xButton2 = new JoystickButton(this.joystick2, this.joystick2.getXButtonNumber());   
         this.xButton2.whenPressed(new ElevatorCommand(ElevatorCommand.ElevatorDirection.Down, 
-            .5, this.sensorService, this.elevatorSubsystem, this.drivetrain));
+            .5, this.sensorService, this.elevatorSubsystem));
 
         this.yButton2 = new JoystickButton(this.joystick2, this.joystick2.getYButtonNumber());   
         this.yButton2.whenPressed(new PrintMessageCommand("ybutton has pressed down and completed the press of the ybutton"));  

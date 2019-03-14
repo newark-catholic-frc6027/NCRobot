@@ -393,7 +393,9 @@ public class Robot extends TimedRobot {
             this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorRight).getRelativeDistance());
         disp.setFieldValue("Avg Motor Dist",
             this.sensorService.getEncoderSensors().getAvgEncoderRelativeDistance());
-
+        disp.setFieldValue("Elev topLimitTripped?", this.elevatorSubsystem.isTopLimitSwitchTripped());
+        disp.setFieldValue("Elev bottomLimitTripped?", this.elevatorSubsystem.isBottomLimitSwitchTripped());
+    
             
         disp.setFieldValue("Gyro Angle", this.sensorService.getGyroSensor().getAngle());
         disp.setFieldValue("Gyro Yaw Angle", this.sensorService.getGyroSensor().getYawAngle());
