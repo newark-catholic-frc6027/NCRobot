@@ -233,7 +233,7 @@ public class TeleopManager extends Command {
         updatePreferences();
         super.start();
     }
-    
+
     public void updatePreferences() {
         this.turnPowerScaleFactor = this.prefs.getDouble("teleop.turnPowerScaleFactor", 1.0);
     }
@@ -248,6 +248,11 @@ public class TeleopManager extends Command {
         this.clearRequirements();
         // This will only get called if isFinished returns true
         // this.drivetrain.stopArcadeDrive();
+    }
+
+    @Override
+    public void cancel() {
+        this.updatePreferences();
     }
 
     @Override
