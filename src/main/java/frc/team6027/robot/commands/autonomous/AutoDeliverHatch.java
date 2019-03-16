@@ -161,14 +161,9 @@ public class AutoDeliverHatch extends CommandGroup {
     }
     
     protected Command createMultiLegDriveCommand() {
-        double leg1Distance = this.prefs.getDouble("A-L3-1-Storm-Hatch", 60.0);
-        double leg1Power = this.prefs.getDouble("A-P3-1-Storm-Hatch", 0.7);
-        double leg2Distance = this.prefs.getDouble("A-L3-2-Storm-Hatch", 35.0);
-        double leg2Power = this.prefs.getDouble("A-P3-2-Storm-Hatch", 0.4);
-
         TargetVector[] turnVectors = new TargetVector[] { 
-                new TargetVector(null, leg1Distance, leg1Power),
-                new TargetVector(null, leg2Distance, leg2Power),
+                new TargetVector(null, "A-L3-1-Storm-Hatch", "A-P3-1-Storm-Hatch"),
+                new TargetVector(null, "A-L3-2-Storm-Hatch", "A-P3-2-Storm-Hatch"),
         };
         
         Command cmd = new TurnWhileDrivingCommand(

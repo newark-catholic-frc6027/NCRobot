@@ -36,24 +36,27 @@ public class TurnWhileDrivingCommand extends DriveStraightCommand implements PID
     }
 
     @Override
-    protected void initialize() {
-        super.initialize();
-        
-        this.curLegLeftEncDistance = 0.0;
-        this.curLegRightEncDistance = 0.0;
+    protected void reset() {
+        super.reset();
+        this.currentTargetVectorIndex = 0;
+        this.currentLegPower = this.targetVectors[0].getPower();
+        this.curLegLeftEncDistance = this.curLegRightEncDistance = 
+            this.prevLegLeftEncDistance = this.prevLegRightEncDistance = 0.0;
+
         if (targetVectors[0].getAngle() != null) {
             this.gyroPidController.setSetpoint(targetVectors[0].getAngle());
         } else {
             this.gyroPidController.setSetpoint(this.gyro.getYawAngle());
         }
     }
-
     
     @Override
     protected boolean isFinished() {
         if (this.currentTargetVectorIndex >= this.targetVectors.length) {
             this.drivetrainSubsystem.stopMotor();
+            this.disablePidControllers();
             logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TurnWhileDrivingCommand FINISHED, distance={}", this.encoderSensors.getLeftEncoder().getDistance());
+            this.isReset = false;
             return true;
         }
         
@@ -110,33 +113,56 @@ public class TurnWhileDrivingCommand extends DriveStraightCommand implements PID
 
     static public class TargetVector {
         Double angle;
+        String anglePref = null;
         Double power = null;
+        String powerPref  = null;
         double distance;
+        String distancePref = null;
+        private Preferences prefs = Preferences.getInstance();
+
         
         public TargetVector(Double angle, double distance) {
             this.angle = angle;
             this.distance = distance;
         }
-        public TargetVector(Double angle, double distance, double power) {
+        public TargetVector(Double angle, double distance, Double power) {
             this.angle = angle;
             this.distance = distance;
             this.power = power;
         }
 
+        public TargetVector(String anglePref, String distancePref, String powerPref) {
+            this.anglePref = anglePref;
+            this.distancePref = distancePref;
+            this.powerPref = powerPref;
+        }
+
         public Double getAngle() {
-            return angle;
+            if (this.anglePref != null) {
+                return this.prefs.getDouble(this.anglePref, 0.0);
+            } else {
+                return angle;
+            }
         }
         public void setAngle(Double angle) {
             this.angle = angle;
         }
         public double getDistance() {
-            return distance;
+            if (this.distancePref != null) {
+                return this.prefs.getDouble(this.distancePref, 0.0);
+            }  else {
+                return distance;
+            }
         }
         public void setDistance(double distance) {
             this.distance = distance;
         }
         public Double getPower() {
-            return power;
+            if (this.powerPref != null) {
+                return this.prefs.getDouble(this.powerPref, 0.0);
+            } else {
+                return power;
+            }
         }
         public void setPower(Double power) {
             this.power = power;
