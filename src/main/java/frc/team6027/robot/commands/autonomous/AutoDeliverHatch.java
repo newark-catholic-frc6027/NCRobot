@@ -77,36 +77,45 @@ public class AutoDeliverHatch extends CommandGroup {
         this.addSequential(new PneumaticsInitializationCommand(this.pneumaticSubsystem));
         this.addSequential(new ResetSensorsCommand(this.sensorService));
         // TODO: Is this going to test ok?
+        // Drive Backwards off ramp
         this.addParallel(new SlideMastCommand(SlideMastDirection.Forward, 1.0, this.sensorService, this.elevatorSubsystem));
         this.addSequential(new DriveStraightCommand("A-L1-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "A-P1-Storm-Hatch", 
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
         );
 
+        // Turn around
         this.addSequential(new TurnCommand("A-A1-Storm-Hatch", this.sensorService, this.drivetrainSubsystem, this.operatorDisplay, "A-A1P1-Storm-Hatch"));
 
+        // Drive straight, toward wall
         this.addSequential(new DriveStraightCommand("A-L2-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "A-P2-Storm-Hatch", 
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
         );
         // TODO: replace this with Vision turn, use VisionTurnCommand2
         // TODO: Add logic to handle potential failure of Vision turn
 
+        // Turn again toward rocket
         this.addSequential(new TurnCommand("A-A2-Storm-Hatch", this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
-
+/*
         this.addSequential(new DriveStraightCommand("A-L3-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "A-P3-Storm-Hatch", 
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
         );
+*/       
+        // Last leg to rocket 
+        Command multiLegDriveCmd = createMultiLegDriveCommand();
+        this.addSequential(multiLegDriveCmd);
 
-        this.addSequential(new ElevatorCommand(70.0, 0.6, this.sensorService, this.elevatorSubsystem));
+//        this.addSequential(new ElevatorCommand(70.0, 0.6, this.sensorService, this.elevatorSubsystem));
         // TODO: Ensure arm isn't blocking camera
         // TODO: Drive to rocket with vision
         // TODO: Raise arm to top of rocket
         // TODO: Deliver Hatch
         // TODO: Lower arm to proper position
-
+/*
         // Back up from rocket
         this.addSequential(new DriveStraightCommand("A-L4-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "A-P4-Storm-Hatch", 
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
         );
+
         this.addSequential(new TurnCommand("A-A3-Storm-Hatch", this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
 
         this.addSequential(new DriveStraightCommand("A-L5-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "A-P5-Storm-Hatch", 
@@ -119,30 +128,9 @@ public class AutoDeliverHatch extends CommandGroup {
 
         // TODO: Set arm to proper position
         // TODO: Pick up hatch
+*/        
         
-        // -> TODO: Back up using encoder
-        // -> TODO: Turn to face rocket
-        // -> TODO: Drive to rocket using encoder
-        
-        // TODO: Ensure arm isn't blocking camera
-        // TODO: Drive to rocket with vision
-        // TODO: Raise arm to top of rocket
-        // TODO: Deliver Hatch
 
-//        Command multiLegDriveCmd = createMultiLegDriveCommand();
-//        Command turnCommand = createTurnCommand();
-//        Command driveToScaleCmd = createDriveToScaleCommand();
-                
-//        this.addSequential(multiLegDriveCmd);
-//        this.addSequential(turnCommand);  // Turn toward scale
-        // Elevator should already be shifted into high gear
-        // Drop carriage down
-//        this.addParallel(AutoCommandHelper.createDropCarriageForDeliveryCommand(this.pneumaticSubsystem, field));
-        // Run elevator back up
-//        this.addParallel(AutoCommandHelper.createElevatorUpForDeliveryCommand(this.elevatorSubsystem, this.drivetrainSubsystem, this.getSensorService()));
-        // Drive to scale and eject
-//        this.addSequential(driveToScaleCmd);
-//        this.addSequential(AutoCommandHelper.createCubeDeliveryCommand(this.getPneumaticSubsystem(), field));
     }
 /*
     protected Command createDriveToScaleCommand() {
@@ -173,24 +161,20 @@ public class AutoDeliverHatch extends CommandGroup {
     }
     
     protected Command createMultiLegDriveCommand() {
-        double leg1Distance = this.prefs.getDouble("A-L1-Storm-Hatch", -48.0);
-        double leg1Angle = 0.0;
-        double leg2Distance = this.prefs.getDouble("A-L2-Storm-Hatch", 47.0);
-        double leg2Angle = 30.0 * (this.startingSide == StartingPositionSide.Right ? 1.0 : -1.0);
-        double leg3Distance = this.prefs.getDouble("A-L3-SS-Scale", 220.0);
-        double leg3Angle = 0.0;
+        double leg1Distance = this.prefs.getDouble("A-L3-1-Storm-Hatch", 60.0);
+        double leg1Power = this.prefs.getDouble("A-P3-1-Storm-Hatch", 0.7);
+        double leg2Distance = this.prefs.getDouble("A-L3-2-Storm-Hatch", 35.0);
+        double leg2Power = this.prefs.getDouble("A-P3-2-Storm-Hatch", 0.4);
 
         TargetVector[] turnVectors = new TargetVector[] { 
-                new TargetVector(leg1Angle, leg1Distance),
-                new TargetVector(leg2Angle, leg2Distance),
-                new TargetVector(leg3Angle, leg3Distance),
-                
+                new TargetVector(null, leg1Distance, leg1Power),
+                new TargetVector(null, leg2Distance, leg2Power),
         };
         
         Command cmd = new TurnWhileDrivingCommand(
                 this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay(), 
                 turnVectors,
-                DriveDistanceMode.DistanceReadingOnEncoder, 0.8
+                DriveDistanceMode.DistanceReadingOnEncoder, 0.5
         );
         
         return cmd;

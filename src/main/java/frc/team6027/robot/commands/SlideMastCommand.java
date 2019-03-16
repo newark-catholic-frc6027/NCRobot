@@ -77,11 +77,13 @@ public class SlideMastCommand extends Command {
          
         boolean backwardSwitchTripped = this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.MastSlideBackward);
         boolean forwardSwitchTripped = this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.MastSlideForward);
+        logger.info(">>>>> Mast slide command checking isFinished. forwardSwitchTripped: {}, backwardSwitchTripped: {}, isGoingForward: {}", 
+          forwardSwitchTripped, backwardSwitchTripped, this.elevator.isGoingForward());
 
         // Checking isGoingUp/Down may be affecting communication
-        boolean done = (this.direction == SlideMastDirection.Forward && this.elevator.isGoingForward() && (forwardSwitchTripped || this.isForwardMaxAmpsExceededWithDelay())) 
+        boolean done = (this.direction == SlideMastDirection.Forward /*&& this.elevator.isGoingForward()*/ && (forwardSwitchTripped || this.isForwardMaxAmpsExceededWithDelay())) 
                            ||
-                       (this.direction == SlideMastDirection.Backward && this.elevator.isGoingBackward() && (backwardSwitchTripped || this.isBackwardMaxAmpsExceededWithDelay()));
+                       (this.direction == SlideMastDirection.Backward /*&& this.elevator.isGoingBackward()*/&& (backwardSwitchTripped || this.isBackwardMaxAmpsExceededWithDelay()));
 
         if (done) {
             this.elevator.mastSlideStop();

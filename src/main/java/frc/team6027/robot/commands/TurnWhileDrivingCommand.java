@@ -21,6 +21,7 @@ public class TurnWhileDrivingCommand extends DriveStraightCommand implements PID
     double curLegLeftEncDistance = 0.0;
     double curLegRightEncDistance = 0.0;
 
+    Double currentLegPower = null;
 
     
     public TurnWhileDrivingCommand(SensorService sensorService, DrivetrainSubsystem drivetrainSubsystem,
@@ -28,6 +29,9 @@ public class TurnWhileDrivingCommand extends DriveStraightCommand implements PID
         
         super(sensorService, drivetrainSubsystem, operatorDisplay, targetVectors[0].getDistance(), driveUntil, drivePower);
         this.targetVectors = targetVectors;
+        if (targetVectors.length > 0) {
+            this.currentLegPower = targetVectors[0].getPower();
+        }
         this.setName(NAME);
     }
 
@@ -37,7 +41,11 @@ public class TurnWhileDrivingCommand extends DriveStraightCommand implements PID
         
         this.curLegLeftEncDistance = 0.0;
         this.curLegRightEncDistance = 0.0;
-        this.gyroPidController.setSetpoint(targetVectors[0].getAngle());
+        if (targetVectors[0].getAngle() != null) {
+            this.gyroPidController.setSetpoint(targetVectors[0].getAngle());
+        } else {
+            this.gyroPidController.setSetpoint(this.gyro.getYawAngle());
+        }
     }
 
     
@@ -52,8 +60,17 @@ public class TurnWhileDrivingCommand extends DriveStraightCommand implements PID
         return false;
     }
 
+    @Override 
+    protected double getDrivePower() {
+        if (this.currentLegPower != null) {
+            return this.currentLegPower;
+        } else {
+            return super.getDrivePower();
+        }
+    }
     @Override
     protected void execute() {
+        
         TargetVector currentVector = this.targetVectors[this.currentTargetVectorIndex];
         double leftLegDisplacement = this.encoderSensors.getLeftEncoder().getRelativeDistance() - this.prevLegLeftEncDistance;
         double rightLegDisplacement = this.encoderSensors.getRightEncoder().getRelativeDistance() - this.prevLegRightEncDistance;
@@ -61,9 +78,22 @@ public class TurnWhileDrivingCommand extends DriveStraightCommand implements PID
 
         if (Math.min(leftLegDisplacement, rightLegDisplacement) >= currentVector.getDistance()) {
             this.currentTargetVectorIndex++;
-            logger.info(">>>>>>>>>>> LEG {} REACHED, displacements(L/R): {}/{}", this.currentTargetVectorIndex, leftLegDisplacement, rightLegDisplacement);
+            logger.info(">>>>>>>>>>> LEG {} REACHED, displacements(L/R): {}/{}", 
+               this.currentTargetVectorIndex, leftLegDisplacement, rightLegDisplacement);
             if (this.currentTargetVectorIndex < this.targetVectors.length) { // Leg completed
-                this.gyroPidController.setSetpoint(this.targetVectors[this.currentTargetVectorIndex].getAngle());
+                currentVector = this.targetVectors[this.currentTargetVectorIndex];
+                if (currentVector.getAngle() != null) {
+                    logger.info("Using current vector angle: {}", currentVector.getAngle());
+                    this.gyroPidController.setSetpoint(currentVector.getAngle());
+                } else {
+                    logger.info("Using current gyro angle: {}", this.gyro.getYawAngle());
+                    this.gyroPidController.setSetpoint(this.gyro.getYawAngle());
+                }
+                if (currentVector.getPower() != null) {
+                    logger.info("Changing power to: {}", currentVector.getPower());
+                    this.currentLegPower = currentVector.getPower();
+                    this.gyroPidController.setOutputRange(-1 * currentVector.getPower(), currentVector.getPower());
+                }
                 this.prevLegLeftEncDistance = this.encoderSensors.getLeftEncoder().getRelativeDistance();
                 this.prevLegRightEncDistance = this.encoderSensors.getRightEncoder().getRelativeDistance();
                 super.execute();
@@ -79,17 +109,24 @@ public class TurnWhileDrivingCommand extends DriveStraightCommand implements PID
 
 
     static public class TargetVector {
-        double angle;
+        Double angle;
+        Double power = null;
         double distance;
         
-        public TargetVector(double angle, double distance) {
+        public TargetVector(Double angle, double distance) {
             this.angle = angle;
             this.distance = distance;
         }
-        public double getAngle() {
+        public TargetVector(Double angle, double distance, double power) {
+            this.angle = angle;
+            this.distance = distance;
+            this.power = power;
+        }
+
+        public Double getAngle() {
             return angle;
         }
-        public void setAngle(double angle) {
+        public void setAngle(Double angle) {
             this.angle = angle;
         }
         public double getDistance() {
@@ -97,6 +134,12 @@ public class TurnWhileDrivingCommand extends DriveStraightCommand implements PID
         }
         public void setDistance(double distance) {
             this.distance = distance;
+        }
+        public Double getPower() {
+            return power;
+        }
+        public void setPower(Double power) {
+            this.power = power;
         }
         
         

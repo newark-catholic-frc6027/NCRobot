@@ -10,10 +10,10 @@ import edu.wpi.first.wpilibj.DigitalInput;
 public class LimitSwitchSensors {
 
     public enum LimitSwitchId {
-        MastTop,      /* 7 */
-        MastBottom,   /* 6 */
-        MastSlideForward, /* 8 */
-        MastSlideBackward /* 9 */
+        MastTop,      
+        MastBottom,   
+        MastSlideForward,
+        MastSlideBackward
     }
 
     // Ultrasonic front - 0
@@ -61,10 +61,10 @@ public class LimitSwitchSensors {
                 switchTripped = ! this.mastBottom.get();
                 break;
             case MastSlideForward:
-                switchTripped = this.mastForward.get();
+                switchTripped = ! this.mastForward.get();
                 break;
             case MastSlideBackward:
-                switchTripped = this.mastBackward.get();
+                switchTripped = ! this.mastBackward.get();
                 break;
     
         }

@@ -8,13 +8,19 @@ import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.OperatorInterface;
 import frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
+import frc.team6027.robot.commands.autonomous.AutoDeliverHatch;
 /*
 import frc.team6027.robot.commands.CubeDeliveryCommand.DeliveryMode;
 import frc.team6027.robot.commands.DropCarriageCommand.DropFunction;
 */
 import frc.team6027.robot.commands.autonomous.AutoDriveToVisionTarget;
 import frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
+import frc.team6027.robot.commands.autonomous.StartingPositionSide;
+import frc.team6027.robot.commands.TurnWhileDrivingCommand;
+import frc.team6027.robot.commands.TurnWhileDrivingCommand.TargetVector;
+
 import frc.team6027.robot.controls.XboxJoystick;
+import frc.team6027.robot.field.Field;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.sensors.UltrasonicSensorManager.UltrasonicSensorKey;
 import frc.team6027.robot.subsystems.ArmSubsystem;
@@ -75,11 +81,11 @@ public class TeleopManager extends Command {
 
     protected int execCount = 0;
     protected double turnPowerScaleFactor = 1.0;
-    
+    private Field field;
 
     public TeleopManager(OperatorInterface operatorInterface, SensorService sensorService,
             DrivetrainSubsystem drivetrain, ArmSubsystem armSubsystem, PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevator,
-            OperatorDisplay operatorDisplay) {
+            OperatorDisplay operatorDisplay, Field field) {
         // Identify the subsystems we will be using in this command and this
         // command
         // only
@@ -88,7 +94,7 @@ public class TeleopManager extends Command {
 
         // Hang onto references of the components we will need during teleop
         this.sensorService = sensorService;
-        
+        this.field = field;
         this.operatorInterface = operatorInterface;
         
         this.joystick = this.operatorInterface.getJoystick1();
@@ -207,15 +213,18 @@ public class TeleopManager extends Command {
 
         // TODO: reassign, only for testing mast
         this.xButton2 = new JoystickButton(this.joystick2, this.joystick2.getXButtonNumber());   
-        this.xButton2.whenPressed(new ElevatorCommand(ElevatorCommand.ElevatorDirection.Down, 
-            .5, this.sensorService, this.elevatorSubsystem));
+        this.xButton2.toggleWhenPressed(new AutoDeliverHatch(StartingPositionSide.Left, this.sensorService, this.drivetrain, 
+            this.pneumaticSubsystem, this.elevatorSubsystem, this.operatorDisplay, this.field));
 
         this.yButton2 = new JoystickButton(this.joystick2, this.joystick2.getYButtonNumber());   
-        this.yButton2.whenPressed(new PrintMessageCommand("ybutton has pressed down and completed the press of the ybutton"));  
+        this.yButton2.whenPressed(new SlideMastCommand(SlideMastCommand.SlideMastDirection.Forward, 1.0, sensorService, this.elevatorSubsystem));  
     
         this.aButton2 = new JoystickButton(this.joystick2, this.joystick2.getAButtonNumber());
-        this.aButton2.whenPressed(new PrintMessageCommand("abutton has pressed down and completed the press of the abutton"));
-
+        
+        TargetVector[] testVectors = new TargetVector[]{ new TargetVector(null, 36.0, 0.7), new TargetVector(null, 36.0, 0.4) };
+        this.aButton2.whenPressed( new TurnWhileDrivingCommand(sensorService, 
+            this.drivetrain, this.operatorDisplay, testVectors, DriveDistanceMode.DistanceReadingOnEncoder, .5));
+            
 
         this.bButton2 = new JoystickButton(this.joystick2, this.joystick2.getBButtonNumber());
         this.bButton2.whenPressed(new PrintMessageCommand("bbutton has pressed down and completed the press of the bbutton"));
@@ -253,6 +262,7 @@ public class TeleopManager extends Command {
     @Override
     public void cancel() {
         this.updatePreferences();
+        super.cancel();
     }
 
     @Override

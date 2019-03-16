@@ -95,7 +95,8 @@ public class Robot extends TimedRobot {
         // This ensures that the Teleop command is running whenever we are not in
         // autonomous mode
         this.teleopManager = new TeleopManager(this.operatorInterface, this.sensorService,
-                this.getDrivetrain(), this.getArmSubsystem(), this.pneumaticSubsystem, this.getElevatorSubsystem(), this.getOperatorDisplay());
+                this.getDrivetrain(), this.getArmSubsystem(), this.pneumaticSubsystem, 
+                this.getElevatorSubsystem(), this.getOperatorDisplay(), this.getField());
         this.getDrivetrain().setDefaultCommand(teleopManager);
 
         this.autoCommandManager = AutonomousCommandManager.instance();
