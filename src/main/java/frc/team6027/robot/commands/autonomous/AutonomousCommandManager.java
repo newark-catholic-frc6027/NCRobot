@@ -2,6 +2,7 @@ package frc.team6027.robot.commands.autonomous;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Arrays;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -55,12 +56,11 @@ public class AutonomousCommandManager {
             return Arrays.asList(DontDoOption.values()).stream().filter(a -> displayName.equals(a.displayName())).findFirst().orElse(null);
         }
     }
-    
+*/    
     public enum AutonomousPreference {
         NoPreference("NO SELECTION"),
-        CrossLine("Cross the Line"),
-        DeliverToSwitch("Deliver to Switch"),
-        DeliverToScaleEnd("Deliver to Scale END");
+        RocketHatch("Rocket Hatch")
+        ;
         
         private String displayName;
         
@@ -84,9 +84,9 @@ public class AutonomousCommandManager {
         }
         
     }
-    */
+    
     private Field field;
-//    private AutonomousPreference preferredAutoScenario;
+    private AutonomousPreference preferredAutoScenario;
 //    private DontDoOption dontDoOption = DontDoOption.NoPreference;
     private SensorService sensorService;
     private DrivetrainSubsystem drivetrainSubsystem;
@@ -102,18 +102,16 @@ public class AutonomousCommandManager {
 
     private AutonomousCommandManager() {
     }
-    // SensorService sensorService, DrivetrainSubsystem drivetrainSubsystem,
-    // OperatorDisplay operatorDisplay
-    public AutonomousCommandManager initialize(/*AutonomousPreference preferredAutoScenario, Field field,*/ 
+    public AutonomousCommandManager initialize(AutonomousPreference preferredAutoScenario, Field field, 
             SensorService sensorService, 
-            DrivetrainSubsystem drivetrainSubsystem, /*PneumaticSubsystem pneumaticSubsystem,*/ 
+            DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, 
             ElevatorSubsystem elevatorSubsystem, OperatorDisplay operatorDisplay) {
-//        this.preferredAutoScenario = preferredAutoScenario;
-//        this.field = field;
+        this.preferredAutoScenario = preferredAutoScenario;
+        this.field = field;
         if (! this.initialized) {
             this.sensorService = sensorService;
             this.drivetrainSubsystem = drivetrainSubsystem;
-    //        this.pneumaticSubsystem = pneumaticSubsystem;
+            this.pneumaticSubsystem = pneumaticSubsystem;
             this.elevatorSubsystem = elevatorSubsystem;
             this.operatorDisplay = operatorDisplay;
         }
@@ -135,14 +133,11 @@ public class AutonomousCommandManager {
         this.currentAutoCommand = command;
     }
 
-/*    
+    
     public static void initAutoScenarioDisplayValues(OperatorDisplay operatorDisplay) {
-        operatorDisplay.registerAutoScenario(AutonomousPreference.CrossLine.displayName());
-        operatorDisplay.registerAutoScenario(AutonomousPreference.DeliverToSwitch.displayName());
-//        operatorDisplay.registerAutoScenario(AutonomousPreference.DeliverToSwitchFront.displayName());
-        operatorDisplay.registerAutoScenario(AutonomousPreference.DeliverToScaleEnd.displayName());
+        operatorDisplay.registerAutoScenario(AutonomousPreference.RocketHatch.displayName());
     }
-
+/*
     public static void initDontDoOptionDisplayValues(OperatorDisplay operatorDisplay) {
         operatorDisplay.registerDontDoOption(DontDoOption.DontCrossField.displayName());
     }
@@ -338,12 +333,9 @@ public class AutonomousCommandManager {
     }
     
 
-/*
     public boolean isNoPreferredScenario() {
         return ! isPreferredScenario();
     }
-*/
-/*
     public boolean isPreferredScenario() {
         return this.preferredAutoScenario != null && this.preferredAutoScenario != AutonomousPreference.NoPreference;
     }
@@ -355,7 +347,7 @@ public class AutonomousCommandManager {
     public void setPreferredScenario(AutonomousPreference preferredAutoScenario) {
         this.preferredAutoScenario = preferredAutoScenario;
     }
-
+/*
     public DontDoOption getDontDoOption() {
         return dontDoOption;
     }
@@ -426,7 +418,6 @@ public class AutonomousCommandManager {
     /**
      * Used for crossing the line from left or right positions (position 1 and 3)
      * @return
-     */
     private Command makeCrossLineFromEndPositionCommand() {
         double distance = this.prefs.getDouble("G-L1-Cross", 250.0);
         return new AutoCrossLineStraightAhead(distance, .80, this.getSensorService(), this.getDrivetrainSubsystem(), this.getOperatorDisplay());
@@ -436,6 +427,7 @@ public class AutonomousCommandManager {
         return new AutoDeliverToSwitchFront(startingSide, this.getSensorService(), this.getDrivetrainSubsystem(),
                 this.getPneumaticSubsystem(), this.getOperatorDisplay());
     }
+     */
 
     /*
     private Command makeDeliverToSwitchEndFromOppositeSideCommand(StartingPositionSide startingSide) {

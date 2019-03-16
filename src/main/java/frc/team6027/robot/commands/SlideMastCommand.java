@@ -27,20 +27,17 @@ public class SlideMastCommand extends Command {
     private SlideMastDirection direction = null;
     private ElevatorSubsystem elevator;
     private LimitSwitchSensors limitSwitches;
-    private DrivetrainSubsystem driveTrain;
     
     private double power = 0.5;
     private long checkMotorAmpsThresholdMillis;
     
-    public SlideMastCommand(SlideMastDirection direction, double power, SensorService sensorService, ElevatorSubsystem elevator, DrivetrainSubsystem drivetrain) {
+    public SlideMastCommand(SlideMastDirection direction, double power, SensorService sensorService, ElevatorSubsystem elevator) {
         this.direction = direction;
         this.elevator = elevator;
-        this.driveTrain = drivetrain;
         this.power = power;
         this.limitSwitches = sensorService.getLimitSwitchSensors();
         
         this.setName(NAME);
-        requires(elevator);
     }
 
     @Override

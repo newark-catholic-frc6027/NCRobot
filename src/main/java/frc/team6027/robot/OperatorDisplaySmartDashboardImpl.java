@@ -30,7 +30,7 @@ public class OperatorDisplaySmartDashboardImpl implements OperatorDisplay {
     public OperatorDisplaySmartDashboardImpl() {
        initPositionChooser();
        initScenarioChooser();
-       initDontDoOptionChooser();
+//       initDontDoOptionChooser();
     }
 
     protected void initScenarioChooser() {
@@ -47,10 +47,10 @@ public class OperatorDisplaySmartDashboardImpl implements OperatorDisplay {
     
     protected void initPositionChooser() {
         this.chooserCache.put(ChooserName.Position, this.positionChooser);
-        this.positionChooser.addDefault("NO SELECTION", new Integer(0));
-        this.positionChooser.addObject("Left", new Integer(1));
-        this.positionChooser.addObject("Center", new Integer(2));
-        this.positionChooser.addObject("Right", new Integer(3));
+        this.positionChooser.setDefaultOption("NO SELECTION", Integer.valueOf(0));
+        this.positionChooser.addOption("Left", Integer.valueOf(1));
+        this.positionChooser.addOption("Center", Integer.valueOf(2));
+        this.positionChooser.addOption("Right", Integer.valueOf(3));
         
         SmartDashboard.putData(ChooserName.Position.displayName(), this.positionChooser);
     }

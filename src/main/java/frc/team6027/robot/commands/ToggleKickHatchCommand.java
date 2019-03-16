@@ -8,11 +8,9 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class ToggleKickHatchCommand extends Command {
-//    public static final double ALLOW_DROP_FOR_CLIMB_THRESHOLD = -2.0;// 100.0; // secs
     
     /** The delay in milliseconds before we allow the command to finish.  This builds in a small delay to allow the
      * solenoid to finish toggling before we turn it back off. */
-    //public final static int DELAY_TO_RETRACT_MS = 350;
     public final static int DELAY_TO_OFF_MS = 350;
 
     private Preferences prefs = Preferences.getInstance();
@@ -69,13 +67,6 @@ public class ToggleKickHatchCommand extends Command {
             // the delay period has expired
             this.executionComplete = true;
         }
-        /* else {
-            double timeElapsedMs = System.currentTimeMillis() - timeStarted;
-            if (! this.retracted && timeElapsedMs >= DELAY_TO_RETRACT_MS) {
-                this.pneumaticSubsystem.toggleHatchSolenoid();
-                this.retracted = true;
-            }
-        }*/
     }
     
     

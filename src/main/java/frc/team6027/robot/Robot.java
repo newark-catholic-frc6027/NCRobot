@@ -9,13 +9,16 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.commands.TeleopManager;
+import frc.team6027.robot.commands.autonomous.AutoCommandHelper;
 import frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
 import frc.team6027.robot.commands.autonomous.NoOpCommand;
+import frc.team6027.robot.commands.autonomous.AutonomousCommandManager.AutonomousPreference;
 //import frc.team6027.robot.commands.autonomous.AutonomousCommandManager.AutonomousPreference;
 //import frc.team6027.robot.commands.autonomous.AutonomousCommandManager.DontDoOption;
 import frc.team6027.robot.data.Datahub;
 import frc.team6027.robot.data.DatahubNetworkTableImpl;
 import frc.team6027.robot.data.DatahubRegistry;
+import frc.team6027.robot.field.Field;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.sensors.EncoderSensors.EncoderKey;
 import frc.team6027.robot.sensors.UltrasonicSensorManager.UltrasonicSensorKey;
@@ -52,8 +55,8 @@ public class Robot extends TimedRobot {
     
     private SensorService sensorService;
 
-    /*
     private Field field = new Field();
+    /*
     private int gameDataPollCount = 0;
     */
 
@@ -83,7 +86,6 @@ public class Robot extends TimedRobot {
         this.drivetrain.registerMotorEncoders(this.sensorService);
 
         this.setArmSubsystem(new ArmSubsystem(this.getOperatorInterface()));
-//        this.setRearLift(new RearLiftSubsystem(this.sensorService.getLimitSwitchSensors(), operatorDisplay));
         this.setElevatorSubsystem(new ElevatorSubsystem(this.getSensorService().getLimitSwitchSensors(), this.getOperatorDisplay()));
         this.setPneumaticSubsystem(new PneumaticSubsystem(this.getOperatorDisplay()));
         this.visionData = new DatahubNetworkTableImpl(DatahubRegistry.VISION_KEY);
@@ -97,8 +99,11 @@ public class Robot extends TimedRobot {
 
         this.autoCommandManager = AutonomousCommandManager.instance();
         this.autoCommandManager.initialize(
+            AutonomousPreference.RocketHatch,
+            this.getField(),
             this.getSensorService(),
             this.getDrivetrain(),
+            this.getPneumaticSubsystem(),
             this.getElevatorSubsystem(),
             this.getOperatorDisplay()
         );
@@ -111,8 +116,8 @@ public class Robot extends TimedRobot {
         this.robotStatusServer = new RobotStatusServer();
         this.robotStatusServer.start();
 
-        /*
         AutonomousCommandManager.initAutoScenarioDisplayValues(this.getOperatorDisplay());
+        /*
         AutonomousCommandManager.initDontDoOptionDisplayValues(this.getOperatorDisplay());
         */
     }
@@ -152,7 +157,7 @@ public class Robot extends TimedRobot {
         this.getElevatorSubsystem().mastSlideStop();
 
     }
-/*
+
     protected void applyStationPosition() {
         this.getField().setOurStationPosition(
             this.getOperatorDisplay().getSelectedPosition()
@@ -162,7 +167,7 @@ public class Robot extends TimedRobot {
     protected boolean isInMatch() {
         return AutoCommandHelper.isInMatch();
     }
-*/    
+    
     /*
     protected boolean pollForGameData() {
         if (! this.getField().hasAssignmentData()) {
@@ -194,7 +199,9 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         // TODO: Need to add code to shift into high gear at start
+        this.applyStationPosition();
 
+        // TODO: LEFT OFF HERE
         this.sensorService.resetAll();
 
 
@@ -210,18 +217,6 @@ public class Robot extends TimedRobot {
 
 //        this.getPneumaticSubsystem().reset();
 /*
-        applyStationPosition();
-        String preferredAutoScenario = this.getOperatorDisplay().getSelectedAutoScenario();
-        String dontDoOption = this.getOperatorDisplay().getSelectedDontDoOption();
-
-        // Make sure we have the game data
-        while (! pollForGameData() && this.gameDataPollCount < 20 ) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                logger.error("Interrupted waiting for game data", e);
-            }
-        }
 
         this.sensorService.resetAll();
                 
@@ -361,7 +356,7 @@ public class Robot extends TimedRobot {
     public void setSensorService(SensorService sensorService) {
         this.sensorService = sensorService;
     }
-/*
+
     public Field getField() {
         return field;
     }
@@ -369,7 +364,7 @@ public class Robot extends TimedRobot {
     public void setField(Field field) {
         this.field = field;
     }
-*/
+
     public void updateOperatorDisplay() {
         /*
         getOperatorDisplay().setFieldValue("Right Motor Enc Raw",
