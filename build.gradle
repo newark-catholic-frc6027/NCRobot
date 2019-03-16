@@ -102,7 +102,7 @@ task wpiJavadoc(type: Javadoc) {
 }
 
 task(runRobotServer, dependsOn: 'classes', type: JavaExec) {
-    main = 'frc.team6027.robot.RobotStatusServer'
+    main = 'frc.team6027.robot.server.RobotStatusServer'
     classpath = sourceSets.main.runtimeClasspath
     systemProperty 'log4j.configurationFile', './src/main/resources/log4j2-local.xml'
 }

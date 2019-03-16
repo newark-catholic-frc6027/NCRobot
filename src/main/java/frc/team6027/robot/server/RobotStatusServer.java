@@ -1,8 +1,5 @@
-package frc.team6027.robot;
+package frc.team6027.robot.server;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
@@ -12,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class RobotStatusServer {
+
     // As far as I know, available "team use" ports are numbered 5800-5810
     public static final int DEFAULT_ROBOT_SERVER_PORT = 5801;
     private final Logger logger = LogManager.getLogger(getClass());
@@ -24,6 +22,10 @@ public class RobotStatusServer {
 
     public RobotStatusServer(int port) {
         this.port = port;
+    }
+
+    public void stop() {
+        this.stopped = true;
     }
 
     public void start() {
@@ -47,9 +49,10 @@ public class RobotStatusServer {
                     logger.error("Failure on serverSocket accept!", ex);
                     continue;
                 }
-                clientProcessingPool.submit(new ClientTask(clientSocket));
+                clientProcessingPool.submit(new ProcessClientRequestTask(this, clientSocket));
                 logger.info("RobotServer waiting...");
             }
+            logger.info("RobotServer stopped");
         };
 
         Thread serverThread = new Thread(serverTask);
@@ -57,35 +60,6 @@ public class RobotStatusServer {
 
     }
 
-    protected class ClientTask implements Runnable {
-        private final Socket clientSocket;
-
-        private ClientTask(Socket clientSocket) {
-            this.clientSocket = clientSocket;
-        }
-
-        @Override
-        public void run() {
-            logger.info("Client connected");
-            try (
-                this.clientSocket;
-                BufferedReader br = new BufferedReader(new InputStreamReader(this.clientSocket.getInputStream()));
-                PrintWriter out = new PrintWriter(this.clientSocket.getOutputStream(), true);
-            ) {
-                String msg = br.readLine();
-                if ("vision-ping".equals(msg)) {
-                    logger.info("Got vision-ping, sending 'robot-pong'");
-                    out.println("robot-pong");
-                } else if ("stop".equals(msg)) {
-                    RobotStatusServer.this.stopped = true;
-                } else {
-                    logger.info("Received [{}] from client, ignoring", msg);
-                }
-            } catch (Exception ex) {
-                logger.error("Failure processing RobotServer client request!", ex);
-            }
-        }
-    }
 
     public static void main(String[] args) {
         RobotStatusServer server = new RobotStatusServer(DEFAULT_ROBOT_SERVER_PORT);
