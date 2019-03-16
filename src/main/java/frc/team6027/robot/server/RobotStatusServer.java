@@ -35,7 +35,7 @@ public class RobotStatusServer {
             ServerSocket serverSocket = null;
             try {
                 serverSocket = new ServerSocket(RobotStatusServer.this.port);
-                logger.info("RobotServer waiting...");
+                logger.info("RobotServer is up and waiting...");
             } catch (Exception ex) {
                 RobotStatusServer.this.stopped = true;
                 logger.error("Failed to start server on port " + RobotStatusServer.this.port, ex);
@@ -50,7 +50,7 @@ public class RobotStatusServer {
                     continue;
                 }
                 clientProcessingPool.submit(new ProcessClientRequestTask(this, clientSocket));
-                logger.info("RobotServer waiting...");
+                logger.debug("RobotServer waiting...");
             }
             logger.info("RobotServer stopped");
         };

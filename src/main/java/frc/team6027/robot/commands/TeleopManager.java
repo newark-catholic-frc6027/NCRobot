@@ -74,7 +74,7 @@ public class TeleopManager extends Command {
     
 
     protected int execCount = 0;
-
+    protected double turnPowerScaleFactor = 1.0;
     
 
     public TeleopManager(OperatorInterface operatorInterface, SensorService sensorService,
@@ -229,6 +229,16 @@ public class TeleopManager extends Command {
     } 
 
     @Override
+    public void start() {
+        updatePreferences();
+        super.start();
+    }
+    
+    public void updatePreferences() {
+        this.turnPowerScaleFactor = this.prefs.getDouble("teleop.turnPowerScaleFactor", 1.0);
+    }
+
+    @Override
     protected boolean isFinished() {
         return false;
     }
@@ -243,6 +253,7 @@ public class TeleopManager extends Command {
     @Override
     protected void interrupted() {
         logger.info("Teleop interrupted");
+        this.updatePreferences();
     }
 
     @Override
@@ -257,7 +268,7 @@ public class TeleopManager extends Command {
 
     private void drive() {
 //        this.logger.debug("Drive invoked. left axis: {}, right axis: {}", this.joystick.getLeftAxis(), this.joystick.getRightAxis());
-        this.drivetrain.doArcadeDrive(this.joystick.getLeftAxis(), this.joystick.getRightAxis());
+        this.drivetrain.doArcadeDrive(this.joystick.getLeftAxis(), this.joystick.getRightAxis() * this.turnPowerScaleFactor);
     }
 
     protected void logData() {

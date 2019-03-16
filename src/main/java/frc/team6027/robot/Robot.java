@@ -68,6 +68,7 @@ public class Robot extends TimedRobot {
 
     private Datahub visionData;
     private RobotStatusServer robotStatusServer;
+    private TeleopManager teleopManager;
    
     /**
      * This function is run when the robot is first started up and should be used
@@ -93,9 +94,9 @@ public class Robot extends TimedRobot {
 
         // This ensures that the Teleop command is running whenever we are not in
         // autonomous mode
-        TeleopManager teleOpCommand = new TeleopManager(this.operatorInterface, this.sensorService,
+        this.teleopManager = new TeleopManager(this.operatorInterface, this.sensorService,
                 this.getDrivetrain(), this.getArmSubsystem(), this.pneumaticSubsystem, this.getElevatorSubsystem(), this.getOperatorDisplay());
-        this.getDrivetrain().setDefaultCommand(teleOpCommand);
+        this.getDrivetrain().setDefaultCommand(teleopManager);
 
         this.autoCommandManager = AutonomousCommandManager.instance();
         this.autoCommandManager.initialize(

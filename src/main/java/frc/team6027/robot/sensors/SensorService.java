@@ -81,6 +81,10 @@ public class SensorService {
     
         // ContoursCenterXEntry x value of the center between the two contours-- 
         double centerContour = visionData.getDouble(RobotConfigConstants.CONTOURS_CENTER_X, 160.0);
+        if (centerContour <= 0.0) {
+            logger.warn("VISION FAILURE! {} value is: {}, not expected", RobotConfigConstants.CONTOURS_CENTER_X, centerContour);
+        }
+
         double visionDistanceInches = this.getCurDistToVisionTarget();
         //Calculate how far off from center -- The "c" variable in the trig calculation atan(c/a)
         double offDistancePixels = centerContour-160;
@@ -107,10 +111,15 @@ public class SensorService {
         Datahub visionData = this.getVisionDatahub();
 
         double distance = visionData.getDouble(RobotConfigConstants.DISTANCE_TO_TARGET_INCHES, -1.0);
-        if (distance < 0 && withUltrasonicFallback) {
-            double ultdistance = Math.abs(this.getUltrasonicSensor(UltrasonicSensorKey.Front).getDistanceInches());
-            logger.warn("Vision distance returned was {}, using ultrasonic distance reading of {}", distance, ultdistance);
-            distance = ultdistance;
+        if (distance < 0.0) {
+
+            if (withUltrasonicFallback) {
+                double ultdistance = Math.abs(this.getUltrasonicSensor(UltrasonicSensorKey.Front).getDistanceInches());
+                logger.warn("Vision distance returned was {}, using ultrasonic distance reading of {}", distance, ultdistance);
+                distance = ultdistance;
+            } else {
+                logger.warn("VISION FAILURE! Vision distance to target is: {}", distance);
+            }
         }
 
         return distance;
