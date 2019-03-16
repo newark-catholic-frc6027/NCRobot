@@ -55,8 +55,8 @@ public class TurnWhileDrivingCommand extends DriveStraightCommand implements PID
     @Override
     protected void execute() {
         TargetVector currentVector = this.targetVectors[this.currentTargetVectorIndex];
-        double leftLegDisplacement = this.encoderSensors.getLeftEncoder().getDistance() - this.prevLegLeftEncDistance;
-        double rightLegDisplacement = this.encoderSensors.getRightEncoder().getDistance() - this.prevLegRightEncDistance;
+        double leftLegDisplacement = this.encoderSensors.getLeftEncoder().getRelativeDistance() - this.prevLegLeftEncDistance;
+        double rightLegDisplacement = this.encoderSensors.getRightEncoder().getRelativeDistance() - this.prevLegRightEncDistance;
 
 
         if (Math.min(leftLegDisplacement, rightLegDisplacement) >= currentVector.getDistance()) {
@@ -64,8 +64,8 @@ public class TurnWhileDrivingCommand extends DriveStraightCommand implements PID
             logger.info(">>>>>>>>>>> LEG {} REACHED, displacements(L/R): {}/{}", this.currentTargetVectorIndex, leftLegDisplacement, rightLegDisplacement);
             if (this.currentTargetVectorIndex < this.targetVectors.length) { // Leg completed
                 this.gyroPidController.setSetpoint(this.targetVectors[this.currentTargetVectorIndex].getAngle());
-                this.prevLegLeftEncDistance = this.encoderSensors.getLeftEncoder().getDistance();
-                this.prevLegRightEncDistance = this.encoderSensors.getRightEncoder().getDistance();
+                this.prevLegLeftEncDistance = this.encoderSensors.getLeftEncoder().getRelativeDistance();
+                this.prevLegRightEncDistance = this.encoderSensors.getRightEncoder().getRelativeDistance();
                 super.execute();
             } else {
                 // We're done

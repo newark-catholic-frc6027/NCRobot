@@ -116,7 +116,7 @@ public class ElevatorCommand extends Command {
                            ||
                        (this.direction == ElevatorDirection.Down && this.elevator.isGoingDown() && (bottomSwitchTripped || this.isDownwardMaxAmpsExceededWithDelay()));
 
-        logger.info("isFinished invoked. minOrMaxReached: {}, targetHeight: {}, currentHeight: {}",
+        logger.trace("isFinished invoked. minOrMaxReached: {}, targetHeight: {}, currentHeight: {}",
              minOrMaxReached, this.targetHeight,this.sensorService.getElevatorHeightInches() ); 
 
         if (minOrMaxReached) {
@@ -194,7 +194,7 @@ public class ElevatorCommand extends Command {
 	}
 
     protected void execute() {
-        logger.info("execute invoked. targetHeight: {}, currentHeight: {}, direction: {}",
+        logger.trace("execute invoked. targetHeight: {}, currentHeight: {}, direction: {}",
            this.targetHeight,this.sensorService.getElevatorHeightInches(), this.direction ); 
 
         this.execCount++;

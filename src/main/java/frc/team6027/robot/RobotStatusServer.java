@@ -33,7 +33,7 @@ public class RobotStatusServer {
             ServerSocket serverSocket = null;
             try {
                 serverSocket = new ServerSocket(RobotStatusServer.this.port);
-                logger.info("RobotServer is waiting for a client connection...");
+                logger.info("RobotServer waiting...");
             } catch (Exception ex) {
                 RobotStatusServer.this.stopped = true;
                 logger.error("Failed to start server on port " + RobotStatusServer.this.port, ex);
@@ -48,7 +48,7 @@ public class RobotStatusServer {
                     continue;
                 }
                 clientProcessingPool.submit(new ClientTask(clientSocket));
-                logger.info("RobotServer is waiting for a client connection...");
+                logger.info("RobotServer waiting...");
             }
         };
 
@@ -74,7 +74,7 @@ public class RobotStatusServer {
             ) {
                 String msg = br.readLine();
                 if ("vision-ping".equals(msg)) {
-                    logger.info("Received vision-ping from client, replying with 'robot-pong'");
+                    logger.info("Got vision-ping, sending 'robot-pong'");
                     out.println("robot-pong");
                 } else if ("stop".equals(msg)) {
                     RobotStatusServer.this.stopped = true;

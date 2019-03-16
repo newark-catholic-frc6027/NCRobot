@@ -1,7 +1,6 @@
 
 package frc.team6027.robot;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -10,22 +9,20 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.commands.TeleopManager;
-import frc.team6027.robot.commands.autonomous.AutoCommandHelper;
 import frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
 import frc.team6027.robot.commands.autonomous.NoOpCommand;
-import frc.team6027.robot.commands.TurnCommand;
 //import frc.team6027.robot.commands.autonomous.AutonomousCommandManager.AutonomousPreference;
 //import frc.team6027.robot.commands.autonomous.AutonomousCommandManager.DontDoOption;
 import frc.team6027.robot.data.Datahub;
 import frc.team6027.robot.data.DatahubNetworkTableImpl;
 import frc.team6027.robot.data.DatahubRegistry;
-import frc.team6027.robot.field.Field;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.sensors.EncoderSensors.EncoderKey;
 import frc.team6027.robot.sensors.UltrasonicSensorManager.UltrasonicSensorKey;
 import frc.team6027.robot.subsystems.ArmSubsystem;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import frc.team6027.robot.subsystems.ElevatorSubsystem;
+import frc.team6027.robot.subsystems.PneumaticSubsystem;
 
 /**
  * The Virtual Machine is configured to automatically run this class, and to
@@ -47,9 +44,8 @@ public class Robot extends TimedRobot {
 
     private DrivetrainSubsystem drivetrain;
 
-    /*
+
     private PneumaticSubsystem pneumaticSubsystem;
-    */
     private ElevatorSubsystem elevatorSubsystem;
     private ArmSubsystem armSubsystem;
     
@@ -88,14 +84,14 @@ public class Robot extends TimedRobot {
         this.setArmSubsystem(new ArmSubsystem(this.getOperatorInterface()));
 //        this.setRearLift(new RearLiftSubsystem(this.sensorService.getLimitSwitchSensors(), operatorDisplay));
         this.setElevatorSubsystem(new ElevatorSubsystem(this.getSensorService().getLimitSwitchSensors(), this.getOperatorDisplay()));
-//        this.setPneumaticSubsystem(new PneumaticSubsystem(this.getOperatorDisplay()));
+        this.setPneumaticSubsystem(new PneumaticSubsystem(this.getOperatorDisplay()));
         this.visionData = new DatahubNetworkTableImpl(DatahubRegistry.VISION_KEY);
         DatahubRegistry.instance().register(this.visionData);
 
         // This ensures that the Teleop command is running whenever we are not in
         // autonomous mode
         TeleopManager teleOpCommand = new TeleopManager(this.operatorInterface, this.sensorService,
-                this.getDrivetrain(), this.getArmSubsystem(), this.getElevatorSubsystem(), this.getOperatorDisplay());
+                this.getDrivetrain(), this.getArmSubsystem(), this.pneumaticSubsystem, this.getElevatorSubsystem(), this.getOperatorDisplay());
         this.getDrivetrain().setDefaultCommand(teleOpCommand);
 
         this.autoCommandManager = AutonomousCommandManager.instance();
@@ -264,7 +260,8 @@ public class Robot extends TimedRobot {
 //        this.getRearLift().initialize();
         // If elevatorSubsystem is already initialized, this will do nothing
         this.elevatorSubsystem.initialize();
-//        this.getPneumaticSubsystem().reset();
+        this.getPneumaticSubsystem().reset();
+
 //        this.getOperatorDisplay().setFieldValue(OperatorDisplay.ELEVATOR_MAX, this.getElevatorSubsystem().isTopLimitSwitchTripped() ? "YES" : "NO");
 //        this.getOperatorDisplay().setFieldValue(OperatorDisplay.ELEVATOR_MIN, this.getElevatorSubsystem().isBottomLimitSwitchTripped() ? "YES" : "NO");
         // This makes sure that the autonomous stops running when
@@ -339,7 +336,6 @@ public class Robot extends TimedRobot {
         this.rearLiftSubsystem = rearLift;
     }
 */
-    /*
     public PneumaticSubsystem getPneumaticSubsystem() {
         return pneumaticSubsystem;
     }
@@ -347,7 +343,7 @@ public class Robot extends TimedRobot {
     public void setPneumaticSubsystem(PneumaticSubsystem pneumaticSubsystem) {
         this.pneumaticSubsystem = pneumaticSubsystem;
     }
-*/
+
     public ElevatorSubsystem getElevatorSubsystem() {
         return elevatorSubsystem;
     }

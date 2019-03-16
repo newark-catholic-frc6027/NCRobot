@@ -70,7 +70,6 @@ public class TeleopManager extends Command {
     
 
     private ShiftGearCommand shiftGearCommand;
-    private ToggleArmRotateCommand toggleGrippersCommand;
     // private ToggleShiftElevatorCommand toggleShiftElevatorCommand;
     
 
@@ -79,7 +78,7 @@ public class TeleopManager extends Command {
     
 
     public TeleopManager(OperatorInterface operatorInterface, SensorService sensorService,
-            DrivetrainSubsystem drivetrain, ArmSubsystem armSubsystem, /*PneumaticSubsystem pneumaticSubsystem,*/ ElevatorSubsystem elevator,
+            DrivetrainSubsystem drivetrain, ArmSubsystem armSubsystem, PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevator,
             OperatorDisplay operatorDisplay) {
         // Identify the subsystems we will be using in this command and this
         // command
@@ -96,7 +95,7 @@ public class TeleopManager extends Command {
         this.joystick2 = this.operatorInterface.getJoystick2();
 //        this.rearLiftSubsystem = rearLiftSubsystem;
         this.drivetrain = drivetrain;
-//        this.pneumaticSubsystem = pneumaticSubsystem;
+        this.pneumaticSubsystem = pneumaticSubsystem;
         this.elevatorSubsystem = elevator;
         this.armSubsystem = armSubsystem;
         this.operatorDisplay = operatorDisplay;
@@ -145,9 +144,10 @@ public class TeleopManager extends Command {
         } catch (Exception ex ) {
             this.logger.error("", ex);
         }
-        
-//        this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());   
-//        this.yButton.whenPressed(new AutoDriveToVisionTarget(24.0, 0.6, this.sensorService, this.drivetrain,this.operatorDisplay));    
+
+        this.xButton = new JoystickButton(this.joystick, this.joystick.getXButtonNumber());   
+        this.xButton.whenPressed(new ToggleKickHatchCommand(this.pneumaticSubsystem));    
+        this.xButton.whenReleased(new ToggleKickHatchCommand(this.pneumaticSubsystem));    
         
 /*
         this.shiftGearButton = new JoystickButton(this.joystick, this.joystick.getRightBumperButtonNumber());

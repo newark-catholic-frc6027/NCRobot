@@ -4,6 +4,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.commands.DriveStraightCommand;
+import frc.team6027.robot.commands.ElevatorCommand;
 import frc.team6027.robot.commands.PneumaticsInitializationCommand;
 import frc.team6027.robot.commands.ResetSensorsCommand;
 import frc.team6027.robot.commands.TurnCommand;
@@ -88,6 +89,7 @@ public class AutoDeliverHatch extends CommandGroup {
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
         );
 
+        this.addSequential(new ElevatorCommand(70.0, 0.6, this.sensorService, this.elevatorSubsystem));
         // TODO: Ensure arm isn't blocking camera
         // TODO: Drive to rocket with vision
         // TODO: Raise arm to top of rocket

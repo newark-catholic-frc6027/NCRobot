@@ -5,11 +5,16 @@ import frc.team6027.robot.RobotConfigConstants;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 
 
 public class EncoderSensors {
+    private final Logger logger = LogManager.getLogger(getClass());
+
     public enum EncoderKey {
         DriveMotorLeft,
         DriveMotorRight,

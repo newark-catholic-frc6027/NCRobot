@@ -16,8 +16,7 @@ public class PneumaticSubsystem extends Subsystem {
     private OperatorDisplay operatorDisplay;
 
     private StatefulSolenoid driveSolenoid;
-    private StatefulSolenoid armRotateSolenoid;
-    private Solenoid hatchDeliverySolenoid;
+    private StatefulSolenoid hatchSolenoid;
 
     private PneumaticsInitializationCommand pneumaticsInitializationCommand = null;
 
@@ -27,12 +26,8 @@ public class PneumaticSubsystem extends Subsystem {
         this.driveSolenoid = new StatefulSolenoid(RobotConfigConstants.PCM_1_ID_NUMBER,
             RobotConfigConstants.SOLENOID_1_PORT_A, RobotConfigConstants.SOLENOID_1_PORT_B);
 
-        this.armRotateSolenoid = new StatefulSolenoid(RobotConfigConstants.PCM_1_ID_NUMBER,
-           RobotConfigConstants.SOLENOID_2_PORT_A, RobotConfigConstants.SOLENOID_2_PORT_B);
-
-        this.hatchDeliverySolenoid = new Solenoid(RobotConfigConstants.PCM_1_ID_NUMBER,
-            RobotConfigConstants.SOLENOID_3_PORT);
-
+        this.hatchSolenoid = new StatefulSolenoid(RobotConfigConstants.PCM_1_ID_NUMBER,
+            RobotConfigConstants.SOLENOID_2_PORT_A, RobotConfigConstants.SOLENOID_2_PORT_B);
     }
 
     @Override
@@ -51,12 +46,8 @@ public class PneumaticSubsystem extends Subsystem {
         return driveSolenoid;
     }
 
-    public StatefulSolenoid getArmRotateSolenoid() {
-        return armRotateSolenoid;
-    }
-
-    public Solenoid getHatchDeliverySolenoid() {
-        return hatchDeliverySolenoid;
+    public StatefulSolenoid getHatchSolenoid() {
+        return hatchSolenoid;
     }
 
     public void toggleDriveSolenoid() {
@@ -76,20 +67,37 @@ public class PneumaticSubsystem extends Subsystem {
         }
     }
 
-    public void toggleArmRotateSolenoid() {
-        if (this.armRotateSolenoid.getState() == null) {
-            logger.warn("Don't know arm rotate solenoid state yet, can't toggle arm rotate solenoid");
+    public void toggleHatchSolenoidIn() {
+        logger.trace("Running toggleHatchSolenoidIn");
+        this.hatchSolenoid.toggleForward();
+        this.operatorDisplay.setFieldValue("Hatch", "IN");
+    }
+
+    public void toggleHatchSolenoidOut() {
+        logger.trace("Running toggleHatchSolenoidOut");
+        this.hatchSolenoid.toggleReverse();
+        this.operatorDisplay.setFieldValue("Hatch", "OUT");
+    }
+
+    public void toggleHatchSolenoidOff() {
+        logger.trace("Running toggleHatchSolenoidOff");
+        this.hatchSolenoid.toggleOff();
+    }
+
+    public void toggleHatchSolenoid() {
+        if (this.hatchSolenoid.getState() == null) {
+            logger.warn("Don't know hatch solenoid state yet, can't toggle hatch solenoid");
             return;
         }
 
-        this.operatorDisplay.setFieldValue("Arm Rotate Sol. State", this.armRotateSolenoid.getState().name());
+        this.operatorDisplay.setFieldValue("Hatch Sol. State", this.hatchSolenoid.getState().name());
 
-        if (this.armRotateSolenoid.getState() == DoubleSolenoid.Value.kReverse) {
-            logger.trace("Calling toggleArmRotateSolenoidRotate-CW");
-            toggleArmRotateSolenoidForward();
+        if (this.hatchSolenoid.getState() == DoubleSolenoid.Value.kReverse) {
+            logger.trace("Calling toggleHatchSolenoidIn");
+            toggleHatchSolenoidIn();
         } else {
-            logger.trace("Calling toggleArmRotateSolenoidRotate-CCW");
-            toggleArmRotateSolenoidReverse();
+            logger.trace("Calling toggleHatchSolenoidOut");
+            toggleHatchSolenoidOut();
         }
     }
 
@@ -109,24 +117,6 @@ public class PneumaticSubsystem extends Subsystem {
         logger.trace("Running toggleDriveSolenoidOff");
         this.driveSolenoid.toggleOff();
     }
-
-    public void toggleArmRotateSolenoidReverse() {
-        logger.trace("Running toggleArmRotateSolenoidReverse");
-        this.armRotateSolenoid.toggleReverse();
-        this.operatorDisplay.setFieldValue("Arm Rotate", "OPENED");
-    }
-
-    public void toggleArmRotateSolenoidForward() {
-        logger.trace("Running toggleArmRotateSolenoidForward");
-        this.armRotateSolenoid.toggleForward();
-        this.operatorDisplay.setFieldValue("Arm Rotate", "CLOSED");
-    }
-
-    public void toggleArmRotateSolenoidOff() {
-        logger.trace("Running toggleArmRotateSolenoidOff");
-        this.armRotateSolenoid.toggleOff();
-    }
-
 
     public boolean isReset() {
         return this.pneumaticsInitializationCommand != null && !this.pneumaticsInitializationCommand.isRunning()
