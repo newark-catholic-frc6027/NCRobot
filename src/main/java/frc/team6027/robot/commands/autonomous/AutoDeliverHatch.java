@@ -7,9 +7,11 @@ import frc.team6027.robot.commands.DriveStraightCommand;
 import frc.team6027.robot.commands.ElevatorCommand;
 import frc.team6027.robot.commands.PneumaticsInitializationCommand;
 import frc.team6027.robot.commands.ResetSensorsCommand;
+import frc.team6027.robot.commands.SlideMastCommand;
 import frc.team6027.robot.commands.TurnCommand;
 import frc.team6027.robot.commands.TurnWhileDrivingCommand;
 import frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
+import frc.team6027.robot.commands.SlideMastCommand.SlideMastDirection;
 import frc.team6027.robot.commands.TurnWhileDrivingCommand.TargetVector;
 import frc.team6027.robot.field.Field;
 import frc.team6027.robot.sensors.SensorService;
@@ -72,7 +74,10 @@ public class AutoDeliverHatch extends CommandGroup {
             */
 
         // TODO: Initialize Pneumatics
+        this.addSequential(new PneumaticsInitializationCommand(this.pneumaticSubsystem));
         this.addSequential(new ResetSensorsCommand(this.sensorService));
+        // TODO: Is this going to test ok?
+        this.addParallel(new SlideMastCommand(SlideMastDirection.Forward, 1.0, this.sensorService, this.elevatorSubsystem));
         this.addSequential(new DriveStraightCommand("A-L1-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "A-P1-Storm-Hatch", 
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
         );
@@ -82,9 +87,11 @@ public class AutoDeliverHatch extends CommandGroup {
         this.addSequential(new DriveStraightCommand("A-L2-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "A-P2-Storm-Hatch", 
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
         );
+        // TODO: replace this with Vision turn, use VisionTurnCommand2
+        // TODO: Add logic to handle potential failure of Vision turn
+
         this.addSequential(new TurnCommand("A-A2-Storm-Hatch", this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
 
-        // TODO: replace this with Vision commands
         this.addSequential(new DriveStraightCommand("A-L3-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "A-P3-Storm-Hatch", 
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
         );
@@ -95,31 +102,7 @@ public class AutoDeliverHatch extends CommandGroup {
         // TODO: Raise arm to top of rocket
         // TODO: Deliver Hatch
         // TODO: Lower arm to proper position
-/*
-        this.addSequential(new Command() {
-            long finishTime = -1;
-            @Override
-            public void start() {
-                finishTime = System.currentTimeMillis() + 500;
-            }
-            @Override
-            public void execute() {
-                if (finishTime == -1) {
-                    finishTime = System.currentTimeMillis() + 500;
-                }
-            }
 
-            @Override
-            protected boolean isFinished() {
-                boolean finished = System.currentTimeMillis() >= finishTime;
-                if (finished) {
-                    finishTime = -1;
-                }
-                return finished;
-            }
-
-        });
-        */
         // Back up from rocket
         this.addSequential(new DriveStraightCommand("A-L4-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "A-P4-Storm-Hatch", 
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
