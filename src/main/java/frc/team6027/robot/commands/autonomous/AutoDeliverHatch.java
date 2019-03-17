@@ -8,6 +8,7 @@ import frc.team6027.robot.commands.ElevatorCommand;
 import frc.team6027.robot.commands.PneumaticsInitializationCommand;
 import frc.team6027.robot.commands.ResetSensorsCommand;
 import frc.team6027.robot.commands.SlideMastCommand;
+import frc.team6027.robot.commands.ToggleKickHatchCommand;
 import frc.team6027.robot.commands.TurnCommand;
 import frc.team6027.robot.commands.TurnWhileDrivingCommand;
 import frc.team6027.robot.commands.VisionTurnCommand2;
@@ -114,19 +115,27 @@ public class AutoDeliverHatch extends CommandGroup {
         this.addSequential(new DriveStraightCommand("A-L3-2-Storm-Hatch", 
             DriveStraightCommand.DriveDistanceMode.DistanceFromObject, 
             "A-P3-2-Storm-Hatch", null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
-           
+
+        this.addSequential(new DriveStraightCommand("A-L3-2-Storm-Hatch", 
+            DriveStraightCommand.DriveDistanceMode.DistanceFromObject, 
+            "A-P3-2-Storm-Hatch", null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
+        
+        this.addSequential(makeDelayCommand(1500));
+        this.addSequential(new DriveStraightCommand("A-L3-3-Storm-Hatch", 
+            DriveStraightCommand.DriveDistanceMode.DistanceFromObject, 
+            "A-P3-3-Storm-Hatch", null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
+        this.addSequential(new ToggleKickHatchCommand(this.pneumaticSubsystem));
+        this.addSequential(new ToggleKickHatchCommand(this.pneumaticSubsystem));
+        this.addSequential(makeDelayCommand(1500));
         // Last leg to rocket 
         /*
         Command multiLegDriveCmd = createMultiLegDriveCommand();
         this.addSequential(multiLegDriveCmd);
         */
 //        this.addSequential(new ElevatorCommand(70.0, 0.6, this.sensorService, this.elevatorSubsystem));
-        // TODO: Ensure arm isn't blocking camera
-        // TODO: Drive to rocket with vision
         // TODO: Raise arm to top of rocket
         // TODO: Deliver Hatch
         // TODO: Lower arm to proper position
-/*
         // Back up from rocket
         this.addSequential(new DriveStraightCommand("A-L4-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "A-P4-Storm-Hatch", 
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
@@ -137,6 +146,7 @@ public class AutoDeliverHatch extends CommandGroup {
         this.addSequential(new DriveStraightCommand("A-L5-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "A-P5-Storm-Hatch", 
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
         );
+/*        
         this.addSequential(new DriveStraightCommand("A-L6-Storm-Hatch", DriveDistanceMode.DistanceFromObject, "A-P6-Storm-Hatch", 
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
         );
@@ -161,12 +171,37 @@ public class AutoDeliverHatch extends CommandGroup {
     }
 */
 
+    
     @Override
     public void start() {
         this.logger.info(">>>>>>>>>>>>>>>>>>>> AutoDeliverHatch command starting...");
         super.start();
     }
 
+    protected Command makeDelayCommand(int delayMs) {
+        Command cmd = new Command() {
+            Long elapsedTime = null;
+            Long startTime = null;
+            @Override
+            protected boolean isFinished() {
+                boolean finished = false;
+                if (this.elapsedTime >= delayMs) {
+                    finished = true;
+                    this.elapsedTime = null;
+                }
+                return finished;
+            }       
+
+            @Override
+            protected void execute() {
+                if (elapsedTime == null) {
+                    startTime = System.currentTimeMillis();
+                }
+                elapsedTime = System.currentTimeMillis() - this.startTime;
+            }
+        };
+        return cmd;
+    }
     protected Command makeVisionDistanceCommand() {
         Command cmd = new Command() {
             Datahub visionData = DatahubRegistry.instance().get(VisionDataConstants.VISION_DATA_KEY);

@@ -154,6 +154,12 @@ public class TeleopManager extends Command {
             this.logger.error("", ex);
         }
 
+        this.backButton = new JoystickButton(this.joystick, this.joystick.getStartButtonNumber());
+        this.backButton.toggleWhenPressed(new VisionTurnCommand2(this.sensorService, this.drivetrain, this.operatorDisplay));
+/*
+        this.startButton = new JoystickButton(this.joystick, this.joystick.getStartButtonNumber());
+        this.startButton.toggleWhenPressed(new VisionTurnCommand2(this.sensorService, this.drivetrain, this.operatorDisplay));
+*/
         this.xButton = new JoystickButton(this.joystick, this.joystick.getXButtonNumber());   
         this.xButton.whenPressed(new ToggleKickHatchCommand(this.pneumaticSubsystem));    
         this.xButton.whenReleased(new ToggleKickHatchCommand(this.pneumaticSubsystem));    
