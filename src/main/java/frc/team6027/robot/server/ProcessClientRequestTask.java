@@ -34,7 +34,6 @@ public class ProcessClientRequestTask implements Runnable {
     @Override
     public void run() {
         logger.debug("Client connected");
-        this.visionDatahub = DatahubRegistry.instance().get(VisionDataConstants.VISION_DATA_KEY);
         try (
             this.clientSocket;
             BufferedReader br = new BufferedReader(new InputStreamReader(this.clientSocket.getInputStream()));
@@ -48,9 +47,10 @@ public class ProcessClientRequestTask implements Runnable {
                     String currentTime = TIME_FORMAT.format(new Date());
                     out.println(String.format(PYTHON_TIME_RESPONSE_TEMPLATE, "robot-pong", currentTime));
                 } else if (msg.startsWith("vision-data")) {
+                    out.println(String.format(PYTHON_SIMPLE_RESPONSE_TEMPLATE, "OK"));
+                    this.visionDatahub = DatahubRegistry.instance().get(VisionDataConstants.VISION_DATA_KEY);
                     msg = msg.replace("vision-data;", "");
                     this.processVisionData(msg);
-                    out.println(String.format(PYTHON_SIMPLE_RESPONSE_TEMPLATE, "OK"));
                 } else if ("stop".equals(msg)) {
                     server.stop();
                 } else {

@@ -8,23 +8,24 @@ import frc.team6027.robot.RobotConfigConstants;
 public class UltrasonicSensorManager {
     public enum UltrasonicSensorKey {
         Front,
-        Back
+ //       Right
     }
 
     private Map<UltrasonicSensorKey, UltrasonicSensor> sensorRegistry = new HashMap<>();
 
     public UltrasonicSensorManager() {
+        
         this.sensorRegistry.put(UltrasonicSensorKey.Front, 
             new UltrasonicSensor(
                 RobotConfigConstants.ULTRASONIC_FRONT_PING_DIO_CHANNEL,
                 RobotConfigConstants.ULTRASONIC_FRONT_ECHO_DIO_CHANNEL
             )
         );
-        /* TODO
-        this.sensorRegistry.put(UltrasonicSensorKey.Back, 
+        /*
+        this.sensorRegistry.put(UltrasonicSensorKey.Right, 
             new UltrasonicSensor(
-                RobotConfigConstants.ULTRASONIC_BACK_PING_CHANNEL,
-                RobotConfigConstants.ULTRASONIC_BACK_ECHO_CHANNEL
+                RobotConfigConstants.ULTRASONIC_RIGHT_PING_DIO_CHANNEL,
+                RobotConfigConstants.ULTRASONIC_RIGHT_ECHO_DIO_CHANNEL
             )
         );
         */

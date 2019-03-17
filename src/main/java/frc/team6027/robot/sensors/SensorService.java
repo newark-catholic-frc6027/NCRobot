@@ -114,7 +114,7 @@ public class SensorService {
         double distance = visionData.getDouble(VisionDataConstants.TARGET_DISTANCE_KEY, -1.0);
         if (distance < 0.0) {
             if (withUltrasonicFallback) {
-                double ultdistance = Math.abs(this.getUltrasonicSensor(UltrasonicSensorKey.Front).getDistanceInches());
+                Double ultdistance = Math.abs(this.getUltrasonicSensor(UltrasonicSensorKey.Front).getDistanceInches());
                 logger.warn("Vision distance returned was {}, using ultrasonic distance reading of {}", distance, ultdistance);
                 distance = ultdistance;
             } else {

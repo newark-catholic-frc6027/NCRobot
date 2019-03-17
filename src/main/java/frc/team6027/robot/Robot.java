@@ -91,8 +91,8 @@ public class Robot extends TimedRobot {
         this.setArmSubsystem(new ArmSubsystem(this.getOperatorInterface()));
         this.setElevatorSubsystem(new ElevatorSubsystem(this.getSensorService().getLimitSwitchSensors(), this.getOperatorDisplay()));
         this.setPneumaticSubsystem(new PneumaticSubsystem(this.getOperatorDisplay()));
-        //this.visionData = new DatahubNetworkTableImpl(VisionDataConstants.VISION_DATA_KEY);
-        this.visionData = new DatahubRobotServerImpl(VisionDataConstants.VISION_DATA_KEY);
+        this.visionData = new DatahubNetworkTableImpl(VisionDataConstants.VISION_DATA_KEY);
+        // this.visionData = new DatahubRobotServerImpl(VisionDataConstants.VISION_DATA_KEY);
         DatahubRegistry.instance().register(this.visionData);
 
         // This ensures that the Teleop command is running whenever we are not in
@@ -397,7 +397,9 @@ public class Robot extends TimedRobot {
         disp.setFieldValue("Gyro Angle", this.sensorService.getGyroSensor().getAngle());
         disp.setFieldValue("Gyro Yaw Angle", this.sensorService.getGyroSensor().getYawAngle());
         
-        disp.setFieldValue("Ultrasonic Dist", this.sensorService.getUltrasonicSensor(UltrasonicSensorKey.Front).getDistanceInches());
+        Double dist = this.sensorService.getUltrasonicSensor(UltrasonicSensorKey.Front).getDistanceInches();
+        disp.setFieldValue("Ultrasonic Front Dist", dist != null ? dist + "" : "INFINITY");
+//        disp.setFieldValue("Ultrasonic RIGHT Dist", this.sensorService.getUltrasonicSensor(UltrasonicSensorKey.Right).getDistanceInches());
         /*
 
         disp.setFieldValue("rightEncoder Distance",

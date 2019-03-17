@@ -14,6 +14,9 @@ import frc.team6027.robot.commands.VisionTurnCommand2;
 import frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
 import frc.team6027.robot.commands.SlideMastCommand.SlideMastDirection;
 import frc.team6027.robot.commands.TurnWhileDrivingCommand.TargetVector;
+import frc.team6027.robot.data.Datahub;
+import frc.team6027.robot.data.DatahubRegistry;
+import frc.team6027.robot.data.VisionDataConstants;
 import frc.team6027.robot.field.Field;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
@@ -77,9 +80,10 @@ public class AutoDeliverHatch extends CommandGroup {
         // TODO: Initialize Pneumatics
         this.addSequential(new PneumaticsInitializationCommand(this.pneumaticSubsystem));
         this.addSequential(new ResetSensorsCommand(this.sensorService));
+        
         // TODO: Is this going to test ok?
         // Drive Backwards off ramp
-        this.addParallel(new SlideMastCommand(SlideMastDirection.Forward, 1.0, this.sensorService, this.elevatorSubsystem));
+// TODO: put back in        this.addParallel(new SlideMastCommand(SlideMastDirection.Forward, 1.0, this.sensorService, this.elevatorSubsystem));
         this.addSequential(new DriveStraightCommand("A-L1-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "A-P1-Storm-Hatch", 
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
         );
@@ -94,16 +98,28 @@ public class AutoDeliverHatch extends CommandGroup {
         // TODO: replace this with Vision turn, use VisionTurnCommand2
         // TODO: Add logic to handle potential failure of Vision turn
 
-        // Turn again toward rocket
+        // Turn toward rocket
         this.addSequential(new TurnCommand("A-A2-Storm-Hatch", this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
-        // Turn again toward rocket
+        
+        // Turn toward rocket with vision
         this.addSequential(new VisionTurnCommand2(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
 
+//        this.addSequential(this.makeVisionDistanceCommand());
+
+        this.addSequential(new DriveStraightCommand("A-L3-1-Storm-Hatch", 
+           DriveStraightCommand.DriveDistanceMode.DistanceReadingOnEncoder, 
+               "A-P3-1-Storm-Hatch", null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
+        this.addSequential(new VisionTurnCommand2(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
         
+        this.addSequential(new DriveStraightCommand("A-L3-2-Storm-Hatch", 
+            DriveStraightCommand.DriveDistanceMode.DistanceFromObject, 
+            "A-P3-2-Storm-Hatch", null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
+           
         // Last leg to rocket 
+        /*
         Command multiLegDriveCmd = createMultiLegDriveCommand();
         this.addSequential(multiLegDriveCmd);
-
+        */
 //        this.addSequential(new ElevatorCommand(70.0, 0.6, this.sensorService, this.elevatorSubsystem));
         // TODO: Ensure arm isn't blocking camera
         // TODO: Drive to rocket with vision
@@ -151,6 +167,47 @@ public class AutoDeliverHatch extends CommandGroup {
         super.start();
     }
 
+    protected Command makeVisionDistanceCommand() {
+        Command cmd = new Command() {
+            Datahub visionData = DatahubRegistry.instance().get(VisionDataConstants.VISION_DATA_KEY);
+            Preferences prefs = Preferences.getInstance();
+            Long elapsedTime = null;
+            Long startTime = null;
+            Double visionDist = null;
+            @Override
+            protected boolean isFinished() {
+                boolean finished = false;
+                if (this.elapsedTime >= 350) {
+                    finished = true;
+                } else {
+                    if (this.visionDist >= 0.0) {
+                        finished = true;
+                    }
+                }
+
+                if (finished) {
+                    this.prefs.putDouble(VisionDataConstants.TARGET_DISTANCE_KEY, this.visionDist);
+                    AutoDeliverHatch.this.logger.info("Vision Distance to be used for driving to target: {}", this.visionDist);
+                    this.visionDist = null;
+                    this.elapsedTime = null;
+                    this.startTime = null;
+                }
+                return finished;
+            }
+
+            @Override
+            protected void execute() {
+                if (elapsedTime == null) {
+                    startTime = System.currentTimeMillis();
+                }
+                elapsedTime = System.currentTimeMillis() - this.startTime;
+
+                this.visionDist = visionData.getDouble(VisionDataConstants.TARGET_DISTANCE_KEY, -1.0);
+            }
+
+        };
+        return cmd;
+    }
     protected Command createTurnCommand() {
         // When delivering to the left, need to turn robot to the right.  When delivering to the right, need to turn
         // robot left

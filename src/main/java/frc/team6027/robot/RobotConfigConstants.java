@@ -149,8 +149,8 @@ public class RobotConfigConstants {
     public static final int ULTRASONIC_FRONT_PING_DIO_CHANNEL = 0;
     public static final int ULTRASONIC_FRONT_ECHO_DIO_CHANNEL = 1;
 
-    public static final int ULTRASONIC_BACK_PING_DIO_CHANNEL = 2;
-    public static final int ULTRASONIC_BACK_ECHO_DIO_CHANNEL = 3;
+//    public static final int ULTRASONIC_RIGHT_PING_DIO_CHANNEL = 0;
+//    public static final int ULTRASONIC_RIGHT_ECHO_DIO_CHANNEL = 1;
 
 
     /**

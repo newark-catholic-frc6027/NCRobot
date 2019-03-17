@@ -35,7 +35,7 @@ public class RobotStatusServer {
     }
 
     public void start() {
-        final ExecutorService clientProcessingPool = Executors.newFixedThreadPool(5);
+        final ExecutorService clientProcessingPool = Executors.newFixedThreadPool(8);
 
         Runnable serverTask = () -> {
             ServerSocket serverSocket = null;

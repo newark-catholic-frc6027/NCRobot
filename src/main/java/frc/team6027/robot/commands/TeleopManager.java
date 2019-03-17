@@ -220,10 +220,14 @@ public class TeleopManager extends Command {
             this.pneumaticSubsystem, this.elevatorSubsystem, this.operatorDisplay, this.field));
 
         this.yButton2 = new JoystickButton(this.joystick2, this.joystick2.getYButtonNumber());   
-        this.yButton2.whenPressed(new SlideMastCommand(SlideMastCommand.SlideMastDirection.Forward, 1.0, sensorService, this.elevatorSubsystem));  
-    
+//        this.yButton2.whenPressed(new SlideMastCommand(SlideMastCommand.SlideMastDirection.Forward, 1.0, sensorService, this.elevatorSubsystem));  
+        this.yButton2.whenPressed(  
+            new DriveStraightCommand("A-L3-Storm-Hatch", 
+            DriveStraightCommand.DriveDistanceMode.DistanceFromObject, 
+                "A-P3-Storm-Hatch", null, this.sensorService, this.drivetrain, this.operatorDisplay)
+        );
+
         this.aButton2 = new JoystickButton(this.joystick2, this.joystick2.getAButtonNumber());
-        
         TargetVector[] testVectors = new TargetVector[]{ new TargetVector(null, 36.0, 0.7), new TargetVector(null, 36.0, 0.4) };
         this.aButton2.whenPressed( new TurnWhileDrivingCommand(sensorService, 
             this.drivetrain, this.operatorDisplay, testVectors, DriveDistanceMode.DistanceReadingOnEncoder, .5));
@@ -305,15 +309,6 @@ public class TeleopManager extends Command {
     private void drive() {
 //        this.logger.debug("Drive invoked. left axis: {}, right axis: {}", this.joystick.getLeftAxis(), this.joystick.getRightAxis());
         this.drivetrain.doArcadeDrive(this.joystick.getLeftAxis(), this.joystick.getRightAxis() * this.turnPowerScaleFactor);
-    }
-
-    protected void logData() {
-
-        if (this.execCount % LOG_REDUCTION_MOD == 0) {
-            logger.trace("Ultrasonic dist: {}",
-                    String.format("%.3f", this.sensorService.getUltrasonicSensor(UltrasonicSensorKey.Front).getDistanceInches()));
-        }
-
     }
 
     private void runMastSlideIfRequired() {
