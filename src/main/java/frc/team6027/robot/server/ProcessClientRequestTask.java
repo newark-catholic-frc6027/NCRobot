@@ -36,6 +36,10 @@ public class ProcessClientRequestTask implements Runnable {
                 logger.debug("Got vision-ping, sending 'robot-pong'");
                 String currentTime = TIME_FORMAT.format(new Date());
                 out.println(String.format(PYTHON_MAP_RESPONSE_TEMPLATE, "robot-pong", currentTime));
+            } else if (msg.startsWith("vision-data")) {
+                // TODO: finish if necessary to bypass network tables
+                msg = msg.replace("vision-data;", "");
+                this.processVisionData(msg);
             } else if ("stop".equals(msg)) {
                 server.stop();
             } else {
@@ -43,6 +47,15 @@ public class ProcessClientRequestTask implements Runnable {
             }
         } catch (Exception ex) {
             logger.error("Failure processing RobotServer client request!", ex);
+        }
+    }
+
+    protected void processVisionData(String msg) {
+        String[] msgParts = msg.split(";");
+        for (String msgPart : msgParts) {
+            String[] keyValue = msgPart.split("=");
+            String key = keyValue[0];
+            String value = keyValue[1];
         }
     }
 }
