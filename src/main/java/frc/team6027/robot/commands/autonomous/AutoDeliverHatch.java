@@ -10,6 +10,7 @@ import frc.team6027.robot.commands.ResetSensorsCommand;
 import frc.team6027.robot.commands.SlideMastCommand;
 import frc.team6027.robot.commands.TurnCommand;
 import frc.team6027.robot.commands.TurnWhileDrivingCommand;
+import frc.team6027.robot.commands.VisionTurnCommand2;
 import frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
 import frc.team6027.robot.commands.SlideMastCommand.SlideMastDirection;
 import frc.team6027.robot.commands.TurnWhileDrivingCommand.TargetVector;
@@ -95,11 +96,10 @@ public class AutoDeliverHatch extends CommandGroup {
 
         // Turn again toward rocket
         this.addSequential(new TurnCommand("A-A2-Storm-Hatch", this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
-/*
-        this.addSequential(new DriveStraightCommand("A-L3-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "A-P3-Storm-Hatch", 
-            null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
-        );
-*/       
+        // Turn again toward rocket
+        this.addSequential(new VisionTurnCommand2(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
+
+        
         // Last leg to rocket 
         Command multiLegDriveCmd = createMultiLegDriveCommand();
         this.addSequential(multiLegDriveCmd);

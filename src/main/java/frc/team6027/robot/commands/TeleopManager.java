@@ -20,6 +20,8 @@ import frc.team6027.robot.commands.TurnWhileDrivingCommand;
 import frc.team6027.robot.commands.TurnWhileDrivingCommand.TargetVector;
 
 import frc.team6027.robot.controls.XboxJoystick;
+import frc.team6027.robot.data.Datahub;
+import frc.team6027.robot.data.DatahubRegistry;
 import frc.team6027.robot.field.Field;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.sensors.UltrasonicSensorManager.UltrasonicSensorKey;
@@ -227,7 +229,25 @@ public class TeleopManager extends Command {
             
 
         this.bButton2 = new JoystickButton(this.joystick2, this.joystick2.getBButtonNumber());
-        this.bButton2.whenPressed(new PrintMessageCommand("bbutton has pressed down and completed the press of the bbutton"));
+        this.bButton2.whileHeld( new Command() {
+
+            private Datahub visionData;
+            @Override
+            protected boolean isFinished() {
+                return false;
+            }
+
+            protected void execute() {
+                if (this.visionData == null) {
+                    this.visionData = DatahubRegistry.instance().get(DatahubRegistry.VISION_KEY);
+                }
+                double contoursCenterX = this.visionData.getDouble("contoursCenterX", -1.0);
+                double numContours = this.visionData.getDouble("numContours", 0.0);
+                
+                TeleopManager.this.logger.info("contoursCenterX: {}, numContours: {}", contoursCenterX, numContours);
+            }
+
+        });
 
         this.leftBumperButton2 = new JoystickButton(this.joystick2, this.joystick2.getLeftBumperButtonNumber());
         this.leftBumperButton2.whenPressed(new PrintMessageCommand("left bumper has pressed down and completed the press of the left bumper"));

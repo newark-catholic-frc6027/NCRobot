@@ -13,6 +13,8 @@ public class VisionTurnCommand2 extends TurnCommand  {
 	private final Logger logger = LogManager.getLogger(getClass());
 
 	protected Datahub visionData;
+	protected boolean visionDataChecked = false;
+	protected boolean visionDataValid = false;
 
 	public VisionTurnCommand2(SensorService sensorService, DrivetrainSubsystem drivetrain,
 			OperatorDisplay operatorDisplay) {
@@ -28,6 +30,7 @@ public class VisionTurnCommand2 extends TurnCommand  {
 	}
 
 
+
 	@Override
 	public void start() {
 	    logger.info(">>> Vision Turn Command starting, target angle: {}, initial gyro angle", this.targetAngle, this.initialGyroAngle);
@@ -35,8 +38,33 @@ public class VisionTurnCommand2 extends TurnCommand  {
 	}
 
 	@Override
+	protected boolean isFinished() {
+		if (! this.visionDataValid) {
+			this.isReset = false;
+			logger.warn("Vision data is not valid, not turning.  Command finished.");
+			return true;
+		}
+
+		return super.isFinished();
+	}
+	@Override
+	protected void execute() {
+		if (! visionDataChecked) {
+    		this.visionDataValid = this.targetAngle != null;
+			visionDataChecked = true;
+		} 
+
+		if (this.visionDataValid) {
+			super.execute();
+		} else {
+			logger.warn("Vision data is not valid, not turning");
+		}
+	}
+	@Override
 	protected void reset() {
 		this.targetAngle = this.sensorService.getCurAngleHeadingToVisionTarget();
+		this.visionDataChecked = false;
+		this.visionDataValid = false;
 		super.reset();
 	}
 

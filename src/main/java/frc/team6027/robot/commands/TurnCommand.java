@@ -33,7 +33,7 @@ public class TurnCommand extends Command implements PIDOutput {
 	protected PIDCapableGyro gyro;
 
 	protected DrivetrainSubsystem drivetrain;
-	protected double targetAngle;
+	protected Double targetAngle;
 
 	protected double pidLoopCalculationOutput;
 	protected OperatorDisplay operatorDisplay;
@@ -106,8 +106,10 @@ public class TurnCommand extends Command implements PIDOutput {
 		pidController.setOutputRange(-1* this.turnPower, this.turnPower);
 		pidController.setAbsoluteTolerance(PID_TOLERANCE_DEGREES);
 		pidController.setContinuous(true);
-		pidController.setSetpoint(this.targetAngle); // sets the angle to which we want to turn to
-		pidController.enable();
+		if (this.targetAngle != null) {
+			pidController.setSetpoint(this.targetAngle); // sets the angle to which we want to turn to
+			pidController.enable();
+		}
 	}
 
 	@Override
@@ -158,8 +160,8 @@ public class TurnCommand extends Command implements PIDOutput {
 	@Override
 	public void start() {
 		this.reset();
-		logger.info(">>> Turn Command starting, target angle: {}, initial gyro angle: {}, turnMinPower: {}", 
-		    this.targetAngle, this.initialGyroAngle, this.turnMinPower);
+		logger.info(">>> Turn Command starting, target angle: {}, initial gyro angle: {}, turnMinPower: {}, turnPower: {}", 
+		    this.targetAngle, this.initialGyroAngle, this.turnMinPower, this.turnPower);
 		super.start();
 	}
 

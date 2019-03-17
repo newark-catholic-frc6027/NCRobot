@@ -76,13 +76,14 @@ public class SensorService {
         return heightInches;
     }
     
-    public double getCurAngleHeadingToVisionTarget() {
+    public Double getCurAngleHeadingToVisionTarget() {
         Datahub visionData = this.getVisionDatahub();
     
         // ContoursCenterXEntry x value of the center between the two contours-- 
         double centerContour = visionData.getDouble(RobotConfigConstants.CONTOURS_CENTER_X, 160.0);
-        if (centerContour <= 0.0) {
+        if (centerContour < 0.0) {
             logger.warn("VISION FAILURE! {} value is: {}, not expected", RobotConfigConstants.CONTOURS_CENTER_X, centerContour);
+            return null;
         }
 
         double visionDistanceInches = this.getCurDistToVisionTarget();
