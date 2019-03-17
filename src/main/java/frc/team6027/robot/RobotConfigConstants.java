@@ -202,11 +202,4 @@ public class RobotConfigConstants {
 
     /* set to 1 if inversion is not needed, -1 if inversion is needed */
     public final static int OPTIONAL_DRIVETRAIN_DIRECTION_INVERSION = 1;
-
-    public final static String CONTOURS_CENTER_X = "contoursCenterX";
-    public final static String CONTOUR_AREA_LEFT = "contourAreaLeft";
-    public final static String CONTOUR_AREA_RIGHT = "contourAreaRight";
-    public final static String DISTANCE_TO_TARGET_INCHES = "distanceToTargetInches";
-
-
 }

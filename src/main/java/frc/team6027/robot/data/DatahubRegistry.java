@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DatahubRegistry {
-    public static final String VISION_KEY = "vision"; 
-
     private Map<String, Datahub> registry = new HashMap<>();
 
     private static DatahubRegistry instance;

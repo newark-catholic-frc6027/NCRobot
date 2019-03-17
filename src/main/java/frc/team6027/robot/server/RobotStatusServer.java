@@ -8,6 +8,12 @@ import java.util.concurrent.Executors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import frc.team6027.robot.data.Datahub;
+import frc.team6027.robot.data.DatahubRobotServerImpl;
+import frc.team6027.robot.data.VisionDataConstants;
+import frc.team6027.robot.data.DatahubRegistry;
+
+
 public class RobotStatusServer {
 
     // As far as I know, available "team use" ports are numbered 5800-5810
@@ -60,9 +66,26 @@ public class RobotStatusServer {
 
     }
 
+    /**
+     * @return the stopped
+     */
+    public boolean isStopped() {
+        return stopped;
+    }
+
+    /**
+     * @return the port
+     */
+    public int getPort() {
+        return port;
+    }
 
     public static void main(String[] args) {
+        Datahub visionData = new DatahubRobotServerImpl(VisionDataConstants.VISION_DATA_KEY);
+        DatahubRegistry.instance().register(visionData);
+
         RobotStatusServer server = new RobotStatusServer(DEFAULT_ROBOT_SERVER_PORT);
         server.start();
     }
+
 }

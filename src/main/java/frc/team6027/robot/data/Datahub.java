@@ -1,5 +1,7 @@
 package frc.team6027.robot.data;
 
+import java.util.Map;
+
 public interface Datahub {
     String getName();
     String getString(String key);
@@ -9,6 +11,15 @@ public interface Datahub {
     Float getFloat(String key);
     Float getFloat(String key, Float defaultValue);
 
+    Map<String, Object> getAll();
+    
     void put(String key, String value);
     void put(String key, Double value);
+    /**
+     * Puts the given map of values into this Datahub instance.
+     * When {@code replace} is {@code true}, the current set of
+     * values in the datahub is first cleared before the given
+     * values are inserted.
+     */
+    void put(Map<String, Object> values, boolean replace);
 }

@@ -2,9 +2,9 @@ package frc.team6027.robot.sensors;
 
 import org.apache.logging.log4j.Logger;
 
-import frc.team6027.robot.RobotConfigConstants;
 import frc.team6027.robot.data.Datahub;
 import frc.team6027.robot.data.DatahubRegistry;
+import frc.team6027.robot.data.VisionDataConstants;
 import frc.team6027.robot.sensors.EncoderSensors.EncoderKey;
 import frc.team6027.robot.sensors.UltrasonicSensorManager.UltrasonicSensorKey;
 
@@ -80,9 +80,9 @@ public class SensorService {
         Datahub visionData = this.getVisionDatahub();
     
         // ContoursCenterXEntry x value of the center between the two contours-- 
-        double centerContour = visionData.getDouble(RobotConfigConstants.CONTOURS_CENTER_X, 160.0);
+        double centerContour = visionData.getDouble(VisionDataConstants.CONTOURS_CENTER_X_KEY, 160.0);
         if (centerContour < 0.0) {
-            logger.warn("VISION FAILURE! {} value is: {}, not expected", RobotConfigConstants.CONTOURS_CENTER_X, centerContour);
+            logger.warn("VISION FAILURE! {} value is: {}, not expected", VisionDataConstants.CONTOURS_CENTER_X_KEY, centerContour);
             return null;
         }
 
@@ -111,9 +111,8 @@ public class SensorService {
     public double getCurDistToVisionTarget(boolean withUltrasonicFallback) {
         Datahub visionData = this.getVisionDatahub();
 
-        double distance = visionData.getDouble(RobotConfigConstants.DISTANCE_TO_TARGET_INCHES, -1.0);
+        double distance = visionData.getDouble(VisionDataConstants.TARGET_DISTANCE_KEY, -1.0);
         if (distance < 0.0) {
-
             if (withUltrasonicFallback) {
                 double ultdistance = Math.abs(this.getUltrasonicSensor(UltrasonicSensorKey.Front).getDistanceInches());
                 logger.warn("Vision distance returned was {}, using ultrasonic distance reading of {}", distance, ultdistance);
@@ -128,7 +127,7 @@ public class SensorService {
 
     protected Datahub getVisionDatahub() {
         if (this.visionData == null) {
-            this.visionData = DatahubRegistry.instance().get(DatahubRegistry.VISION_KEY);
+            this.visionData = DatahubRegistry.instance().get(VisionDataConstants.VISION_DATA_KEY);
         }
 
         return this.visionData;

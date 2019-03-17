@@ -22,6 +22,7 @@ import frc.team6027.robot.commands.TurnWhileDrivingCommand.TargetVector;
 import frc.team6027.robot.controls.XboxJoystick;
 import frc.team6027.robot.data.Datahub;
 import frc.team6027.robot.data.DatahubRegistry;
+import frc.team6027.robot.data.VisionDataConstants;
 import frc.team6027.robot.field.Field;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.sensors.UltrasonicSensorManager.UltrasonicSensorKey;
@@ -239,10 +240,10 @@ public class TeleopManager extends Command {
 
             protected void execute() {
                 if (this.visionData == null) {
-                    this.visionData = DatahubRegistry.instance().get(DatahubRegistry.VISION_KEY);
+                    this.visionData = DatahubRegistry.instance().get(VisionDataConstants.VISION_DATA_KEY);
                 }
-                double contoursCenterX = this.visionData.getDouble("contoursCenterX", -1.0);
-                double numContours = this.visionData.getDouble("numContours", 0.0);
+                double contoursCenterX = this.visionData.getDouble(VisionDataConstants.CONTOURS_CENTER_X_KEY, -1.0);
+                double numContours = this.visionData.getDouble(VisionDataConstants.NUM_CONTOURS_KEY, 0.0);
                 
                 TeleopManager.this.logger.info("contoursCenterX: {}, numContours: {}", contoursCenterX, numContours);
             }

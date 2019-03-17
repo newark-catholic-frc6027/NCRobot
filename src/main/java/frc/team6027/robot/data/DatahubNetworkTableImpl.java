@@ -90,6 +90,12 @@ public class DatahubNetworkTableImpl implements Datahub {
     }
 
     @Override
+    public Map<String,Object> getAll() {
+        // TODO
+        return null;
+    }
+
+    @Override
     public void put(String key, String value) {
         // TODO
 
@@ -102,9 +108,15 @@ public class DatahubNetworkTableImpl implements Datahub {
     }
 
     @Override
+    public void put(Map<String, Object> values, boolean replace) {
+        // TODO
+    }
+
+    @Override
     public String getName() {
         return this.tableName;
     }
+
 
 
 }

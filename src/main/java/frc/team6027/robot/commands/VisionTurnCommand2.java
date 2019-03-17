@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.data.Datahub;
 import frc.team6027.robot.data.DatahubRegistry;
+import frc.team6027.robot.data.VisionDataConstants;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 
@@ -26,7 +27,7 @@ public class VisionTurnCommand2 extends TurnCommand  {
 			OperatorDisplay operatorDisplay, String powerPrefName) {
 		
 		super(null, sensorService, drivetrain, operatorDisplay, powerPrefName);
-	    this.visionData = DatahubRegistry.instance().get(DatahubRegistry.VISION_KEY);
+	    this.visionData = DatahubRegistry.instance().get(VisionDataConstants.VISION_DATA_KEY);
 	}
 
 

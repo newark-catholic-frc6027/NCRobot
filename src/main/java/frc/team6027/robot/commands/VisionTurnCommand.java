@@ -6,6 +6,7 @@ import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.RobotConfigConstants;
 import frc.team6027.robot.data.Datahub;
 import frc.team6027.robot.data.DatahubRegistry;
+import frc.team6027.robot.data.VisionDataConstants;
 import frc.team6027.robot.sensors.PIDCapableGyro;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
@@ -59,7 +60,7 @@ public class VisionTurnCommand extends Command implements PIDOutput {
 //		this.gyro.reset();
 		this.startTime = System.currentTimeMillis();
         this.setName(NAME);
-	    this.visionData = DatahubRegistry.instance().get(DatahubRegistry.VISION_KEY);
+	    this.visionData = DatahubRegistry.instance().get(VisionDataConstants.VISION_DATA_KEY);
 	}
 
 

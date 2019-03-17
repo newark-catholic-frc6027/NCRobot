@@ -18,6 +18,8 @@ import frc.team6027.robot.commands.autonomous.AutonomousCommandManager.Autonomou
 import frc.team6027.robot.data.Datahub;
 import frc.team6027.robot.data.DatahubNetworkTableImpl;
 import frc.team6027.robot.data.DatahubRegistry;
+import frc.team6027.robot.data.DatahubRobotServerImpl;
+import frc.team6027.robot.data.VisionDataConstants;
 import frc.team6027.robot.field.Field;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.sensors.EncoderSensors.EncoderKey;
@@ -89,7 +91,8 @@ public class Robot extends TimedRobot {
         this.setArmSubsystem(new ArmSubsystem(this.getOperatorInterface()));
         this.setElevatorSubsystem(new ElevatorSubsystem(this.getSensorService().getLimitSwitchSensors(), this.getOperatorDisplay()));
         this.setPneumaticSubsystem(new PneumaticSubsystem(this.getOperatorDisplay()));
-        this.visionData = new DatahubNetworkTableImpl(DatahubRegistry.VISION_KEY);
+        //this.visionData = new DatahubNetworkTableImpl(VisionDataConstants.VISION_DATA_KEY);
+        this.visionData = new DatahubRobotServerImpl(VisionDataConstants.VISION_DATA_KEY);
         DatahubRegistry.instance().register(this.visionData);
 
         // This ensures that the Teleop command is running whenever we are not in
@@ -376,8 +379,8 @@ public class Robot extends TimedRobot {
         */
 
         OperatorDisplay disp = this.getOperatorDisplay();
-        disp.setFieldValue("Center of Contours", this.visionData.getDouble("contoursCenterX", -1.0) );
-        disp.setFieldValue("# of Contours", this.visionData.getDouble("numContours", 0.0));
+        disp.setFieldValue("Center of Contours", this.visionData.getDouble(VisionDataConstants.CONTOURS_CENTER_X_KEY, -1.0) );
+        disp.setFieldValue("# of Contours", this.visionData.getDouble(VisionDataConstants.NUM_CONTOURS_KEY, 0.0));
         disp.setFieldValue("Elevator Dist", this.sensorService.getElevatorHeightInches());
         disp.setFieldValue("Elevator Raw", this.sensorService.getEncoderSensors().getElevatorEncoder().getRaw());
 
