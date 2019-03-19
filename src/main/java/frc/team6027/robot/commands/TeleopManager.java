@@ -8,7 +8,9 @@ import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.OperatorInterface;
 import frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
-import frc.team6027.robot.commands.autonomous.AutoDeliverHatch;
+import frc.team6027.robot.commands.autonomous.AutoDeliverHatchToRocketUsingBackwardDeparture;
+import frc.team6027.robot.commands.autonomous.AutoDeliverHatchToRocket;
+import frc.team6027.robot.commands.autonomous.AutoDeliverHatchToFuelStorageSide;
 /*
 import frc.team6027.robot.commands.CubeDeliveryCommand.DeliveryMode;
 import frc.team6027.robot.commands.DropCarriageCommand.DropFunction;
@@ -143,7 +145,7 @@ public class TeleopManager extends Command {
 
         this.leftBumperButton = new JoystickButton(this.joystick, this.joystick.getLeftBumperButtonNumber());   
         this.leftBumperButton.whileHeld(new ArmMotorCommand(this.armSubsystem, MotorDirection.Out));
-        
+/*        
         this.backButton = new JoystickButton(this.joystick, this.joystick.getBackButtonNumber());
         
         try {
@@ -153,7 +155,7 @@ public class TeleopManager extends Command {
         } catch (Exception ex ) {
             this.logger.error("", ex);
         }
-
+*/
         this.backButton = new JoystickButton(this.joystick, this.joystick.getStartButtonNumber());
         this.backButton.toggleWhenPressed(new VisionTurnCommand2(this.sensorService, this.drivetrain, this.operatorDisplay));
 /*
@@ -222,15 +224,13 @@ public class TeleopManager extends Command {
 
         // TODO: reassign, only for testing mast
         this.xButton2 = new JoystickButton(this.joystick2, this.joystick2.getXButtonNumber());   
-        this.xButton2.toggleWhenPressed(new AutoDeliverHatch(StartingPositionSide.Left, this.sensorService, this.drivetrain, 
+        this.xButton2.toggleWhenPressed(new AutoDeliverHatchToRocket(StartingPositionSide.Left, this.sensorService, this.drivetrain, 
             this.pneumaticSubsystem, this.elevatorSubsystem, this.operatorDisplay, this.field));
 
         this.yButton2 = new JoystickButton(this.joystick2, this.joystick2.getYButtonNumber());   
 //        this.yButton2.whenPressed(new SlideMastCommand(SlideMastCommand.SlideMastDirection.Forward, 1.0, sensorService, this.elevatorSubsystem));  
-        this.yButton2.whenPressed(  
-            new DriveStraightCommand("A-L3-Storm-Hatch", 
-            DriveStraightCommand.DriveDistanceMode.DistanceFromObject, 
-                "A-P3-Storm-Hatch", null, this.sensorService, this.drivetrain, this.operatorDisplay)
+        this.yButton2.whenPressed(  new AutoDeliverHatchToFuelStorageSide(StartingPositionSide.Left, 
+            this.sensorService, this.drivetrain, this.pneumaticSubsystem, this.elevatorSubsystem, this.operatorDisplay, this.field)
         );
 
         this.aButton2 = new JoystickButton(this.joystick2, this.joystick2.getAButtonNumber());

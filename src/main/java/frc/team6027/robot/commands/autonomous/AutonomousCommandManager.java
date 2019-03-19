@@ -495,7 +495,7 @@ public class AutonomousCommandManager {
             }
         });
 
-        this.getOperatorDisplay().setData("Hatch", new AutoDeliverHatch(StartingPositionSide.Left, this.sensorService, this.drivetrainSubsystem, 
+        this.getOperatorDisplay().setData("Hatch", new AutoDeliverHatchToRocketUsingBackwardDeparture(StartingPositionSide.Left, this.sensorService, this.drivetrainSubsystem, 
            this.pneumaticSubsystem, this.elevatorSubsystem, this.operatorDisplay, this.field));
 
         this.getOperatorDisplay().setData("Vision Turn", new VisionTurnCommand2(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay, "visionTurnCommand.power"));

@@ -28,7 +28,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class AutoDeliverHatch extends CommandGroup {
+public class AutoDeliverHatchToRocketUsingBackwardDeparture extends CommandGroup {
     private final Logger logger = LogManager.getLogger(getClass());
 
     private SensorService sensorService;
@@ -41,7 +41,7 @@ public class AutoDeliverHatch extends CommandGroup {
     private Field field;
 
 
-    public AutoDeliverHatch(StartingPositionSide startingSide, SensorService sensorService, 
+    public AutoDeliverHatchToRocketUsingBackwardDeparture(StartingPositionSide startingSide, SensorService sensorService, 
             DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevatorSubsystem, 
             OperatorDisplay operatorDisplay, Field field) {
         
@@ -222,7 +222,7 @@ public class AutoDeliverHatch extends CommandGroup {
 
                 if (finished) {
                     this.prefs.putDouble(VisionDataConstants.TARGET_DISTANCE_KEY, this.visionDist);
-                    AutoDeliverHatch.this.logger.info("Vision Distance to be used for driving to target: {}", this.visionDist);
+                    AutoDeliverHatchToRocketUsingBackwardDeparture.this.logger.info("Vision Distance to be used for driving to target: {}", this.visionDist);
                     this.visionDist = null;
                     this.elapsedTime = null;
                     this.startTime = null;
