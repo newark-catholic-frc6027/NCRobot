@@ -11,7 +11,6 @@ import frc.team6027.robot.commands.DriveStraightCommand;
 import frc.team6027.robot.commands.ElevatorCommand;
 import frc.team6027.robot.commands.TurnCommand;
 import frc.team6027.robot.commands.VisionTurnCommand;
-import frc.team6027.robot.commands.VisionTurnCommand2;
 import frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
 import frc.team6027.robot.field.Field;
 import frc.team6027.robot.sensors.SensorService;
@@ -59,7 +58,9 @@ public class AutonomousCommandManager {
 */    
     public enum AutonomousPreference {
         NoPreference("NO SELECTION"),
-        RocketHatch("Rocket Hatch")
+        RocketHatch("Rocket Hatch"), 
+        CargoFront("Cargo Front"),        
+        CargoSide("Cargo Side")
         ;
         
         private String displayName;
@@ -136,6 +137,8 @@ public class AutonomousCommandManager {
     
     public static void initAutoScenarioDisplayValues(OperatorDisplay operatorDisplay) {
         operatorDisplay.registerAutoScenario(AutonomousPreference.RocketHatch.displayName());
+        operatorDisplay.registerAutoScenario(AutonomousPreference.CargoSide.displayName());
+        operatorDisplay.registerAutoScenario(AutonomousPreference.CargoFront.displayName());
     }
 /*
     public static void initDontDoOptionDisplayValues(OperatorDisplay operatorDisplay) {
@@ -498,7 +501,7 @@ public class AutonomousCommandManager {
         this.getOperatorDisplay().setData("Hatch", new AutoDeliverHatchToRocketUsingBackwardDeparture(StartingPositionSide.Left, this.sensorService, this.drivetrainSubsystem, 
            this.pneumaticSubsystem, this.elevatorSubsystem, this.operatorDisplay, this.field));
 
-        this.getOperatorDisplay().setData("Vision Turn", new VisionTurnCommand2(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay, "visionTurnCommand.power"));
+        this.getOperatorDisplay().setData("Vision Turn", new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay, "visionTurnCommand.power"));
 
         this.getOperatorDisplay().setData("Elevator", new ElevatorCommand("elevatorCommand.height", "elevatorCommand.power", this.sensorService, this.elevatorSubsystem));
 

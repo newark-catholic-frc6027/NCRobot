@@ -11,7 +11,7 @@ import frc.team6027.robot.commands.SlideMastCommand;
 import frc.team6027.robot.commands.ToggleKickHatchCommand;
 import frc.team6027.robot.commands.TurnCommand;
 import frc.team6027.robot.commands.TurnWhileDrivingCommand;
-import frc.team6027.robot.commands.VisionTurnCommand2;
+import frc.team6027.robot.commands.VisionTurnCommand;
 import frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
 import frc.team6027.robot.commands.SlideMastCommand.SlideMastDirection;
 import frc.team6027.robot.commands.TurnWhileDrivingCommand.TargetVector;
@@ -100,7 +100,7 @@ public class AutoDeliverHatchToFuelStorageSide extends CommandGroup {
         this.addSequential(new TurnCommand("C-A2-Storm-Hatch", this.sensorService, this.drivetrainSubsystem, this.operatorDisplay, 
           "C-A2P-Storm-Hatch"));
 
-        this.addSequential(new VisionTurnCommand2(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
+        this.addSequential(new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
 
 
         // Travel forward toward fuel storage
@@ -108,7 +108,7 @@ public class AutoDeliverHatchToFuelStorageSide extends CommandGroup {
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
         );
 
-        this.addSequential(new VisionTurnCommand2(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
+        this.addSequential(new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
         /*
         this.addSequential(this.makeVisionDistanceCommand(VisionDataConstants.TARGET_DISTANCE_KEY));
         // Get vision distance
@@ -126,7 +126,7 @@ public class AutoDeliverHatchToFuelStorageSide extends CommandGroup {
         this.addSequential(new ToggleKickHatchCommand(this.pneumaticSubsystem));
         this.addSequential(new ToggleKickHatchCommand(this.pneumaticSubsystem));
 
-        // TODO: replace this with Vision turn, use VisionTurnCommand2
+        // TODO: replace this with Vision turn, use VisionTurnCommand
         // TODO: Add logic to handle potential failure of Vision turn
 
         // Turn toward rocket

@@ -11,7 +11,7 @@ import frc.team6027.robot.commands.SlideMastCommand;
 import frc.team6027.robot.commands.ToggleKickHatchCommand;
 import frc.team6027.robot.commands.TurnCommand;
 import frc.team6027.robot.commands.TurnWhileDrivingCommand;
-import frc.team6027.robot.commands.VisionTurnCommand2;
+import frc.team6027.robot.commands.VisionTurnCommand;
 import frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
 import frc.team6027.robot.commands.SlideMastCommand.SlideMastDirection;
 import frc.team6027.robot.commands.TurnWhileDrivingCommand.TargetVector;
@@ -96,21 +96,21 @@ public class AutoDeliverHatchToRocketUsingBackwardDeparture extends CommandGroup
         this.addSequential(new DriveStraightCommand("A-L2-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "A-P2-Storm-Hatch", 
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
         );
-        // TODO: replace this with Vision turn, use VisionTurnCommand2
+        // TODO: replace this with Vision turn, use VisionTurnCommand
         // TODO: Add logic to handle potential failure of Vision turn
 
         // Turn toward rocket
         this.addSequential(new TurnCommand("A-A2-Storm-Hatch", this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
         
         // Turn toward rocket with vision
-        this.addSequential(new VisionTurnCommand2(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
+        this.addSequential(new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
 
 //        this.addSequential(this.makeVisionDistanceCommand());
 
         this.addSequential(new DriveStraightCommand("A-L3-1-Storm-Hatch", 
            DriveStraightCommand.DriveDistanceMode.DistanceReadingOnEncoder, 
                "A-P3-1-Storm-Hatch", null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
-        this.addSequential(new VisionTurnCommand2(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
+        this.addSequential(new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
         
         this.addSequential(new DriveStraightCommand("A-L3-2-Storm-Hatch", 
             DriveStraightCommand.DriveDistanceMode.DistanceFromObject, 

@@ -9,7 +9,7 @@ import frc.team6027.robot.data.VisionDataConstants;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 
-public class VisionTurnCommand2 extends TurnCommand  {
+public class VisionTurnCommand extends TurnCommand  {
     public static final String NAME = "VisionTurn";
 	private final Logger logger = LogManager.getLogger(getClass());
 
@@ -17,13 +17,13 @@ public class VisionTurnCommand2 extends TurnCommand  {
 	protected boolean visionDataChecked = false;
 	protected boolean visionDataValid = false;
 
-	public VisionTurnCommand2(SensorService sensorService, DrivetrainSubsystem drivetrain,
+	public VisionTurnCommand(SensorService sensorService, DrivetrainSubsystem drivetrain,
 			OperatorDisplay operatorDisplay) {
 		
 		this(sensorService, drivetrain, operatorDisplay, null);
 	}
 
-	public VisionTurnCommand2(SensorService sensorService, DrivetrainSubsystem drivetrain,
+	public VisionTurnCommand(SensorService sensorService, DrivetrainSubsystem drivetrain,
 			OperatorDisplay operatorDisplay, String powerPrefName) {
 		
 		super(null, sensorService, drivetrain, operatorDisplay, powerPrefName);
