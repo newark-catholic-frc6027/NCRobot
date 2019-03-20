@@ -4,17 +4,15 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.commands.DriveStraightCommand;
-import frc.team6027.robot.commands.ElevatorCommand;
 import frc.team6027.robot.commands.PneumaticsInitializationCommand;
 import frc.team6027.robot.commands.ResetSensorsCommand;
-import frc.team6027.robot.commands.SlideMastCommand;
 import frc.team6027.robot.commands.ToggleKickHatchCommand;
 import frc.team6027.robot.commands.TurnCommand;
 import frc.team6027.robot.commands.TurnWhileDrivingCommand;
 import frc.team6027.robot.commands.VisionTurnCommand;
 import frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
-import frc.team6027.robot.commands.SlideMastCommand.SlideMastDirection;
 import frc.team6027.robot.commands.TurnWhileDrivingCommand.TargetVector;
+import frc.team6027.robot.commands.autonomous.AutonomousCommandManager.AutonomousPreference;
 import frc.team6027.robot.data.Datahub;
 import frc.team6027.robot.data.DatahubRegistry;
 import frc.team6027.robot.data.VisionDataConstants;
@@ -42,7 +40,8 @@ public class AutoDeliverHatchToCargoShipFront extends CommandGroup {
     private Field field;
 
 
-    public AutoDeliverHatchToCargoShipFront(StationPosition startingSide, SensorService sensorService, 
+    public AutoDeliverHatchToCargoShipFront(AutonomousPreference cargoShipSide,
+            StationPosition startingSide, SensorService sensorService, 
             DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevatorSubsystem, 
             OperatorDisplay operatorDisplay, Field field) {
         

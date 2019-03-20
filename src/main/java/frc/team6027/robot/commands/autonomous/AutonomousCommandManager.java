@@ -33,7 +33,8 @@ public class AutonomousCommandManager {
     public enum AutonomousPreference {
         NoPreference("NO SELECTION"),
         Rocket("Rocket"), 
-        CargoFront("Cargo Front"),        
+        CargoFrontLeft("Cargo Front LEFT"),
+        CargoFrontRight("Cargo Front RIGHT"),                
         CargoSide("Cargo Side")
         ;
         
@@ -111,7 +112,8 @@ public class AutonomousCommandManager {
     public static void initAutoScenarioDisplayValues(OperatorDisplay operatorDisplay) {
         operatorDisplay.registerAutoScenario(AutonomousPreference.Rocket.displayName());
         operatorDisplay.registerAutoScenario(AutonomousPreference.CargoSide.displayName());
-        operatorDisplay.registerAutoScenario(AutonomousPreference.CargoFront.displayName());
+        operatorDisplay.registerAutoScenario(AutonomousPreference.CargoFrontLeft.displayName());
+        operatorDisplay.registerAutoScenario(AutonomousPreference.CargoFrontRight.displayName());
     }
 
     public Command getCommandByName(String commandName) {
@@ -155,14 +157,17 @@ public class AutonomousCommandManager {
         StationPosition position = this.field.getOurStationPosition();
         Command chosenCommand = null;
 
-        if (autoPreference == AutonomousPreference.CargoFront) {
-            chosenCommand = new AutoDeliverHatchToCargoShipFront(
-                position, sensorService, drivetrainSubsystem,
-                pneumaticSubsystem, elevatorSubsystem, operatorDisplay, field
-            );
-        } else {
-            logger.warn("CANNOT DELIVER TO '{}' FROM CENTER STATION, choosing NoOpCommand!", autoPreference);
-            chosenCommand = NoOpCommand.getInstance();    
+        switch (autoPreference) {
+            case CargoFrontLeft:
+            case CargoFrontRight:
+                chosenCommand = new AutoDeliverHatchToCargoShipFront(
+                    autoPreference, position, sensorService, drivetrainSubsystem,
+                    pneumaticSubsystem, elevatorSubsystem, operatorDisplay, field
+                );
+                break;
+            default:
+                logger.warn("CANNOT DELIVER TO '{}' FROM CENTER STATION, choosing NoOpCommand!", autoPreference);
+                chosenCommand = NoOpCommand.getInstance();    
         }
 
         return chosenCommand;
@@ -186,7 +191,8 @@ public class AutonomousCommandManager {
                     pneumaticSubsystem, elevatorSubsystem, operatorDisplay, field
                 );
                 break;
-            case CargoFront:
+            case CargoFrontLeft:
+            case CargoFrontRight:
                 logger.warn("CANNOT DELIVER TO CARGO FRONT FROM LEFT OR RIGHT STATION, choosing NoOpCommand!");
             default:
                 chosenCommand = NoOpCommand.getInstance();    
