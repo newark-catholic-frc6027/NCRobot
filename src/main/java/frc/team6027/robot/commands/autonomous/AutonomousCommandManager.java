@@ -29,6 +29,7 @@ public class AutonomousCommandManager {
     private static AutonomousCommandManager instance = new AutonomousCommandManager();
     private boolean initialized = false;
     private KillableAutoCommand currentAutoCommand;
+    private Object commandLock = new Object();
 
     public enum AutonomousPreference {
         NoPreference("NO SELECTION"),
@@ -98,14 +99,25 @@ public class AutonomousCommandManager {
      * Sends a kill signal to current Auto command
      */
     public void killCurrent() {
-        if (this.currentAutoCommand != null) {
-            this.logger.warn("Kill signal set on command {}", this.currentAutoCommand.getClass().getSimpleName());
-            this.currentAutoCommand.kill();
+        String killSentToCommand = null;
+        synchronized(this.commandLock) {
+            if (this.currentAutoCommand != null) {
+                this.currentAutoCommand.kill();
+                killSentToCommand = this.currentAutoCommand.getClass().getSimpleName();
+            }
         }
+        if (killSentToCommand != null) {
+            this.logger.warn("Kill signal sent to command {}", killSentToCommand);
+        } else {
+            this.logger.info("No KillableAutoCommand to kill");
+        }
+
     }
 
     public void setCurrent(KillableAutoCommand command) {
-        this.currentAutoCommand = command;
+        synchronized(this.commandLock) {
+            this.currentAutoCommand = command;
+        }
     }
 
     

@@ -9,6 +9,7 @@ import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.OperatorInterface;
 import frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
 import frc.team6027.robot.commands.autonomous.AutoDeliverHatchToRocket;
+import frc.team6027.robot.commands.autonomous.KillCurrentAutoCommand;
 import frc.team6027.robot.commands.autonomous.AutoDeliverHatchToCargoShipSide;
 import frc.team6027.robot.field.StationPosition;
 import frc.team6027.robot.commands.TurnWhileDrivingCommand;
@@ -116,41 +117,23 @@ public class TeleopManager extends Command {
     }
 
     protected void initializeJoystick() {
-   /*    this.leftBumperButton = new JoystickButton(this.joystick, this.joystick.getLeftBumperButtonNumber());   
-       this.leftBumperButton.whenPressed(new Command() {
-            @Override
-            public void execute() {
-                AutonomousCommandManager.instance().killCurrent();
-           }
-
-            @Override
-            protected boolean isFinished() {
-                return true;
-            }
-
-        });  */
+        // **** Right bumper button - spins arm motor IN
         this.rightBumperButton = new JoystickButton(this.joystick, this.joystick.getRightBumperButtonNumber());   
         this.rightBumperButton.whileHeld(new ArmMotorCommand(this.armSubsystem, MotorDirection.In));
 
+        // **** Left bumper button - spins arm motor OUT
         this.leftBumperButton = new JoystickButton(this.joystick, this.joystick.getLeftBumperButtonNumber());   
         this.leftBumperButton.whileHeld(new ArmMotorCommand(this.armSubsystem, MotorDirection.Out));
-/*        
+
+        // **** Back button - Kills current autonomous command
         this.backButton = new JoystickButton(this.joystick, this.joystick.getBackButtonNumber());
-        
-        try {
-            Command cmd =new ElevatorCommand("elevatorCommand.height", "elevatorCommand.power", this.sensorService, this.elevatorSubsystem);
-            // this.logger.info("sensorservice: {}, drivetrain: {}, operatorDisplay: {}", this.sensorService, this.drivetrain, this.operatorDisplay);
-            this.backButton.toggleWhenPressed(cmd);
-        } catch (Exception ex ) {
-            this.logger.error("", ex);
-        }
-*/
-        this.backButton = new JoystickButton(this.joystick, this.joystick.getStartButtonNumber());
-        this.backButton.toggleWhenPressed(new VisionTurnCommand(this.sensorService, this.drivetrain, this.operatorDisplay));
-/*
+        this.backButton.whenPressed(new KillCurrentAutoCommand());
+
+        // **** Back button - Run autonomous assisted delivery
         this.startButton = new JoystickButton(this.joystick, this.joystick.getStartButtonNumber());
         this.startButton.toggleWhenPressed(new VisionTurnCommand(this.sensorService, this.drivetrain, this.operatorDisplay));
-*/
+
+        // **** X button - Kicks the hatch
         this.xButton = new JoystickButton(this.joystick, this.joystick.getXButtonNumber());   
         this.xButton.whenPressed(new ToggleKickHatchCommand(this.pneumaticSubsystem));    
         this.xButton.whenReleased(new ToggleKickHatchCommand(this.pneumaticSubsystem));    

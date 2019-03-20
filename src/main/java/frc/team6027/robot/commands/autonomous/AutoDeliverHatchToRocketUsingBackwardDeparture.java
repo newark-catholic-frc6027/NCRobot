@@ -29,7 +29,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class AutoDeliverHatchToRocketUsingBackwardDeparture extends CommandGroup {
+public class AutoDeliverHatchToRocketUsingBackwardDeparture extends CommandGroup implements KillableAutoCommand {
     private final Logger logger = LogManager.getLogger(getClass());
 
     private SensorService sensorService;
@@ -175,6 +175,7 @@ public class AutoDeliverHatchToRocketUsingBackwardDeparture extends CommandGroup
     
     @Override
     public void start() {
+        this.registerAsKillable();
         this.logger.info(">>>>>>>>>>>>>>>>>>>> AutoDeliverHatch command starting...");
         super.start();
     }

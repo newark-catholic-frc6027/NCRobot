@@ -27,7 +27,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class AutoDeliverHatchToCargoShipFront extends CommandGroup {
+public class AutoDeliverHatchToCargoShipFront extends CommandGroup implements KillableAutoCommand {
     private final Logger logger = LogManager.getLogger(getClass());
 
     private SensorService sensorService;
@@ -171,6 +171,7 @@ public class AutoDeliverHatchToCargoShipFront extends CommandGroup {
     
     @Override
     public void start() {
+        registerAsKillable();
         this.logger.info(">>>>>>>>>>>>>>>>>>>> AutoDeliverHatch command starting...");
         super.start();
     }

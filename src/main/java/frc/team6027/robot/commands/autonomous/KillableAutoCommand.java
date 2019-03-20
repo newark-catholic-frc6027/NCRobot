@@ -17,9 +17,13 @@ public interface KillableAutoCommand {
 
     default public void kill() {
         if (this instanceof Command) {
-            LogManager.getLogger(this.getClass()).warn("Kill invoked on {}, calling cancel...", this.getClass().getSimpleName());
-            this.beforeKill();
-            ((Command)this).cancel();
+            if (((Command)this).isRunning()) {
+                LogManager.getLogger(this.getClass()).warn("Kill invoked on {}, calling cancel...", this.getClass().getSimpleName());
+                this.beforeKill();
+                ((Command)this).cancel();
+            } else {
+                LogManager.getLogger(this.getClass()).info("Kill invoked on {}, but the command isn't running.", this.getClass().getSimpleName());
+            }
         }
 
     }
