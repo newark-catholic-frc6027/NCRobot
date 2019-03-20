@@ -13,14 +13,13 @@ import frc.team6027.robot.commands.autonomous.AutoCommandHelper;
 import frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
 import frc.team6027.robot.commands.autonomous.NoOpCommand;
 import frc.team6027.robot.commands.autonomous.AutonomousCommandManager.AutonomousPreference;
-//import frc.team6027.robot.commands.autonomous.AutonomousCommandManager.AutonomousPreference;
-//import frc.team6027.robot.commands.autonomous.AutonomousCommandManager.DontDoOption;
 import frc.team6027.robot.data.Datahub;
 import frc.team6027.robot.data.DatahubNetworkTableImpl;
 import frc.team6027.robot.data.DatahubRegistry;
 import frc.team6027.robot.data.DatahubRobotServerImpl;
 import frc.team6027.robot.data.VisionDataConstants;
 import frc.team6027.robot.field.Field;
+import frc.team6027.robot.field.StationPosition;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.sensors.EncoderSensors.EncoderKey;
 import frc.team6027.robot.sensors.UltrasonicSensorManager.UltrasonicSensorKey;
@@ -58,10 +57,6 @@ public class Robot extends TimedRobot {
     private SensorService sensorService;
 
     private Field field = new Field();
-    /*
-    private int gameDataPollCount = 0;
-    */
-
     private Preferences prefs = Preferences.getInstance();
     private AutonomousCommandManager autoCommandManager;
 
@@ -104,7 +99,7 @@ public class Robot extends TimedRobot {
 
         this.autoCommandManager = AutonomousCommandManager.instance();
         this.autoCommandManager.initialize(
-            AutonomousPreference.RocketHatch,
+            AutonomousPreference.Rocket,
             this.getField(),
             this.getSensorService(),
             this.getDrivetrain(),
@@ -122,9 +117,6 @@ public class Robot extends TimedRobot {
         this.robotStatusServer.start();
 
         AutonomousCommandManager.initAutoScenarioDisplayValues(this.getOperatorDisplay());
-        /*
-        AutonomousCommandManager.initDontDoOptionDisplayValues(this.getOperatorDisplay());
-        */
     }
 
 
@@ -165,7 +157,7 @@ public class Robot extends TimedRobot {
 
     protected void applyStationPosition() {
         this.getField().setOurStationPosition(
-            this.getOperatorDisplay().getSelectedPosition()
+            StationPosition.fromInt(this.getOperatorDisplay().getSelectedPosition())
         );
     }
 
@@ -173,74 +165,24 @@ public class Robot extends TimedRobot {
         return AutoCommandHelper.isInMatch();
     }
     
-    /*
-    protected boolean pollForGameData() {
-        if (! this.getField().hasAssignmentData()) {
-            String gameData = null;
-            if (this.isInMatch()) {
-                gameData = DriverStation.getInstance().getGameSpecificMessage();
-                logger.info("Read game data from DriverStation.  Value: '{}'", gameData);
-            } else {
-                gameData = this.prefs.getString("gameData", null);
-                logger.info("Read game data from PREFS.  Value: '{}'", gameData);
-            }
-            
-            if (gameData != null && gameData.length() > 0) {
-                this.getField().doFieldAssignments(gameData);
-                return true;
-            } else {
-                this.gameDataPollCount++;
-                // Only output every 10 times we poll, don't need to do every time.
-                if (this.gameDataPollCount % 10 == 0) {
-                    logger.info("No field assignment data received yet");
-                }
-                return false;
-            }
-        } else {
-            return true;
-        }
-    }
-*/
     @Override
     public void autonomousInit() {
-        // TODO: Need to add code to shift into high gear at start
+        // TODO: Reset pneumatics
+        // TODO: ensure drivetrain in low gear
+        // TODO: ensure elevator in high gear
         this.applyStationPosition();
 
         // TODO: LEFT OFF HERE
         this.sensorService.resetAll();
-
-
         this.autonomousCommand = this.autoCommandManager.chooseCommand();
 
+        this.autonomousCommand = this.autoCommandManager.chooseCommand();
         if (autonomousCommand != null && ! NoOpCommand.getInstance().equals(autonomousCommand) ) {
-            // TODO: 
-            this.elevatorSubsystem.initialize();
+//            this.elevatorSubsystem.initialize();
             autonomousCommand.start();
         } else {
             logger.warn("No autonomous command to run!");
         }
-
-//        this.getPneumaticSubsystem().reset();
-/*
-
-        this.sensorService.resetAll();
-                
-        this.autoCommandManager = new AutonomousCommandManager(
-                AutonomousPreference.fromDisplayName(preferredAutoScenario), this.getField(), 
-                this.getSensorService(), this.getDrivetrain(), this.getPneumaticSubsystem(), this.getElevatorSubsystem(), this.getOperatorDisplay()
-        );
-        this.autoCommandManager.setDontDoOption(DontDoOption.fromDisplayName(dontDoOption));
-        
-        this.autonomousCommand = this.autoCommandManager.chooseCommand();
-        
-        // schedule the autonomous command
-        if (autonomousCommand != null && ! NoOpCommand.getInstance().equals(autonomousCommand) ) {
-            this.elevatorSubsystem.initialize();
-            autonomousCommand.start();
-        } else {
-            logger.warn("No autonomous command to run!");
-        }
-*/
 
     }
 
@@ -258,6 +200,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        // TODO: what needs reset here?
 //        this.getRearLift().initialize();
         // If elevatorSubsystem is already initialized, this will do nothing
         this.elevatorSubsystem.initialize();

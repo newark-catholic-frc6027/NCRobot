@@ -29,7 +29,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class AutoDeliverHatchToRocketUsingBackwardDeparture extends CommandGroup {
+public class AutoDeliverHatchToCargoShipSide extends CommandGroup {
     private final Logger logger = LogManager.getLogger(getClass());
 
     private SensorService sensorService;
@@ -42,7 +42,7 @@ public class AutoDeliverHatchToRocketUsingBackwardDeparture extends CommandGroup
     private Field field;
 
 
-    public AutoDeliverHatchToRocketUsingBackwardDeparture(StationPosition startingSide, SensorService sensorService, 
+    public AutoDeliverHatchToCargoShipSide(StationPosition startingSide, SensorService sensorService, 
             DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevatorSubsystem, 
             OperatorDisplay operatorDisplay, Field field) {
         
@@ -82,52 +82,67 @@ public class AutoDeliverHatchToRocketUsingBackwardDeparture extends CommandGroup
         // TODO: Initialize Pneumatics
         this.addSequential(new PneumaticsInitializationCommand(this.pneumaticSubsystem));
         this.addSequential(new ResetSensorsCommand(this.sensorService));
-        
-        // TODO: Is this going to test ok?
-        // Drive Backwards off ramp
-// TODO: put back in        this.addParallel(new SlideMastCommand(SlideMastDirection.Forward, 1.0, this.sensorService, this.elevatorSubsystem));
-        this.addSequential(new DriveStraightCommand("A-L1-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "A-P1-Storm-Hatch", 
+
+        // Off ramp forward
+        this.addSequential(new DriveStraightCommand("C-L1-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "C-P1-Storm-Hatch", 
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
         );
 
-        // Turn around
-        this.addSequential(new TurnCommand("A-A1-Storm-Hatch", this.sensorService, this.drivetrainSubsystem, this.operatorDisplay, "A-A1P1-Storm-Hatch"));
+        // Turn downfield
+        this.addSequential(new TurnCommand("C-A1-Storm-Hatch", this.sensorService, this.drivetrainSubsystem, this.operatorDisplay, 
+          "C-A1P-Storm-Hatch"));
 
-        // Drive straight, toward wall
-        this.addSequential(new DriveStraightCommand("A-L2-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "A-P2-Storm-Hatch", 
+        // Travel down field
+        this.addSequential(new DriveStraightCommand("C-L2-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "C-P2-Storm-Hatch", 
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
         );
+
+        // Turn toward fuel storage
+        this.addSequential(new TurnCommand("C-A2-Storm-Hatch", this.sensorService, this.drivetrainSubsystem, this.operatorDisplay, 
+          "C-A2P-Storm-Hatch"));
+
+        this.addSequential(new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
+
+
+        // Travel forward toward fuel storage
+        this.addSequential(new DriveStraightCommand("C-L3-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "C-P3-Storm-Hatch", 
+            null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
+        );
+
+        this.addSequential(new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
+        /*
+        this.addSequential(this.makeVisionDistanceCommand(VisionDataConstants.TARGET_DISTANCE_KEY));
+        // Get vision distance
+        // TODO
+        // Travel toward rocket
+        this.addSequential(new DriveStraightCommand(VisionDataConstants.TARGET_DISTANCE_KEY, DriveDistanceMode.DistanceReadingOnEncoder, "C-P4-Storm-Hatch", 
+            null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
+        );
+        */
+
+        // TODO: 
+        this.addSequential(new DriveStraightCommand("C-L4-Storm-Hatch", DriveDistanceMode.DistanceFromObject, "C-P4-Storm-Hatch", 
+            null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
+
+        this.addSequential(new ToggleKickHatchCommand(this.pneumaticSubsystem));
+        this.addSequential(new ToggleKickHatchCommand(this.pneumaticSubsystem));
+
         // TODO: replace this with Vision turn, use VisionTurnCommand
         // TODO: Add logic to handle potential failure of Vision turn
 
         // Turn toward rocket
-        this.addSequential(new TurnCommand("A-A2-Storm-Hatch", this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
+//        this.addSequential(new TurnCommand("A-A2-Storm-Hatch", this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
         
         // Turn toward rocket with vision
-        this.addSequential(new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
 
 //        this.addSequential(this.makeVisionDistanceCommand());
 
-        this.addSequential(new DriveStraightCommand("A-L3-1-Storm-Hatch", 
-           DriveStraightCommand.DriveDistanceMode.DistanceReadingOnEncoder, 
-               "A-P3-1-Storm-Hatch", null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
-        this.addSequential(new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
-        
+        /*
         this.addSequential(new DriveStraightCommand("A-L3-2-Storm-Hatch", 
             DriveStraightCommand.DriveDistanceMode.DistanceFromObject, 
             "A-P3-2-Storm-Hatch", null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
-
-        this.addSequential(new DriveStraightCommand("A-L3-2-Storm-Hatch", 
-            DriveStraightCommand.DriveDistanceMode.DistanceFromObject, 
-            "A-P3-2-Storm-Hatch", null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
+        */
         
-        this.addSequential(makeDelayCommand(1500));
-        this.addSequential(new DriveStraightCommand("A-L3-3-Storm-Hatch", 
-            DriveStraightCommand.DriveDistanceMode.DistanceFromObject, 
-            "A-P3-3-Storm-Hatch", null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
-        this.addSequential(new ToggleKickHatchCommand(this.pneumaticSubsystem));
-        this.addSequential(new ToggleKickHatchCommand(this.pneumaticSubsystem));
-        this.addSequential(makeDelayCommand(1500));
         // Last leg to rocket 
         /*
         Command multiLegDriveCmd = createMultiLegDriveCommand();
@@ -138,15 +153,6 @@ public class AutoDeliverHatchToRocketUsingBackwardDeparture extends CommandGroup
         // TODO: Deliver Hatch
         // TODO: Lower arm to proper position
         // Back up from rocket
-        this.addSequential(new DriveStraightCommand("A-L4-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "A-P4-Storm-Hatch", 
-            null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
-        );
-
-        this.addSequential(new TurnCommand("A-A3-Storm-Hatch", this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
-
-        this.addSequential(new DriveStraightCommand("A-L5-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "A-P5-Storm-Hatch", 
-            null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
-        );
 /*        
         this.addSequential(new DriveStraightCommand("A-L6-Storm-Hatch", DriveDistanceMode.DistanceFromObject, "A-P6-Storm-Hatch", 
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
@@ -203,7 +209,7 @@ public class AutoDeliverHatchToRocketUsingBackwardDeparture extends CommandGroup
         };
         return cmd;
     }
-    protected Command makeVisionDistanceCommand() {
+    protected Command makeVisionDistanceCommand(String prefName) {
         Command cmd = new Command() {
             Datahub visionData = DatahubRegistry.instance().get(VisionDataConstants.VISION_DATA_KEY);
             Preferences prefs = Preferences.getInstance();
@@ -222,8 +228,8 @@ public class AutoDeliverHatchToRocketUsingBackwardDeparture extends CommandGroup
                 }
 
                 if (finished) {
-                    this.prefs.putDouble(VisionDataConstants.TARGET_DISTANCE_KEY, this.visionDist);
-                    AutoDeliverHatchToRocketUsingBackwardDeparture.this.logger.info("Vision Distance to be used for driving to target: {}", this.visionDist);
+                    this.prefs.putDouble(prefName, this.visionDist);
+                    AutoDeliverHatchToCargoShipSide.this.logger.info("Vision Distance to be used for driving to target: {}", this.visionDist);
                     this.visionDist = null;
                     this.elapsedTime = null;
                     this.startTime = null;

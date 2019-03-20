@@ -19,6 +19,7 @@ import frc.team6027.robot.data.Datahub;
 import frc.team6027.robot.data.DatahubRegistry;
 import frc.team6027.robot.data.VisionDataConstants;
 import frc.team6027.robot.field.Field;
+import frc.team6027.robot.field.StationPosition;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import frc.team6027.robot.subsystems.ElevatorSubsystem;
@@ -28,7 +29,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class AutoDeliverHatchToFuelStorageSide extends CommandGroup {
+public class AutoDeliverHatchToCargoShipFront extends CommandGroup {
     private final Logger logger = LogManager.getLogger(getClass());
 
     private SensorService sensorService;
@@ -37,11 +38,11 @@ public class AutoDeliverHatchToFuelStorageSide extends CommandGroup {
     private ElevatorSubsystem elevatorSubsystem;
     private OperatorDisplay operatorDisplay;
     private Preferences prefs = Preferences.getInstance();
-    private StartingPositionSide startingSide;
+    private StationPosition startingSide;
     private Field field;
 
 
-    public AutoDeliverHatchToFuelStorageSide(StartingPositionSide startingSide, SensorService sensorService, 
+    public AutoDeliverHatchToCargoShipFront(StationPosition startingSide, SensorService sensorService, 
             DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevatorSubsystem, 
             OperatorDisplay operatorDisplay, Field field) {
         
@@ -63,7 +64,7 @@ public class AutoDeliverHatchToFuelStorageSide extends CommandGroup {
         double leg1Distance = this.prefs.getDouble("A-L1-Storm-Hatch", -48.0);
         double leg1Angle = 0.0;
         double leg2Distance = this.prefs.getDouble("A-L2-Storm-Hatch", 47.0);
-        double leg2Angle = this.prefs.getDouble("A-A1-Storm-Hatch", 120.0);//30.0 * (this.startingSide == StartingPositionSide.Right ? 1.0 : -1.0);
+        double leg2Angle = this.prefs.getDouble("A-A1-Storm-Hatch", 120.0);//30.0 * (this.startingSide == StationPosition.Right ? 1.0 : -1.0);
         //double leg3Distance = this.prefs.getDouble("A-L3-SS-Scale", 220.0);
         //double leg3Angle = 0.0;
 
@@ -78,53 +79,38 @@ public class AutoDeliverHatchToFuelStorageSide extends CommandGroup {
             DriveDistanceMode.DistanceReadingOnEncoder, .4));
             */
 
+// TODO: NEEDS IMPLEMENTED
         // TODO: Initialize Pneumatics
         this.addSequential(new PneumaticsInitializationCommand(this.pneumaticSubsystem));
         this.addSequential(new ResetSensorsCommand(this.sensorService));
 
         // Off ramp forward
-        this.addSequential(new DriveStraightCommand("C-L1-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "C-P1-Storm-Hatch", 
+        this.addSequential(new DriveStraightCommand("B-L1-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "B-P1-Storm-Hatch", 
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
         );
 
-        // Turn downfield
-        this.addSequential(new TurnCommand("C-A1-Storm-Hatch", this.sensorService, this.drivetrainSubsystem, this.operatorDisplay, 
-          "C-A1P-Storm-Hatch"));
+        // Turn toward rocket
+        this.addSequential(new TurnCommand("B-A1-Storm-Hatch", this.sensorService, this.drivetrainSubsystem, this.operatorDisplay, 
+          "B-A1P-Storm-Hatch"));
 
-        // Travel down field
-        this.addSequential(new DriveStraightCommand("C-L2-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "C-P2-Storm-Hatch", 
-            null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
-        );
-
-        // Turn toward fuel storage
-        this.addSequential(new TurnCommand("C-A2-Storm-Hatch", this.sensorService, this.drivetrainSubsystem, this.operatorDisplay, 
-          "C-A2P-Storm-Hatch"));
-
-        this.addSequential(new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
-
-
-        // Travel forward toward fuel storage
-        this.addSequential(new DriveStraightCommand("C-L3-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "C-P3-Storm-Hatch", 
-            null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
-        );
-
-        this.addSequential(new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
-        /*
-        this.addSequential(this.makeVisionDistanceCommand(VisionDataConstants.TARGET_DISTANCE_KEY));
-        // Get vision distance
-        // TODO
         // Travel toward rocket
-        this.addSequential(new DriveStraightCommand(VisionDataConstants.TARGET_DISTANCE_KEY, DriveDistanceMode.DistanceReadingOnEncoder, "C-P4-Storm-Hatch", 
+        this.addSequential(new DriveStraightCommand("B-L2-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "B-P2-Storm-Hatch", 
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
         );
-        */
 
-        // TODO: 
-        this.addSequential(new DriveStraightCommand("C-L4-Storm-Hatch", DriveDistanceMode.DistanceFromObject, "C-P4-Storm-Hatch", 
-            null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
+        this.addSequential(new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
 
-        this.addSequential(new ToggleKickHatchCommand(this.pneumaticSubsystem));
-        this.addSequential(new ToggleKickHatchCommand(this.pneumaticSubsystem));
+        // Travel toward rocket
+        this.addSequential(new DriveStraightCommand("B-L3-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "B-P3-Storm-Hatch", 
+            null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
+        );
+
+        this.addSequential(new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
+        // Travel toward rocket
+        this.addSequential(new DriveStraightCommand("B-L4-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "B-P4-Storm-Hatch", 
+            null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
+        );
+        this.addSequential(new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
 
         // TODO: replace this with Vision turn, use VisionTurnCommand
         // TODO: Add logic to handle potential failure of Vision turn
@@ -141,7 +127,13 @@ public class AutoDeliverHatchToFuelStorageSide extends CommandGroup {
             DriveStraightCommand.DriveDistanceMode.DistanceFromObject, 
             "A-P3-2-Storm-Hatch", null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
         */
+        //Approach rocket
+        this.addSequential(new DriveStraightCommand("B-L5-Storm-Hatch", 
+            DriveStraightCommand.DriveDistanceMode.DistanceFromObject, 
+            "B-P5-Storm-Hatch", null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
         
+        this.addSequential(new ToggleKickHatchCommand(this.pneumaticSubsystem));
+        this.addSequential(new ToggleKickHatchCommand(this.pneumaticSubsystem));
         // Last leg to rocket 
         /*
         Command multiLegDriveCmd = createMultiLegDriveCommand();
@@ -208,7 +200,7 @@ public class AutoDeliverHatchToFuelStorageSide extends CommandGroup {
         };
         return cmd;
     }
-    protected Command makeVisionDistanceCommand(String prefName) {
+    protected Command makeVisionDistanceCommand() {
         Command cmd = new Command() {
             Datahub visionData = DatahubRegistry.instance().get(VisionDataConstants.VISION_DATA_KEY);
             Preferences prefs = Preferences.getInstance();
@@ -227,8 +219,8 @@ public class AutoDeliverHatchToFuelStorageSide extends CommandGroup {
                 }
 
                 if (finished) {
-                    this.prefs.putDouble(prefName, this.visionDist);
-                    AutoDeliverHatchToFuelStorageSide.this.logger.info("Vision Distance to be used for driving to target: {}", this.visionDist);
+                    this.prefs.putDouble(VisionDataConstants.TARGET_DISTANCE_KEY, this.visionDist);
+                    AutoDeliverHatchToCargoShipFront.this.logger.info("Vision Distance to be used for driving to target: {}", this.visionDist);
                     this.visionDist = null;
                     this.elapsedTime = null;
                     this.startTime = null;
@@ -252,7 +244,7 @@ public class AutoDeliverHatchToFuelStorageSide extends CommandGroup {
     protected Command createTurnCommand() {
         // When delivering to the left, need to turn robot to the right.  When delivering to the right, need to turn
         // robot left
-        double angle = 90.0 * (this.startingSide == StartingPositionSide.Left ? 1.0 : -1.0);
+        double angle = 90.0 * (this.startingSide == StationPosition.Left ? 1.0 : -1.0);
         
         Command returnCommand = new TurnCommand(angle, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay);
         return returnCommand;
@@ -305,12 +297,12 @@ public class AutoDeliverHatchToFuelStorageSide extends CommandGroup {
     }
 
 
-    public StartingPositionSide getStaringPositionSide() {
+    public StationPosition getStaringPositionSide() {
         return startingSide;
     }
 
 
-    public void setStartingPositionSide(StartingPositionSide startingSide) {
+    public void setStationPosition(StationPosition startingSide) {
         this.startingSide = startingSide;
     }
 

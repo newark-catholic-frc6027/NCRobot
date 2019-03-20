@@ -22,7 +22,6 @@ public class OperatorDisplaySmartDashboardImpl implements OperatorDisplay {
 
     private SendableChooser<Integer> positionChooser = new SendableChooser<>();
     private SendableChooser<String> scenarioChooser = new SendableChooser<>();
-    private SendableChooser<String> dontDoOptionChooser = new SendableChooser<>();
     
     @SuppressWarnings("rawtypes")
     private Map<ChooserName, SendableChooser> chooserCache = new HashMap<>();
@@ -30,7 +29,6 @@ public class OperatorDisplaySmartDashboardImpl implements OperatorDisplay {
     public OperatorDisplaySmartDashboardImpl() {
        initPositionChooser();
        initScenarioChooser();
-//       initDontDoOptionChooser();
     }
 
     protected void initScenarioChooser() {
@@ -38,13 +36,7 @@ public class OperatorDisplaySmartDashboardImpl implements OperatorDisplay {
         this.registerAutoScenario("NO SELECTION", true);
         SmartDashboard.putData(ChooserName.Scenario.displayName(), this.scenarioChooser);
     }
-    
-    protected void initDontDoOptionChooser() {
-        this.chooserCache.put(ChooserName.DontDoOption, this.dontDoOptionChooser);
-        this.dontDoOptionChooser.addDefault("NO SELECTION", "NO SELECTION" );
-        SmartDashboard.putData(ChooserName.DontDoOption.displayName(), this.dontDoOptionChooser);
-    }
-    
+        
     protected void initPositionChooser() {
         this.chooserCache.put(ChooserName.Position, this.positionChooser);
         this.positionChooser.setDefaultOption("NO SELECTION", Integer.valueOf(0));
@@ -98,20 +90,6 @@ public class OperatorDisplaySmartDashboardImpl implements OperatorDisplay {
             this.scenarioChooser.addObject(displayName, displayName);
         }
     }
-
-    @Override
-    public void registerDontDoOption(String displayName) {
-        this.registerDontDoOption(displayName, false);
-    }
-
-    @Override
-    public void registerDontDoOption(String displayName, boolean isDefaultCommand) {
-        if (isDefaultCommand) {
-            this.dontDoOptionChooser.addDefault(displayName, displayName);
-        } else {
-            this.dontDoOptionChooser.addObject(displayName, displayName);
-        }
-    }
     
     @Override
     public String getSelectedAutoScenario() {
@@ -122,14 +100,4 @@ public class OperatorDisplaySmartDashboardImpl implements OperatorDisplay {
     public Integer getSelectedPosition() {
         return (Integer) this.positionChooser.getSelected();
     }
-
-    @Override
-    public String getSelectedDontDoOption() {
-        return (String) this.dontDoOptionChooser.getSelected();
-    }
-
-
-
-
-       
 }

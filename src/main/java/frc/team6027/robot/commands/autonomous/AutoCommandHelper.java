@@ -23,14 +23,14 @@ public class AutoCommandHelper {
         DriverStation ds = DriverStation.getInstance();
         return ds.getMatchNumber() > 0 || ds.getMatchTime() > -0.1;
     }
-    
+    /*
     public static boolean hasFieldDataChangedSinceAutoStart(Field initializedField) {
         // Don't even bother to check unless we are actually in a match
         if (! isInMatch()) {
             return false;
         }
         
-        String initialAssignment = initializedField.getAssignmentData();
+        // String initialAssignment = initializedField.getAssignmentData();
         String currentAssignment = DriverStation.getInstance().getGameSpecificMessage();
         
         boolean dataChanged = currentAssignment != null && ! currentAssignment.equals(initialAssignment);
@@ -40,7 +40,7 @@ public class AutoCommandHelper {
         
         return dataChanged;
     }
-    
+    */
 /*    
     public static Command createDropCarriageForDeliveryCommand(PneumaticSubsystem pneumaticSubsystem, Field field) {
         return new DropCarriageCommand(DropFunction.DropForDelivery, DriverStation.getInstance(), pneumaticSubsystem, field, true);

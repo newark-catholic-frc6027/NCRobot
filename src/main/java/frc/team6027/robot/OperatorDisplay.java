@@ -64,15 +64,10 @@ public interface OperatorDisplay {
 
     void registerAutoScenario(String displayName);
     void registerAutoScenario(String displayName, boolean isDefaultCommand);
-
-    void registerDontDoOption(String displayName, boolean isDefaultCommand);
-    void registerDontDoOption(String displayName);
-    
+        
     String getSelectedAutoScenario();
     
     Integer getSelectedPosition();
-
-    String getSelectedDontDoOption();
 
     
 }

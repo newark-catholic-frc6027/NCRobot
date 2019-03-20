@@ -8,16 +8,9 @@ import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.OperatorInterface;
 import frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
-import frc.team6027.robot.commands.autonomous.AutoDeliverHatchToRocketUsingBackwardDeparture;
 import frc.team6027.robot.commands.autonomous.AutoDeliverHatchToRocket;
-import frc.team6027.robot.commands.autonomous.AutoDeliverHatchToFuelStorageSide;
-/*
-import frc.team6027.robot.commands.CubeDeliveryCommand.DeliveryMode;
-import frc.team6027.robot.commands.DropCarriageCommand.DropFunction;
-*/
-import frc.team6027.robot.commands.autonomous.AutoDriveToVisionTarget;
-import frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
-import frc.team6027.robot.commands.autonomous.StartingPositionSide;
+import frc.team6027.robot.commands.autonomous.AutoDeliverHatchToCargoShipSide;
+import frc.team6027.robot.field.StationPosition;
 import frc.team6027.robot.commands.TurnWhileDrivingCommand;
 import frc.team6027.robot.commands.TurnWhileDrivingCommand.TargetVector;
 
@@ -27,19 +20,15 @@ import frc.team6027.robot.data.DatahubRegistry;
 import frc.team6027.robot.data.VisionDataConstants;
 import frc.team6027.robot.field.Field;
 import frc.team6027.robot.sensors.SensorService;
-import frc.team6027.robot.sensors.UltrasonicSensorManager.UltrasonicSensorKey;
 import frc.team6027.robot.subsystems.ArmSubsystem;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import frc.team6027.robot.subsystems.ElevatorSubsystem;
 import frc.team6027.robot.subsystems.PneumaticSubsystem;
 import frc.team6027.robot.subsystems.ArmSubsystem.MotorDirection;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.CommandGroup;
-import edu.wpi.first.wpilibj.command.Scheduler;
 
 public class TeleopManager extends Command {
     private final Logger logger = LogManager.getLogger(getClass());
@@ -224,12 +213,12 @@ public class TeleopManager extends Command {
 
         // TODO: reassign, only for testing mast
         this.xButton2 = new JoystickButton(this.joystick2, this.joystick2.getXButtonNumber());   
-        this.xButton2.toggleWhenPressed(new AutoDeliverHatchToRocket(StartingPositionSide.Left, this.sensorService, this.drivetrain, 
+        this.xButton2.toggleWhenPressed(new AutoDeliverHatchToRocket(StationPosition.Left, this.sensorService, this.drivetrain, 
             this.pneumaticSubsystem, this.elevatorSubsystem, this.operatorDisplay, this.field));
 
         this.yButton2 = new JoystickButton(this.joystick2, this.joystick2.getYButtonNumber());   
 //        this.yButton2.whenPressed(new SlideMastCommand(SlideMastCommand.SlideMastDirection.Forward, 1.0, sensorService, this.elevatorSubsystem));  
-        this.yButton2.whenPressed(  new AutoDeliverHatchToFuelStorageSide(StartingPositionSide.Left, 
+        this.yButton2.whenPressed(  new AutoDeliverHatchToCargoShipSide(StationPosition.Left, 
             this.sensorService, this.drivetrain, this.pneumaticSubsystem, this.elevatorSubsystem, this.operatorDisplay, this.field)
         );
 

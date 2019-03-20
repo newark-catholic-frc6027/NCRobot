@@ -4,21 +4,19 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.commands.DriveStraightCommand;
-import frc.team6027.robot.commands.ElevatorCommand;
 import frc.team6027.robot.commands.PneumaticsInitializationCommand;
 import frc.team6027.robot.commands.ResetSensorsCommand;
-import frc.team6027.robot.commands.SlideMastCommand;
 import frc.team6027.robot.commands.ToggleKickHatchCommand;
 import frc.team6027.robot.commands.TurnCommand;
 import frc.team6027.robot.commands.TurnWhileDrivingCommand;
 import frc.team6027.robot.commands.VisionTurnCommand;
 import frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
-import frc.team6027.robot.commands.SlideMastCommand.SlideMastDirection;
 import frc.team6027.robot.commands.TurnWhileDrivingCommand.TargetVector;
 import frc.team6027.robot.data.Datahub;
 import frc.team6027.robot.data.DatahubRegistry;
 import frc.team6027.robot.data.VisionDataConstants;
 import frc.team6027.robot.field.Field;
+import frc.team6027.robot.field.StationPosition;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import frc.team6027.robot.subsystems.ElevatorSubsystem;
@@ -37,11 +35,11 @@ public class AutoDeliverHatchToRocket extends CommandGroup {
     private ElevatorSubsystem elevatorSubsystem;
     private OperatorDisplay operatorDisplay;
     private Preferences prefs = Preferences.getInstance();
-    private StartingPositionSide startingSide;
+    private StationPosition startingSide;
     private Field field;
 
 
-    public AutoDeliverHatchToRocket(StartingPositionSide startingSide, SensorService sensorService, 
+    public AutoDeliverHatchToRocket(StationPosition startingSide, SensorService sensorService, 
             DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevatorSubsystem, 
             OperatorDisplay operatorDisplay, Field field) {
         
@@ -63,7 +61,7 @@ public class AutoDeliverHatchToRocket extends CommandGroup {
         double leg1Distance = this.prefs.getDouble("A-L1-Storm-Hatch", -48.0);
         double leg1Angle = 0.0;
         double leg2Distance = this.prefs.getDouble("A-L2-Storm-Hatch", 47.0);
-        double leg2Angle = this.prefs.getDouble("A-A1-Storm-Hatch", 120.0);//30.0 * (this.startingSide == StartingPositionSide.Right ? 1.0 : -1.0);
+        double leg2Angle = this.prefs.getDouble("A-A1-Storm-Hatch", 120.0);//30.0 * (this.startingSide == StationPosition.Right ? 1.0 : -1.0);
         //double leg3Distance = this.prefs.getDouble("A-L3-SS-Scale", 220.0);
         //double leg3Angle = 0.0;
 
@@ -242,7 +240,7 @@ public class AutoDeliverHatchToRocket extends CommandGroup {
     protected Command createTurnCommand() {
         // When delivering to the left, need to turn robot to the right.  When delivering to the right, need to turn
         // robot left
-        double angle = 90.0 * (this.startingSide == StartingPositionSide.Left ? 1.0 : -1.0);
+        double angle = 90.0 * (this.startingSide == StationPosition.Left ? 1.0 : -1.0);
         
         Command returnCommand = new TurnCommand(angle, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay);
         return returnCommand;
@@ -295,12 +293,12 @@ public class AutoDeliverHatchToRocket extends CommandGroup {
     }
 
 
-    public StartingPositionSide getStaringPositionSide() {
+    public StationPosition getStaringPositionSide() {
         return startingSide;
     }
 
 
-    public void setStartingPositionSide(StartingPositionSide startingSide) {
+    public void setStationPosition(StationPosition startingSide) {
         this.startingSide = startingSide;
     }
 
