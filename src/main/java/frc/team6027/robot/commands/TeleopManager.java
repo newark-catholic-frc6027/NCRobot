@@ -66,6 +66,7 @@ public class TeleopManager extends Command {
     private JoystickButton leftBumperButton2;
     private JoystickButton rightBumperButton2;
     private JoystickButton startButton2;
+    private JoystickButton backButton2;
 
 
     
@@ -217,6 +218,9 @@ public class TeleopManager extends Command {
 
         this.startButton2 = new JoystickButton(this.joystick2, this.joystick2.getStartButtonNumber());   
         this.startButton2.whenPressed(new ToggleOperationSelectionCommand());
+
+        this.backButton2 = new JoystickButton(this.joystick2, this.joystick2.getStartButtonNumber());   
+        this.backButton2.whenPressed(new ClearDriverSelectionsCommand());
         
     } 
 
