@@ -38,11 +38,11 @@ public class AutoDeliverHatchToRocketUsingBackwardDeparture extends CommandGroup
     private ElevatorSubsystem elevatorSubsystem;
     private OperatorDisplay operatorDisplay;
     private Preferences prefs = Preferences.getInstance();
-    private StationPosition startingSide;
+    private StationPosition stationPosition;
     private Field field;
 
 
-    public AutoDeliverHatchToRocketUsingBackwardDeparture(StationPosition startingSide, SensorService sensorService, 
+    public AutoDeliverHatchToRocketUsingBackwardDeparture(StationPosition stationPosition, SensorService sensorService, 
             DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevatorSubsystem, 
             OperatorDisplay operatorDisplay, Field field) {
         
@@ -50,7 +50,7 @@ public class AutoDeliverHatchToRocketUsingBackwardDeparture extends CommandGroup
         this.drivetrainSubsystem = drivetrainSubsystem;
         this.pneumaticSubsystem = pneumaticSubsystem;
         this.operatorDisplay = operatorDisplay;
-        this.startingSide = startingSide;
+        this.stationPosition = stationPosition;
         this.elevatorSubsystem = elevatorSubsystem;
         this.field = field;
   
@@ -79,9 +79,7 @@ public class AutoDeliverHatchToRocketUsingBackwardDeparture extends CommandGroup
             DriveDistanceMode.DistanceReadingOnEncoder, .4));
             */
 
-        // TODO: Initialize Pneumatics
-        this.addSequential(new PneumaticsInitializationCommand(this.pneumaticSubsystem));
-        this.addSequential(new ResetSensorsCommand(this.sensorService));
+        AutoCommandHelper.addAutoInitCommands(this, pneumaticSubsystem, sensorService);
         
         // TODO: Is this going to test ok?
         // Drive Backwards off ramp
@@ -176,7 +174,7 @@ public class AutoDeliverHatchToRocketUsingBackwardDeparture extends CommandGroup
     @Override
     public void start() {
         this.registerAsKillable();
-        this.logger.info(">>>>>>>>>>>>>>>>>>>> AutoDeliverHatch command starting...");
+        this.logger.info(">>>>>>>>>>>>>>>>>>>> {} command starting...", this.getClass().getSimpleName());
         super.start();
     }
 
@@ -245,14 +243,6 @@ public class AutoDeliverHatchToRocketUsingBackwardDeparture extends CommandGroup
         };
         return cmd;
     }
-    protected Command createTurnCommand() {
-        // When delivering to the left, need to turn robot to the right.  When delivering to the right, need to turn
-        // robot left
-        double angle = 90.0 * (this.startingSide == StationPosition.Left ? 1.0 : -1.0);
-        
-        Command returnCommand = new TurnCommand(angle, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay);
-        return returnCommand;
-    }
     
     protected Command createMultiLegDriveCommand() {
         TargetVector[] turnVectors = new TargetVector[] { 
@@ -301,13 +291,13 @@ public class AutoDeliverHatchToRocketUsingBackwardDeparture extends CommandGroup
     }
 
 
-    public StationPosition getStaringPositionSide() {
-        return startingSide;
+    public StationPosition getStationPosition() {
+        return stationPosition;
     }
 
 
-    public void setStationPosition(StationPosition startingSide) {
-        this.startingSide = startingSide;
+    public void setStationPosition(StationPosition stationPosition) {
+        this.stationPosition = stationPosition;
     }
 
 

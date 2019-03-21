@@ -38,11 +38,11 @@ public class AutoDeliverHatchToCargoShipSide extends CommandGroup implements Kil
     private ElevatorSubsystem elevatorSubsystem;
     private OperatorDisplay operatorDisplay;
     private Preferences prefs = Preferences.getInstance();
-    private StationPosition startingSide;
+    private StationPosition stationPosition;
     private Field field;
 
 
-    public AutoDeliverHatchToCargoShipSide(StationPosition startingSide, SensorService sensorService, 
+    public AutoDeliverHatchToCargoShipSide(StationPosition stationPosition, SensorService sensorService, 
             DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevatorSubsystem, 
             OperatorDisplay operatorDisplay, Field field) {
         
@@ -50,7 +50,7 @@ public class AutoDeliverHatchToCargoShipSide extends CommandGroup implements Kil
         this.drivetrainSubsystem = drivetrainSubsystem;
         this.pneumaticSubsystem = pneumaticSubsystem;
         this.operatorDisplay = operatorDisplay;
-        this.startingSide = startingSide;
+        this.stationPosition = stationPosition;
         this.elevatorSubsystem = elevatorSubsystem;
         this.field = field;
   
@@ -79,9 +79,7 @@ public class AutoDeliverHatchToCargoShipSide extends CommandGroup implements Kil
             DriveDistanceMode.DistanceReadingOnEncoder, .4));
             */
 
-        // TODO: Initialize Pneumatics
-        this.addSequential(new PneumaticsInitializationCommand(this.pneumaticSubsystem));
-        this.addSequential(new ResetSensorsCommand(this.sensorService));
+        AutoCommandHelper.addAutoInitCommands(this, pneumaticSubsystem, sensorService);
 
         // Off ramp forward
         this.addSequential(new DriveStraightCommand("C-L1-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "C-P1-Storm-Hatch", 
@@ -89,7 +87,8 @@ public class AutoDeliverHatchToCargoShipSide extends CommandGroup implements Kil
         );
 
         // Turn downfield
-        this.addSequential(new TurnCommand("C-A1-Storm-Hatch", this.sensorService, this.drivetrainSubsystem, this.operatorDisplay, 
+        String turnPrefName = this.stationPosition == StationPosition.Left ? "C-A1-Storm-Hatch" : "C-A1-Right-Storm-Hatch";
+        this.addSequential(new TurnCommand(turnPrefName, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay, 
           "C-A1P-Storm-Hatch"));
 
         // Travel down field
@@ -98,7 +97,8 @@ public class AutoDeliverHatchToCargoShipSide extends CommandGroup implements Kil
         );
 
         // Turn toward fuel storage
-        this.addSequential(new TurnCommand("C-A2-Storm-Hatch", this.sensorService, this.drivetrainSubsystem, this.operatorDisplay, 
+        turnPrefName = this.stationPosition == StationPosition.Left ? "C-A2-Storm-Hatch" : "C-A2-Right-Storm-Hatch";
+        this.addSequential(new TurnCommand(turnPrefName, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay, 
           "C-A2P-Storm-Hatch"));
 
         this.addSequential(new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
@@ -110,6 +110,10 @@ public class AutoDeliverHatchToCargoShipSide extends CommandGroup implements Kil
         );
 
         this.addSequential(new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
+
+        this.addSequential(new DriveStraightCommand("C-L4-Storm-Hatch", DriveDistanceMode.DistanceFromObject, "C-P4-Storm-Hatch", 
+            null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
+
         /*
         this.addSequential(this.makeVisionDistanceCommand(VisionDataConstants.TARGET_DISTANCE_KEY));
         // Get vision distance
@@ -120,9 +124,6 @@ public class AutoDeliverHatchToCargoShipSide extends CommandGroup implements Kil
         );
         */
 
-        // TODO: 
-        this.addSequential(new DriveStraightCommand("C-L4-Storm-Hatch", DriveDistanceMode.DistanceFromObject, "C-P4-Storm-Hatch", 
-            null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
 
         this.addSequential(new ToggleKickHatchCommand(this.pneumaticSubsystem));
         this.addSequential(new ToggleKickHatchCommand(this.pneumaticSubsystem));
@@ -182,7 +183,7 @@ public class AutoDeliverHatchToCargoShipSide extends CommandGroup implements Kil
     @Override
     public void start() {
         this.registerAsKillable();
-        this.logger.info(">>>>>>>>>>>>>>>>>>>> AutoDeliverHatch command starting...");
+        this.logger.info(">>>>>>>>>>>>>>>>>>>> {} command starting...", this.getClass().getSimpleName());
         super.start();
     }
 
@@ -251,14 +252,6 @@ public class AutoDeliverHatchToCargoShipSide extends CommandGroup implements Kil
         };
         return cmd;
     }
-    protected Command createTurnCommand() {
-        // When delivering to the left, need to turn robot to the right.  When delivering to the right, need to turn
-        // robot left
-        double angle = 90.0 * (this.startingSide == StationPosition.Left ? 1.0 : -1.0);
-        
-        Command returnCommand = new TurnCommand(angle, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay);
-        return returnCommand;
-    }
     
     protected Command createMultiLegDriveCommand() {
         TargetVector[] turnVectors = new TargetVector[] { 
@@ -307,13 +300,13 @@ public class AutoDeliverHatchToCargoShipSide extends CommandGroup implements Kil
     }
 
 
-    public StationPosition getStaringPositionSide() {
-        return startingSide;
+    public StationPosition getStationPosition() {
+        return stationPosition;
     }
 
 
-    public void setStationPosition(StationPosition startingSide) {
-        this.startingSide = startingSide;
+    public void setStationPosition(StationPosition stationPosition) {
+        this.stationPosition = stationPosition;
     }
 
 
