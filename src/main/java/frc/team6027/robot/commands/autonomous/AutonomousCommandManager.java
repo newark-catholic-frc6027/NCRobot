@@ -202,6 +202,44 @@ public class AutonomousCommandManager {
         return chosenCommand;
     }
 
+    public Command chooseDriverAssistCommand() {
+        if (this.getObjectSelection() == ObjectSelection.Ball) {
+            return this.chooseBallDriverAssistCommand();
+        } else if (this.getObjectSelection() == ObjectSelection.Hatch) {
+            return this.chooseHatchDriverAssistCommand();
+        } else {
+            logger.warn("Cannot select a DriverAssistCommand for object: {}", this.getObjectSelection());
+            return NoOpCommand.getInstance();
+        }
+    }
+
+    protected Command chooseBallDriverAssistCommand() {
+        switch (this.getOperationSelection()) {
+            case Deliver:
+                return new DriverAssistBallDeliveryCommand(this.getLevelSelection(), this.drivetrainSubsystem, 
+                    this.elevatorSubsystem, this.sensorService);
+            default:
+                logger.warn("Cannot select a BallDriverAssistCommand for operation: {}", this.getOperationSelection());
+                return NoOpCommand.getInstance();
+        }
+    }
+
+    protected Command chooseHatchDriverAssistCommand() {
+        switch(this.getOperationSelection()) {
+            case Deliver:
+                return new DriverAssistHatchDeliveryCommand(this.getLevelSelection(), this.drivetrainSubsystem, 
+                    this.elevatorSubsystem, this.pneumaticSubsystem, this.sensorService);
+
+            case Pickup:
+                return new DriverAssistHatchPickupCommand(this.drivetrainSubsystem, 
+                    this.elevatorSubsystem, this.sensorService);
+            default:
+                logger.warn("Cannot select a HatchDriverAssistCommand for operation: {}", this.getOperationSelection());
+                return NoOpCommand.getInstance();
+        }
+
+    }
+
     public boolean isNoPreferredScenario() {
         return ! isPreferredScenario();
     }
