@@ -13,6 +13,9 @@ import frc.team6027.robot.commands.TurnCommand;
 import frc.team6027.robot.commands.VisionTurnCommand;
 import frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
 import frc.team6027.robot.field.Field;
+import frc.team6027.robot.field.LevelSelection;
+import frc.team6027.robot.field.ObjectSelection;
+import frc.team6027.robot.field.OperationSelection;
 import frc.team6027.robot.field.StationPosition;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.sensors.EncoderSensors.EncoderKey;
@@ -27,9 +30,6 @@ public class AutonomousCommandManager {
     
     private final Logger logger = LogManager.getLogger(getClass());
     private static AutonomousCommandManager instance = new AutonomousCommandManager();
-    private boolean initialized = false;
-    private KillableAutoCommand currentAutoCommand;
-    private Object commandLock = new Object();
 
     public enum AutonomousPreference {
         NoPreference("NO SELECTION"),
@@ -71,7 +71,15 @@ public class AutonomousCommandManager {
     private Preferences prefs = Preferences.getInstance();
     private Map<String,Command> commandsByName = new HashMap<>();
     private ElevatorSubsystem elevatorSubsystem;
-    
+
+    private boolean initialized = false;
+    private KillableAutoCommand currentAutoCommand;
+    private Object commandLock = new Object();
+
+    private ObjectSelection objectSelection = ObjectSelection.Hatch;
+    private LevelSelection levelSelection = LevelSelection.Lower;
+    private OperationSelection operationSelection = OperationSelection.Deliver;
+
     public static AutonomousCommandManager instance() {
         return instance;    
     }
@@ -315,5 +323,28 @@ public class AutonomousCommandManager {
         this.getOperatorDisplay().setData("Elevator", new ElevatorCommand("elevatorCommand.height", "elevatorCommand.power", this.sensorService, this.elevatorSubsystem));
 
  	}
+
+    public ObjectSelection getObjectSelection() {
+        return this.objectSelection;
+    }
+	public void setObjectSelection(ObjectSelection objectSelection) {
+        this.objectSelection = objectSelection;
+	}
+
+    public LevelSelection getLevelSelection() {
+        return this.levelSelection;
+    }
+
+	public void setLevelSelection(LevelSelection levelSelection) {
+        this.levelSelection = levelSelection;
+	}
+
+    public OperationSelection getOperationSelection() {
+        return this.operationSelection;
+    }
+
+	public void setOperationSelection(OperationSelection operationSelection) {
+        this.operationSelection = operationSelection;
+	}
                        
 }

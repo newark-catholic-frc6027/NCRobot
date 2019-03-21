@@ -2,8 +2,6 @@ package frc.team6027.robot.commands;
 
 import org.apache.logging.log4j.Logger;
 
-
-
 import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.OperatorInterface;
@@ -20,6 +18,7 @@ import frc.team6027.robot.data.Datahub;
 import frc.team6027.robot.data.DatahubRegistry;
 import frc.team6027.robot.data.VisionDataConstants;
 import frc.team6027.robot.field.Field;
+import frc.team6027.robot.field.LevelSelection;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.subsystems.ArmSubsystem;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
@@ -51,7 +50,6 @@ public class TeleopManager extends Command {
     //private VisionTurnCommand visionTurnCommand;
 
 
-    private JoystickButton shiftGearButton;
     private JoystickButton leftBumperButton;
     private JoystickButton rightBumperButton;
     private JoystickButton backButton;
@@ -67,6 +65,8 @@ public class TeleopManager extends Command {
     private JoystickButton yButton2;
     private JoystickButton leftBumperButton2;
     private JoystickButton rightBumperButton2;
+    private JoystickButton startButton2;
+
 
     
 
@@ -193,51 +193,31 @@ public class TeleopManager extends Command {
    
    
     protected void initializeJoystick2() {
-
-        // TODO: reassign, only for testing mast
-        this.xButton2 = new JoystickButton(this.joystick2, this.joystick2.getXButtonNumber());   
-        this.xButton2.toggleWhenPressed(new AutoDeliverHatchToRocket(StationPosition.Left, this.sensorService, this.drivetrain, 
-            this.pneumaticSubsystem, this.elevatorSubsystem, this.operatorDisplay, this.field));
-
-        this.yButton2 = new JoystickButton(this.joystick2, this.joystick2.getYButtonNumber());   
-//        this.yButton2.whenPressed(new SlideMastCommand(SlideMastCommand.SlideMastDirection.Forward, 1.0, sensorService, this.elevatorSubsystem));  
-        this.yButton2.whenPressed(  new AutoDeliverHatchToCargoShipSide(StationPosition.Left, 
-            this.sensorService, this.drivetrain, this.pneumaticSubsystem, this.elevatorSubsystem, this.operatorDisplay, this.field)
-        );
-
-        this.aButton2 = new JoystickButton(this.joystick2, this.joystick2.getAButtonNumber());
-        TargetVector[] testVectors = new TargetVector[]{ new TargetVector(null, 36.0, 0.7), new TargetVector(null, 36.0, 0.4) };
-        this.aButton2.whenPressed( new TurnWhileDrivingCommand(sensorService, 
-            this.drivetrain, this.operatorDisplay, testVectors, DriveDistanceMode.DistanceReadingOnEncoder, .5));
-            
-
-        this.bButton2 = new JoystickButton(this.joystick2, this.joystick2.getBButtonNumber());
-        this.bButton2.whileHeld( new Command() {
-
-            private Datahub visionData;
-            @Override
-            protected boolean isFinished() {
-                return false;
-            }
-
-            protected void execute() {
-                if (this.visionData == null) {
-                    this.visionData = DatahubRegistry.instance().get(VisionDataConstants.VISION_DATA_KEY);
-                }
-                double contoursCenterX = this.visionData.getDouble(VisionDataConstants.CONTOURS_CENTER_X_KEY, -1.0);
-                double numContours = this.visionData.getDouble(VisionDataConstants.NUM_CONTOURS_KEY, 0.0);
-                
-                TeleopManager.this.logger.info("contoursCenterX: {}, numContours: {}", contoursCenterX, numContours);
-            }
-
-        });
-
         this.leftBumperButton2 = new JoystickButton(this.joystick2, this.joystick2.getLeftBumperButtonNumber());
-        this.leftBumperButton2.whenPressed(new PrintMessageCommand("left bumper has pressed down and completed the press of the left bumper"));
+        this.leftBumperButton2.toggleWhenPressed(new AutoDeliverHatchToRocket(StationPosition.Left, this.sensorService, this.drivetrain, 
+            this.pneumaticSubsystem, this.elevatorSubsystem, this.operatorDisplay, this.field)
+        );
         
         this.rightBumperButton2 = new JoystickButton(this.joystick2, this.joystick2.getRightBumperButtonNumber());
-        this.rightBumperButton2.whenPressed(new PrintMessageCommand("right bumper has pressed down and completed the press of the right bumper"));
-      
+        this.rightBumperButton2.whenPressed(  new AutoDeliverHatchToCargoShipSide(StationPosition.Left, 
+            this.sensorService, this.drivetrain, this.pneumaticSubsystem, this.elevatorSubsystem, this.operatorDisplay, this.field)
+        );
+        
+        this.xButton2 = new JoystickButton(this.joystick2, this.joystick2.getXButtonNumber());   
+        this.xButton2.whenPressed(new ToggleObjectSelectionCommand());
+
+        this.yButton2 = new JoystickButton(this.joystick2, this.joystick2.getYButtonNumber());  
+        this.yButton2.whenPressed(new SelectionCommand(LevelSelection.Upper));
+
+        this.bButton2 = new JoystickButton(this.joystick2, this.joystick2.getBButtonNumber());
+        this.bButton2.whenPressed(new SelectionCommand(LevelSelection.Middle));
+
+        this.aButton2 = new JoystickButton(this.joystick2, this.joystick2.getAButtonNumber());
+        this.aButton2.whenPressed(new SelectionCommand(LevelSelection.Lower));
+
+        this.startButton2 = new JoystickButton(this.joystick2, this.joystick2.getStartButtonNumber());   
+        this.startButton2.whenPressed(new ToggleOperationSelectionCommand());
+        
     } 
 
     @Override
