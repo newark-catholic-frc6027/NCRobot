@@ -27,41 +27,14 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class AutonomousCommandManager {
-    
     private final Logger logger = LogManager.getLogger(getClass());
     private static AutonomousCommandManager instance = new AutonomousCommandManager();
 
-    public enum AutonomousPreference {
-        NoPreference("NO SELECTION"),
-        Rocket("Rocket"), 
-        CargoFrontLeft("Cargo Front LEFT"),
-        CargoFrontRight("Cargo Front RIGHT"),                
-        CargoSide("Cargo Side")
-        ;
-        
-        private String displayName;
-        
-        private AutonomousPreference() {
-        }
-        
-        private AutonomousPreference(String displayName) {
-            this.displayName = displayName;
-        }
-        
-        public String displayName() {
-            if (this.displayName == null ) {
-                return this.name();
-            } else {
-                return this.displayName;
-            }
-        }
-        
-        public static AutonomousPreference fromDisplayName(String displayName) {
-            return Arrays.asList(AutonomousPreference.values()).stream().filter(a -> displayName.equals(a.displayName())).findFirst().orElse(null);
-        }
-        
-    }
     
+    public static final ObjectSelection DEFAULT_OBJECT_SELECTION = ObjectSelection.Hatch;
+    public static final OperationSelection DEFAULT_OPERATION_SELECTION = OperationSelection.Deliver;
+    public static final LevelSelection DEFAULT_LEVEL_SELECTION = LevelSelection.Lower;
+
     private Field field;
     private AutonomousPreference preferredAutoScenario;
     private SensorService sensorService;
@@ -76,16 +49,18 @@ public class AutonomousCommandManager {
     private KillableAutoCommand currentAutoCommand;
     private Object commandLock = new Object();
 
-    private ObjectSelection objectSelection = ObjectSelection.Hatch;
-    private LevelSelection levelSelection = LevelSelection.Lower;
-    private OperationSelection operationSelection = OperationSelection.Deliver;
+    private ObjectSelection objectSelection = DEFAULT_OBJECT_SELECTION;
+    private LevelSelection levelSelection = DEFAULT_LEVEL_SELECTION;
+    private OperationSelection operationSelection = DEFAULT_OPERATION_SELECTION;
 
     public static AutonomousCommandManager instance() {
         return instance;    
     }
 
     private AutonomousCommandManager() {
+        this.resetDriverSelections();
     }
+    
     public AutonomousCommandManager initialize(AutonomousPreference preferredAutoScenario, Field field, 
             SensorService sensorService, 
             DrivetrainSubsystem drivetrainSubsystem, PneumaticSubsystem pneumaticSubsystem, 
@@ -120,6 +95,12 @@ public class AutonomousCommandManager {
             this.logger.info("No KillableAutoCommand to kill");
         }
 
+    }
+
+    public void resetDriverSelections() {
+        this.objectSelection = DEFAULT_OBJECT_SELECTION;
+        this.levelSelection = DEFAULT_LEVEL_SELECTION;
+        this.operationSelection = DEFAULT_OPERATION_SELECTION;
     }
 
     public void setCurrent(KillableAutoCommand command) {

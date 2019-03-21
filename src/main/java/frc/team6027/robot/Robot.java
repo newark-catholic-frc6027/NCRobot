@@ -12,7 +12,7 @@ import frc.team6027.robot.commands.TeleopManager;
 import frc.team6027.robot.commands.autonomous.AutoCommandHelper;
 import frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
 import frc.team6027.robot.commands.autonomous.NoOpCommand;
-import frc.team6027.robot.commands.autonomous.AutonomousCommandManager.AutonomousPreference;
+import frc.team6027.robot.commands.autonomous.AutonomousPreference;
 import frc.team6027.robot.data.Datahub;
 import frc.team6027.robot.data.DatahubNetworkTableImpl;
 import frc.team6027.robot.data.DatahubRegistry;
@@ -342,6 +342,10 @@ public class Robot extends TimedRobot {
         
         Double dist = this.sensorService.getUltrasonicSensor(UltrasonicSensorKey.Front).getDistanceInches();
         disp.setFieldValue("Ultrasonic Front Dist", dist != null ? dist + "" : "INFINITY");
+        disp.setFieldValue("Level Selection", this.autoCommandManager.getLevelSelection().name());
+        disp.setFieldValue("Object Selection", this.autoCommandManager.getObjectSelection().name());
+        disp.setFieldValue("Operation Selection", this.autoCommandManager.getOperationSelection().name());
+
 //        disp.setFieldValue("Ultrasonic RIGHT Dist", this.sensorService.getUltrasonicSensor(UltrasonicSensorKey.Right).getDistanceInches());
         /*
 

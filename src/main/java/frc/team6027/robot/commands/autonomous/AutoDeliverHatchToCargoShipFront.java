@@ -12,7 +12,7 @@ import frc.team6027.robot.commands.TurnWhileDrivingCommand;
 import frc.team6027.robot.commands.VisionTurnCommand;
 import frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
 import frc.team6027.robot.commands.TurnWhileDrivingCommand.TargetVector;
-import frc.team6027.robot.commands.autonomous.AutonomousCommandManager.AutonomousPreference;
+import frc.team6027.robot.commands.autonomous.AutonomousPreference;
 import frc.team6027.robot.data.Datahub;
 import frc.team6027.robot.data.DatahubRegistry;
 import frc.team6027.robot.data.VisionDataConstants;
