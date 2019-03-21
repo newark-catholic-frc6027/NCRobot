@@ -8,7 +8,7 @@ import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import frc.team6027.robot.subsystems.ElevatorSubsystem;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class DriverAssistHatchPickupCommand extends CommandGroup {
+public class DriverAssistHatchPickupCommand extends CommandGroup implements KillableAutoCommand {
     private final Logger logger = LogManager.getLogger(getClass());
 
     private SensorService sensorService;
@@ -17,6 +17,13 @@ public class DriverAssistHatchPickupCommand extends CommandGroup {
     public DriverAssistHatchPickupCommand(DrivetrainSubsystem drivetrainSubsystem,
 			ElevatorSubsystem elevatorSubsystem, SensorService sensorService) {
 	}
+
+    @Override
+    public void start() {
+        this.registerAsKillable();
+        this.logger.info(">>>>>>>>>>>>>>>>>>>> {} command starting...", this.getClass().getSimpleName());
+        super.start();
+    }
 
 	@Override
     protected boolean isFinished() {

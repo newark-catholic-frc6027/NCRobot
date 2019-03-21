@@ -67,6 +67,9 @@ public class Robot extends TimedRobot {
     private RobotStatusServer robotStatusServer;
     private TeleopManager teleopManager;
    
+    public Robot() {
+        addShutdownHook();
+    }
     /**
      * This function is run when the robot is first started up and should be used
      * for any initialization code.
@@ -363,5 +366,9 @@ public class Robot extends TimedRobot {
         //disp.setFieldValue("Contour Center", this.contoursCenterXEntry.getDouble(defaultValue));
         //disp.setFieldValue("Battery Voltage:", RobotController.getBatteryVoltage());
         */
+    }
+
+    protected void addShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new RobotShutdownHook());
     }
 }

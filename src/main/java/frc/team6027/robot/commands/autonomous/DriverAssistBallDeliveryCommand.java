@@ -9,7 +9,7 @@ import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import frc.team6027.robot.subsystems.ElevatorSubsystem;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class DriverAssistBallDeliveryCommand extends CommandGroup {
+public class DriverAssistBallDeliveryCommand extends CommandGroup implements KillableAutoCommand {
     private final Logger logger = LogManager.getLogger(getClass());
 
     private SensorService sensorService;
@@ -19,6 +19,13 @@ public class DriverAssistBallDeliveryCommand extends CommandGroup {
     public DriverAssistBallDeliveryCommand(LevelSelection levelSelection, DrivetrainSubsystem drivetrainSubsystem,
 			ElevatorSubsystem elevatorSubsystem, SensorService sensorService) {
 	}
+
+    @Override
+    public void start() {
+        this.registerAsKillable();
+        this.logger.info(">>>>>>>>>>>>>>>>>>>> {} command starting...", this.getClass().getSimpleName());
+        super.start();
+    }
 
 	@Override
     protected boolean isFinished() {
