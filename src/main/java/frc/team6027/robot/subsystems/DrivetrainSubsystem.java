@@ -17,7 +17,9 @@ import java.util.Map;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANEncoder;
+import com.revrobotics.CANError;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.RobotDrive;
@@ -48,23 +50,7 @@ public class DrivetrainSubsystem extends Subsystem {
     private CANSparkMax leftGearBoxSlave1 = new CANSparkMax(
         RobotConfigConstants.LEFT_GEARBOX_SLAVE_CIM_2_ID, MotorType.kBrushless);
 
-    //m_rightMotor = new CANSparkMax(rightDeviceID, MotorType.kBrushless);
 
-    /*
-    private WPI_TalonSRX rightGearBoxSlave1 = new WPI_TalonSRX(RobotConfigConstants.RIGHT_GEARBOX_CIM_2_ID);
-    private WPI_TalonSRX leftGearBoxSlave1 = new WPI_TalonSRX(RobotConfigConstants.LEFT_GEARBOX_CIM_2_ID);
-    */
-
-    /*
-     * Removing this since we only have two motors for this build private
-     * WPI_TalonSRX rightGearBoxSlave2 = new
-     * WPI_TalonSRX(RobotConfigConstants.RIGHT_GEARBOX_CIM_3_ID); private
-     * WPI_TalonSRX leftGearBoxSlave2 = new
-     * WPI_TalonSRX(RobotConfigConstants.LEFT_GEARBOX_CIM_3_ID);
-     */
-
-//    private RobotDrive robotDrive = new RobotDrive(leftGearBoxMaster, rightGearBoxMaster);
-    //private RobotDrive robotDrive = new RobotDrive(leftGearBoxMasterMotor, rightGearBoxMasterMotor);
     private DifferentialDrive robotDrive = null;
 
     private OperatorInterface operatorInterface;
@@ -134,18 +120,13 @@ public class DrivetrainSubsystem extends Subsystem {
 
     public void doArcadeDrive(double forwardValue, double rotateValue) {
         getRobotDrive().arcadeDrive(forwardValue, -1 * rotateValue);
-//        this.stopMotor();
     }
 
     public void stopArcadeDrive() {
         getRobotDrive().arcadeDrive(0, 0);
         getRobotDrive().stopMotor();
     }
-/*
-    public void drive(double outputMagnitude, double curve) {
-        getRobotDrive().drive(outputMagnitude, curve);
-    }
-*/
+
     public OperatorInterface getOperatorInterface() {
         return operatorInterface;
     }
@@ -169,16 +150,63 @@ public class DrivetrainSubsystem extends Subsystem {
     }
 
     public void stopMotor() {
-        // Only reset masters ie. not slaves
-//        this.leftGearBoxMaster.stopMotor();
         this.leftGearBoxMasterMotor.stopMotor();
-
-
-//        this.rightGearBoxMaster.stopMotor();
         this.rightGearBoxMasterMotor.stopMotor();
-
         getRobotDrive().stopMotor();
-
     }
 
+    public boolean isCoastModeEnabled() {
+        return this.rightGearBoxMasterMotor.getIdleMode() == IdleMode.kCoast;
+    }
+
+    public boolean isBrakeModeEnabled() {
+        return this.rightGearBoxMasterMotor.getIdleMode() == IdleMode.kBrake;
+    }
+
+    public boolean enableCoastMode() {
+        boolean netResultSuccess = false;
+
+        CANError resultRightMaster = this.rightGearBoxMasterMotor.setIdleMode(IdleMode.kCoast);
+        CANError resultRightSlave1 = this.rightGearBoxSlave1.setIdleMode(IdleMode.kCoast);
+        
+        CANError resultLeftMaster = this.leftGearBoxMasterMotor.setIdleMode(IdleMode.kCoast);
+        CANError resultLeftSlave1 = this.leftGearBoxSlave1.setIdleMode(IdleMode.kCoast);
+
+        netResultSuccess = resultRightMaster == CANError.kOK && resultRightSlave1 == CANError.kOK
+                    && resultLeftMaster == CANError.kOK && resultLeftSlave1 == CANError.kOK;
+
+        if (! netResultSuccess) {
+            logger.warn("COAST MODE FAILED to put all motors into COAST mode.  Results: " + 
+                "rightMaster: {}, rightSlave1: {}, leftMaster: {}, leftSlave1: {}",
+                resultRightMaster, resultRightSlave1, resultLeftMaster, resultLeftSlave1);
+        } else {
+            logger.info("Motors now in COAST MODE");
+        }
+
+        return netResultSuccess;
+    }
+
+    public boolean enableBrakeMode() {
+        boolean netResultSuccess = false;
+
+        CANError resultRightMaster = this.rightGearBoxMasterMotor.setIdleMode(IdleMode.kBrake);
+        CANError resultRightSlave1 = this.rightGearBoxSlave1.setIdleMode(IdleMode.kBrake);
+        
+        CANError resultLeftMaster = this.leftGearBoxMasterMotor.setIdleMode(IdleMode.kBrake);
+        CANError resultLeftSlave1 = this.leftGearBoxSlave1.setIdleMode(IdleMode.kBrake);
+
+        netResultSuccess = resultRightMaster == CANError.kOK && resultRightSlave1 == CANError.kOK
+                    && resultLeftMaster == CANError.kOK && resultLeftSlave1 == CANError.kOK;
+
+        if (! netResultSuccess) {
+            logger.warn("BRAKE MODE FAILED to put all motors into BRAKE mode.  Results: " + 
+                "rightMaster: {}, rightSlave1: {}, leftMaster: {}, leftSlave1: {}",
+                resultRightMaster, resultRightSlave1, resultLeftMaster, resultLeftSlave1);
+        } else {
+            logger.info("Motors now in BRAKE MODE");
+        }
+
+        return netResultSuccess;
+
+    }
 }

@@ -113,6 +113,7 @@ public class Robot extends TimedRobot {
 
         this.autoCommandManager.initOperatorDisplayCommands();
         this.sensorService.resetAll();
+        this.drivetrain.enableBrakeMode();
 
         // Start a SocketServer to listen for client ping requests.  This allows us
         // to let other processes (such as vision) know that the robot server is ready
@@ -174,6 +175,7 @@ public class Robot extends TimedRobot {
         // TODO: ensure drivetrain in low gear
         // TODO: ensure elevator in high gear
         this.applyStationPosition();
+        this.drivetrain.enableBrakeMode();
 
         // TODO: LEFT OFF HERE
         this.sensorService.resetAll();
@@ -208,6 +210,8 @@ public class Robot extends TimedRobot {
         // If elevatorSubsystem is already initialized, this will do nothing
         this.elevatorSubsystem.initialize();
         this.getPneumaticSubsystem().reset();
+        this.drivetrain.enableCoastMode();
+
 
 //        this.getOperatorDisplay().setFieldValue(OperatorDisplay.ELEVATOR_MAX, this.getElevatorSubsystem().isTopLimitSwitchTripped() ? "YES" : "NO");
 //        this.getOperatorDisplay().setFieldValue(OperatorDisplay.ELEVATOR_MIN, this.getElevatorSubsystem().isBottomLimitSwitchTripped() ? "YES" : "NO");

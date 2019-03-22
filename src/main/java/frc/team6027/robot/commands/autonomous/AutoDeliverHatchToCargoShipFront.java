@@ -78,7 +78,7 @@ public class AutoDeliverHatchToCargoShipFront extends CommandGroup implements Ki
             DriveDistanceMode.DistanceReadingOnEncoder, .4));
             */
 
-        AutoCommandHelper.addAutoInitCommands(this, pneumaticSubsystem, sensorService);
+        AutoCommandHelper.addAutoInitCommands(this, drivetrainSubsystem, pneumaticSubsystem, sensorService);
 
         // Off ramp forward
         this.addSequential(new DriveStraightCommand("B-L1-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "B-P1-Storm-Hatch", 

@@ -79,7 +79,7 @@ public class AutoDeliverHatchToRocketUsingBackwardDeparture extends CommandGroup
             DriveDistanceMode.DistanceReadingOnEncoder, .4));
             */
 
-        AutoCommandHelper.addAutoInitCommands(this, pneumaticSubsystem, sensorService);
+        AutoCommandHelper.addAutoInitCommands(this, drivetrainSubsystem, pneumaticSubsystem, sensorService);
         
         // TODO: Is this going to test ok?
         // Drive Backwards off ramp

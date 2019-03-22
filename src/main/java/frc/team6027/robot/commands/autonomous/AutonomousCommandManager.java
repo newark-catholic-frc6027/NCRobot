@@ -342,6 +342,7 @@ public class AutonomousCommandManager {
         this.getOperatorDisplay().setData("Vision Turn", new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay, "visionTurnCommand.power"));
 
         this.getOperatorDisplay().setData("Elevator", new ElevatorCommand("elevatorCommand.height", "elevatorCommand.power", this.sensorService, this.elevatorSubsystem));
+        this.getOperatorDisplay().setData("Drivetrain Mode", new ToggleDrivetrainModeCommand(this.drivetrainSubsystem));
 
  	}
 

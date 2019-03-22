@@ -3,9 +3,12 @@ package frc.team6027.robot.commands.autonomous;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import frc.team6027.robot.commands.ChangeDrivetrainModeCommand;
 import frc.team6027.robot.commands.PneumaticsInitializationCommand;
 import frc.team6027.robot.commands.ResetSensorsCommand;
+import frc.team6027.robot.commands.ChangeDrivetrainModeCommand.DrivetrainMode;
 import frc.team6027.robot.sensors.SensorService;
+import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import frc.team6027.robot.subsystems.PneumaticSubsystem;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -19,10 +22,11 @@ public class AutoCommandHelper {
         return ds.getMatchNumber() > 0 || ds.getMatchTime() > -0.1;
     }
 
-    public static void addAutoInitCommands(CommandGroup group, PneumaticSubsystem pneumaticSubsystem,
+    public static void addAutoInitCommands(CommandGroup group, DrivetrainSubsystem drivetrain, PneumaticSubsystem pneumaticSubsystem,
         SensorService sensorService) {
         group.addSequential(new PneumaticsInitializationCommand(pneumaticSubsystem));
         group.addSequential(new ResetSensorsCommand(sensorService));
+        group.addSequential(new ChangeDrivetrainModeCommand(DrivetrainMode.Brake, drivetrain));
     }
     /*
     public static boolean hasFieldDataChangedSinceAutoStart(Field initializedField) {
