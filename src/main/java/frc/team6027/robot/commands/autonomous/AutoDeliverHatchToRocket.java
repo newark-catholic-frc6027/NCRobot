@@ -183,9 +183,22 @@ public class AutoDeliverHatchToRocket extends CommandGroup implements KillableAu
     }
     
     @Override
+    protected void interrupted() {
+        this.reset();
+        super.interrupted();
+    }
+
+
+    @Override
     public void cancel() {
         this.reset();
         super.cancel();
+    }
+
+    @Override
+    protected void end() {
+        this.reset();
+        super.end();
     }
 
     protected Command makeDelayCommand(int delayMs) {

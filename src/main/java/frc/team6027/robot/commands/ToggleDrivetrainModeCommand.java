@@ -6,7 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import edu.wpi.first.wpilibj.command.Command;
 
-public class ChangeDrivetrainModeCommand extends Command {
+public class ToggleDrivetrainModeCommand extends Command {
     public enum DrivetrainMode {
         Brake,
         Coast
@@ -16,14 +16,12 @@ public class ChangeDrivetrainModeCommand extends Command {
     public static final int MAX_RUN_TIME_MS = 200;
 
     protected DrivetrainSubsystem drivetrain;
-    protected DrivetrainMode mode;
 
     protected boolean done = false;
     protected Long startTime = null;
 
-    public ChangeDrivetrainModeCommand(DrivetrainMode mode, DrivetrainSubsystem drivetrain) {
+    public ToggleDrivetrainModeCommand(DrivetrainSubsystem drivetrain) {
         this.drivetrain = drivetrain;
-        this.mode = mode;
         requires(drivetrain);
     }
     
@@ -48,16 +46,15 @@ public class ChangeDrivetrainModeCommand extends Command {
         }
 
         if (! done && currentTime - startTime < MAX_RUN_TIME_MS) {
-            if (this.mode == DrivetrainMode.Brake) {
-                this.done = this.drivetrain.enableBrakeMode();
-            } else if (this.mode == DrivetrainMode.Coast) {
+            if (this.drivetrain.isBrakeModeEnabled()) {
                 this.done = this.drivetrain.enableCoastMode();
+            } else if (this.drivetrain.isCoastModeEnabled()) {
+                this.done = this.drivetrain.enableBrakeMode();
             }
         } else {
             if (currentTime - startTime >= MAX_RUN_TIME_MS) {
                 logger.warn("Maximum run time exceeded before drivetrain mode could be successfully changed");
             }
-
             this.done = true;
         }
     }

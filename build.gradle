@@ -58,6 +58,7 @@ dependencies {
     compile 'com.kauailabs.navx.frc:navx-java:3.1.344'
     compile 'org.apache.logging.log4j:log4j-api:2.11.2'
     compile 'org.apache.logging.log4j:log4j-core:2.11.2'
+    compile 'commons-io:commons-io:2.6'
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
     testCompile 'junit:junit:4.12'

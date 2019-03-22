@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.commands.DriveStraightCommand;
 import frc.team6027.robot.commands.ElevatorCommand;
+import frc.team6027.robot.commands.ToggleDrivetrainModeCommand;
 import frc.team6027.robot.commands.TurnCommand;
 import frc.team6027.robot.commands.VisionTurnCommand;
 import frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
@@ -342,7 +343,7 @@ public class AutonomousCommandManager {
         this.getOperatorDisplay().setData("Vision Turn", new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay, "visionTurnCommand.power"));
 
         this.getOperatorDisplay().setData("Elevator", new ElevatorCommand("elevatorCommand.height", "elevatorCommand.power", this.sensorService, this.elevatorSubsystem));
-        this.getOperatorDisplay().setData("Drivetrain Mode", new ToggleDrivetrainModeCommand(this.drivetrainSubsystem));
+        this.getOperatorDisplay().setData("Toggle Drivetrain Mode", new ToggleDrivetrainModeCommand(this.drivetrainSubsystem));
 
  	}
 

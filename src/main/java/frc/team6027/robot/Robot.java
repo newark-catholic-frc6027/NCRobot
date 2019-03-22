@@ -352,19 +352,10 @@ public class Robot extends TimedRobot {
         disp.setFieldValue("Level Selection", this.autoCommandManager.getLevelSelection().name());
         disp.setFieldValue("Object Selection", this.autoCommandManager.getObjectSelection().name());
         disp.setFieldValue("Operation Selection", this.autoCommandManager.getOperationSelection().name());
+        disp.setFieldValue("Drivetrain Mode", this.drivetrain.isBrakeModeEnabled() ? "BRAKE" : "COAST");
 
-//        disp.setFieldValue("Ultrasonic RIGHT Dist", this.sensorService.getUltrasonicSensor(UltrasonicSensorKey.Right).getDistanceInches());
         /*
 
-        disp.setFieldValue("rightEncoder Distance",
-                this.sensorService.getEncoderSensors().getRightEncoder().getDistance());
-        disp.setFieldValue("leftEncoder Distance",
-                this.sensorService.getEncoderSensors().getLeftEncoder().getDistance());
-        disp.setFieldValue("leftEncoder Raw",
-                this.sensorService.getEncoderSensors().getLeftEncoder().getRaw());
-        disp.setFieldValue("rightEncoder Raw",
-                this.sensorService.getEncoderSensors().getRightEncoder().getRaw());
-                /*
         disp.setFieldValue("Air Pressure", this.sensorService.getAirPressureSensor().getAirPressurePsi());
         disp.setFieldValue("Ultrasonic Distance (in)", this.sensorService.getUltrasonicSensor().getDistanceInches());
         //disp.setFieldValue("Contour Center", this.contoursCenterXEntry.getDouble(defaultValue));

@@ -3,6 +3,8 @@ package frc.team6027.robot;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import org.apache.commons.io.FileUtils;
+
 public class RobotShutdownHook extends Thread {
     private final Logger logger = LogManager.getLogger(getClass());
 
@@ -10,5 +12,10 @@ public class RobotShutdownHook extends Thread {
     public void run() {
         // TODO: Copy robot log somewhere safe and give it a timestamp in the filename
         logger.info("Robot is shutting down.");
+    }
+
+    public void saveCurrentLog() {
+        //File f = new File(null);
+        
     }
 }
