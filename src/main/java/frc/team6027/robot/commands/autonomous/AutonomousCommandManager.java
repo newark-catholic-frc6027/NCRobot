@@ -28,12 +28,14 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public class AutonomousCommandManager {
     private final Logger logger = LogManager.getLogger(getClass());
-    private static AutonomousCommandManager instance = new AutonomousCommandManager();
 
-    
     public static final ObjectSelection DEFAULT_OBJECT_SELECTION = ObjectSelection.Hatch;
     public static final OperationSelection DEFAULT_OPERATION_SELECTION = OperationSelection.Deliver;
     public static final LevelSelection DEFAULT_LEVEL_SELECTION = LevelSelection.Lower;
+
+    private static AutonomousCommandManager instance = new AutonomousCommandManager();
+
+    
 
     private Field field;
     private AutonomousPreference preferredAutoScenario;
@@ -304,7 +306,7 @@ public class AutonomousCommandManager {
     }
     
 	public void initOperatorDisplayCommands() {
-        this.getOperatorDisplay().setData("Turn", new TurnCommand("turnButton.angle", this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
+        this.getOperatorDisplay().setData("Turn", new TurnCommand("turnButton.angle", this.sensorService, this.drivetrainSubsystem, this.operatorDisplay, "turnButton.power"));
         this.getOperatorDisplay().setData("Reset Elevator Encoder", new Command() {
 
             @Override

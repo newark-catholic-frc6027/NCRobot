@@ -77,6 +77,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         outputBanner();
+        this.autoCommandManager = AutonomousCommandManager.instance();
 
         this.setSensorService(new SensorService());
         this.setOperatorDisplay(new OperatorDisplaySmartDashboardImpl());
@@ -100,7 +101,6 @@ public class Robot extends TimedRobot {
                 this.getElevatorSubsystem(), this.getOperatorDisplay(), this.getField());
         this.getDrivetrain().setDefaultCommand(teleopManager);
 
-        this.autoCommandManager = AutonomousCommandManager.instance();
         this.autoCommandManager.initialize(
             AutonomousPreference.Rocket,
             this.getField(),

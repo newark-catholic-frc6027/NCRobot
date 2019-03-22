@@ -51,6 +51,8 @@ public class VisionTurnCommand extends TurnCommand  {
 	@Override
 	protected void execute() {
 		if (! visionDataChecked) {
+			this.reset();
+			logger.info(">>> Vision Turn Command starting, target angle: {}, initial gyro angle", this.targetAngle, this.initialGyroAngle);
     		this.visionDataValid = this.targetAngle != null;
 			visionDataChecked = true;
 		} 
@@ -61,11 +63,23 @@ public class VisionTurnCommand extends TurnCommand  {
 			logger.warn("Vision data is not valid, not turning");
 		}
 	}
+
+	protected double getTurnMinPower() {
+		return prefs.getDouble("visionTurnCommand.minPower", .20);
+	}
+
+	protected double getAdjustedPower() {
+		return prefs.getDouble("visionTurnCommand.adjustedPower", 0.3);
+	}
+
 	@Override
 	protected void reset() {
+
 		this.targetAngle = this.sensorService.getCurAngleHeadingToVisionTarget();
+		logger.info(">>> Vision Turn Command reset, target angle: {}, initial gyro angle", this.targetAngle, this.initialGyroAngle);
 		this.visionDataChecked = false;
 		this.visionDataValid = false;
+
 		super.reset();
 	}
 

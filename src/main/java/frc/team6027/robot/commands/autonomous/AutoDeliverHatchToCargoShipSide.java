@@ -126,6 +126,10 @@ public class AutoDeliverHatchToCargoShipSide extends CommandGroup implements Kil
 
 
         this.addSequential(new ToggleKickHatchCommand(this.pneumaticSubsystem));
+        this.addSequential(new DriveStraightCommand("C-L5-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "C-P5-Storm-Hatch", 
+            null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
+
+
         this.addSequential(new ToggleKickHatchCommand(this.pneumaticSubsystem));
 
         // TODO: replace this with Vision turn, use VisionTurnCommand

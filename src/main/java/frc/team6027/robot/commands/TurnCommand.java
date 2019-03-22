@@ -107,6 +107,7 @@ public class TurnCommand extends Command implements PIDOutput {
 		pidController.setAbsoluteTolerance(PID_TOLERANCE_DEGREES);
 		pidController.setContinuous(true);
 		if (this.targetAngle != null) {
+			this.logger.info("Pid setpoint set to: {}", this.targetAngle);
 			pidController.setSetpoint(this.targetAngle); // sets the angle to which we want to turn to
 			pidController.enable();
 		}
@@ -152,9 +153,17 @@ public class TurnCommand extends Command implements PIDOutput {
 			this.targetAngle = this.prefs.getDouble(this.anglePrefName, 0.0);
 		}
 
-		this.turnMinPower = prefs.getDouble("turnCommand.minPower", .20);
-		this.adjustedPower = prefs.getDouble("turnCommand.adjustedPower", 0.3);
+		this.turnMinPower = this.getTurnMinPower();
+		this.adjustedPower = this.getAdjustedPower();
 		initPIDController();
+	}
+
+	protected double getTurnMinPower() {
+		return prefs.getDouble("turnCommand.minPower", .20);
+	}
+
+	protected double getAdjustedPower() {
+		return prefs.getDouble("turnCommand.adjustedPower", 0.3);
 	}
 
 	@Override
@@ -167,7 +176,7 @@ public class TurnCommand extends Command implements PIDOutput {
 
     @Override
     protected void initialize() {
-        reset();
+        this.reset();
     }
 
 	protected void execute() {

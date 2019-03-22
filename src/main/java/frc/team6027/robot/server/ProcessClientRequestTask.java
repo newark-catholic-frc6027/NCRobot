@@ -40,7 +40,7 @@ public class ProcessClientRequestTask implements Runnable {
             PrintWriter out = new PrintWriter(this.clientSocket.getOutputStream(), true);
         ) {
             String msg = br.readLine();
-            logger.info("Msg received: [{}]", msg);
+            logger.trace("Msg received: [{}]", msg);
             if (msg != null) {
                 if ("vision-ping".equals(msg)) {
                     logger.debug("Got vision-ping, sending 'robot-pong'");
