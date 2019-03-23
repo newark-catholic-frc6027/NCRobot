@@ -18,7 +18,8 @@ public class ResetGyroCommand extends Command {
     
     @Override
     protected boolean isFinished() {
-       return true; }
+       return true; 
+    }
     
     @Override    
     protected void execute() {

@@ -359,7 +359,7 @@ public class Robot extends TimedRobot {
                &&
             ultrasonicInches <= prefs.getInstance().getDouble("ultrasonic.inRange.upper", 13.0)
         );
-        disp.setFieldValue("Auto", this.autoCommandManager.isKillableAutoCommandRunning());
+        disp.setFieldValue("Auto", this.autoCommandManager.isAutoCommandRunning());
 
         /*
 

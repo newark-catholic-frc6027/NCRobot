@@ -5,21 +5,15 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.OperatorInterface;
-import frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
 import frc.team6027.robot.commands.autonomous.AutoDeliverHatchToRocket;
 import frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
 import frc.team6027.robot.commands.autonomous.AutonomousPreference;
 import frc.team6027.robot.commands.autonomous.KillCurrentAutoCommand;
+import frc.team6027.robot.commands.autonomous.ScheduleCommand;
 import frc.team6027.robot.commands.autonomous.AutoDeliverHatchToCargoShipFrontFromCenterPosition;
-import frc.team6027.robot.commands.autonomous.AutoDeliverHatchToCargoShipSide;
 import frc.team6027.robot.field.StationPosition;
-import frc.team6027.robot.commands.TurnWhileDrivingCommand;
-import frc.team6027.robot.commands.TurnWhileDrivingCommand.TargetVector;
 
 import frc.team6027.robot.controls.XboxJoystick;
-import frc.team6027.robot.data.Datahub;
-import frc.team6027.robot.data.DatahubRegistry;
-import frc.team6027.robot.data.VisionDataConstants;
 import frc.team6027.robot.field.Field;
 import frc.team6027.robot.field.LevelSelection;
 import frc.team6027.robot.sensors.SensorService;
@@ -134,7 +128,7 @@ public class TeleopManager extends Command {
         this.backButton = new JoystickButton(this.joystick, this.joystick.getBackButtonNumber());
         this.backButton.whenPressed(new KillCurrentAutoCommand());
 
-        // **** Back button - Run autonomous assisted delivery
+        // **** Back button - Run vision turn command
         this.startButton = new JoystickButton(this.joystick, this.joystick.getStartButtonNumber());
         this.startButton.whenPressed(new VisionTurnCommand(this.sensorService, this.drivetrain, this.operatorDisplay));
 
@@ -143,20 +137,9 @@ public class TeleopManager extends Command {
         this.xButton.whenPressed(new ToggleKickHatchCommand(this.pneumaticSubsystem));    
         this.xButton.whenReleased(new ToggleKickHatchCommand(this.pneumaticSubsystem));    
 
+        // **** B button - Executes driver assist command
         this.bButton = new JoystickButton(this.joystick, this.joystick.getBButtonNumber());   
-        this.bButton.whenPressed(new Command() {
-
-            @Override
-            protected boolean isFinished() {
-                return true;
-            }
-
-            @Override
-            protected void execute() {
-                Scheduler.getInstance().add(AutonomousCommandManager.instance().chooseDriverAssistCommand());
-            }
-
-        });    
+        this.bButton.whenPressed(new ScheduleCommand(() -> AutonomousCommandManager.instance().chooseDriverAssistCommand()));
         
 /*
         this.shiftGearButton = new JoystickButton(this.joystick, this.joystick.getRightBumperButtonNumber());

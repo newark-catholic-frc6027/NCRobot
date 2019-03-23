@@ -174,7 +174,7 @@ public class AutoDeliverHatchToRocketUsingBackwardDeparture extends CommandGroup
     @Override
     public void start() {
         this.registerAsKillable();
-        this.logger.info(">>>>>>>>>>>>>>>>>>>> {} command starting...", this.getClass().getSimpleName());
+        this.logger.info(">>>>>>>>>>>>>>>>>>>> {} command STARTING", this.getClass().getSimpleName());
         super.start();
     }
 
@@ -317,4 +317,37 @@ public class AutoDeliverHatchToRocketUsingBackwardDeparture extends CommandGroup
     public void setElevatorSubsystem(ElevatorSubsystem elevatorSubsystem) {
         this.elevatorSubsystem = elevatorSubsystem;
     }
+
+    @Override
+    public void registerAsKillable() {
+        this.default_registerAsKillable();
+    }
+
+    @Override
+    public void onComplete() {
+        this.default_onComplete();
+    }
+
+    @Override
+    public void end() {
+        this.onComplete();
+        super.end();
+        this.logger.info(">>>>>>>>>>>>>>>>>>>> {} command ENDED", this.getClass().getSimpleName());
+    }
+
+    @Override
+    public void cancel() {
+        this.onComplete();
+        super.cancel();
+        this.logger.info(">>>>>>>>>>>>>>>>>>>> {} command CANCELED", this.getClass().getSimpleName());
+    }
+
+    @Override
+    protected void interrupted() {
+        this.onComplete();
+        super.interrupted();
+        this.logger.info(">>>>>>>>>>>>>>>>>>>> {} command INTERRUPTED", this.getClass().getSimpleName());
+    }
+
+
 }

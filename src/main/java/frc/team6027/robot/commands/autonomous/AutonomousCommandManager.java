@@ -112,7 +112,15 @@ public class AutonomousCommandManager {
         }
     }
 
-    public boolean isKillableAutoCommandRunning() {
+    public void unsetCurrent(KillableAutoCommand command) {
+        synchronized(this.commandLock) {
+            if (this.currentAutoCommand == command) {      
+                this.currentAutoCommand = null;
+            }
+        }
+    }
+
+    public boolean isAutoCommandRunning() {
         synchronized(this.commandLock) {
             return this.currentAutoCommand != null;
         }
