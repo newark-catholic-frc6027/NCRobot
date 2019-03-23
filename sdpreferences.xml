@@ -1,9 +1,9 @@
 <xml version="1.0">
 <dashboard>
-	<widget field="Driver Assist Command Running" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="1047" y="0"/>
-		<width>193</width>
-		<height>815</height>
+	<widget field="Auto" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="1059" y="0"/>
+		<width>75</width>
+		<height>817</height>
 	</widget>
 	<widget field="Object Selection" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
 		<location x="1588" y="153"/>
@@ -225,6 +225,7 @@
 </live-window>
 	<hidden field="Drivetrain Mode"/>
 	<hidden field="ArmSubsystem"/>
+	<hidden field="Driver Assist Command Running"/>
 	<hidden field="Ultrasonic Dist"/>
 	<hidden field="Ultrasonic"/>
 </xml>
