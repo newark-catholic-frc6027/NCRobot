@@ -7,7 +7,10 @@ import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.OperatorInterface;
 import frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
 import frc.team6027.robot.commands.autonomous.AutoDeliverHatchToRocket;
+import frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
+import frc.team6027.robot.commands.autonomous.AutonomousPreference;
 import frc.team6027.robot.commands.autonomous.KillCurrentAutoCommand;
+import frc.team6027.robot.commands.autonomous.AutoDeliverHatchToCargoShipFrontFromCenterPosition;
 import frc.team6027.robot.commands.autonomous.AutoDeliverHatchToCargoShipSide;
 import frc.team6027.robot.field.StationPosition;
 import frc.team6027.robot.commands.TurnWhileDrivingCommand;
@@ -29,6 +32,7 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Scheduler;
 
 public class TeleopManager extends Command {
     private final Logger logger = LogManager.getLogger(getClass());
@@ -132,12 +136,27 @@ public class TeleopManager extends Command {
 
         // **** Back button - Run autonomous assisted delivery
         this.startButton = new JoystickButton(this.joystick, this.joystick.getStartButtonNumber());
-        this.startButton.toggleWhenPressed(new VisionTurnCommand(this.sensorService, this.drivetrain, this.operatorDisplay));
+        this.startButton.whenPressed(new VisionTurnCommand(this.sensorService, this.drivetrain, this.operatorDisplay));
 
         // **** X button - Kicks the hatch
         this.xButton = new JoystickButton(this.joystick, this.joystick.getXButtonNumber());   
         this.xButton.whenPressed(new ToggleKickHatchCommand(this.pneumaticSubsystem));    
         this.xButton.whenReleased(new ToggleKickHatchCommand(this.pneumaticSubsystem));    
+
+        this.bButton = new JoystickButton(this.joystick, this.joystick.getBButtonNumber());   
+        this.bButton.whenPressed(new Command() {
+
+            @Override
+            protected boolean isFinished() {
+                return true;
+            }
+
+            @Override
+            protected void execute() {
+                Scheduler.getInstance().add(AutonomousCommandManager.instance().chooseDriverAssistCommand());
+            }
+
+        });    
         
 /*
         this.shiftGearButton = new JoystickButton(this.joystick, this.joystick.getRightBumperButtonNumber());
@@ -200,8 +219,11 @@ public class TeleopManager extends Command {
         );
         
         this.rightBumperButton2 = new JoystickButton(this.joystick2, this.joystick2.getRightBumperButtonNumber());
-        this.rightBumperButton2.whenPressed(  new AutoDeliverHatchToCargoShipSide(StationPosition.Left, 
+/*        this.rightBumperButton2.whenPressed(  new AutoDeliverHatchToCargoShipSide(StationPosition.Left, 
             this.sensorService, this.drivetrain, this.pneumaticSubsystem, this.elevatorSubsystem, this.operatorDisplay, this.field)
+        );*/
+        this.rightBumperButton2.whenPressed( new AutoDeliverHatchToCargoShipFrontFromCenterPosition(AutonomousPreference.CargoFrontLeft, this.sensorService, this.drivetrain, 
+            this.pneumaticSubsystem, this.elevatorSubsystem, this.operatorDisplay, this.field)
         );
         
         this.xButton2 = new JoystickButton(this.joystick2, this.joystick2.getXButtonNumber());   

@@ -26,7 +26,7 @@ public class AutoCommandHelper {
         SensorService sensorService) {
         group.addSequential(new PneumaticsInitializationCommand(pneumaticSubsystem));
         group.addSequential(new ResetSensorsCommand(sensorService));
-        group.addSequential(new ChangeDrivetrainModeCommand(DrivetrainMode.Brake, drivetrain));
+//        group.addSequential(new ChangeDrivetrainModeCommand(DrivetrainMode.Brake, drivetrain));
     }
     /*
     public static boolean hasFieldDataChangedSinceAutoStart(Field initializedField) {

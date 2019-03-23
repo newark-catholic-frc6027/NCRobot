@@ -3,13 +3,11 @@ package frc.team6027.robot.commands.autonomous;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
-import frc.team6027.robot.commands.ChangeDrivetrainModeCommand;
 import frc.team6027.robot.commands.DriveStraightCommand;
 import frc.team6027.robot.commands.ToggleKickHatchCommand;
 import frc.team6027.robot.commands.TurnCommand;
 import frc.team6027.robot.commands.TurnWhileDrivingCommand;
 import frc.team6027.robot.commands.VisionTurnCommand;
-import frc.team6027.robot.commands.ChangeDrivetrainModeCommand.DrivetrainMode;
 import frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
 import frc.team6027.robot.commands.TurnWhileDrivingCommand.TargetVector;
 import frc.team6027.robot.data.Datahub;
@@ -88,9 +86,6 @@ public class AutoDeliverHatchToRocket extends CommandGroup implements KillableAu
         this.addSequential(new TurnCommand(turnPrefName, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay, 
           "B-A1P-Storm-Hatch"));
 
-        // Change to motors to coast mode
-        this.addSequential(new ChangeDrivetrainModeCommand(DrivetrainMode.Coast, this.drivetrainSubsystem));
-
         // Travel toward rocket
         this.addSequential(new DriveStraightCommand("B-L2-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "B-P2-Storm-Hatch", 
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
@@ -109,9 +104,6 @@ public class AutoDeliverHatchToRocket extends CommandGroup implements KillableAu
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
         );
         this.addSequential(new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
-
-        // Change to motors to coast mode
-        this.addSequential(new ChangeDrivetrainModeCommand(DrivetrainMode.Brake, this.drivetrainSubsystem));
 
         // TODO: replace this with Vision turn, use VisionTurnCommand
         // TODO: Add logic to handle potential failure of Vision turn
@@ -134,6 +126,8 @@ public class AutoDeliverHatchToRocket extends CommandGroup implements KillableAu
             "B-P5-Storm-Hatch", null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
         
         this.addSequential(new ToggleKickHatchCommand(this.pneumaticSubsystem));
+        this.addSequential(new DriveStraightCommand("B-L6-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "B-P6-Storm-Hatch", 
+            null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
         this.addSequential(new ToggleKickHatchCommand(this.pneumaticSubsystem));
         // Last leg to rocket 
         /*
@@ -179,7 +173,6 @@ public class AutoDeliverHatchToRocket extends CommandGroup implements KillableAu
     }
 
     protected void reset() {
-        this.drivetrainSubsystem.enableBrakeMode();
     }
     
     @Override

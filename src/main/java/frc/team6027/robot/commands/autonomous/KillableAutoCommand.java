@@ -14,6 +14,10 @@ public interface KillableAutoCommand {
         AutonomousCommandManager.instance().setCurrent(this);
     }
     default public void beforeKill() {}
+    default public void afterKill() {}
+    default public void onComplete() {
+        AutonomousCommandManager.instance().setCurrent(null);
+    }
 
     default public void kill() {
         if (this instanceof Command) {
@@ -21,6 +25,7 @@ public interface KillableAutoCommand {
                 LogManager.getLogger(this.getClass()).warn("Kill invoked on {}, calling cancel...", this.getClass().getSimpleName());
                 this.beforeKill();
                 ((Command)this).cancel();
+                this.afterKill();
             } else {
                 LogManager.getLogger(this.getClass()).info("Kill invoked on {}, but the command isn't running.", this.getClass().getSimpleName());
             }

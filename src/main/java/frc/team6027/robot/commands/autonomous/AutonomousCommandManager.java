@@ -112,6 +112,12 @@ public class AutonomousCommandManager {
         }
     }
 
+    public boolean isKillableAutoCommandRunning() {
+        synchronized(this.commandLock) {
+            return this.currentAutoCommand != null;
+        }
+    }
+
     
     public static void initAutoScenarioDisplayValues(OperatorDisplay operatorDisplay) {
         operatorDisplay.registerAutoScenario(AutonomousPreference.Rocket.displayName());
@@ -163,12 +169,12 @@ public class AutonomousCommandManager {
 
         switch (autoPreference) {
             case CargoFrontLeft:
-            case CargoFrontRight:
-                chosenCommand = new AutoDeliverHatchToCargoShipFront(
-                    autoPreference, position, sensorService, drivetrainSubsystem,
+                chosenCommand = new AutoDeliverHatchToCargoShipFrontFromCenterPosition(
+                    autoPreference, sensorService, drivetrainSubsystem,
                     pneumaticSubsystem, elevatorSubsystem, operatorDisplay, field
                 );
                 break;
+            case CargoFrontRight:
             default:
                 logger.warn("CANNOT DELIVER TO '{}' FROM CENTER STATION, choosing NoOpCommand!", autoPreference);
                 chosenCommand = NoOpCommand.getInstance();    
@@ -231,7 +237,7 @@ public class AutonomousCommandManager {
         switch(this.getOperationSelection()) {
             case Deliver:
                 return new DriverAssistHatchDeliveryCommand(this.getLevelSelection(), this.drivetrainSubsystem, 
-                    this.elevatorSubsystem, this.pneumaticSubsystem, this.sensorService);
+                    this.elevatorSubsystem, this.pneumaticSubsystem, this.sensorService, this.operatorDisplay);
 
             case Pickup:
                 return new DriverAssistHatchPickupCommand(this.drivetrainSubsystem, 
@@ -343,7 +349,6 @@ public class AutonomousCommandManager {
         this.getOperatorDisplay().setData("Vision Turn", new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay, "visionTurnCommand.power"));
 
         this.getOperatorDisplay().setData("Elevator", new ElevatorCommand("elevatorCommand.height", "elevatorCommand.power", this.sensorService, this.elevatorSubsystem));
-        this.getOperatorDisplay().setData("Toggle Drivetrain Mode", new ToggleDrivetrainModeCommand(this.drivetrainSubsystem));
 
  	}
 
