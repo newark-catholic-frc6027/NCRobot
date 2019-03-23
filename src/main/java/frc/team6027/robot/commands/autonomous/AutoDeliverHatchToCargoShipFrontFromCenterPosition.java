@@ -4,10 +4,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.commands.DriveStraightCommand;
-import frc.team6027.robot.commands.PneumaticsInitializationCommand;
-import frc.team6027.robot.commands.ResetSensorsCommand;
 import frc.team6027.robot.commands.ToggleKickHatchCommand;
-import frc.team6027.robot.commands.TurnCommand;
 import frc.team6027.robot.commands.TurnWhileDrivingCommand;
 import frc.team6027.robot.commands.VisionTurnCommand;
 import frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
@@ -132,7 +129,7 @@ double "/Preferences/D-P4-Storm-Hatch"=0.4
     @Override
     public void start() {
         registerAsKillable();
-        this.logger.info(">>>>>>>>>>>>>>>>>>>> {} command starting...", this.getClass().getSimpleName());
+        this.logger.info(">>>>>>>>>>>>>>>>>>>> {} command STARTING", this.getClass().getSimpleName());
         super.start();
     }
 
@@ -275,4 +272,36 @@ double "/Preferences/D-P4-Storm-Hatch"=0.4
     public void setElevatorSubsystem(ElevatorSubsystem elevatorSubsystem) {
         this.elevatorSubsystem = elevatorSubsystem;
     }
+
+    @Override
+    public void registerAsKillable() {
+        this.default_registerAsKillable();
+    }
+
+    @Override
+    public void onComplete() {
+        this.default_onComplete();
+    }
+
+    @Override
+    public void end() {
+        this.onComplete();
+        super.end();
+        this.logger.info(">>>>>>>>>>>>>>>>>>>> {} command ENDED", this.getClass().getSimpleName());
+    }
+
+    @Override
+    public void cancel() {
+        this.onComplete();
+        super.cancel();
+        this.logger.info(">>>>>>>>>>>>>>>>>>>> {} command CANCELED", this.getClass().getSimpleName());
+    }
+
+    @Override
+    protected void interrupted() {
+        this.onComplete();
+        super.interrupted();
+        this.logger.info(">>>>>>>>>>>>>>>>>>>> {} command INTERRUPTED", this.getClass().getSimpleName());
+    }
+
 }

@@ -355,11 +355,11 @@ public class Robot extends TimedRobot {
 //        disp.setFieldValue("Drivetrain Mode", this.drivetrain.isBrakeModeEnabled() ? "BRAKE" : "COAST");
         double ultrasonicInches = this.sensorService.getUltrasonicSensor(UltrasonicSensorKey.Front).getDistanceInches();
         disp.setFieldValue("In range", 
-            ultrasonicInches >= prefs.getInstance().getDouble("ultrasonic.inRange.lower", 11.0)
+            ultrasonicInches >= prefs.getDouble("ultrasonic.inRange.lower", 11.0)
                &&
-            ultrasonicInches <= prefs.getInstance().getDouble("ultrasonic.inRange.upper", 13.0)
+            ultrasonicInches <= prefs.getDouble("ultrasonic.inRange.upper", 13.0)
         );
-        disp.setFieldValue("Auto", this.autoCommandManager.isKillableAutoCommandRunning());
+        disp.setFieldValue("Auto", this.autoCommandManager.isAutoCommandRunning());
 
         /*
 

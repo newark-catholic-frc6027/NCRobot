@@ -5,23 +5,19 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.OperatorInterface;
-import frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
 import frc.team6027.robot.commands.autonomous.AutoDeliverHatchToRocket;
 import frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
 import frc.team6027.robot.commands.autonomous.AutonomousPreference;
 import frc.team6027.robot.commands.autonomous.KillCurrentAutoCommand;
+import frc.team6027.robot.commands.autonomous.ScheduleCommand;
 import frc.team6027.robot.commands.autonomous.AutoDeliverHatchToCargoShipFrontFromCenterPosition;
-import frc.team6027.robot.commands.autonomous.AutoDeliverHatchToCargoShipSide;
 import frc.team6027.robot.field.StationPosition;
-import frc.team6027.robot.commands.TurnWhileDrivingCommand;
-import frc.team6027.robot.commands.TurnWhileDrivingCommand.TargetVector;
 
 import frc.team6027.robot.controls.XboxJoystick;
-import frc.team6027.robot.data.Datahub;
-import frc.team6027.robot.data.DatahubRegistry;
-import frc.team6027.robot.data.VisionDataConstants;
 import frc.team6027.robot.field.Field;
 import frc.team6027.robot.field.LevelSelection;
+import frc.team6027.robot.field.ObjectSelection;
+import frc.team6027.robot.field.OperationSelection;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.subsystems.ArmSubsystem;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
@@ -76,6 +72,7 @@ public class TeleopManager extends Command {
     
 
     private ShiftGearCommand shiftGearCommand;
+
     // private ToggleShiftElevatorCommand toggleShiftElevatorCommand;
     
 
@@ -134,7 +131,7 @@ public class TeleopManager extends Command {
         this.backButton = new JoystickButton(this.joystick, this.joystick.getBackButtonNumber());
         this.backButton.whenPressed(new KillCurrentAutoCommand());
 
-        // **** Back button - Run autonomous assisted delivery
+        // **** Back button - Run vision turn command
         this.startButton = new JoystickButton(this.joystick, this.joystick.getStartButtonNumber());
         this.startButton.whenPressed(new VisionTurnCommand(this.sensorService, this.drivetrain, this.operatorDisplay));
 
@@ -143,20 +140,9 @@ public class TeleopManager extends Command {
         this.xButton.whenPressed(new ToggleKickHatchCommand(this.pneumaticSubsystem));    
         this.xButton.whenReleased(new ToggleKickHatchCommand(this.pneumaticSubsystem));    
 
+        // **** B button - Executes driver assist command
         this.bButton = new JoystickButton(this.joystick, this.joystick.getBButtonNumber());   
-        this.bButton.whenPressed(new Command() {
-
-            @Override
-            protected boolean isFinished() {
-                return true;
-            }
-
-            @Override
-            protected void execute() {
-                Scheduler.getInstance().add(AutonomousCommandManager.instance().chooseDriverAssistCommand());
-            }
-
-        });    
+        this.bButton.whenPressed(new ScheduleCommand(() -> AutonomousCommandManager.instance().chooseDriverAssistCommand()));
         
 /*
         this.shiftGearButton = new JoystickButton(this.joystick, this.joystick.getRightBumperButtonNumber());
@@ -226,9 +212,10 @@ public class TeleopManager extends Command {
             this.pneumaticSubsystem, this.elevatorSubsystem, this.operatorDisplay, this.field)
         );
         
+        /*
         this.xButton2 = new JoystickButton(this.joystick2, this.joystick2.getXButtonNumber());   
         this.xButton2.whenPressed(new ToggleObjectSelectionCommand());
-
+        */
         this.yButton2 = new JoystickButton(this.joystick2, this.joystick2.getYButtonNumber());  
         this.yButton2.whenPressed(new SelectionCommand(LevelSelection.Upper));
 
@@ -238,8 +225,10 @@ public class TeleopManager extends Command {
         this.aButton2 = new JoystickButton(this.joystick2, this.joystick2.getAButtonNumber());
         this.aButton2.whenPressed(new SelectionCommand(LevelSelection.Lower));
 
+        /*
         this.startButton2 = new JoystickButton(this.joystick2, this.joystick2.getStartButtonNumber());   
         this.startButton2.whenPressed(new ToggleOperationSelectionCommand());
+        */
 
         this.backButton2 = new JoystickButton(this.joystick2, this.joystick2.getBackButtonNumber());   
         this.backButton2.whenPressed(new ClearDriverSelectionsCommand());
@@ -286,16 +275,17 @@ public class TeleopManager extends Command {
         this.drive();
         this.runMastSlideIfRequired();
         this.runElevatorIfRequired();
+        this.updateDriverAssistSelections();
 
         // this.logData();
     }
 
-    private void drive() {
+    protected void drive() {
 //        this.logger.debug("Drive invoked. left axis: {}, right axis: {}", this.joystick.getLeftAxis(), this.joystick.getRightAxis());
         this.drivetrain.doArcadeDrive(this.joystick.getLeftAxis(), this.joystick.getRightAxis() * this.turnPowerScaleFactor);
     }
 
-    private void runMastSlideIfRequired() {
+    protected void runMastSlideIfRequired() {
         logger.trace("POV0: {}", this.joystick.getPOV(0));
         // POV(0) return an angle for the pad based on which direction was pressed   
         int povValue = this.joystick.getPOV(0);
@@ -308,12 +298,30 @@ public class TeleopManager extends Command {
         }
     }
 
-    private void runElevatorIfRequired() {
+    protected void runElevatorIfRequired() {
         if (this.joystick.getTriggerAxis(Hand.kLeft) > .05) {
             this.elevatorSubsystem.elevatorDown(this.joystick.getTriggerAxis(Hand.kLeft));
         } else {
             this.elevatorSubsystem.elevatorUp(this.joystick.getTriggerAxis(Hand.kRight));
         }
+    }
+
+    protected void updateDriverAssistSelections() {
+        double leftAxisValue = this.joystick2.getLeftAxis();
+        double rightAxisValue = this.joystick2.getRightAxis();
+        // Up is negative
+        if (leftAxisValue <= -0.25) {
+            AutonomousCommandManager.instance().setObjectSelection(ObjectSelection.Ball);
+        } else if (leftAxisValue >= 0.25) {
+            AutonomousCommandManager.instance().setObjectSelection(ObjectSelection.Hatch);
+        }
+
+        if (rightAxisValue <= -0.25) {
+            AutonomousCommandManager.instance().setOperationSelection(OperationSelection.Pickup);
+        } else if (rightAxisValue >= 0.25) {
+            AutonomousCommandManager.instance().setOperationSelection(OperationSelection.Deliver);
+        }
+
     }
 
     public OperatorDisplay getOperatorDisplay() {
