@@ -11,6 +11,7 @@ import frc.team6027.robot.commands.autonomous.AutonomousPreference;
 import frc.team6027.robot.commands.autonomous.KillCurrentAutoCommand;
 import frc.team6027.robot.commands.autonomous.ScheduleCommand;
 import frc.team6027.robot.commands.autonomous.AutoDeliverHatchToCargoShipFrontFromCenterPosition;
+import frc.team6027.robot.commands.autonomous.AutoDeliverHatchToCargoShipSide;
 import frc.team6027.robot.field.StationPosition;
 
 import frc.team6027.robot.controls.XboxJoystick;
@@ -133,7 +134,7 @@ public class TeleopManager extends Command {
 
         // **** Back button - Run vision turn command
         this.startButton = new JoystickButton(this.joystick, this.joystick.getStartButtonNumber());
-        this.startButton.whenPressed(new VisionTurnCommand(this.sensorService, this.drivetrain, this.operatorDisplay));
+        this.startButton.whenPressed(new VisionTurnCommand(this.sensorService, this.drivetrain, this.operatorDisplay, 1.0));
 
         // **** X button - Kicks the hatch
         this.xButton = new JoystickButton(this.joystick, this.joystick.getXButtonNumber());   
@@ -199,23 +200,25 @@ public class TeleopManager extends Command {
    
    
     protected void initializeJoystick2() {
-        this.leftBumperButton2 = new JoystickButton(this.joystick2, this.joystick2.getLeftBumperButtonNumber());
-        this.leftBumperButton2.toggleWhenPressed(new AutoDeliverHatchToRocket(StationPosition.Left, this.sensorService, this.drivetrain, 
+        
+        this.backButton2 = new JoystickButton(this.joystick2, this.joystick2.getBackButtonNumber());
+        this.backButton2.toggleWhenPressed(new AutoDeliverHatchToRocket(StationPosition.Left, this.sensorService, this.drivetrain, 
             this.pneumaticSubsystem, this.elevatorSubsystem, this.operatorDisplay, this.field)
         );
         
+/*        
         this.rightBumperButton2 = new JoystickButton(this.joystick2, this.joystick2.getRightBumperButtonNumber());
-/*        this.rightBumperButton2.whenPressed(  new AutoDeliverHatchToCargoShipSide(StationPosition.Left, 
+        this.rightBumperButton2.whenPressed(  new AutoDeliverHatchToCargoShipSide(StationPosition.Left, 
             this.sensorService, this.drivetrain, this.pneumaticSubsystem, this.elevatorSubsystem, this.operatorDisplay, this.field)
-        );*/
+        );
         this.rightBumperButton2.whenPressed( new AutoDeliverHatchToCargoShipFrontFromCenterPosition(AutonomousPreference.CargoFrontLeft, this.sensorService, this.drivetrain, 
             this.pneumaticSubsystem, this.elevatorSubsystem, this.operatorDisplay, this.field)
         );
-        
-        /*
-        this.xButton2 = new JoystickButton(this.joystick2, this.joystick2.getXButtonNumber());   
-        this.xButton2.whenPressed(new ToggleObjectSelectionCommand());
         */
+        this.xButton2 = new JoystickButton(this.joystick2, this.joystick2.getXButtonNumber());   
+        this.xButton2.whenPressed(new AutoDeliverHatchToCargoShipSide(StationPosition.Left, 
+            this.sensorService, this.drivetrain, this.pneumaticSubsystem, this.elevatorSubsystem, this.operatorDisplay, this.field));
+
         this.yButton2 = new JoystickButton(this.joystick2, this.joystick2.getYButtonNumber());  
         this.yButton2.whenPressed(new SelectionCommand(LevelSelection.Upper));
 
@@ -225,14 +228,16 @@ public class TeleopManager extends Command {
         this.aButton2 = new JoystickButton(this.joystick2, this.joystick2.getAButtonNumber());
         this.aButton2.whenPressed(new SelectionCommand(LevelSelection.Lower));
 
-        /*
-        this.startButton2 = new JoystickButton(this.joystick2, this.joystick2.getStartButtonNumber());   
-        this.startButton2.whenPressed(new ToggleOperationSelectionCommand());
-        */
+        
+        this.leftBumperButton2 = new JoystickButton(this.joystick2, this.joystick2.getLeftBumperButtonNumber());   
+        this.leftBumperButton2.whenPressed(new SelectionCommand(OperationSelection.Deliver));
 
+        this.rightBumperButton2 = new JoystickButton(this.joystick2, this.joystick2.getRightBumperButtonNumber());
+        this.rightBumperButton2.whenPressed(new SelectionCommand(ObjectSelection.Hatch));
+/*
         this.backButton2 = new JoystickButton(this.joystick2, this.joystick2.getBackButtonNumber());   
         this.backButton2.whenPressed(new ClearDriverSelectionsCommand());
-        
+*/        
     } 
 
     @Override
@@ -307,19 +312,14 @@ public class TeleopManager extends Command {
     }
 
     protected void updateDriverAssistSelections() {
-        double leftAxisValue = this.joystick2.getLeftAxis();
-        double rightAxisValue = this.joystick2.getRightAxis();
-        // Up is negative
-        if (leftAxisValue <= -0.25) {
-            AutonomousCommandManager.instance().setObjectSelection(ObjectSelection.Ball);
-        } else if (leftAxisValue >= 0.25) {
-            AutonomousCommandManager.instance().setObjectSelection(ObjectSelection.Hatch);
+        double leftAxisValue = this.joystick2.getTriggerAxis(Hand.kLeft);
+        double rightAxisValue = this.joystick2.getTriggerAxis(Hand.kRight);
+        if (leftAxisValue >= 0.09) {
+            AutonomousCommandManager.instance().setOperationSelection(OperationSelection.Pickup);
         }
 
-        if (rightAxisValue <= -0.25) {
-            AutonomousCommandManager.instance().setOperationSelection(OperationSelection.Pickup);
-        } else if (rightAxisValue >= 0.25) {
-            AutonomousCommandManager.instance().setOperationSelection(OperationSelection.Deliver);
+        if (rightAxisValue >= 0.09) {
+            AutonomousCommandManager.instance().setObjectSelection(ObjectSelection.Ball);
         }
 
     }

@@ -12,7 +12,7 @@ import org.apache.commons.io.FileUtils;
 public class RobotShutdownHook extends Thread {
     private final Logger logger = LogManager.getLogger(getClass());
     private final static File frcLogFile = new File("/var/local/natinst/log/FRC_UserProgram.log");
-    private final static File logArchiveDir = new File("/home/lvuser/log_archive_frc");
+    private final static File logArchiveDir = new File("/home/lvuser/frclog-backups");
     private final static SimpleDateFormat ts = new SimpleDateFormat("yyyyMMdd_hhmmss");
     public RobotShutdownHook() {
         createLogArchiveDir();
@@ -20,7 +20,9 @@ public class RobotShutdownHook extends Thread {
 
     protected void createLogArchiveDir() {
         if (! logArchiveDir.exists()) {
-            logArchiveDir.mkdirs();
+            if (! logArchiveDir.mkdirs()) {
+                logger.warn("Failed to create log archive dir '{}''", this.logArchiveDir.getPath());
+            }
             // TODO: prune old logs
         }
     }

@@ -88,8 +88,8 @@ public class AutonomousCommandManager {
         String killSentToCommand = null;
         synchronized(this.commandLock) {
             if (this.currentAutoCommand != null) {
-                this.currentAutoCommand.kill();
                 killSentToCommand = this.currentAutoCommand.getClass().getSimpleName();
+                this.currentAutoCommand.kill();
             }
         }
         if (killSentToCommand != null) {
@@ -249,7 +249,7 @@ public class AutonomousCommandManager {
 
             case Pickup:
                 return new DriverAssistHatchPickupCommand(this.drivetrainSubsystem, 
-                    this.elevatorSubsystem, this.sensorService);
+                    this.elevatorSubsystem, this.sensorService, this.operatorDisplay);
             default:
                 logger.warn("Cannot select a HatchDriverAssistCommand for operation: {}", this.getOperationSelection());
                 return NoOpCommand.getInstance();

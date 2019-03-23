@@ -24,7 +24,7 @@
   <Loggers>
     <Logger name="frc.team6027" level="trace"></Logger>
     <Logger name="frc.team6027.robot.server" level="info"></Logger>
-
+    <Logger name="frc.team6027.robot.commands.ArmMotorCommand" level="info">
     <Logger name="frc.team6027.robot.subsystems.ElevatorSubsystem" level="debug"></Logger>
     <Logger name="frc.team6027.robot.subsystems.RearLiftSubsystem" level="info"></Logger>
     <Logger name="frc.team6027.robot.commands.TeleopManager" level="debug"></Logger>

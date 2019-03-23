@@ -192,7 +192,7 @@ public class TurnCommand extends Command implements PIDOutput {
 		boolean powerDroppedBelowMin = Math.abs(leftPower) <= this.turnMinPower;
 		// If we are between X and 1.5 * X degrees of our target and our power has dropped under a minimum threshold
 		// increase power to an adjusted value in order to get the PID loop going again.
-		if (angleDelta > PID_TOLERANCE_DEGREES) {
+		if (angleDelta > PID_TOLERANCE_DEGREES || powerDroppedBelowMin) {
 			if ((angleDelta < 1.5 * PID_TOLERANCE_DEGREES && powerDroppedBelowMin) || powerDroppedBelowMin) {
 				leftPower  = leftPower < 0.0 ? -1 * this.adjustedPower : this.adjustedPower;
 				logger.info("Power increased to: {}", leftPower);

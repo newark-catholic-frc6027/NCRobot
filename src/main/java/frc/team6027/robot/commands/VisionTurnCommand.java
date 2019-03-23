@@ -16,25 +16,51 @@ public class VisionTurnCommand extends TurnCommand  {
 	protected Datahub visionData;
 	protected boolean visionDataChecked = false;
 	protected boolean visionDataValid = false;
+	protected boolean finished = true;
+	protected Object _finishedLock = new Object();
 
 	public VisionTurnCommand(SensorService sensorService, DrivetrainSubsystem drivetrain,
 			OperatorDisplay operatorDisplay) {
 		
-		this(sensorService, drivetrain, operatorDisplay, null);
+		this(sensorService, drivetrain, operatorDisplay, (String) null);
+		
+	}
+
+	public VisionTurnCommand(SensorService sensorService, DrivetrainSubsystem drivetrain,
+			OperatorDisplay operatorDisplay, Double timeout) {
+		
+		this(sensorService, drivetrain, operatorDisplay, (String) null);
+		if (timeout != null) {
+			this.setTimeout(timeout);
+		}
+		
 	}
 
 	public VisionTurnCommand(SensorService sensorService, DrivetrainSubsystem drivetrain,
 			OperatorDisplay operatorDisplay, String powerPrefName) {
-		
-		super(null, sensorService, drivetrain, operatorDisplay, powerPrefName);
-	    this.visionData = DatahubRegistry.instance().get(VisionDataConstants.VISION_DATA_KEY);
+
+		this(sensorService, drivetrain, operatorDisplay, powerPrefName, null);
 	}
 
-
+	public VisionTurnCommand(SensorService sensorService, DrivetrainSubsystem drivetrain,
+			OperatorDisplay operatorDisplay, String powerPrefName, Double timeout) {
+		super(null, sensorService, drivetrain, operatorDisplay, powerPrefName);
+		this.visionData = DatahubRegistry.instance().get(VisionDataConstants.VISION_DATA_KEY);
+		if (timeout != null) {
+			this.setTimeout(timeout);
+		}
+	}
 
 	@Override
 	public void start() {
-	    logger.info(">>> Vision Turn Command starting, target angle: {}, initial gyro angle", this.targetAngle, this.initialGyroAngle);
+		synchronized (this._finishedLock) {
+			if (! this.finished) {
+				logger.info("Already running Vision Turn, returning");
+				return;
+			}
+			this.finished = false;
+		}
+	    logger.info(">>> Vision Turn Command starting, target angle: {}, initial gyro angle :{}", this.targetAngle, this.initialGyroAngle);
 		super.start();
 	}
 
@@ -43,16 +69,27 @@ public class VisionTurnCommand extends TurnCommand  {
 		if (! this.visionDataValid) {
 			this.isReset = false;
 			logger.warn("Vision data is not valid, not turning.  Command finished.");
+			synchronized (this._finishedLock) {
+				this.finished = true;
+
+			}
 			return true;
 		}
 
-		return super.isFinished();
+		synchronized (this._finishedLock) {
+			this.finished = super.isFinished();
+		}
+		return this.finished;
 	}
+
 	@Override
 	protected void execute() {
+		synchronized (this._finishedLock) {
+			this.finished = false;
+		}
 		if (! visionDataChecked) {
 			this.reset();
-			logger.info(">>> Vision Turn Command starting, target angle: {}, initial gyro angle", this.targetAngle, this.initialGyroAngle);
+			logger.info(">>> Vision Turn Command starting, target angle: {}, initial gyro angle: {}", this.targetAngle, this.initialGyroAngle);
     		this.visionDataValid = this.targetAngle != null;
 			visionDataChecked = true;
 		} 
@@ -79,7 +116,6 @@ public class VisionTurnCommand extends TurnCommand  {
 		logger.info(">>> Vision Turn Command reset, target angle: {}, initial gyro angle", this.targetAngle, this.initialGyroAngle);
 		this.visionDataChecked = false;
 		this.visionDataValid = false;
-
 		super.reset();
 	}
 

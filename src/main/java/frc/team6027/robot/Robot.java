@@ -91,8 +91,8 @@ public class Robot extends TimedRobot {
         this.setArmSubsystem(new ArmSubsystem(this.getOperatorInterface()));
         this.setElevatorSubsystem(new ElevatorSubsystem(this.getSensorService().getLimitSwitchSensors(), this.getOperatorDisplay()));
         this.setPneumaticSubsystem(new PneumaticSubsystem(this.getOperatorDisplay()));
-        this.visionData = new DatahubNetworkTableImpl(VisionDataConstants.VISION_DATA_KEY);
-        // this.visionData = new DatahubRobotServerImpl(VisionDataConstants.VISION_DATA_KEY);
+        //this.visionData = new DatahubNetworkTableImpl(VisionDataConstants.VISION_DATA_KEY);
+        this.visionData = new DatahubRobotServerImpl(VisionDataConstants.VISION_DATA_KEY);
         DatahubRegistry.instance().register(this.visionData);
 
         // This ensures that the Teleop command is running whenever we are not in
@@ -353,12 +353,14 @@ public class Robot extends TimedRobot {
         disp.setFieldValue("Object Selection", this.autoCommandManager.getObjectSelection().name());
         disp.setFieldValue("Operation Selection", this.autoCommandManager.getOperationSelection().name());
 //        disp.setFieldValue("Drivetrain Mode", this.drivetrain.isBrakeModeEnabled() ? "BRAKE" : "COAST");
-        double ultrasonicInches = this.sensorService.getUltrasonicSensor(UltrasonicSensorKey.Front).getDistanceInches();
-        disp.setFieldValue("In range", 
-            ultrasonicInches >= prefs.getDouble("ultrasonic.inRange.lower", 11.0)
-               &&
-            ultrasonicInches <= prefs.getDouble("ultrasonic.inRange.upper", 13.0)
-        );
+        Double ultrasonicInches = this.sensorService.getUltrasonicSensor(UltrasonicSensorKey.Front).getDistanceInches();
+        if (ultrasonicInches != null) {
+            disp.setFieldValue("In range", 
+                ultrasonicInches >= prefs.getDouble("ultrasonic.inRange.lower", 11.0)
+                &&
+                ultrasonicInches <= prefs.getDouble("ultrasonic.inRange.upper", 13.0)
+            );
+        }
         disp.setFieldValue("Auto", this.autoCommandManager.isAutoCommandRunning());
 
         /*

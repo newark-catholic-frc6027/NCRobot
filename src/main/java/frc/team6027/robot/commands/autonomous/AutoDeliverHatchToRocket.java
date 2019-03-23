@@ -91,19 +91,19 @@ public class AutoDeliverHatchToRocket extends CommandGroup implements KillableAu
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
         );
 
-        this.addSequential(new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
+        this.addSequential(new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay), 1.0);
 
         // Travel toward rocket
         this.addSequential(new DriveStraightCommand("B-L3-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "B-P3-Storm-Hatch", 
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
         );
 
-        this.addSequential(new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
+        this.addSequential(new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay), 1.0);
         // Travel toward rocket
         this.addSequential(new DriveStraightCommand("B-L4-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "B-P4-Storm-Hatch", 
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
         );
-        this.addSequential(new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
+        this.addSequential(new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay), 1.0);
 
         // TODO: replace this with Vision turn, use VisionTurnCommand
         // TODO: Add logic to handle potential failure of Vision turn
