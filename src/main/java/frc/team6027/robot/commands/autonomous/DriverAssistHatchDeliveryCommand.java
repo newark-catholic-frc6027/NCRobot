@@ -33,7 +33,8 @@ public class DriverAssistHatchDeliveryCommand extends CommandGroup implements Ki
         this.elevatorSubsystem = elevatorSubsystem;
 
         // Run elevator to set point
-//        this.addSequential(makeElevatorCommand(levelSelection));
+        this.addSequential(makeElevatorCommand(levelSelection));
+/*
         // Drive in
         this.addSequential(new DriveStraightCommand("E-L1-DriverAssist-Hatch", DriveDistanceMode.DistanceFromObject, "E-P1-DriverAssist-Hatch", 
             null, this.sensorService, drivetrainSubsystem, operatorDisplay));
@@ -46,7 +47,7 @@ public class DriverAssistHatchDeliveryCommand extends CommandGroup implements Ki
         this.addSequential(new ToggleKickHatchCommand(pneumaticsSubsystem));
         // Run elevator to set point
 //        this.addSequential(new ElevatorCommand("elevator.driving.height", "elevatorCommand.power", this.sensorService, this.elevatorSubsystem));
-        
+*/        
     }
     
     @Override
@@ -93,7 +94,7 @@ public class DriverAssistHatchDeliveryCommand extends CommandGroup implements Ki
                 break;
         }
 
-        Command cmd = new ElevatorCommand(prefName, "E-P3-DriverAssist-Hatch", this.sensorService, this.elevatorSubsystem);
+        Command cmd = new ElevatorCommand(prefName, "E-P1-DriverAssist-Hatch", this.sensorService, this.elevatorSubsystem);
         return cmd;
     }
 

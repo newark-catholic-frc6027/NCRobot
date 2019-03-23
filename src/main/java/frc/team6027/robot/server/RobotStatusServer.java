@@ -15,7 +15,7 @@ import frc.team6027.robot.data.DatahubRegistry;
 
 
 public class RobotStatusServer {
-    protected static final int CLIENT_POOL_SIZE = 5;
+    protected static final int CLIENT_POOL_SIZE = 8;
 
     // As far as I know, available "team use" ports are numbered 5800-5810
     public static final int DEFAULT_ROBOT_SERVER_PORT = 5801;

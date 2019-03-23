@@ -144,6 +144,7 @@ public class TeleopManager extends Command {
         // **** B button - Executes driver assist command
         this.bButton = new JoystickButton(this.joystick, this.joystick.getBButtonNumber());   
         this.bButton.whenPressed(new ScheduleCommand(() -> AutonomousCommandManager.instance().chooseDriverAssistCommand()));
+
         
 /*
         this.shiftGearButton = new JoystickButton(this.joystick, this.joystick.getRightBumperButtonNumber());

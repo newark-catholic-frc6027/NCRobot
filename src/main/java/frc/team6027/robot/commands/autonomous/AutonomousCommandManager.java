@@ -250,6 +250,7 @@ public class AutonomousCommandManager {
             case Pickup:
                 return new DriverAssistHatchPickupCommand(this.drivetrainSubsystem, 
                     this.elevatorSubsystem, this.sensorService, this.operatorDisplay);
+                    
             default:
                 logger.warn("Cannot select a HatchDriverAssistCommand for operation: {}", this.getOperationSelection());
                 return NoOpCommand.getInstance();
