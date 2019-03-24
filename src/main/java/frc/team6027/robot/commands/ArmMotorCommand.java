@@ -15,7 +15,7 @@ public class ArmMotorCommand extends Command {
     private MotorDirection spinDirection;
 
     public ArmMotorCommand(ArmSubsystem armSubsystem, MotorDirection spinDirection) {
-        this(.50, spinDirection, armSubsystem);
+        this(.65, spinDirection, armSubsystem);
     }
 
     public ArmMotorCommand(double power, MotorDirection spinDirection, ArmSubsystem armSubsystem) {
