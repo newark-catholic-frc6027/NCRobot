@@ -8,6 +8,8 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.comparator.LastModifiedFileComparator;
@@ -26,12 +28,14 @@ public class RobotShutdownHook extends Thread {
     public void pruneLogs() {
         try {
             if (logArchiveDir.exists()) {
-                File[] logFiles = logArchiveDir.listFiles();
-                if (logFiles != null && logFiles.length > MAX_LOG_COUNT) {
-                    Arrays.sort(logFiles, LastModifiedFileComparator.LASTMODIFIED_REVERSE);
-                    for (int i = 0; i < logFiles.length - MAX_LOG_COUNT; i++) {
-                        logFiles[i].delete();
-                        logger.info("Pruned old log file '{}", logFiles[i].getPath());
+                List<File> logFiles = Arrays.asList(logArchiveDir.listFiles()).stream().filter(f -> f.getName().endsWith(".log")).collect(Collectors.toList());
+
+                if (logFiles != null && logFiles.size() > MAX_LOG_COUNT) {
+                    logFiles.sort(LastModifiedFileComparator.LASTMODIFIED_COMPARATOR);
+                    for (int i = 0; i < logFiles.size() - MAX_LOG_COUNT; i++) {
+                        File f = logFiles.get(i);
+                        f.delete();
+                        logger.info("Pruned old log file '{}", f.getPath());
                     }
                 }
             }
