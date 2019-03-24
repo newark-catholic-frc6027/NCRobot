@@ -45,7 +45,9 @@ public class TurnCommand extends Command implements PIDOutput {
 	protected String turnPowerPrefName = null;
 	protected double turnMinPower;
 	protected double adjustedPower;
-    protected boolean isReset = false;
+	protected boolean isReset = false;
+	protected double lastYaw = 0.0;
+	protected long unchangedYawStartMs = -1;
 
 	public TurnCommand(String anglePrefName, SensorService sensorService, DrivetrainSubsystem drivetrain,
 		OperatorDisplay operatorDisplay) {
@@ -199,20 +201,48 @@ public class TurnCommand extends Command implements PIDOutput {
 		
 		double leftPower = 0;
 		double rightPower = 0;
-		
 		leftPower = pidOutput;
-		double angleDelta = Math.abs(this.targetAngle - this.gyro.getYawAngle());
+		double currentYaw =  this.gyro.getYawAngle();
+		double angleDelta = Math.abs(this.targetAngle - currentYaw);
+		if (currentYaw == this.lastYaw) {
+			long currentTs = System.currentTimeMillis();
+			if (unchangedYawStartMs == -1) {
+				unchangedYawStartMs = currentTs;
+			}
+			if (currentTs-unchangedYawStartMs >= 500) {
+				logger.error("@@@@@@@@@! Gyro angle not changing! currentYaw: {}, lastYaw: {}", currentYaw, lastYaw);
+			}
+		} else {
+			unchangedYawStartMs = -1;
+		}
 		boolean powerDroppedBelowMin = Math.abs(leftPower) <= this.turnMinPower;
 		// If we are between X and 1.5 * X degrees of our target and our power has dropped under a minimum threshold
 		// increase power to an adjusted value in order to get the PID loop going again.
+		if (powerDroppedBelowMin) {
+			// If our rate slows down below threshold, just cancel the command.  we're done.
+			if (angleDelta <= PID_TOLERANCE_DEGREES) {
+				if ( Math.abs(this.gyro.getRate()) <= pidAngleStopThreshold) {
+					this.cancel();
+				}
+			} else {
+				// Power is below min, but we aren't within tolerance yet, increase power
+				leftPower  = leftPower < 0.0 ? -1 * this.adjustedPower : this.adjustedPower;
+				rightPower = -1 * leftPower;
+				logger.info("Power increased to: {}", leftPower);
+			}
+		} else {
+			// Let pid resume control
+			rightPower = -1 * leftPower;
+		}
+/*
 		if (angleDelta > PID_TOLERANCE_DEGREES || powerDroppedBelowMin) {
 			if ((angleDelta < 1.5 * PID_TOLERANCE_DEGREES && powerDroppedBelowMin) || powerDroppedBelowMin) {
 				leftPower  = leftPower < 0.0 ? -1 * this.adjustedPower : this.adjustedPower;
 				logger.info("Power increased to: {}", leftPower);
 			}
 		}
-
 		rightPower = -1 * leftPower;
+*/
 			
 		if (this.execCount % 4 == 0) {
 			logger.trace("yaw: {}, pid: {}, gyro rate: {}, leftPower: {}, rightPower: {}", 
@@ -223,7 +253,8 @@ public class TurnCommand extends Command implements PIDOutput {
 					String.format("%.3f", rightPower));
 		}
 		
-		this.drivetrain.tankDrive(leftPower, rightPower);           
+		this.drivetrain.tankDrive(leftPower, rightPower);
+		this.lastYaw = currentYaw;           
 	}
 
 	public double getTargetAngle() {

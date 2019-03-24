@@ -117,7 +117,7 @@ public class VisionTurnCommand extends TurnCommand implements KillableAutoComman
 	protected void reset() {
 
 		this.targetAngle = this.sensorService.getCurAngleHeadingToVisionTarget();
-		logger.info(">>> Vision Turn Command reset, target angle: {}, initial gyro angle", this.targetAngle, this.initialGyroAngle);
+		logger.info(">>> Vision Turn Command reset, target angle: {}, initial gyro angle: {}", this.targetAngle, this.initialGyroAngle);
 		this.visionDataChecked = false;
 		this.visionDataValid = false;
 		super.reset();
