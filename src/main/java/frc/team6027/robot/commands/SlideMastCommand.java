@@ -5,7 +5,6 @@ import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.sensors.LimitSwitchSensors;
 import frc.team6027.robot.sensors.LimitSwitchSensors.LimitSwitchId;
 import frc.team6027.robot.sensors.SensorService;
-import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import frc.team6027.robot.subsystems.ElevatorSubsystem;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
