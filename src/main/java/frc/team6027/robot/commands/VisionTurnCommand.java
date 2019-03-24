@@ -93,6 +93,7 @@ public class VisionTurnCommand extends TurnCommand implements KillableAutoComman
 		if (! visionDataChecked) {
 			this.reset();
 			logger.info(">>> Vision Turn Command starting, target angle: {}, initial gyro angle: {}", this.targetAngle, this.initialGyroAngle);
+			this.registerAsKillable();
     		this.visionDataValid = this.targetAngle != null;
 			visionDataChecked = true;
 		} 
