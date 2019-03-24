@@ -250,6 +250,11 @@ public class TeleopManager extends Command {
 
         this.rightBumperButton2 = new JoystickButton(this.joystick2, this.joystick2.getRightBumperButtonNumber());
         this.rightBumperButton2.whenPressed(new SelectionCommand(ObjectSelection.Hatch));
+
+        // Just in case Kicker gets out of sync`
+        this.xButton2 = new JoystickButton(this.joystick2, this.joystick2.getXButtonNumber());   
+        this.xButton2.whenPressed(new ToggleKickHatchCommand(this.pneumaticSubsystem));
+
 /*
         this.backButton2 = new JoystickButton(this.joystick2, this.joystick2.getBackButtonNumber());   
         this.backButton2.whenPressed(new ClearDriverSelectionsCommand());
