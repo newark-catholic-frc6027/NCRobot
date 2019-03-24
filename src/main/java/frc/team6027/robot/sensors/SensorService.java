@@ -63,8 +63,11 @@ public class SensorService {
     public void resetAll() {
         logger.info("SensorService is resetting all sensors...");
         this.getGyroSensor().reset();
+        logger.info("GYRO RESET");
         this.getEncoderSensors().reset();
-// TODO: keep or not?  this.getEncoderSensors().getElevatorEncoder().reset();
+        logger.info("MOTOR ENCODERS RESET");
+        this.getEncoderSensors().getElevatorEncoder().reset();
+        logger.info("ELEVATOR STRING ENCODER RESET");
     }
 
 

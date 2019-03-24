@@ -77,26 +77,6 @@ public class EncoderSensors {
 
     protected void initialize() {
         this.reset();
-        /*
-        double factor =  Preferences.getInstance().getDouble("driveStraightCommand.distanceFactor", 1.0);
-        double adjustedDistancePerRevolution = factor * DISTANCE_PER_REVOLUTION;
-        double distancePerPulse = adjustedDistancePerRevolution / PULSE_PER_REVOLUTION;
-        
-        // TODO: define as constants
-        getRightEncoder().setMaxPeriod(.1);
-        getRightEncoder().setMinRate(10);
-        getRightEncoder().setReverseDirection(true);
-        getRightEncoder().setSamplesToAverage(7);
-        getRightEncoder().setDistancePerPulse(distancePerPulse);
-        getRightEncoder().reset();
-        
-        getLeftEncoder().setMaxPeriod(.1);
-        getLeftEncoder().setMinRate(10);
-        getLeftEncoder().setReverseDirection(true);
-        getLeftEncoder().setSamplesToAverage(7);
-        getLeftEncoder().setDistancePerPulse(distancePerPulse);
-        getLeftEncoder().reset();
-        */
     }
     
     public MotorEncoder getRightEncoder() {      
@@ -106,7 +86,9 @@ public class EncoderSensors {
 
     public void reset() {
         this.encoderRegistry.get(EncoderKey.DriveMotorLeft).reset();
+        logger.info("LEFT MOTOR ENCODER RESET");
         this.encoderRegistry.get(EncoderKey.DriveMotorRight).reset();
+        logger.info("RIGHT MOTOR ENCODER RESET");
     }
     
     public MotorEncoder getLeftEncoder() {      
