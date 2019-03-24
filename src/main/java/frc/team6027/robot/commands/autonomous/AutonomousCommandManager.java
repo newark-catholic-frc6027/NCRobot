@@ -126,6 +126,12 @@ public class AutonomousCommandManager {
         }
     }
 
+    public boolean isAutoCommandRunning(Class<? extends Command> ofThisType) {
+        synchronized(this.commandLock) {
+            return this.currentAutoCommand != null && ofThisType == this.currentAutoCommand.getClass();
+        }
+    }
+
     
     public static void initAutoScenarioDisplayValues(OperatorDisplay operatorDisplay) {
         operatorDisplay.registerAutoScenario(AutonomousPreference.Rocket.displayName());

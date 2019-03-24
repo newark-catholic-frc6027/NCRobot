@@ -3,13 +3,14 @@ package frc.team6027.robot.commands;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
+import frc.team6027.robot.commands.autonomous.KillableAutoCommand;
 import frc.team6027.robot.data.Datahub;
 import frc.team6027.robot.data.DatahubRegistry;
 import frc.team6027.robot.data.VisionDataConstants;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 
-public class VisionTurnCommand extends TurnCommand  {
+public class VisionTurnCommand extends TurnCommand implements KillableAutoCommand  {
     public static final String NAME = "VisionTurn";
 	private final Logger logger = LogManager.getLogger(getClass());
 
@@ -60,7 +61,9 @@ public class VisionTurnCommand extends TurnCommand  {
 			}
 			this.finished = false;
 		}
-	    logger.info(">>> Vision Turn Command starting, target angle: {}, initial gyro angle :{}", this.targetAngle, this.initialGyroAngle);
+        this.registerAsKillable();
+        logger.info(">>>>>>>>>>>>>>>>>>>> {} command STARTING", this.getClass().getSimpleName());
+	    logger.info(">>> Vision Turn Command, target angle: {}, initial gyro angle :{}", this.targetAngle, this.initialGyroAngle);
 		super.start();
 	}
 
@@ -118,6 +121,35 @@ public class VisionTurnCommand extends TurnCommand  {
 		this.visionDataValid = false;
 		super.reset();
 	}
+
+	@Override
+	public void registerAsKillable() {
+		this.default_registerAsKillable();
+	}
+
+	@Override
+	public void onComplete() {
+		this.default_onComplete();
+	}
+
+    @Override
+    public void end() {
+        this.onComplete();
+        super.end();
+        this.logger.info(">>>>>>>>>>>>>>>>>>>> {} command ENDED", this.getClass().getSimpleName());
+    }
+
+    @Override
+    public void cancel() {
+        this.onComplete();
+        super.cancel();
+    }
+
+    @Override
+    protected void interrupted() {
+        this.onComplete();
+        super.interrupted();
+    }
 
 
 }

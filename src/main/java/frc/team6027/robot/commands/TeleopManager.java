@@ -134,7 +134,14 @@ public class TeleopManager extends Command {
 
         // **** Back button - Run vision turn command
         this.startButton = new JoystickButton(this.joystick, this.joystick.getStartButtonNumber());
-        this.startButton.whenPressed(new VisionTurnCommand(this.sensorService, this.drivetrain, this.operatorDisplay, 1.0));
+//        this.startButton.whenPressed(new VisionTurnCommand(this.sensorService, this.drivetrain, this.operatorDisplay, 1.0));
+        this.startButton.whenPressed(
+            new ScheduleCommand<VisionTurnCommand>(
+                () -> new VisionTurnCommand(this.sensorService, this.drivetrain, this.operatorDisplay, 1.0), 
+                VisionTurnCommand.class,
+                true
+            )
+        );
 
         // **** X button - Kicks the hatch
         this.xButton = new JoystickButton(this.joystick, this.joystick.getXButtonNumber());   
@@ -143,7 +150,13 @@ public class TeleopManager extends Command {
 
         // **** B button - Executes driver assist command
         this.bButton = new JoystickButton(this.joystick, this.joystick.getBButtonNumber());   
-        this.bButton.whenPressed(new ScheduleCommand(() -> AutonomousCommandManager.instance().chooseDriverAssistCommand()));
+        this.bButton.whenPressed(
+            new ScheduleCommand<Command>(
+                () -> AutonomousCommandManager.instance().chooseDriverAssistCommand(),
+                Command.class,
+                true
+            )
+        );
 
         
 /*

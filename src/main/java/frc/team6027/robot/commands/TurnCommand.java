@@ -130,6 +130,8 @@ public class TurnCommand extends Command implements PIDOutput {
 
 	@Override
 	public void cancel() {
+		this.logger.info(">>>>>>>>>>>>>>>>>>>> {} command CANCELED", this.getClass().getSimpleName());
+
 		this.isReset = false;
 
 		if (this.pidController != null) {
@@ -137,6 +139,17 @@ public class TurnCommand extends Command implements PIDOutput {
 		}
 		super.cancel();
 	}
+
+    @Override
+    protected void interrupted() {
+        this.logger.info(">>>>>>>>>>>>>>>>>>>> {} command INTERRUPTED", this.getClass().getSimpleName());
+		this.isReset = false;
+
+		if (this.pidController != null) {
+			this.pidController.disable();
+		}
+        super.interrupted();
+    }
 
 	protected void reset() {
         if (isReset) {

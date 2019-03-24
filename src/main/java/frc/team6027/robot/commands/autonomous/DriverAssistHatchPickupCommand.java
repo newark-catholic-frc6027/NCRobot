@@ -44,15 +44,7 @@ public class DriverAssistHatchPickupCommand extends CommandGroup implements Kill
         this.logger.info(">>>>>>>>>>>>>>>>>>>> {} command STARTING", this.getClass().getSimpleName());
         super.start();
     }
-
-	@Override
-    protected boolean isFinished() {
-        return true;
-    }
     
-    protected void execute() {
-    }
-
     @Override
     public void registerAsKillable() {
         this.default_registerAsKillable();
