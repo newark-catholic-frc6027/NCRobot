@@ -215,11 +215,12 @@ public class TeleopManager extends Command {
    
     protected void initializeJoystick2() {
         
+        /*
         this.backButton2 = new JoystickButton(this.joystick2, this.joystick2.getBackButtonNumber());
         this.backButton2.toggleWhenPressed(new AutoDeliverHatchToRocket(StationPosition.Left, this.sensorService, this.drivetrain, 
             this.pneumaticSubsystem, this.elevatorSubsystem, this.operatorDisplay, this.field)
         );
-        
+        */
 /*        
         this.rightBumperButton2 = new JoystickButton(this.joystick2, this.joystick2.getRightBumperButtonNumber());
         this.rightBumperButton2.whenPressed(  new AutoDeliverHatchToCargoShipSide(StationPosition.Left, 
@@ -229,10 +230,11 @@ public class TeleopManager extends Command {
             this.pneumaticSubsystem, this.elevatorSubsystem, this.operatorDisplay, this.field)
         );
         */
+        /*
         this.xButton2 = new JoystickButton(this.joystick2, this.joystick2.getXButtonNumber());   
         this.xButton2.whenPressed(new AutoDeliverHatchToCargoShipSide(StationPosition.Left, 
             this.sensorService, this.drivetrain, this.pneumaticSubsystem, this.elevatorSubsystem, this.operatorDisplay, this.field));
-
+        */
         this.yButton2 = new JoystickButton(this.joystick2, this.joystick2.getYButtonNumber());  
         this.yButton2.whenPressed(new SelectionCommand(LevelSelection.Upper));
 
