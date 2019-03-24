@@ -2,24 +2,24 @@ package frc.team6027.robot.commands.autonomous;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Arrays;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
-import frc.team6027.robot.commands.DriveStraightCommand;
 import frc.team6027.robot.commands.ElevatorCommand;
-import frc.team6027.robot.commands.ToggleDrivetrainModeCommand;
+import frc.team6027.robot.commands.ResetElevatorEncoderCommand;
+import frc.team6027.robot.commands.ResetGyroCommand;
+import frc.team6027.robot.commands.ResetMotorEncodersCommand;
+import frc.team6027.robot.commands.SlideMastCommand;
 import frc.team6027.robot.commands.TurnCommand;
 import frc.team6027.robot.commands.VisionTurnCommand;
-import frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
+import frc.team6027.robot.commands.SlideMastCommand.SlideMastDirection;
 import frc.team6027.robot.field.Field;
 import frc.team6027.robot.field.LevelSelection;
 import frc.team6027.robot.field.ObjectSelection;
 import frc.team6027.robot.field.OperationSelection;
 import frc.team6027.robot.field.StationPosition;
 import frc.team6027.robot.sensors.SensorService;
-import frc.team6027.robot.sensors.EncoderSensors.EncoderKey;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import frc.team6027.robot.subsystems.ElevatorSubsystem;
 import frc.team6027.robot.subsystems.PneumaticSubsystem;
@@ -36,17 +36,15 @@ public class AutonomousCommandManager {
 
     private static AutonomousCommandManager instance = new AutonomousCommandManager();
 
-    
-
     private Field field;
     private AutonomousPreference preferredAutoScenario;
     private SensorService sensorService;
-    private DrivetrainSubsystem drivetrainSubsystem;
+    private DrivetrainSubsystem drivetrain;
     private PneumaticSubsystem pneumaticSubsystem;
     private OperatorDisplay operatorDisplay;
     private Preferences prefs = Preferences.getInstance();
     private Map<String,Command> commandsByName = new HashMap<>();
-    private ElevatorSubsystem elevatorSubsystem;
+    private ElevatorSubsystem elevator;
 
     private boolean initialized = false;
     private KillableAutoCommand currentAutoCommand;
@@ -72,9 +70,9 @@ public class AutonomousCommandManager {
         this.field = field;
         if (! this.initialized) {
             this.sensorService = sensorService;
-            this.drivetrainSubsystem = drivetrainSubsystem;
+            this.drivetrain = drivetrainSubsystem;
             this.pneumaticSubsystem = pneumaticSubsystem;
-            this.elevatorSubsystem = elevatorSubsystem;
+            this.elevator = elevatorSubsystem;
             this.operatorDisplay = operatorDisplay;
         }
         
@@ -193,8 +191,8 @@ public class AutonomousCommandManager {
         switch (autoPreference) {
             case CargoFrontLeft:
                 chosenCommand = new AutoDeliverHatchToCargoShipFrontFromCenterPosition(
-                    autoPreference, sensorService, drivetrainSubsystem,
-                    pneumaticSubsystem, elevatorSubsystem, operatorDisplay, field
+                    autoPreference, sensorService, drivetrain,
+                    pneumaticSubsystem, elevator, operatorDisplay, field
                 );
                 break;
             case CargoFrontRight:
@@ -214,14 +212,14 @@ public class AutonomousCommandManager {
         switch (autoPreference) {
             case CargoSide:
                 chosenCommand = new AutoDeliverHatchToCargoShipSide(
-                    position, sensorService, drivetrainSubsystem,
-                    pneumaticSubsystem, elevatorSubsystem, operatorDisplay, field
+                    position, sensorService, drivetrain,
+                    pneumaticSubsystem, elevator, operatorDisplay, field
                 );
                 break;
             case Rocket:
                 chosenCommand = new AutoDeliverHatchToRocket(
-                    position, sensorService, drivetrainSubsystem,
-                    pneumaticSubsystem, elevatorSubsystem, operatorDisplay, field
+                    position, sensorService, drivetrain,
+                    pneumaticSubsystem, elevator, operatorDisplay, field
                 );
                 break;
             case CargoFrontLeft:
@@ -248,8 +246,8 @@ public class AutonomousCommandManager {
     protected Command chooseBallDriverAssistCommand() {
         switch (this.getOperationSelection()) {
             case Deliver:
-                return new DriverAssistBallDeliveryCommand(this.getLevelSelection(), this.drivetrainSubsystem, 
-                    this.elevatorSubsystem, this.sensorService);
+                return new DriverAssistBallDeliveryCommand(this.getLevelSelection(), this.drivetrain, 
+                    this.elevator, this.sensorService);
             default:
                 logger.warn("Cannot select a BallDriverAssistCommand for operation: {}", this.getOperationSelection());
                 return NoOpCommand.getInstance();
@@ -259,12 +257,12 @@ public class AutonomousCommandManager {
     protected Command chooseHatchDriverAssistCommand() {
         switch(this.getOperationSelection()) {
             case Deliver:
-                return new DriverAssistHatchDeliveryCommand(this.getLevelSelection(), this.drivetrainSubsystem, 
-                    this.elevatorSubsystem, this.pneumaticSubsystem, this.sensorService, this.operatorDisplay);
+                return new DriverAssistHatchDeliveryCommand(this.getLevelSelection(), this.drivetrain, 
+                    this.elevator, this.pneumaticSubsystem, this.sensorService, this.operatorDisplay);
 
             case Pickup:
-                return new DriverAssistHatchPickupCommand(this.drivetrainSubsystem, 
-                    this.elevatorSubsystem, this.sensorService, this.operatorDisplay);
+                return new DriverAssistHatchPickupCommand(this.drivetrain, 
+                    this.elevator, this.sensorService, this.operatorDisplay);
                     
             default:
                 logger.warn("Cannot select a HatchDriverAssistCommand for operation: {}", this.getOperationSelection());
@@ -305,11 +303,11 @@ public class AutonomousCommandManager {
     }
 
     protected DrivetrainSubsystem getDrivetrainSubsystem() {
-        return drivetrainSubsystem;
+        return drivetrain;
     }
 
     protected void setDrivetrainSubsystem(DrivetrainSubsystem drivetrainSubsystem) {
-        this.drivetrainSubsystem = drivetrainSubsystem;
+        this.drivetrain = drivetrainSubsystem;
     }
 
     protected PneumaticSubsystem getPneumaticSubsystem() {
@@ -329,50 +327,38 @@ public class AutonomousCommandManager {
     }
 
     protected ElevatorSubsystem getElevatorSubsystem() {
-        return elevatorSubsystem;
+        return elevator;
     }
 
     protected void setElevatorSubsystem(ElevatorSubsystem elevatorSubsystem) {
-        this.elevatorSubsystem = elevatorSubsystem;
+        this.elevator = elevatorSubsystem;
     }
     
 	public void initOperatorDisplayCommands() {
-        this.getOperatorDisplay().setData("Turn", new TurnCommand("turnButton.angle", this.sensorService, this.drivetrainSubsystem, this.operatorDisplay, "turnButton.power"));
-        this.getOperatorDisplay().setData("Reset Elevator Encoder", new Command() {
+        this.getOperatorDisplay().setData("Turn", new TurnCommand("turnButton.angle", this.sensorService, this.drivetrain, this.operatorDisplay, "turnButton.power"));
+        this.getOperatorDisplay().setData("Reset Elevator Encoder", new ResetElevatorEncoderCommand(this.sensorService));
+        this.getOperatorDisplay().setData("Reset Motor Encoders", new ResetMotorEncodersCommand(this.sensorService));
+        this.getOperatorDisplay().setData("Reset Gyro", new ResetGyroCommand(this.sensorService));
 
-            @Override
-            protected boolean isFinished() {
-                return true;
-            }
-
-            protected void execute() {
-                AutonomousCommandManager.this.getSensorService().getEncoderSensors().getElevatorEncoder().reset();
-            }
-        });
-
-        this.getOperatorDisplay().setData("Drive Str8 w/Ult", 
-            new DriveStraightCommand(this.sensorService, this.drivetrainSubsystem, 
-                this.operatorDisplay, 12.0, DriveDistanceMode.DistanceFromObject, 0.7)
+        this.getOperatorDisplay().setData("Run Auto", this.chooseCommand());
+        this.getOperatorDisplay().setData("Run DriverAssist", 
+            new ScheduleCommand<Command>(
+                () -> this.chooseDriverAssistCommand(),
+                Command.class,
+                true
+            )
         );
 
-        this.getOperatorDisplay().setData("Reset Motor Encoders", new Command() {
-            @Override
-            protected boolean isFinished() {
-                return true;
-            }
+        this.getOperatorDisplay().setData("Vision Turn", 
+            new ScheduleCommand<VisionTurnCommand>(
+                () -> new VisionTurnCommand(this.sensorService, this.drivetrain, this.operatorDisplay, "visionTurnCommand.power", 1.0), 
+                VisionTurnCommand.class,
+                true
+            )
+        );
 
-            protected void execute() {
-                AutonomousCommandManager.this.getSensorService().getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorLeft).reset();
-                AutonomousCommandManager.this.getSensorService().getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorRight).reset();
-            }
-        });
-
-        this.getOperatorDisplay().setData("Hatch", new AutoDeliverHatchToRocketUsingBackwardDeparture(StationPosition.Left, this.sensorService, this.drivetrainSubsystem, 
-           this.pneumaticSubsystem, this.elevatorSubsystem, this.operatorDisplay, this.field));
-
-        this.getOperatorDisplay().setData("Vision Turn", new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay, "visionTurnCommand.power"));
-
-        this.getOperatorDisplay().setData("Elevator", new ElevatorCommand("elevatorCommand.height", "elevatorCommand.power", this.sensorService, this.elevatorSubsystem));
+        this.getOperatorDisplay().setData("Elevator", new ElevatorCommand("elevatorCommand.height", "elevatorCommand.power", this.sensorService, this.elevator));
+        this.getOperatorDisplay().setData("Slide Mast", new SlideMastCommand(SlideMastDirection.Forward, 1.0, this.sensorService, this.elevator));
 
  	}
 
