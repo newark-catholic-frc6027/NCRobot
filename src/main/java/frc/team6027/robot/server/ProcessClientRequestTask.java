@@ -21,6 +21,8 @@ public class ProcessClientRequestTask implements Runnable {
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
     private static final String PYTHON_SIMPLE_RESPONSE_TEMPLATE = "{'result' : '%s'}";
     private static final String PYTHON_TIME_RESPONSE_TEMPLATE = "{'result' : '%s', 'timestamp': '%s'}";
+    private static final String VISION_DATA_MESSAGE_TOKEN = "vision-data;";
+    private static final int VISION_DATA_MESSAGE_TOKEN_LEN = VISION_DATA_MESSAGE_TOKEN.length();
 
     private final Socket clientSocket;
     private final RobotStatusServer server;
@@ -46,11 +48,14 @@ public class ProcessClientRequestTask implements Runnable {
                     logger.debug("Got vision-ping, sending 'robot-pong'");
                     String currentTime = TIME_FORMAT.format(new Date());
                     out.println(String.format(PYTHON_TIME_RESPONSE_TEMPLATE, "robot-pong", currentTime));
-                } else if (msg.startsWith("vision-data")) {
+                } else if (msg.startsWith(VISION_DATA_MESSAGE_TOKEN)) {
+                    // reply immediately with OK
                     out.println(String.format(PYTHON_SIMPLE_RESPONSE_TEMPLATE, "OK"));
                     this.visionDatahub = DatahubRegistry.instance().get(VisionDataConstants.VISION_DATA_KEY);
-                    msg = msg.replace("vision-data;", "");
-                    this.processVisionData(msg);
+                    if (msg.length() > VISION_DATA_MESSAGE_TOKEN_LEN) {
+                        msg = msg.substring(VISION_DATA_MESSAGE_TOKEN_LEN);
+                        this.processVisionData(msg);
+                    }
                 } else if ("stop".equals(msg)) {
                     server.stop();
                 } else {
@@ -65,7 +70,7 @@ public class ProcessClientRequestTask implements Runnable {
     }
 
     protected void processVisionData(String msg) {
-        if (visionDatahub != null) {
+        if (this.visionDatahub != null) {
             String[] msgParts = msg.split(";");
             Map<String, Object> visionData = new HashMap<>();
             for (String msgPart : msgParts) {
@@ -81,8 +86,10 @@ public class ProcessClientRequestTask implements Runnable {
             }
             if (visionData.size() > 0) {
                 this.visionDatahub.put(visionData, true);
-                logger.trace("Dump of vision data...");
-                this.visionDatahub.getAll().forEach((key,value) -> logger.trace("key={}, value={}", key, this.visionDatahub.getDouble(key)));
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Dump of vision data...");
+                    this.visionDatahub.getAll().forEach((key,value) -> logger.trace("key={}, value={}", key, this.visionDatahub.getDouble(key)));
+                }
             }
         } else {
             logger.warn("Vision datahub doesn't exist yet, not retaining received vision data: [{}]", msg);
