@@ -114,7 +114,7 @@ public class Robot extends TimedRobot {
 
         this.autoCommandManager.initOperatorDisplayCommands();
         this.sensorService.resetAll();
-        this.drivetrain.enableBrakeMode();
+//        this.drivetrain.enableBrakeMode();
 
         // Start a SocketServer to listen for client ping requests.  This allows us
         // to let other processes (such as vision) know that the robot server is ready
@@ -160,10 +160,14 @@ public class Robot extends TimedRobot {
 
     }
 
-    protected void applyStationPosition() {
-        this.getField().setOurStationPosition(
-            StationPosition.fromInt(this.getOperatorDisplay().getSelectedPosition())
-        );
+    protected StationPosition applyStationPosition() {
+        StationPosition pos = StationPosition.fromInt(this.getOperatorDisplay().getSelectedPosition());
+        if (pos != null) {
+            this.getField().setOurStationPosition(pos);
+        } else {
+            logger.error("!!!!! No Station Posistion available, !!!!");
+        }
+        return pos;
     }
 
     protected boolean isInMatch() {
@@ -175,20 +179,26 @@ public class Robot extends TimedRobot {
         // TODO: Reset pneumatics
         // TODO: ensure drivetrain in low gear
         // TODO: ensure elevator in high gear
-        this.applyStationPosition();
-        this.drivetrain.enableBrakeMode();
+        StationPosition pos = this.applyStationPosition();
+//        this.drivetrain.enableBrakeMode();
 
         // TODO: LEFT OFF HERE
         this.sensorService.resetAll();
-        this.autonomousCommand = this.autoCommandManager.chooseCommand();
-
-        this.autonomousCommand = this.autoCommandManager.chooseCommand();
-        if (autonomousCommand != null && ! NoOpCommand.getInstance().equals(autonomousCommand) ) {
-//            this.elevatorSubsystem.initialize();
-            autonomousCommand.start();
+        boolean autoStarted = false;
+        if (pos != null) {
+            this.autonomousCommand = this.autoCommandManager.chooseCommand();
+            if (autonomousCommand != null && ! NoOpCommand.getInstance().equals(autonomousCommand) ) {
+                autonomousCommand.start();
+                autoStarted = true;
+            } else {
+                this.autonomousCommand = null;
+                logger.warn("No autonomous command to run!");
+            }
         } else {
-            logger.warn("No autonomous command to run!");
+            logger.error("No station position available, can't run Autonomous!");
         }
+
+        getOperatorDisplay().setFieldValue("Auto Running", autoStarted);
 
     }
 
