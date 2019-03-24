@@ -107,3 +107,9 @@ task(runRobotServer, dependsOn: 'classes', type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     systemProperty 'log4j.configurationFile', './src/main/resources/log4j2-local.xml'
 }
+
+task(testClass, dependsOn: 'classes', type: JavaExec) {
+    main = 'frc.team6027.robot.commands.autonomous.ScheduleCommand'
+    classpath = sourceSets.main.runtimeClasspath
+    systemProperty 'log4j.configurationFile', './src/main/resources/log4j2-local.xml'
+}
