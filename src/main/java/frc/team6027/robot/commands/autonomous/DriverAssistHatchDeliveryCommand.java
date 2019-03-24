@@ -4,10 +4,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 import frc.team6027.robot.OperatorDisplay;
-import frc.team6027.robot.commands.DriveStraightCommand;
 import frc.team6027.robot.commands.ElevatorCommand;
-import frc.team6027.robot.commands.ToggleKickHatchCommand;
-import frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
 import frc.team6027.robot.field.LevelSelection;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
@@ -94,7 +91,7 @@ public class DriverAssistHatchDeliveryCommand extends CommandGroup implements Ki
                 break;
         }
 
-        Command cmd = new ElevatorCommand(prefName, "E-P1-DriverAssist-Hatch", this.sensorService, this.elevatorSubsystem);
+        Command cmd = new ElevatorCommand(prefName, "E-P0-DriverAssist-Hatch", this.sensorService, this.elevatorSubsystem);
         return cmd;
     }
 

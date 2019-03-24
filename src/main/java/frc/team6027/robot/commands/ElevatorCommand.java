@@ -17,6 +17,7 @@ public class ElevatorCommand extends Command {
     protected int execCount = 0;
     protected long execStartTime = 0;
 
+    protected double currentHeight = -1;
     
     public enum ElevatorDirection {
         Up,
@@ -108,18 +109,10 @@ public class ElevatorCommand extends Command {
     
     @Override
     protected boolean isFinished() {
+        long start = System.currentTimeMillis();
         boolean bottomSwitchTripped = this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.MastBottom);
         boolean topSwitchTripped = this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.MastTop);
-
-        // Checking isGoingUp/Down may be affecting communication
-        boolean minOrMaxReached = (this.direction == ElevatorDirection.Up && this.elevator.isGoingUp() && (topSwitchTripped || this.isUpwardMaxAmpsExceededWithDelay())) 
-                           ||
-                       (this.direction == ElevatorDirection.Down && this.elevator.isGoingDown() && (bottomSwitchTripped || this.isDownwardMaxAmpsExceededWithDelay()));
-
-        logger.trace("isFinished invoked. minOrMaxReached: {}, targetHeight: {}, currentHeight: {}",
-             minOrMaxReached, this.targetHeight,this.sensorService.getElevatorHeightInches() ); 
-
-        if (minOrMaxReached) {
+        if ((this.elevator.isGoingUp() && topSwitchTripped) || (this.elevator.isGoingDown() && bottomSwitchTripped)) {
             this.elevator.elevatorStop();
             logger.info(">>>>> Elevator command FINISHED. topSwitch: {}, bottomSwitch: {}", topSwitchTripped, bottomSwitchTripped);
             this.clearRequirements();
@@ -130,7 +123,6 @@ public class ElevatorCommand extends Command {
 
         if (this.targetHeight != null) {
             boolean done = false;
-            double currentHeight = this.sensorService.getElevatorHeightInches();
             if (this.direction == ElevatorDirection.Up) {
                 if (currentHeight >= this.targetHeight) {
                     done = true;
@@ -142,11 +134,15 @@ public class ElevatorCommand extends Command {
             }
             if (done) {
                 logger.info(">>>>> Elevator command FINISHED. Reached target height of {}. topSwitch: {}, bottomSwitch: {}", 
-                    this.targetHeight, topSwitchTripped, bottomSwitchTripped);
+                    this.targetHeight);
                 this.clearRequirements();
                 this.isReset = false;
                 return true;
             }
+        }
+        if (this.execCount % 20 == 0) {
+            logger.debug("isFinished ran in {}ms", System.currentTimeMillis() - start);
+
         }
 
         return false;
@@ -194,14 +190,17 @@ public class ElevatorCommand extends Command {
 	}
 
     protected void execute() {
-        logger.trace("execute invoked. targetHeight: {}, currentHeight: {}, direction: {}",
-           this.targetHeight,this.sensorService.getElevatorHeightInches(), this.direction ); 
+        this.execCount++;
+
+        long start = System.currentTimeMillis();
 
         this.execCount++;
         if (this.targetHeight != null) {
+
             // If we have been given a specific height to go to, the direction will be null on the first
             if (this.direction == null) {
-                double currentHeight = this.sensorService.getElevatorHeightInches();
+                //double currentHeight = this.sensorService.getElevatorHeightInches();
+                this.currentHeight = this.sensorService.getElevatorHeightInches();
                 if (this.targetHeight >= currentHeight) {
                     this.direction = ElevatorDirection.Up;
                 } else {
@@ -210,6 +209,7 @@ public class ElevatorCommand extends Command {
                 this.logger.info("Current height is: {}, target height is: {}, moving: {}", currentHeight, this.targetHeight, this.direction);
             }
         }
+        this.currentHeight = this.sensorService.getElevatorHeightInches();
 
         if (this.direction == ElevatorDirection.Up) {
             this.elevator.elevatorUp(power);
@@ -217,6 +217,9 @@ public class ElevatorCommand extends Command {
             this.elevator.elevatorDown(power);
         } else {
             logger.error("Elevator Execute stopped!  Direction not set!");
+        }
+        if (this.execCount % 20 == 0) {
+            logger.debug("Execute ran in {}ms", System.currentTimeMillis() - start);
         }
     }
 
