@@ -70,6 +70,13 @@ public class SlideMastCommand extends Command {
         
         return false;
     }
+
+    @Override
+    public void cancel() {
+        this.elevator.mastSlideStop();
+        this.clearRequirements();
+        super.cancel();
+    }
     
     @Override
     protected boolean isFinished() {

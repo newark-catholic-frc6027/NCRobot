@@ -1,9 +1,31 @@
 <xml version="1.0">
 <dashboard>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
+		<location x="1131" y="4"/>
+		<property name="Text" value="Driver Assist"/>
+	</static-widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
+		<location x="1054" y="3"/>
+		<property name="Text" value="Autonomous"/>
+	</static-widget>
+	<widget field="Run Auto" type="Command" class="edu.wpi.first.smartdashboard.gui.elements.Command">
+		<location x="1078" y="920"/>
+	</widget>
+	<widget field="Run DriverAssist" type="Command" class="edu.wpi.first.smartdashboard.gui.elements.Command">
+		<location x="1078" y="886"/>
+	</widget>
+	<widget field="Slide Mast" type="Command" class="edu.wpi.first.smartdashboard.gui.elements.Command">
+		<location x="1078" y="852"/>
+	</widget>
+	<widget field="Reset Gyro" type="Command" class="edu.wpi.first.smartdashboard.gui.elements.Command">
+		<location x="1078" y="818"/>
+	</widget>
 	<widget field="Auto" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="1059" y="0"/>
-		<width>75</width>
-		<height>817</height>
+		<location x="1129" y="24"/>
+		<width>85</width>
+		<height>793</height>
+		<property name="Color to show when true" value="0.204.0.255"/>
+		<property name="Color to show when false" value="51.51.255.255"/>
 	</widget>
 	<widget field="Object Selection" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
 		<location x="1588" y="153"/>
@@ -33,13 +55,13 @@
 		<property name="Font Size" value="48"/>
 	</widget>
 	<widget field="Hatch" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1301" y="219"/>
+		<location x="1643" y="248"/>
 	</widget>
 	<widget field="Hatch Sol. State" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="1686" y="721"/>
 	</widget>
 	<widget field="Speed" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1227" y="265"/>
+		<location x="1562" y="438"/>
 	</widget>
 	<widget field="Elev bottomLimitTripped?" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="1445" y="807"/>
@@ -94,7 +116,7 @@
 		<location x="1693" y="879"/>
 	</widget>
 	<widget field="Position" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="1206" y="9"/>
+		<location x="1523" y="259"/>
 	</widget>
 	<widget field="Elevator MAX?" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="1693" y="763"/>
@@ -103,7 +125,7 @@
 		<location x="1698" y="805"/>
 	</widget>
 	<widget field="Auto Scenario" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="1351" y="9"/>
+		<location x="1664" y="296"/>
 	</widget>
 	<widget field="Right Motor Dist" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="1454" y="901"/>
@@ -116,7 +138,7 @@
 		<height>20</height>
 	</widget>
 	<widget field="Elevator Dist" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1187" y="480"/>
+		<location x="1418" y="484"/>
 	</widget>
 	<widget field="Left Motor Dist" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="1640" y="934"/>
@@ -126,6 +148,12 @@
 	</widget>
 	<widget field="Elevator" type="Command" class="edu.wpi.first.smartdashboard.gui.elements.Command">
 		<location x="886" y="879"/>
+	</widget>
+	<widget field="Auto Running" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="1050" y="25"/>
+		<width>132</width>
+		<height>792</height>
+		<property name="Color to show when false" value="51.51.255.255"/>
 	</widget>
 	<widget field="In range" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
 		<location x="6" y="0"/>
