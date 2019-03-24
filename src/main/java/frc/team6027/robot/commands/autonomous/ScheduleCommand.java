@@ -42,6 +42,7 @@ public class ScheduleCommand<T extends Command> extends Command {
         Command cmd = null;
         if (this.skipIfAlreadyRunningInAuto) {
             Class<?> cmdClass = this.commandClass;
+            AutonomousCommandManager mgr = AutonomousCommandManager.instance();
             
             // If we are running just a generic Command object,
             // we have to actually invoke the supplier to get the command
@@ -50,22 +51,31 @@ public class ScheduleCommand<T extends Command> extends Command {
             if (this.commandClass == Command.class) {
                 cmd =  this.commandSupplier.get();
                 cmdClass = cmd.getClass();
-                doSchedule = ! AutonomousCommandManager.instance().isAutoCommandRunning(cmd.getClass());
-            } else if (AutonomousCommandManager.instance().isAutoCommandRunning(this.commandClass)) {
+                doSchedule = ! mgr.isAutoCommandRunning(cmd.getClass());
+            } else if (mgr.isAutoCommandRunning(this.commandClass)) {
                 doSchedule = false;
             }
 
             if (! doSchedule) {
-                this.logger.info(">>>>>>>>>>>>>>>>>>>> ScheduleCommand NOT RUN since command of type {} is already running in Auto", 
-                    cmdClass.getSimpleName());
+                this.logger.info(">>>>>>>>>>>>>>>>>>>> ScheduleCommand NOT RUN since command of type {}({}) is already running in Auto. ", 
+                    cmdClass.getSimpleName(), mgr.currentCommandId());
             }
         }
         if (doSchedule) {
             if (cmd == null) {
-                cmd = this.commandSupplier.get();
+                try {
+                    cmd = this.commandSupplier.get();
+                } catch (Exception ex) {
+                    logger.error("Failed to supply command of type {}. Error: {},{}", 
+                        this.commandClass.getSimpleName(), ex.getClass().getName(), ex.getMessage());
+                }
             }
-            this.logger.info(">>>>>>>>>>>>>>>>>>>> Scheduling Command: {}", cmd.getClass().getSimpleName());
-            Scheduler.getInstance().add(cmd);
+            if (cmd != null) {
+                this.logger.info(">>>>>>>>>>>>>>>>>>>> Scheduling Command: {}({})", cmd.getClass().getSimpleName(), Integer.toHexString(cmd.hashCode()));
+                Scheduler.getInstance().add(cmd);
+            } else {
+                this.logger.warn(">>>>>>>>>>>>>>>>>>>> ScheduleCommand NOT RUN since command of type {} was not supplied!", this.commandClass.getSimpleName());
+            }
         }
     }
 

@@ -106,6 +106,15 @@ public class AutonomousCommandManager {
         this.operationSelection = DEFAULT_OPERATION_SELECTION;
     }
 
+    protected KillableAutoCommand getCurrent() {
+        return this.currentAutoCommand;
+    }
+
+    public String currentCommandId() {
+        KillableAutoCommand currCmd = this.getCurrent();
+        return currCmd != null ? Integer.toHexString(currCmd.hashCode()) : null;
+    }
+    
     public void setCurrent(KillableAutoCommand command) {
         synchronized(this.commandLock) {
             this.currentAutoCommand = command;
