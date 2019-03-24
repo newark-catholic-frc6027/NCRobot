@@ -122,6 +122,7 @@ public class Robot extends TimedRobot {
         this.robotStatusServer.start();
 
         AutonomousCommandManager.initAutoScenarioDisplayValues(this.getOperatorDisplay());
+        displayAutoRunning(false);
     }
 
 
@@ -182,7 +183,6 @@ public class Robot extends TimedRobot {
         StationPosition pos = this.applyStationPosition();
 //        this.drivetrain.enableBrakeMode();
 
-        // TODO: LEFT OFF HERE
         this.sensorService.resetAll();
         boolean autoStarted = false;
         if (pos != null) {
@@ -198,8 +198,7 @@ public class Robot extends TimedRobot {
             logger.error("No station position available, can't run Autonomous!");
         }
 
-        getOperatorDisplay().setFieldValue("Auto Running", autoStarted);
-
+        displayAutoRunning(autoStarted);
     }
 
     /**
@@ -216,6 +215,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        displayAutoRunning(false);
+
         // TODO: what needs reset here?
 //        this.getRearLift().initialize();
         // If elevatorSubsystem is already initialized, this will do nothing
@@ -233,6 +234,10 @@ public class Robot extends TimedRobot {
             autonomousCommand.cancel();
         }
 
+    }
+
+    protected void displayAutoRunning(boolean isAutoRunning) {
+        getOperatorDisplay().setFieldValue("Auto Running", isAutoRunning);
     }
 
     /**
