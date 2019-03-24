@@ -56,7 +56,8 @@ public class DriverAssistHatchDeliveryCommand extends CommandGroup implements Ki
 
     @Override
     public void end() {
-        this.onComplete();
+        // When it ends peacefully, clean up the Killable command
+        this.default_onComplete();
         super.end();
         this.logger.info(">>>>>>>>>>>>>>>>>>>> {} command ENDED", this.getClass().getSimpleName());
     }
@@ -102,6 +103,5 @@ public class DriverAssistHatchDeliveryCommand extends CommandGroup implements Ki
 
     @Override
     public void onComplete() {
-        this.default_onComplete();
     }
 }

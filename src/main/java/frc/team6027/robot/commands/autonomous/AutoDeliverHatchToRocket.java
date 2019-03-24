@@ -324,7 +324,7 @@ public class AutoDeliverHatchToRocket extends CommandGroup implements KillableAu
     @Override
     public void onComplete() {
         this.reset();
-        this.default_onComplete();
+//        this.default_onComplete();
     }
 
     @Override

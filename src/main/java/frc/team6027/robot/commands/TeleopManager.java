@@ -8,6 +8,7 @@ import frc.team6027.robot.OperatorInterface;
 import frc.team6027.robot.commands.autonomous.AutoDeliverHatchToRocket;
 import frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
 import frc.team6027.robot.commands.autonomous.AutonomousPreference;
+import frc.team6027.robot.commands.autonomous.DriverAssistHatchDeliveryCommand;
 import frc.team6027.robot.commands.autonomous.KillCurrentAutoCommand;
 import frc.team6027.robot.commands.autonomous.ScheduleCommand;
 import frc.team6027.robot.commands.autonomous.AutoDeliverHatchToCargoShipFrontFromCenterPosition;
@@ -156,6 +157,17 @@ public class TeleopManager extends Command {
                 Command.class,
                 true
             )
+        );
+
+        this.aButton = new JoystickButton(this.joystick, this.joystick.getAButtonNumber());
+        this.aButton.whenPressed(
+            new ScheduleCommand<DriverAssistHatchDeliveryCommand>(
+                () -> new DriverAssistHatchDeliveryCommand(LevelSelection.Lower, drivetrain,
+                    this.elevatorSubsystem, this.pneumaticSubsystem, sensorService, operatorDisplay),
+                DriverAssistHatchDeliveryCommand.class,
+                true
+            )
+
         );
 
         

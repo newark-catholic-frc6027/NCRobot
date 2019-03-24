@@ -19,7 +19,7 @@ public class RobotShutdownHook extends Thread {
     public static final int MAX_LOG_COUNT = 5;
     private final static File frcLogFile = new File("/var/local/natinst/log/FRC_UserProgram.log");
     private final static File logArchiveDir = new File("/home/lvuser/frclog-backups");
-    private final static SimpleDateFormat ts = new SimpleDateFormat("yyyyMMdd_hhmmss");
+    private final static SimpleDateFormat ts = new SimpleDateFormat("yyyyMMdd_HHmmss");
     public RobotShutdownHook() {
         createLogArchiveDir();
         pruneLogs();
