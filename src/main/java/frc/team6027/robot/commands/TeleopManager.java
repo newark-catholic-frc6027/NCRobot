@@ -308,10 +308,13 @@ public class TeleopManager extends Command {
         logger.trace("POV0: {}", this.joystick.getPOV(0));
         // POV(0) return an angle for the pad based on which direction was pressed   
         int povValue = this.joystick.getPOV(0);
+        /* Disabling ability to move mast backward
         if (povValue >= 225 && povValue <= 315) {
             logger.info("Mast Backward: {}", povValue);
             this.elevatorSubsystem.mastBackward(1.0);
-        } else if (povValue >= 45 && povValue <= 135) {
+        } else
+        */
+        if (povValue >= 45 && povValue <= 135) {
             logger.info("Mast Forward: {}", povValue);
             this.elevatorSubsystem.mastForward(1.0);
         }
