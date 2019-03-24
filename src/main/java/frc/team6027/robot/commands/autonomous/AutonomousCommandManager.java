@@ -1,6 +1,8 @@
 package frc.team6027.robot.commands.autonomous;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
@@ -47,7 +49,7 @@ public class AutonomousCommandManager {
     private ElevatorSubsystem elevator;
 
     private boolean initialized = false;
-    private KillableAutoCommand currentAutoCommand;
+    private ArrayList<KillableAutoCommand> autoCommands = new ArrayList<>();
     private Object commandLock = new Object();
 
     private ObjectSelection objectSelection = DEFAULT_OBJECT_SELECTION;
@@ -83,17 +85,23 @@ public class AutonomousCommandManager {
      * Sends a kill signal to current Auto command
      */
     public void killCurrent() {
-        String killSentToCommand = null;
+        boolean commandsKilled = false;
         synchronized(this.commandLock) {
-            if (this.currentAutoCommand != null) {
-                killSentToCommand = this.currentAutoCommand.getClass().getSimpleName();
-                this.currentAutoCommand.kill();
+            if (this.autoCommands.size() > 0) {
+                commandsKilled = true;
+                for (KillableAutoCommand cmd: this.autoCommands) {
+                    try {
+                        cmd.kill();
+                        this.logger.warn("Kill signal sent to command {}", cmd.getClass().getSimpleName());
+                    } catch (Exception ex) {
+                        this.logger.error(String.format("Error when sending kill to command %s.", cmd.getClass().getSimpleName()), ex);
+                    }
+                }
+                this.autoCommands.clear();
             }
         }
-        if (killSentToCommand != null) {
-            this.logger.warn("Kill signal sent to command {}", killSentToCommand);
-        } else {
-            this.logger.info("No KillableAutoCommand to kill");
+        if ( ! commandsKilled) {
+            this.logger.info("No KillableAutoCommands to kill");
         }
 
     }
@@ -105,7 +113,14 @@ public class AutonomousCommandManager {
     }
 
     protected KillableAutoCommand getCurrent() {
-        return this.currentAutoCommand;
+        KillableAutoCommand cmd = null;
+        synchronized(this.commandLock) {
+            int sz = autoCommands.size();
+            if (sz > 0) {
+                cmd = autoCommands.get(sz-1);
+            }
+        }
+        return cmd;
     }
 
     public String currentCommandId() {
@@ -115,27 +130,38 @@ public class AutonomousCommandManager {
     
     public void setCurrent(KillableAutoCommand command) {
         synchronized(this.commandLock) {
-            this.currentAutoCommand = command;
+            if (! this.autoCommands.contains(command)) {
+                this.autoCommands.add(command);
+            }
         }
     }
 
     public void unsetCurrent(KillableAutoCommand command) {
         synchronized(this.commandLock) {
-            if (this.currentAutoCommand == command) {      
-                this.currentAutoCommand = null;
+            int sz = autoCommands.size();
+            if (sz > 0) {
+                if (autoCommands.contains(command)) {
+                    autoCommands.remove(command);
+                }
             }
         }
     }
 
     public boolean isAutoCommandRunning() {
         synchronized(this.commandLock) {
-            return this.currentAutoCommand != null;
+            return this.autoCommands.size() > 0;
         }
     }
 
     public boolean isAutoCommandRunning(Class<? extends Command> ofThisType) {
         synchronized(this.commandLock) {
-            return this.currentAutoCommand != null && ofThisType == this.currentAutoCommand.getClass();
+            int sz = autoCommands.size();
+            if (sz > 0) {
+                KillableAutoCommand currCmd =  autoCommands.get(sz-1);
+                return ofThisType == currCmd.getClass();
+            } else {
+                return false;
+            }
         }
     }
 
