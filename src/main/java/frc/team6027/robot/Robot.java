@@ -331,55 +331,52 @@ public class Robot extends TimedRobot {
     }
 
     public void updateOperatorDisplay() {
-        /*
-        getOperatorDisplay().setFieldValue("Right Motor Enc Raw",
-                this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorRight).getRelativePosition());
-        getOperatorDisplay().setFieldValue("Left Motor Enc Raw",
-            this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorLeft).getRelativePosition());
-        */
+        try {
 
-        OperatorDisplay disp = this.getOperatorDisplay();
-        disp.setFieldValue("Center of Contours", this.visionData.getDouble(VisionDataConstants.CONTOURS_CENTER_X_KEY, -1.0) );
-        disp.setFieldValue("# of Contours", this.visionData.getDouble(VisionDataConstants.NUM_CONTOURS_KEY, 0.0));
-        disp.setFieldValue("Elevator Dist", this.sensorService.getElevatorHeightInches());
-        disp.setFieldValue("Elevator Raw", this.sensorService.getEncoderSensors().getElevatorEncoder().getRaw());
+            /*
+            getOperatorDisplay().setFieldValue("Right Motor Enc Raw",
+                    this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorRight).getRelativePosition());
+            getOperatorDisplay().setFieldValue("Left Motor Enc Raw",
+                this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorLeft).getRelativePosition());
+            */
 
-        disp.setFieldValue("Left Motor Dist",
-            this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorLeft).getRelativeDistance());
-        disp.setFieldValue("Right Motor Dist",
-            this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorRight).getRelativeDistance());
-        disp.setFieldValue("Avg Motor Dist",
-            this.sensorService.getEncoderSensors().getAvgEncoderRelativeDistance());
-        disp.setFieldValue("Elev topLimitTripped?", this.elevatorSubsystem.isTopLimitSwitchTripped());
-        disp.setFieldValue("Elev bottomLimitTripped?", this.elevatorSubsystem.isBottomLimitSwitchTripped());
-    
-            
-        disp.setFieldValue("Gyro Angle", this.sensorService.getGyroSensor().getAngle());
-        disp.setFieldValue("Gyro Yaw Angle", this.sensorService.getGyroSensor().getYawAngle());
+            OperatorDisplay disp = this.getOperatorDisplay();
+            disp.setFieldValue("Center of Contours", this.visionData.getDouble(VisionDataConstants.CONTOURS_CENTER_X_KEY, -1.0) );
+            disp.setFieldValue("# of Contours", this.visionData.getDouble(VisionDataConstants.NUM_CONTOURS_KEY, 0.0));
+            disp.setFieldValue("Elevator Dist", this.sensorService.getElevatorHeightInches());
+            disp.setFieldValue("Elevator Raw", this.sensorService.getEncoderSensors().getElevatorEncoder().getRaw());
+
+            disp.setFieldValue("Left Motor Dist",
+                this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorLeft).getRelativeDistance());
+            disp.setFieldValue("Right Motor Dist",
+                this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorRight).getRelativeDistance());
+            disp.setFieldValue("Avg Motor Dist",
+                this.sensorService.getEncoderSensors().getAvgEncoderRelativeDistance());
+            disp.setFieldValue("Elev topLimitTripped?", this.elevatorSubsystem.isTopLimitSwitchTripped());
+            disp.setFieldValue("Elev bottomLimitTripped?", this.elevatorSubsystem.isBottomLimitSwitchTripped());
         
-        Double dist = this.sensorService.getUltrasonicSensor(UltrasonicSensorKey.Front).getDistanceInches();
-        disp.setFieldValue("Ultrasonic Front Dist", dist != null ? dist + "" : "INFINITY");
-        disp.setFieldValue("Level Selection", this.autoCommandManager.getLevelSelection().name());
-        disp.setFieldValue("Object Selection", this.autoCommandManager.getObjectSelection().name());
-        disp.setFieldValue("Operation Selection", this.autoCommandManager.getOperationSelection().name());
-//        disp.setFieldValue("Drivetrain Mode", this.drivetrain.isBrakeModeEnabled() ? "BRAKE" : "COAST");
-        Double ultrasonicInches = this.sensorService.getUltrasonicSensor(UltrasonicSensorKey.Front).getDistanceInches();
-        if (ultrasonicInches != null) {
-            disp.setFieldValue("In range", 
-                ultrasonicInches >= prefs.getDouble("ultrasonic.inRange.lower", 11.0)
-                &&
-                ultrasonicInches <= prefs.getDouble("ultrasonic.inRange.upper", 13.0)
-            );
+                
+            disp.setFieldValue("Gyro Angle", this.sensorService.getGyroSensor().getAngle());
+            disp.setFieldValue("Gyro Yaw Angle", this.sensorService.getGyroSensor().getYawAngle());
+            
+            Double dist = this.sensorService.getUltrasonicSensor(UltrasonicSensorKey.Front).getDistanceInches();
+            disp.setFieldValue("Ultrasonic Front Dist", dist != null ? dist + "" : "INFINITY");
+            disp.setFieldValue("Level Selection", this.autoCommandManager.getLevelSelection().name());
+            disp.setFieldValue("Object Selection", this.autoCommandManager.getObjectSelection().name());
+            disp.setFieldValue("Operation Selection", this.autoCommandManager.getOperationSelection().name());
+    //        disp.setFieldValue("Drivetrain Mode", this.drivetrain.isBrakeModeEnabled() ? "BRAKE" : "COAST");
+            Double ultrasonicInches = this.sensorService.getUltrasonicSensor(UltrasonicSensorKey.Front).getDistanceInches();
+            if (ultrasonicInches != null) {
+                disp.setFieldValue("In range", 
+                    ultrasonicInches >= prefs.getDouble("ultrasonic.inRange.lower", 11.0)
+                    &&
+                    ultrasonicInches <= prefs.getDouble("ultrasonic.inRange.upper", 13.0)
+                );
+            }
+            disp.setFieldValue("Auto", this.autoCommandManager.isAutoCommandRunning());
+        } catch (Exception ex) {
+            logger.error("Failure in updateOperatorDisplay. Error: {}, {} ", ex.getClass().getName(), ex.getMessage());
         }
-        disp.setFieldValue("Auto", this.autoCommandManager.isAutoCommandRunning());
-
-        /*
-
-        disp.setFieldValue("Air Pressure", this.sensorService.getAirPressureSensor().getAirPressurePsi());
-        disp.setFieldValue("Ultrasonic Distance (in)", this.sensorService.getUltrasonicSensor().getDistanceInches());
-        //disp.setFieldValue("Contour Center", this.contoursCenterXEntry.getDouble(defaultValue));
-        //disp.setFieldValue("Battery Voltage:", RobotController.getBatteryVoltage());
-        */
     }
 
     protected void addShutdownHook() {
