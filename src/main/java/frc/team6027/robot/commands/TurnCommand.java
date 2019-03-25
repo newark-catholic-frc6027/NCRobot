@@ -48,6 +48,7 @@ public class TurnCommand extends Command implements PIDOutput {
 	protected boolean isReset = false;
 	protected double lastYaw = 0.0;
 	protected long unchangedYawStartMs = -1;
+	protected boolean stopTurnNow = false;
 
 	public TurnCommand(String anglePrefName, SensorService sensorService, DrivetrainSubsystem drivetrain,
 		OperatorDisplay operatorDisplay) {
@@ -118,12 +119,13 @@ public class TurnCommand extends Command implements PIDOutput {
 	@Override
 	protected boolean isFinished() {
 	    
-	    if (this.pidController.onTarget()
-            && Math.abs(this.gyro.getRate()) <= pidAngleStopThreshold) {
+	    if (this.stopTurnNow || (this.pidController.onTarget()
+            && Math.abs(this.gyro.getRate()) <= pidAngleStopThreshold)) {
             logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Turn done, angle={}", this.sensorService.getGyroSensor().getYawAngle());
 	        
 			pidController.disable();
 			this.isReset = false;
+			this.stopTurnNow = false;
             return true;
 	    } else {
 	        return false;
@@ -159,6 +161,7 @@ public class TurnCommand extends Command implements PIDOutput {
             return;
 		}
 		this.isReset = true;
+		this.stopTurnNow = false;
 
 		this.execCount = 0;
 		this.startTime = System.currentTimeMillis();
@@ -204,6 +207,7 @@ public class TurnCommand extends Command implements PIDOutput {
 		leftPower = pidOutput;
 		double currentYaw =  this.gyro.getYawAngle();
 		double angleDelta = Math.abs(this.targetAngle - currentYaw);
+		boolean done = false;
 		if (currentYaw == this.lastYaw) {
 			long currentTs = System.currentTimeMillis();
 			if (unchangedYawStartMs == -1) {
@@ -222,7 +226,9 @@ public class TurnCommand extends Command implements PIDOutput {
 			// If our rate slows down below threshold, just cancel the command.  we're done.
 			if (angleDelta <= PID_TOLERANCE_DEGREES) {
 				if ( Math.abs(this.gyro.getRate()) <= pidAngleStopThreshold) {
-					this.cancel();
+					this.stopTurnNow = true;
+					// Can't cancel when we are in a command group
+					//this.cancel();
 				}
 			} else {
 				// Power is below min, but we aren't within tolerance yet, increase power
@@ -253,8 +259,10 @@ public class TurnCommand extends Command implements PIDOutput {
 					String.format("%.3f", rightPower));
 		}
 		
-		this.drivetrain.tankDrive(leftPower, rightPower);
-		this.lastYaw = currentYaw;           
+		if (! this.stopTurnNow) {
+			this.drivetrain.tankDrive(leftPower, rightPower);
+			this.lastYaw = currentYaw;
+		}
 	}
 
 	public double getTargetAngle() {

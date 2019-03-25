@@ -215,13 +215,13 @@ public class AutonomousCommandManager {
         Command chosenCommand = null;
 
         switch (autoPreference) {
-            case CargoFrontLeft:
+            case CargoFrontLeft: // fall thru
+            case CargoFrontRight:
                 chosenCommand = new AutoDeliverHatchToCargoShipFrontFromCenterPosition(
                     autoPreference, sensorService, drivetrain,
                     pneumaticSubsystem, elevator, operatorDisplay, field
                 );
                 break;
-            case CargoFrontRight:
             default:
                 logger.warn("CANNOT DELIVER TO '{}' FROM CENTER STATION, choosing NoOpCommand!", autoPreference);
                 chosenCommand = NoOpCommand.getInstance();    

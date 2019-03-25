@@ -81,13 +81,21 @@ double "/Preferences/D-P4-Storm-Hatch"=0.4
         this.addSequential(new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
 
         // Travel toward cargo ship
-        this.addSequential(new DriveStraightCommand("D-L3-Storm-Hatch", DriveDistanceMode.DistanceFromObject, "D-P3-Storm-Hatch", 
+        this.addSequential(new DriveStraightCommand("D-L3-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "D-P3-Storm-Hatch", 
+            null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
+        );
+
+        // vision toward cargo ship
+        this.addSequential(new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
+
+        // Travel toward cargo ship
+        this.addSequential(new DriveStraightCommand("D-L4-Storm-Hatch", DriveDistanceMode.DistanceFromObject, "D-P4-Storm-Hatch", 
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
         );
 
         
         this.addSequential(new ToggleKickHatchCommand(this.pneumaticSubsystem));
-        this.addSequential(new DriveStraightCommand("D-L4-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "D-P4-Storm-Hatch", 
+        this.addSequential(new DriveStraightCommand("D-L5-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "D-P5-Storm-Hatch", 
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
         this.addSequential(new ToggleKickHatchCommand(this.pneumaticSubsystem));
         // Last leg to rocket 

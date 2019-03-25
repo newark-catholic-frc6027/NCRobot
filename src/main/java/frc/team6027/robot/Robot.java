@@ -177,10 +177,14 @@ public class Robot extends TimedRobot {
     
     @Override
     public void autonomousInit() {
+        logger.info("******************* AUTONOMOUS INIT STARTING *******************");
         // TODO: Reset pneumatics
         // TODO: ensure drivetrain in low gear
         // TODO: ensure elevator in high gear
         StationPosition pos = this.applyStationPosition();
+        AutonomousPreference autoPref = AutonomousPreference.fromDisplayName(this.getOperatorDisplay().getSelectedAutoScenario());
+        this.autoCommandManager.setPreferredScenario(autoPref);
+
 //        this.drivetrain.enableBrakeMode();
 
         this.sensorService.resetAll();
