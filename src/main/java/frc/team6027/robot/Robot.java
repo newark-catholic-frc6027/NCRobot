@@ -77,6 +77,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
+        logger.info("******************* ROBOT INIT STARTING *******************");
+
         outputBanner();
         this.autoCommandManager = AutonomousCommandManager.instance();
 
@@ -123,6 +125,8 @@ public class Robot extends TimedRobot {
 
         AutonomousCommandManager.initAutoScenarioDisplayValues(this.getOperatorDisplay());
         displayAutoRunning(false);
+        logger.info("******************* ROBOT INIT COMPLETE *******************");
+
     }
 
 
@@ -219,6 +223,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        logger.info("******************* TELEOP INIT STARTING *******************");
         displayAutoRunning(false);
 
         // TODO: what needs reset here?

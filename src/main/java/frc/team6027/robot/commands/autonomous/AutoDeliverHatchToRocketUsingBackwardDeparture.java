@@ -4,11 +4,13 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.commands.DriveStraightCommand;
+import frc.team6027.robot.commands.SlideMastCommand;
 import frc.team6027.robot.commands.ToggleKickHatchCommand;
 import frc.team6027.robot.commands.TurnCommand;
 import frc.team6027.robot.commands.TurnWhileDrivingCommand;
 import frc.team6027.robot.commands.VisionTurnCommand;
 import frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
+import frc.team6027.robot.commands.SlideMastCommand.SlideMastDirection;
 import frc.team6027.robot.commands.TurnWhileDrivingCommand.TargetVector;
 import frc.team6027.robot.data.Datahub;
 import frc.team6027.robot.data.DatahubRegistry;
@@ -78,7 +80,9 @@ public class AutoDeliverHatchToRocketUsingBackwardDeparture extends CommandGroup
         
         // TODO: Is this going to test ok?
         // Drive Backwards off ramp
-// TODO: put back in        this.addParallel(new SlideMastCommand(SlideMastDirection.Forward, 1.0, this.sensorService, this.elevatorSubsystem));
+        // Slide mast forward
+        this.addParallel(new SlideMastCommand(SlideMastDirection.Forward, 1.0, this.sensorService, this.elevatorSubsystem), 3.0);
+
         this.addSequential(new DriveStraightCommand("A-L1-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "A-P1-Storm-Hatch", 
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
         );

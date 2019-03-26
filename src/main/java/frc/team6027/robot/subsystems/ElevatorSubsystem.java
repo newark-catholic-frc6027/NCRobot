@@ -7,6 +7,7 @@ import frc.team6027.robot.RobotConfigConstants;
 import frc.team6027.robot.sensors.LimitSwitchSensors;
 import frc.team6027.robot.sensors.LimitSwitchSensors.LimitSwitchId;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Preferences;
@@ -36,8 +37,11 @@ public class ElevatorSubsystem extends Subsystem {
         this.maxMotorAmps = this.prefs.getDouble("elevatorSubystem.maxMotorAmps", 30.0);
         this.maxSlideMotorAmps = this.prefs.getDouble("elevatorSubystem.maxSlideMotorAmps", 10.0);
 
+        this.elevatorGearBoxMaster.setNeutralMode(NeutralMode.Brake);
         this.elevatorGearBoxMaster.stopMotor();
+        this.mastSlideGearBoxMaster.setNeutralMode(NeutralMode.Brake);
         this.mastSlideGearBoxMaster.stopMotor();
+
     }
     
     @Override

@@ -76,6 +76,7 @@ public class AutonomousCommandManager {
             this.pneumaticSubsystem = pneumaticSubsystem;
             this.elevator = elevatorSubsystem;
             this.operatorDisplay = operatorDisplay;
+            this.initialized = true;
         }
         
         return this;
@@ -285,11 +286,11 @@ public class AutonomousCommandManager {
             case Deliver:
                 return new DriverAssistHatchDeliveryCommand(this.getLevelSelection(), this.drivetrain, 
                     this.elevator, this.pneumaticSubsystem, this.sensorService, this.operatorDisplay);
-
+/*
             case Pickup:
                 return new DriverAssistHatchPickupCommand(this.drivetrain, 
                     this.elevator, this.sensorService, this.operatorDisplay);
-                    
+*/                    
             default:
                 logger.warn("Cannot select a HatchDriverAssistCommand for operation: {}", this.getOperationSelection());
                 return NoOpCommand.getInstance();

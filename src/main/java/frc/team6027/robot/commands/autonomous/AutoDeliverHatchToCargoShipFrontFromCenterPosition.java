@@ -4,10 +4,12 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.commands.DriveStraightCommand;
+import frc.team6027.robot.commands.SlideMastCommand;
 import frc.team6027.robot.commands.ToggleKickHatchCommand;
 import frc.team6027.robot.commands.TurnWhileDrivingCommand;
 import frc.team6027.robot.commands.VisionTurnCommand;
 import frc.team6027.robot.commands.DriveStraightCommand.DriveDistanceMode;
+import frc.team6027.robot.commands.SlideMastCommand.SlideMastDirection;
 import frc.team6027.robot.commands.TurnWhileDrivingCommand.TargetVector;
 import frc.team6027.robot.commands.autonomous.AutonomousPreference;
 import frc.team6027.robot.data.Datahub;
@@ -63,6 +65,9 @@ double "/Preferences/D-P4-Storm-Hatch"=0.4
             */
 
         AutoCommandHelper.addAutoInitCommands(this, drivetrainSubsystem, pneumaticSubsystem, sensorService);
+
+        // Slide mast forward
+        this.addParallel(new SlideMastCommand(SlideMastDirection.Forward, 1.0, this.sensorService, this.elevatorSubsystem), 3.0);
 
         // Off ramp forward
         this.addSequential(new DriveStraightCommand("D-L1-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "D-P1-Storm-Hatch", 
