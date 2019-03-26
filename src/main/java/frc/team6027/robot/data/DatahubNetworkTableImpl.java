@@ -64,6 +64,21 @@ public class DatahubNetworkTableImpl implements Datahub {
         return returnValue;
     }
 
+    @Override
+    public Long getLong(String key, Long defaultValue) {
+        NetworkTableEntry entry = this.getEntry(key);
+        Long returnValue = defaultValue;
+        if (entry != null) {
+            returnValue =  Long.valueOf(entry.getNumber(defaultValue).longValue());
+        }
+        return returnValue;
+    }
+
+    @Override
+    public Long getLong(String key) {
+        return this.getLong(key, -1l);
+    }
+
     protected NetworkTable getNetworkTable() {
         if (this.networkTable == null) {
             this.networkTable = NetworkTableInstance.getDefault().getTable(this.tableName);
@@ -113,9 +128,18 @@ public class DatahubNetworkTableImpl implements Datahub {
     }
 
     @Override
+    public void put(String key, Long value) {
+        // TODO: verify
+        this.getEntry(key).setNumber(value);
+    }
+
+    @Override
     public String getName() {
         return this.tableName;
     }
+
+
+
 
 
 

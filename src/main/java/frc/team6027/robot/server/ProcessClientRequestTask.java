@@ -46,8 +46,12 @@ public class ProcessClientRequestTask implements Runnable {
             if (msg != null) {
                 if ("vision-ping".equals(msg)) {
                     logger.debug("Got vision-ping, sending 'robot-pong'");
-                    String currentTime = TIME_FORMAT.format(new Date());
-                    out.println(String.format(PYTHON_TIME_RESPONSE_TEMPLATE, "robot-pong", currentTime));
+                    Date curTime = new Date();
+                    String currentTimeStr = TIME_FORMAT.format(curTime);
+                    out.println(String.format(PYTHON_TIME_RESPONSE_TEMPLATE, "robot-pong", currentTimeStr));
+                    this.visionDatahub = DatahubRegistry.instance().get(VisionDataConstants.VISION_DATA_KEY);
+                    this.visionDatahub.put(VisionDataConstants.LAST_PING_TIME_MS, Long.valueOf(curTime.getTime()));
+                    // this.server.setStatus(RobotStatusServer.set)
                 } else if (msg.startsWith(VISION_DATA_MESSAGE_TOKEN)) {
                     // reply immediately with OK
                     out.println(String.format(PYTHON_SIMPLE_RESPONSE_TEMPLATE, "OK"));

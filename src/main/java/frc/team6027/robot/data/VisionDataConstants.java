@@ -33,4 +33,9 @@ public final class VisionDataConstants {
      */
     public static final String CONTOUR_AREA_RIGHT = "contourAreaRight"; 
 
+    /**
+     * Key for the timestamp in ms of the last time we received a Vision Ping
+     */
+    public static final String LAST_PING_TIME_MS = "lastVisionPingTimeMs";
+
 }

@@ -388,6 +388,19 @@ public class Robot extends TimedRobot {
                 );
             }
             disp.setFieldValue("Auto", this.autoCommandManager.isAutoCommandRunning());
+            if (this.visionData != null) {
+                long lastPingTime = this.visionData.getLong(VisionDataConstants.LAST_PING_TIME_MS, -1l);
+                long curTime = System.currentTimeMillis();
+                String status = "DOWN";
+                if (lastPingTime != -1) {
+                    long timeSinceLastPing = curTime - lastPingTime;
+                    if (timeSinceLastPing < 8000) {
+                        status = "UP";
+                    }
+                } 
+                disp.setFieldValue("Vision Status", status);
+                disp.setFieldValue("Vision", status.equals("UP"));
+            }
         } catch (Exception ex) {
             logger.error("Failure in updateOperatorDisplay. Error: {}, {} ", ex.getClass().getName(), ex.getMessage());
         }

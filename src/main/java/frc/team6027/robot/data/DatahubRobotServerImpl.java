@@ -151,4 +151,34 @@ public class DatahubRobotServerImpl implements Datahub {
         }
     }
 
+    @Override
+    public Long getLong(String key) {
+        return this.getLong(key, null);
+    }
+
+    @Override
+    public Long getLong(String key, Long defaultValue) {
+        Object value = null;
+        try {
+            value = this.getObj(key, defaultValue);
+            if (value == null) {
+                return defaultValue;
+            }
+
+            if (value instanceof String) {
+                return Long.valueOf((String)value);
+            } else {
+                return (Long) value;
+            }
+        } catch (Exception ex) {
+            logger.warn("Failed to parse value of '{}' for key '{}', returning default value. Value received: '{}'", value, key);
+            return defaultValue;
+        }
+    }
+
+    @Override
+    public void put(String key, Long value) {
+        this.putObj(key, value);
+    }
+
 }

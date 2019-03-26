@@ -10,11 +10,14 @@ public interface Datahub {
     Double getDouble(String key, Double defaultValue);
     Float getFloat(String key);
     Float getFloat(String key, Float defaultValue);
+    Long getLong(String key);
+    Long getLong(String key, Long defaultValue);
 
     Map<String, Object> getAll();
     
     void put(String key, String value);
     void put(String key, Double value);
+    void put(String key, Long value);
     /**
      * Puts the given map of values into this Datahub instance.
      * When {@code replace} is {@code true}, the current set of
