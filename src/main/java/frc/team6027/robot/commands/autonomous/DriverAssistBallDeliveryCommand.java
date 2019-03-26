@@ -22,6 +22,7 @@ public class DriverAssistBallDeliveryCommand extends CommandGroup implements Kil
     public DriverAssistBallDeliveryCommand(LevelSelection levelSelection, DrivetrainSubsystem drivetrainSubsystem,
 			ElevatorSubsystem elevatorSubsystem, SensorService sensorService) {
         this.elevatorSubsystem = elevatorSubsystem;
+        this.sensorService = sensorService;
 
         this.addSequential(makeElevatorCommand(levelSelection));
 	}
@@ -33,11 +34,6 @@ public class DriverAssistBallDeliveryCommand extends CommandGroup implements Kil
         super.start();
     }
 
-	@Override
-    protected boolean isFinished() {
-        return true;
-    }
-    
 
     protected Command makeElevatorCommand(LevelSelection levelSelection) {
         String prefName = null;
@@ -48,11 +44,15 @@ public class DriverAssistBallDeliveryCommand extends CommandGroup implements Kil
             case Upper:
                 prefName = "rocketBall.upperLevel";
                 break;
+            case Cargo:
+                prefName = "cargoBall.level";
+                break;
             case Lower:
             default:
                 prefName = "rocketBall.lowerLevel";
                 break;
         }
+        this.logger.info("Level selected: {}, Pref name: {}", levelSelection, prefName);
 
         Command cmd = new ElevatorCommand(prefName, "F-P0-DriverAssist-Ball", this.sensorService, this.elevatorSubsystem);
         return cmd;

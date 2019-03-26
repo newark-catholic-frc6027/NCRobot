@@ -31,20 +31,6 @@ public class DriverAssistHatchDeliveryCommand extends CommandGroup implements Ki
 
         // Run elevator to set point
         this.addSequential(makeElevatorCommand(levelSelection));
-/*
-        // Drive in
-        this.addSequential(new DriveStraightCommand("E-L1-DriverAssist-Hatch", DriveDistanceMode.DistanceFromObject, "E-P1-DriverAssist-Hatch", 
-            null, this.sensorService, drivetrainSubsystem, operatorDisplay));
-        // Kick hatch
-        this.addSequential(new ToggleKickHatchCommand(pneumaticsSubsystem));
-        // Back up
-        this.addSequential(new DriveStraightCommand("E-L2-DriverAssist-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "E-P2-DriverAssist-Hatch", 
-            null, this.sensorService, drivetrainSubsystem, operatorDisplay));
-        // Retract hatch kicker
-        this.addSequential(new ToggleKickHatchCommand(pneumaticsSubsystem));
-        // Run elevator to set point
-//        this.addSequential(new ElevatorCommand("elevator.driving.height", "elevatorCommand.power", this.sensorService, this.elevatorSubsystem));
-*/        
     }
     
     @Override

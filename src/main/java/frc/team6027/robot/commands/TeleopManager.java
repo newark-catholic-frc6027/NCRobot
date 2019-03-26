@@ -256,6 +256,10 @@ public class TeleopManager extends Command {
         this.aButton2 = new JoystickButton(this.joystick2, this.joystick2.getAButtonNumber());
         this.aButton2.whenPressed(new SelectionCommand(LevelSelection.Lower));
 
+        // Cargo Ball Level
+        this.xButton2 = new JoystickButton(this.joystick2, this.joystick2.getXButtonNumber());   
+        this.xButton2.whenPressed(new SelectionCommand(LevelSelection.Cargo));
+
         
         this.leftBumperButton2 = new JoystickButton(this.joystick2, this.joystick2.getLeftBumperButtonNumber());   
         this.leftBumperButton2.whenPressed(new SelectionCommand(OperationSelection.Deliver));
@@ -264,8 +268,8 @@ public class TeleopManager extends Command {
         this.rightBumperButton2.whenPressed(new SelectionCommand(ObjectSelection.Hatch));
 
         // Just in case Kicker gets out of sync`
-        this.xButton2 = new JoystickButton(this.joystick2, this.joystick2.getXButtonNumber());   
-        this.xButton2.whenPressed(new ToggleKickHatchCommand(this.pneumaticSubsystem));
+        this.backButton2 = new JoystickButton(this.joystick2, this.joystick2.getBackButtonNumber());   
+        this.backButton2.whenPressed(new ToggleKickHatchCommand(this.pneumaticSubsystem));
 
 /*
         this.backButton2 = new JoystickButton(this.joystick2, this.joystick2.getBackButtonNumber());   
@@ -350,10 +354,11 @@ public class TeleopManager extends Command {
     protected void updateDriverAssistSelections() {
         double leftAxisValue = this.joystick2.getTriggerAxis(Hand.kLeft);
         double rightAxisValue = this.joystick2.getTriggerAxis(Hand.kRight);
+        /*
         if (leftAxisValue >= 0.09) {
             AutonomousCommandManager.instance().setOperationSelection(OperationSelection.Pickup);
         }
-
+        */
         if (rightAxisValue >= 0.09) {
             AutonomousCommandManager.instance().setObjectSelection(ObjectSelection.Ball);
         }

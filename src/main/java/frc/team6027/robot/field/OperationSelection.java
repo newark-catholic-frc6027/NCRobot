@@ -1,8 +1,9 @@
 package frc.team6027.robot.field;
 
 public enum OperationSelection {
-    Deliver,
-    Pickup
+    Deliver
+    //,
+//    Pickup
     ;
 
     public OperationSelection toggle() {

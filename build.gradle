@@ -18,10 +18,13 @@ deploy {
         }
     }
     artifacts {
+        // See JacisNonsense project and GradleRIO project for 
         frcJavaArtifact('frcJava') {
             targets << "roborio"
             // Debug can be overridden by command line, for use with VSCode
             debug = frc.getDebugOrDefault(false)
+            // Save off a heap dump on the rio if we run out of memory
+            jvmArgs = ["-XX:+HeapDumpOnOutOfMemoryError", "-XX:HeapDumpPath=/home/lvuser"]
         }
         // Built in artifact to deploy arbitrary files to the roboRIO.
         fileTreeArtifact('frcStaticFileDeploy') {

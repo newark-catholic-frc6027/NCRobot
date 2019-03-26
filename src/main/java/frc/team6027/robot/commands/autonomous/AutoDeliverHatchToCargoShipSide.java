@@ -81,6 +81,9 @@ public class AutoDeliverHatchToCargoShipSide extends CommandGroup implements Kil
 
         AutoCommandHelper.addAutoInitCommands(this, drivetrainSubsystem, pneumaticSubsystem, sensorService);
 
+        // Slide mast forward
+        this.addParallel(new SlideMastCommand(SlideMastDirection.Forward, 1.0, this.sensorService, this.elevatorSubsystem), 3.0);
+
         // Off ramp forward
         this.addSequential(new DriveStraightCommand("C-L1-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "C-P1-Storm-Hatch", 
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
