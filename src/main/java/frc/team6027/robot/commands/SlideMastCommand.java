@@ -45,10 +45,28 @@ public class SlideMastCommand extends Command {
         this.execStartTime = System.currentTimeMillis();
         this.checkMotorAmpsThresholdMillis = this.prefs.getLong("slideMastCommand.checkMotorAmpsThresholdMillis", 1000);
     }
+
+    @Override
+    public void start() {
+        this.logger.info(">>>>>>>>>>>>>>>>>>>> {} command STARTING", this.getClass().getSimpleName());
+        super.start();
+    }
     
     @Override
     protected void end() {
+        this.logger.info(">>>>>>>>>>>>>>>>>>>> {} command ENDED", this.getClass().getSimpleName());
+        this.elevator.mastSlideStop();
         this.clearRequirements();
+        super.end();
+    }
+
+    @Override
+    public void cancel() {
+        this.logger.info(">>>>>>>>>>>>>>>>>>>> {} command CANCELED", this.getClass().getSimpleName());
+
+        this.elevator.mastSlideStop();
+        this.clearRequirements();
+        super.cancel();
     }
     
     protected boolean isForwardMaxAmpsExceededWithDelay() {
@@ -71,11 +89,10 @@ public class SlideMastCommand extends Command {
         return false;
     }
 
+
     @Override
-    public void cancel() {
-        this.elevator.mastSlideStop();
-        this.clearRequirements();
-        super.cancel();
+    protected void interrupted() {
+        end();
     }
     
     @Override
