@@ -13,6 +13,7 @@ import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 public class VisionTurnCommand extends TurnCommand implements KillableAutoCommand  {
     public static final String NAME = "VisionTurn";
 	private final Logger logger = LogManager.getLogger(getClass());
+	private static final double VISION_PID_TOLERANCE = 1.0;
 
 	protected Datahub visionData;
 	protected boolean visionDataChecked = false;
@@ -50,6 +51,11 @@ public class VisionTurnCommand extends TurnCommand implements KillableAutoComman
 		if (timeout != null) {
 			this.setTimeout(timeout);
 		}
+	}
+
+	@Override
+	protected double getPidTolerance() {
+		return VISION_PID_TOLERANCE;
 	}
 
 	@Override
