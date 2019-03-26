@@ -92,7 +92,7 @@ public class TurnCommand extends Command implements PIDOutput {
 			this.pidController.disable();
 		}
 		this.pidLoopCalculationOutput = 0.0;
-		pidController = new PIDController(this.prefs.getDouble("turnCommand.pCoeff", PID_PROPORTIONAL_COEFFICIENT),
+		this.pidController = new PIDController(this.prefs.getDouble("turnCommand.pCoeff", PID_PROPORTIONAL_COEFFICIENT),
 				this.prefs.getDouble("turnCommand.iCoeff", PID_INTEGRAL_COEFFICIENT),
 				this.prefs.getDouble("turnCommand.dCoeff", PID_DERIVATIVE_COEFFICIENT),
 				this.prefs.getDouble("turnCommand.feedForward", PID_FEED_FORWARD_TERM),
@@ -105,15 +105,26 @@ public class TurnCommand extends Command implements PIDOutput {
 			this.turnPower = this.prefs.getDouble(this.turnPowerPrefName, .1);
 		}
 
-		pidController.setInputRange(-180.0, 180.0);
-		pidController.setOutputRange(-1* this.turnPower, this.turnPower);
-		pidController.setAbsoluteTolerance(PID_TOLERANCE_DEGREES);
-		pidController.setContinuous(true);
+		this.pidController.setInputRange(-180.0, 180.0);
+		this.pidController.setOutputRange(-1* this.turnPower, this.turnPower);
+		this.pidController.setAbsoluteTolerance(this.getPidTolerance());
+		this.pidController.setContinuous(true);
 		if (this.targetAngle != null) {
-			this.logger.info("Pid setpoint set to: {}", this.targetAngle);
-			pidController.setSetpoint(this.targetAngle); // sets the angle to which we want to turn to
-			pidController.enable();
+			if (this.targetAngle < -180.0) {
+				this.targetAngle = 180.0 - Math.abs(-180.0 - this.targetAngle);
+			} else if (this.targetAngle > 180.0) {
+				this.targetAngle = -180.0 + Math.abs(180.0 - this.targetAngle);
+			}
+			this.logger.info("Requested Pid setpoint: {}", this.targetAngle);
+			this.pidController.setSetpoint(this.targetAngle); // sets the angle to which we want to turn to
+			this.logger.info("Actual Pidcontroller setpoint: {}", this.pidController.getSetpoint());
+			this.pidController.enable();
 		}
+		this.stopTurnNow = false;
+	}
+
+	protected double getPidTolerance() {
+		return PID_TOLERANCE_DEGREES;
 	}
 
 	@Override
@@ -121,7 +132,9 @@ public class TurnCommand extends Command implements PIDOutput {
 	    
 	    if (this.stopTurnNow || (this.pidController.onTarget()
             && Math.abs(this.gyro.getRate()) <= pidAngleStopThreshold)) {
-            logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Turn done, angle={}", this.sensorService.getGyroSensor().getYawAngle());
+
+			logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Turn done, angle={}, stopTurnNow? {}, pidController.onTarget? {}, pidController setpoint: {}, gyro rate: {}, pidAngleStopThreshold: {} ", 
+			      this.sensorService.getGyroSensor().getYawAngle(), this.stopTurnNow, this.pidController.onTarget(), this.pidController.getSetpoint(), this.gyro.getRate(), this.pidAngleStopThreshold);
 	        
 			pidController.disable();
 			this.isReset = false;
@@ -137,6 +150,7 @@ public class TurnCommand extends Command implements PIDOutput {
 		this.logger.info(">>>>>>>>>>>>>>>>>>>> {} command CANCELED", this.getClass().getSimpleName());
 
 		this.isReset = false;
+		this.stopTurnNow = false;
 
 		if (this.pidController != null) {
 			this.pidController.disable();
@@ -148,6 +162,7 @@ public class TurnCommand extends Command implements PIDOutput {
     protected void interrupted() {
         this.logger.info(">>>>>>>>>>>>>>>>>>>> {} command INTERRUPTED", this.getClass().getSimpleName());
 		this.isReset = false;
+		this.stopTurnNow = false;
 
 		if (this.pidController != null) {
 			this.pidController.disable();
@@ -224,9 +239,10 @@ public class TurnCommand extends Command implements PIDOutput {
 		// increase power to an adjusted value in order to get the PID loop going again.
 		if (powerDroppedBelowMin) {
 			// If our rate slows down below threshold, just cancel the command.  we're done.
-			if (angleDelta <= PID_TOLERANCE_DEGREES) {
+			if (angleDelta <= this.getPidTolerance()) {
 				if ( Math.abs(this.gyro.getRate()) <= pidAngleStopThreshold) {
 					this.stopTurnNow = true;
+					this.logger.info("Force Stopping turn.");
 					// Can't cancel when we are in a command group
 					//this.cancel();
 				}
