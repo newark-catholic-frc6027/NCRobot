@@ -33,45 +33,22 @@ public class ElevatorSubsystem extends Subsystem {
     }
     
     public void initialize() {
-        this.initialized = true;
-        this.maxMotorAmps = this.prefs.getDouble("elevatorSubystem.maxMotorAmps", 30.0);
-        this.maxSlideMotorAmps = this.prefs.getDouble("elevatorSubystem.maxSlideMotorAmps", 10.0);
-
-        this.elevatorGearBoxMaster.setNeutralMode(NeutralMode.Brake);
-        this.elevatorGearBoxMaster.stopMotor();
-        this.mastSlideGearBoxMaster.setNeutralMode(NeutralMode.Brake);
-        this.mastSlideGearBoxMaster.stopMotor();
-
+        if (! this.initialized) {
+            this.maxMotorAmps = this.prefs.getDouble("elevatorSubystem.maxMotorAmps", 30.0);
+            this.maxSlideMotorAmps = this.prefs.getDouble("elevatorSubystem.maxSlideMotorAmps", 10.0);
+    
+            this.elevatorGearBoxMaster.setNeutralMode(NeutralMode.Brake);
+            this.elevatorGearBoxMaster.stopMotor();
+            this.mastSlideGearBoxMaster.setNeutralMode(NeutralMode.Brake);
+            this.mastSlideGearBoxMaster.stopMotor();
+            this.initialized = true;
+        }
     }
     
     @Override
     protected void initDefaultCommand() {
     }
 
-    /*
-    @Override
-    public void periodic() {
-        if (this.initialized) {
-            if (this.isGoingUp()) {
-                if ( this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.MastTop) ) {
-                    this.elevatorStop();
-                }
-            } else if (this.isGoingDown() && this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.MastBottom)) {
-                this.elevatorStop();
-            }
-
-            if (this.isGoingForward()) {
-                if ( this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.MastSlideForward) ) {
-                    this.mastSlideStop();
-                }
-            } else if (this.isGoingBackward() && this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.MastSlideBackward)) {
-                this.mastSlideStop();
-            }
-           
-            //this.operatorDisplay.setFieldValue("Elevator Motor Amps", this.elevatorGearBoxMaster.getOutputCurrent());
-        }
-    }
-    */
     public boolean isUpwardMaxAmpsExceeded() {
         boolean exceeded = false;
         if (this.isGoingUp() && ! this.isTopLimitSwitchTripped()) {
