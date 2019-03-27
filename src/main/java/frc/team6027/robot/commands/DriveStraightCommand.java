@@ -5,16 +5,13 @@ import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.sensors.EncoderSensors;
 import frc.team6027.robot.sensors.MotorEncoder;
-import frc.team6027.robot.sensors.MotorPIDController;
 import frc.team6027.robot.sensors.PIDCapableGyro;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.sensors.UltrasonicSensor;
 import frc.team6027.robot.sensors.EncoderSensors.EncoderKey;
 import frc.team6027.robot.sensors.UltrasonicSensorManager.UltrasonicSensorKey;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
-import frc.team6027.robot.subsystems.DrivetrainSubsystem.MotorKey;
 import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.PIDInterface;
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.Preferences;
@@ -188,17 +185,6 @@ public class DriveStraightCommand extends Command implements PIDOutput {
         initDistancePIDController();
         
         logger.info("DriveStraightCommand target distance: {}", this.driveDistance);
-/*
-		this.initialGyroAngle = this.gyro.getYawAngle();
-
-		if (this.anglePrefName != null) {
-			this.targetAngle = this.prefs.getDouble(this.anglePrefName, 0.0);
-		}
-
-		this.turnMinPower = prefs.getDouble("turnCommand.minPower", .20);
-		this.adjustedPower = prefs.getDouble("turnCommand.adjustedPower", 0.3);
-        initPIDController();
-*/        
 	}
 
 	@Override
@@ -255,11 +241,22 @@ public class DriveStraightCommand extends Command implements PIDOutput {
                 this.sensorService.getGyroSensor().getPIDSource(), this);
         
         logger.info("DriveStraightCommand currentAngleHeading: {}", this.currentAngleHeading);
+        boolean angleNormalized = false;
+        if (this.currentAngleHeading < -180.0) {
+            this.currentAngleHeading = 180.0 - Math.abs(-180.0 - this.currentAngleHeading);
+            angleNormalized = true;
+        } else if (this.currentAngleHeading > 180.0) {
+            this.currentAngleHeading = -180.0 + Math.abs(180.0 - this.currentAngleHeading);
+            angleNormalized = true;
+        }
+        if (angleNormalized) {
+			this.logger.info("currentAngleHeading adjusted to: {}", this.currentAngleHeading);
+        }
+        
         gyroPidController.setSetpoint(this.currentAngleHeading);
         gyroPidController.setInputRange(-180.0, 180.0);
         gyroPidController.setContinuous(true);
         
-        // TODO: change input and output ranges
         gyroPidController.setOutputRange(-1 * getDrivePower(), getDrivePower());
         gyroPidController.setAbsoluteTolerance(GYRO_PID_TOLERANCE);
         gyroPidController.enable();
