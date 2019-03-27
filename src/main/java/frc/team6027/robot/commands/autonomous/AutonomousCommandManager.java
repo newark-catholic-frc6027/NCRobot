@@ -385,7 +385,8 @@ public class AutonomousCommandManager {
         );
 
         this.getOperatorDisplay().setData("Elevator", new ElevatorCommand("elevatorCommand.height", "elevatorCommand.power", this.sensorService, this.elevator));
-        this.getOperatorDisplay().setData("Slide Mast", new SlideMastCommand(SlideMastDirection.Forward, 1.0, this.sensorService, this.elevator));
+        this.getOperatorDisplay().setData("Slide Mast Forward", new SlideMastCommand(SlideMastDirection.Forward, 1.0, this.sensorService, this.elevator));
+        this.getOperatorDisplay().setData("Slide Mast Backward", new SlideMastCommand(SlideMastDirection.Backward, 1.0, this.sensorService, this.elevator));
 
  	}
 
