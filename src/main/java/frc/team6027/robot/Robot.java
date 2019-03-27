@@ -7,6 +7,11 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import org.apache.logging.log4j.Logger;
+
+import java.lang.management.ManagementFactory;
+
+import com.sun.management.OperatingSystemMXBean;
+
 import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.commands.TeleopManager;
 import frc.team6027.robot.commands.autonomous.AutoCommandHelper;
@@ -14,14 +19,12 @@ import frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
 import frc.team6027.robot.commands.autonomous.NoOpCommand;
 import frc.team6027.robot.commands.autonomous.AutonomousPreference;
 import frc.team6027.robot.data.Datahub;
-import frc.team6027.robot.data.DatahubNetworkTableImpl;
 import frc.team6027.robot.data.DatahubRegistry;
 import frc.team6027.robot.data.DatahubRobotServerImpl;
 import frc.team6027.robot.data.VisionDataConstants;
 import frc.team6027.robot.field.Field;
 import frc.team6027.robot.field.StationPosition;
 import frc.team6027.robot.sensors.SensorService;
-import frc.team6027.robot.sensors.UltrasonicSensor;
 import frc.team6027.robot.sensors.EncoderSensors.EncoderKey;
 import frc.team6027.robot.sensors.UltrasonicSensorManager.UltrasonicSensorKey;
 import frc.team6027.robot.server.RobotStatusServer;
@@ -68,8 +71,12 @@ public class Robot extends TimedRobot {
     private RobotStatusServer robotStatusServer;
     private TeleopManager teleopManager;
    
+    private OperatingSystemMXBean osbean = null;
+    private long totalPhysicalMemorySize;
+
     public Robot() {
         addShutdownHook();
+        initOsBean();
     }
     /**
      * This function is run when the robot is first started up and should be used
@@ -116,6 +123,8 @@ public class Robot extends TimedRobot {
 
         this.autoCommandManager.initOperatorDisplayCommands();
         this.sensorService.resetAll();
+        this.elevatorSubsystem.initialize();
+
 //        this.drivetrain.enableBrakeMode();
 
         // Start a SocketServer to listen for client ping requests.  This allows us
@@ -125,6 +134,7 @@ public class Robot extends TimedRobot {
 
         AutonomousCommandManager.initAutoScenarioDisplayValues(this.getOperatorDisplay());
         displayAutoRunning(false);
+        this.outputMemoryUsage();
         logger.info("******************* ROBOT INIT COMPLETE *******************");
 
     }
@@ -147,6 +157,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void disabledInit() {
+        this.outputMemoryUsage();
 //        this.getField().clearAssignmentData();
 //        this.gameDataPollCount = 0;
 
@@ -170,7 +181,7 @@ public class Robot extends TimedRobot {
         if (pos != null) {
             this.getField().setOurStationPosition(pos);
         } else {
-            logger.error("!!!!! No Station Posistion available, !!!!");
+            logger.error("!!!!! No Station Position available, !!!!");
         }
         return pos;
     }
@@ -184,7 +195,6 @@ public class Robot extends TimedRobot {
         logger.info("******************* AUTONOMOUS INIT STARTING *******************");
         // TODO: Reset pneumatics
         // TODO: ensure drivetrain in low gear
-        // TODO: ensure elevator in high gear
         StationPosition pos = this.applyStationPosition();
         AutonomousPreference autoPref = AutonomousPreference.fromDisplayName(this.getOperatorDisplay().getSelectedAutoScenario());
         this.autoCommandManager.setPreferredScenario(autoPref);
@@ -224,17 +234,6 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         logger.info("******************* TELEOP INIT STARTING *******************");
-        displayAutoRunning(false);
-
-        // TODO: what needs reset here?
-//        this.getRearLift().initialize();
-        // If elevatorSubsystem is already initialized, this will do nothing
-        this.elevatorSubsystem.initialize();
-        this.getPneumaticSubsystem().reset();
-
-
-//        this.getOperatorDisplay().setFieldValue(OperatorDisplay.ELEVATOR_MAX, this.getElevatorSubsystem().isTopLimitSwitchTripped() ? "YES" : "NO");
-//        this.getOperatorDisplay().setFieldValue(OperatorDisplay.ELEVATOR_MIN, this.getElevatorSubsystem().isBottomLimitSwitchTripped() ? "YES" : "NO");
         // This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to
         // continue until interrupted by another command, remove
@@ -243,6 +242,12 @@ public class Robot extends TimedRobot {
             autonomousCommand.cancel();
         }
 
+        displayAutoRunning(false);
+        outputMemoryUsage();
+
+        // If elevatorSubsystem is already initialized, this will do nothing
+        this.elevatorSubsystem.initialize();
+        this.getPneumaticSubsystem().reset();
     }
 
     protected void displayAutoRunning(boolean isAutoRunning) {
@@ -259,6 +264,11 @@ public class Robot extends TimedRobot {
         
         if (this.teleopExecCount % 17 == 0) {
             this.updateOperatorDisplay();
+        }
+
+        if (this.teleopExecCount % 250 == 0) {
+            // Output roughly every 5 secs
+            this.outputMemoryUsage();
         }
     }
 
@@ -302,15 +312,6 @@ public class Robot extends TimedRobot {
         return this.armSubsystem;
     }
 
-/*
-    public RearLiftSubsystem getRearLift() {
-        return this.rearLiftSubsystem;
-    }
-
-    public void setRearLift(RearLiftSubsystem rearLift) {
-        this.rearLiftSubsystem = rearLift;
-    }
-*/
     public PneumaticSubsystem getPneumaticSubsystem() {
         return pneumaticSubsystem;
     }
@@ -344,16 +345,23 @@ public class Robot extends TimedRobot {
         this.field = field;
     }
 
+    public void outputMemoryUsage() {
+        if (this.osbean == null) {
+            return;
+        }
+
+        try {
+            Runtime runtime = Runtime.getRuntime();
+            logger.info("## JVM memory (b) => max: {}, total: {}, free: {}", runtime.maxMemory(), runtime.totalMemory(), runtime.freeMemory());
+            logger.info("## System => free mem (b): {}, system cpu load: {}, system avg load: {}, process cpu load: {}",
+                this.osbean.getFreePhysicalMemorySize(), this.osbean.getSystemCpuLoad(), this.osbean.getSystemLoadAverage(), 
+                this.osbean.getProcessCpuLoad() );
+        } catch (Exception ex) {
+            this.logger.debug("Failed to output memory/system stats. Reason: {}", ex.getMessage());
+        }
+    }
     public void updateOperatorDisplay() {
         try {
-
-            /*
-            getOperatorDisplay().setFieldValue("Right Motor Enc Raw",
-                    this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorRight).getRelativePosition());
-            getOperatorDisplay().setFieldValue("Left Motor Enc Raw",
-                this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorLeft).getRelativePosition());
-            */
-
             OperatorDisplay disp = this.getOperatorDisplay();
             disp.setFieldValue("Center of Contours", this.visionData.getDouble(VisionDataConstants.CONTOURS_CENTER_X_KEY, -1.0) );
             disp.setFieldValue("# of Contours", this.visionData.getDouble(VisionDataConstants.NUM_CONTOURS_KEY, 0.0));
@@ -395,5 +403,23 @@ public class Robot extends TimedRobot {
 
     protected void addShutdownHook() {
         Runtime.getRuntime().addShutdownHook(new RobotShutdownHook());
+    }
+
+    protected void initOsBean() {
+        try {
+            java.lang.management.OperatingSystemMXBean bean = ManagementFactory.getOperatingSystemMXBean();
+            if (bean instanceof OperatingSystemMXBean) {
+                this.osbean = (OperatingSystemMXBean) bean;
+                this.totalPhysicalMemorySize = this.osbean.getTotalPhysicalMemorySize();
+                logger.info("OS Arch: {}, version: {}, avail processors: {}, phys memory (b): {}, free memory (b): {}", 
+                    this.osbean.getArch(), this.osbean.getVersion(), this.osbean.getAvailableProcessors(), 
+                    this.totalPhysicalMemorySize, this.osbean.getFreePhysicalMemorySize());
+            } else {
+                logger.warn("Expecting osbean to be instance of  com.sun.management.OperatingSystemMXBean, but is actually instance of {}",
+                    bean != null ? bean.getClass().getName() : null);
+            }
+        } catch (Exception ex) {
+            logger.warn("Failed to get OperatingSystemMXBean.  Reason: {}", ex.getMessage());
+        }
     }
 }
