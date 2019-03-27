@@ -7,7 +7,6 @@ import frc.team6027.robot.RobotConfigConstants;
 import frc.team6027.robot.commands.PneumaticsInitializationCommand;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class PneumaticSubsystem extends Subsystem {

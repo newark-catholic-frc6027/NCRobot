@@ -5,7 +5,6 @@ import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.controls.XboxJoystick;
 
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class OutputAxisCommand extends Command {
@@ -18,7 +17,6 @@ public class OutputAxisCommand extends Command {
     
     @Override
     protected boolean isFinished() {
-        // TODO Auto-generated method stub
         return false;
     }
 

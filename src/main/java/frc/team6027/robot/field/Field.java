@@ -1,8 +1,5 @@
 package frc.team6027.robot.field;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 

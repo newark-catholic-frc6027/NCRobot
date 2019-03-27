@@ -96,7 +96,7 @@ public class SensorService {
         double offDistanceInches = offDistancePixels * pixelsToInchesConversionFactor;
 
         //Calculated off center angle -- result of atan(c/a) 
-        //TODO: Guard against divide by zero
+        //TODO: Guard against divide by zero.  Can return null if visionDistanceInches is 0
         double offAngle = Math.atan(offDistanceInches/visionDistanceInches)*180/Math.PI;
 
         //Calculated angle to turn the robot -- current gyro heading + offAngle

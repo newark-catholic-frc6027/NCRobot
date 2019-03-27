@@ -30,9 +30,7 @@ public class EncoderSensors {
      * x is the raw encoder reading
      * y will be the measurement in inches
      */
-//    public static final double ELEVATOR_ENCODER_EQUATION_M_FACTOR = 0.0034;
     public static final double ELEVATOR_ENCODER_EQUATION_M_FACTOR = 0.0034146;
-//    public static final double ELEVATOR_ENCODER_EQUATION_B = 0.2165;
     public static final double ELEVATOR_ENCODER_EQUATION_B = 0;
 
     //public   double DISTANCE_PER_PULSE = DISTANCE_PER_REVOLUTION / PULSE_PER_REVOLUTION;
@@ -44,17 +42,6 @@ public class EncoderSensors {
         RobotConfigConstants.ELEVATOR_ENCODER_DIO_CHANNEL_B,
         false,  EncodingType.k4X
     );
-    /*
-    private Encoder rightEncoder = new Encoder(
-            RobotConfigConstants.RIGHT_OPTICAL_ENCODER_DIO_CHANNEL_A, 
-            RobotConfigConstants.RIGHT_OPTICAL_ENCODER_DIO_CHANNEL_B, 
-            false, EncodingType.k4X);
-    
-    private Encoder leftEncoder = new Encoder(
-            RobotConfigConstants.LEFT_OPTICAL_ENCODER_DIO_CHANNEL_A, 
-            RobotConfigConstants.LEFT_OPTICAL_ENCODER_DIO_CHANNEL_B, 
-            false, EncodingType.k4X);
-    */
 
     public EncoderSensors() {
     }

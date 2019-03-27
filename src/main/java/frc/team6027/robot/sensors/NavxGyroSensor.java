@@ -13,7 +13,6 @@ public class NavxGyroSensor implements PIDCapableGyro {
 
     protected AHRS ahrs;
 
-    //protected Rotation2d mAngleAdjustment = Rotation2d.identity();
     protected double angle;
     protected double yawDegrees;
     protected double yawRateDegreesPerSecond;
@@ -27,7 +26,6 @@ public class NavxGyroSensor implements PIDCapableGyro {
     
     @Override
     public void calibrate() {
-       // mAHRS.registerCallback(new Callback(), null);
     }
 
     protected void initialize() {

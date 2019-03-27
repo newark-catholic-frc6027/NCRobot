@@ -6,6 +6,7 @@ import java.util.Map;
 import frc.team6027.robot.RobotConfigConstants;
 
 public class UltrasonicSensorManager {
+    // Warning FRC code does not work with more than one Ultrasonic sensor
     public enum UltrasonicSensorKey {
         Front,
  //       Right
@@ -21,14 +22,6 @@ public class UltrasonicSensorManager {
                 RobotConfigConstants.ULTRASONIC_FRONT_ECHO_DIO_CHANNEL
             )
         );
-        /*
-        this.sensorRegistry.put(UltrasonicSensorKey.Right, 
-            new UltrasonicSensor(
-                RobotConfigConstants.ULTRASONIC_RIGHT_PING_DIO_CHANNEL,
-                RobotConfigConstants.ULTRASONIC_RIGHT_ECHO_DIO_CHANNEL
-            )
-        );
-        */
     }
 
     public UltrasonicSensorManager(Map<UltrasonicSensorKey, UltrasonicSensor> ultrasonics) {

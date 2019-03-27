@@ -79,18 +79,4 @@ public class ScheduleCommand<T extends Command> extends Command {
         }
     }
 
-/*
-    public boolean isTypeMatch(Object o, Class<?> ofThisType) {
-        return o != null && ofThisType == o.getClass();
-    }
-
-    private ScheduleCommand() {
-
-    }
-
-    public static void main(String[] args) {
-        ScheduleCommand s = new ScheduleCommand();
-        System.out.println(s.isTypeMatch(null, null));
-    }
-*/
 }

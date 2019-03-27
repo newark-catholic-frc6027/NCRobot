@@ -5,15 +5,10 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.OperatorInterface;
-import frc.team6027.robot.commands.autonomous.AutoDeliverHatchToRocket;
 import frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
-import frc.team6027.robot.commands.autonomous.AutonomousPreference;
 import frc.team6027.robot.commands.autonomous.DriverAssistHatchDeliveryCommand;
 import frc.team6027.robot.commands.autonomous.KillCurrentAutoCommand;
 import frc.team6027.robot.commands.autonomous.ScheduleCommand;
-import frc.team6027.robot.commands.autonomous.AutoDeliverHatchToCargoShipFrontFromCenterPosition;
-import frc.team6027.robot.commands.autonomous.AutoDeliverHatchToCargoShipSide;
-import frc.team6027.robot.field.StationPosition;
 
 import frc.team6027.robot.controls.XboxJoystick;
 import frc.team6027.robot.field.Field;
@@ -30,7 +25,6 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Scheduler;
 
 public class TeleopManager extends Command {
     private final Logger logger = LogManager.getLogger(getClass());
@@ -46,12 +40,6 @@ public class TeleopManager extends Command {
     private ElevatorSubsystem elevatorSubsystem;
     private ArmSubsystem armSubsystem;
     private OperatorDisplay operatorDisplay;
-    
-    
-
-    //private VisionTurnCommand visionTurnCommand;
-
-
     private JoystickButton leftBumperButton;
     private JoystickButton rightBumperButton;
     private JoystickButton backButton;
@@ -98,22 +86,11 @@ public class TeleopManager extends Command {
         
         this.joystick = this.operatorInterface.getJoystick1();
         this.joystick2 = this.operatorInterface.getJoystick2();
-//        this.rearLiftSubsystem = rearLiftSubsystem;
         this.drivetrain = drivetrain;
         this.pneumaticSubsystem = pneumaticSubsystem;
         this.elevatorSubsystem = elevator;
         this.armSubsystem = armSubsystem;
         this.operatorDisplay = operatorDisplay;
-                                                                                                         
-        // Create the commands we will be using during teleop
-        /*
-        shiftGearCommand = new ShiftGearCommand(this.pneumaticSubsystem);
-        toggleGrippersCommand = new ToggleGrippersCommand(this.pneumaticSubsystem);
-        */
-        /*
-        this.toggleShiftElevatorCommand = new ToggleShiftElevatorCommand(pneumaticSubsvystem);
-        */
-        //this.visionTurnCommand=new VisionTurnCommand();
 
         // Set up the commands on the Joystick buttons
         initializeJoystick();
@@ -133,9 +110,8 @@ public class TeleopManager extends Command {
         this.backButton = new JoystickButton(this.joystick, this.joystick.getBackButtonNumber());
         this.backButton.whenPressed(new KillCurrentAutoCommand());
 
-        // **** Back button - Run vision turn command
+        // **** Start button - Run vision turn command
         this.startButton = new JoystickButton(this.joystick, this.joystick.getStartButtonNumber());
-//        this.startButton.whenPressed(new VisionTurnCommand(this.sensorService, this.drivetrain, this.operatorDisplay, 1.0));
         this.startButton.whenPressed(
             new ScheduleCommand<VisionTurnCommand>(
                 () -> new VisionTurnCommand(this.sensorService, this.drivetrain, this.operatorDisplay, 1.0), 
@@ -159,6 +135,7 @@ public class TeleopManager extends Command {
             )
         );
 
+        // **** A Button - Runs mast up/down to lower hatch delivery level
         this.aButton = new JoystickButton(this.joystick, this.joystick.getAButtonNumber());
         this.aButton.whenPressed(
             new ScheduleCommand<DriverAssistHatchDeliveryCommand>(
@@ -169,112 +146,40 @@ public class TeleopManager extends Command {
             )
 
         );
-
-        
-/*
-        this.shiftGearButton = new JoystickButton(this.joystick, this.joystick.getRightBumperButtonNumber());
-        shiftGearButton.whenPressed(this.shiftGearCommand);
-
-        this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());   
-//        this.yButton.whenPressed(new AutoDriveToVisionTarget(24.0, 0.6, this.sensorService, this.drivetrain, this.operatorDisplay));    
-        this.yButton.whenPressed(new AutoDriveToVisionTarget(24.0, 0.6, this.sensorService, this.drivetrain,this.operatorDisplay));    
-        /*
-        this.yButton.whenPressed(new Command(){   
-            @Override
-            protected boolean isFinished() {
-                return true;
-            }
-
-            @Override
-            protected void execute() { 
-                sensorService.getGyroSensor().reset();
-                sensorService.getEncoderSensors().reset(); 
-            }
-
-        });
-        */
-            
-        
-        /*
-
-        this.aButton = new JoystickButton(this.joystick, this.joystick.getAButtonNumber());
-        this.aButton.whenPressed(this.toggleGrippersCommand);
-
-        this.leftBumperButton = new JoystickButton(this.joystick, this.joystick.getLeftBumperButtonNumber());
-        this.leftBumperButton.whenPressed(this.toggleShiftElevatorCommand);
-
-        // for testing
-        // DeliveryMode.valueOf(this.prefs.getString("cubeDelivery.mode",
-        // DeliveryMode.DropThenKick.toString())),
-        // this.prefs.getInt("cubeDelivery.msdelay", 10),
-
-        this.xButton = new JoystickButton(this.joystick, this.joystick.getXButtonNumber());
-        this.xButton.whenPressed(new CubeDeliveryCommand(DeliveryMode.DropThenKick, 10, this.pneumaticSubsystem));
-
-        this.backButton = new JoystickButton(this.joystick, this.joystick.getBackButtonNumber());
-        this.backButton.whenPressed(new PrepareForClimbCommand(this.pneumaticSubsystem));
-        
-        this.startButton = new JoystickButton(this.joystick, this.joystick.getStartButtonNumber());
-        this.startButton.whenPressed(new DropCarriageCommand(DropFunction.DropForDelivery, DriverStation.getInstance(), this.pneumaticSubsystem, null ));
-        // this.backButton.whenPressed(new
-        // DropCarriageCommand(DropFunction.DropForDelivery,
-        // DriverStation.getInstance(), pneumaticSubsystem, null, false));
-        // Add new button assignments here
-        */
     }
     
    
    
     protected void initializeJoystick2() {
-        
-        /*
-        this.backButton2 = new JoystickButton(this.joystick2, this.joystick2.getBackButtonNumber());
-        this.backButton2.toggleWhenPressed(new AutoDeliverHatchToRocket(StationPosition.Left, this.sensorService, this.drivetrain, 
-            this.pneumaticSubsystem, this.elevatorSubsystem, this.operatorDisplay, this.field)
-        );
-        */
-/*        
-        this.rightBumperButton2 = new JoystickButton(this.joystick2, this.joystick2.getRightBumperButtonNumber());
-        this.rightBumperButton2.whenPressed(  new AutoDeliverHatchToCargoShipSide(StationPosition.Left, 
-            this.sensorService, this.drivetrain, this.pneumaticSubsystem, this.elevatorSubsystem, this.operatorDisplay, this.field)
-        );
-        this.rightBumperButton2.whenPressed( new AutoDeliverHatchToCargoShipFrontFromCenterPosition(AutonomousPreference.CargoFrontLeft, this.sensorService, this.drivetrain, 
-            this.pneumaticSubsystem, this.elevatorSubsystem, this.operatorDisplay, this.field)
-        );
-        */
-        /*
-        this.xButton2 = new JoystickButton(this.joystick2, this.joystick2.getXButtonNumber());   
-        this.xButton2.whenPressed(new AutoDeliverHatchToCargoShipSide(StationPosition.Left, 
-            this.sensorService, this.drivetrain, this.pneumaticSubsystem, this.elevatorSubsystem, this.operatorDisplay, this.field));
-        */
+
+        // **** Y button - Selects Upper Level
         this.yButton2 = new JoystickButton(this.joystick2, this.joystick2.getYButtonNumber());  
         this.yButton2.whenPressed(new SelectionCommand(LevelSelection.Upper));
 
+        // **** B button - Selects Middle Level
         this.bButton2 = new JoystickButton(this.joystick2, this.joystick2.getBButtonNumber());
         this.bButton2.whenPressed(new SelectionCommand(LevelSelection.Middle));
 
+        // **** A button - Selects Lower Level
         this.aButton2 = new JoystickButton(this.joystick2, this.joystick2.getAButtonNumber());
         this.aButton2.whenPressed(new SelectionCommand(LevelSelection.Lower));
 
-        // Cargo Ball Level
+        // **** X button - Cargo Ball Level
         this.xButton2 = new JoystickButton(this.joystick2, this.joystick2.getXButtonNumber());   
         this.xButton2.whenPressed(new SelectionCommand(LevelSelection.Cargo));
 
-        
+        // **** Left Bumper button - Select operation (Deliver only)
         this.leftBumperButton2 = new JoystickButton(this.joystick2, this.joystick2.getLeftBumperButtonNumber());   
         this.leftBumperButton2.whenPressed(new SelectionCommand(OperationSelection.Deliver));
 
+        // **** Right Bumper button - Select Object (Hatch only)
         this.rightBumperButton2 = new JoystickButton(this.joystick2, this.joystick2.getRightBumperButtonNumber());
         this.rightBumperButton2.whenPressed(new SelectionCommand(ObjectSelection.Hatch));
 
-        // Just in case Kicker gets out of sync`
+        // **** Back button - Toggle hatch kicker
         this.backButton2 = new JoystickButton(this.joystick2, this.joystick2.getBackButtonNumber());   
         this.backButton2.whenPressed(new ToggleKickHatchCommand(this.pneumaticSubsystem));
 
-/*
-        this.backButton2 = new JoystickButton(this.joystick2, this.joystick2.getBackButtonNumber());   
-        this.backButton2.whenPressed(new ClearDriverSelectionsCommand());
-*/        
     } 
 
     @Override
@@ -319,7 +224,6 @@ public class TeleopManager extends Command {
         this.runElevatorIfRequired();
         this.updateDriverAssistSelections();
 
-        // this.logData();
     }
 
     protected void drive() {

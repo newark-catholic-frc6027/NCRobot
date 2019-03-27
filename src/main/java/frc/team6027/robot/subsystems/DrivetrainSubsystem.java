@@ -4,7 +4,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorInterface;
 import frc.team6027.robot.RobotConfigConstants;
-// import com.ctre.CANTalon;
 import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.sensors.EncoderSensors.EncoderKey;
 import frc.team6027.robot.sensors.MotorEncoder;
@@ -15,14 +14,11 @@ import frc.team6027.robot.sensors.MotorPIDControllerCANImpl;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANEncoder;
 import com.revrobotics.CANError;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -36,15 +32,12 @@ public class DrivetrainSubsystem extends Subsystem {
     @SuppressWarnings("unused")
     private final Logger logger = LogManager.getLogger(getClass());
 
-//    private WPI_TalonSRX rightGearBoxMaster = new WPI_TalonSRX(RobotConfigConstants.RIGHT_GEARBOX_CIM_1_ID);
-//    private WPI_TalonSRX leftGearBoxMaster = new WPI_TalonSRX(RobotConfigConstants.LEFT_GEARBOX_CIM_1_ID);
     private CANSparkMax rightGearBoxMasterMotor = new CANSparkMax(
         RobotConfigConstants.RIGHT_GEARBOX_MASTER_CIM_1_ID, MotorType.kBrushless);
     private CANSparkMax leftGearBoxMasterMotor = new CANSparkMax(
         RobotConfigConstants.LEFT_GEARBOX_MASTER_CIM_1_ID, MotorType.kBrushless);
     
-// Added by Russ (trying to slave the second motors)
-
+    // Added by Russ (trying to slave the second motors)
     private CANSparkMax rightGearBoxSlave1 = new CANSparkMax(
         RobotConfigConstants.RIGHT_GEARBOX_SLAVE_CIM_2_ID, MotorType.kBrushless);
     private CANSparkMax leftGearBoxSlave1 = new CANSparkMax(
