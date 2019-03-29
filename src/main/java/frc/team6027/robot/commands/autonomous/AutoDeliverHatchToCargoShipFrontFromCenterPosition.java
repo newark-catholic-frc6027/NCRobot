@@ -4,6 +4,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.commands.DriveStraightCommand;
+import frc.team6027.robot.commands.ElevatorCommand;
 import frc.team6027.robot.commands.SlideMastCommand;
 import frc.team6027.robot.commands.ToggleKickHatchCommand;
 import frc.team6027.robot.commands.VisionTurnCommand;
@@ -46,12 +47,15 @@ public class AutoDeliverHatchToCargoShipFrontFromCenterPosition extends CommandG
         AutoCommandHelper.addAutoInitCommands(this, drivetrainSubsystem, pneumaticSubsystem, sensorService);
 
         // Slide mast forward
-        this.addParallel(new SlideMastCommand(SlideMastDirection.Forward, 1.0, this.sensorService, this.elevatorSubsystem), 3.0);
+        this.addParallel(new SlideMastCommand(SlideMastDirection.Forward, 1.0, this.sensorService, this.elevatorSubsystem), 5.0);
 
         // Off ramp forward
         this.addSequential(new DriveStraightCommand("D-L1-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "D-P1-Storm-Hatch", 
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
         );
+
+        // Run Elevator down
+        this.addSequential(new ElevatorCommand("rocketHatch.lowerLevel", "rocketHatch.elevator.power", this.sensorService, this.elevatorSubsystem));
 
         // vision toward cargo ship
         this.addSequential(new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));

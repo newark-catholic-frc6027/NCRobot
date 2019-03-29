@@ -32,7 +32,7 @@ public class ElevatorCommand extends Command {
     private String elevatorHeightPrefName = null;
     private String powerPrefName = null;
 
-    private double power = 0.5;
+    private double power = 0.2;
     private long checkMotorAmpsThresholdMillis;
     protected boolean isReset = false;
 
@@ -122,6 +122,7 @@ public class ElevatorCommand extends Command {
         }
 
         if (this.targetHeight != null) {
+            logger.trace(">>>>> Elevator command current height: {}, targetHeight: {}.", this.currentHeight, this.targetHeight);
             boolean done = false;
             if (this.direction == ElevatorDirection.Up) {
                 if (currentHeight >= this.targetHeight) {
@@ -135,6 +136,7 @@ public class ElevatorCommand extends Command {
             if (done) {
                 logger.info(">>>>> Elevator command FINISHED. Reached target height of {}. topSwitch: {}, bottomSwitch: {}", 
                     this.targetHeight);
+                this.elevator.elevatorStop();
                 this.clearRequirements();
                 this.isReset = false;
                 return true;
@@ -179,6 +181,7 @@ public class ElevatorCommand extends Command {
 
         if (this.powerPrefName != null) {
             this.power = this.prefs.getDouble(this.powerPrefName, 0.5);
+            logger.info("Power set to: {} from preference: {}", this.power, this.powerPrefName);
         }
 	}
 
@@ -206,15 +209,16 @@ public class ElevatorCommand extends Command {
                 } else {
                     this.direction = ElevatorDirection.Down;
                 }
-                this.logger.info("Current height is: {}, target height is: {}, moving: {}", currentHeight, this.targetHeight, this.direction);
+                this.logger.info("Current height is: {}, target height is: {}, moving: {} using power: {}", 
+                currentHeight, this.targetHeight, this.direction, this.power);
             }
         }
         this.currentHeight = this.sensorService.getElevatorHeightInches();
 
         if (this.direction == ElevatorDirection.Up) {
-            this.elevator.elevatorUp(power);
+            this.elevator.elevatorUp(this.power);
         } else if (this.direction == ElevatorDirection.Down) {
-            this.elevator.elevatorDown(power);
+            this.elevator.elevatorDown(this.power);
         } else {
             logger.error("Elevator Execute stopped!  Direction not set!");
         }

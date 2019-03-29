@@ -4,6 +4,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.commands.DriveStraightCommand;
+import frc.team6027.robot.commands.ElevatorCommand;
 import frc.team6027.robot.commands.SlideMastCommand;
 import frc.team6027.robot.commands.ToggleKickHatchCommand;
 import frc.team6027.robot.commands.TurnCommand;
@@ -48,7 +49,7 @@ public class AutoDeliverHatchToRocket extends CommandGroup implements KillableAu
         AutoCommandHelper.addAutoInitCommands(this, drivetrainSubsystem, pneumaticSubsystem, sensorService);
 
         // Slide mast forward
-        this.addParallel(new SlideMastCommand(SlideMastDirection.Forward, 1.0, this.sensorService, this.elevatorSubsystem), 3.0);
+        this.addParallel(new SlideMastCommand(SlideMastDirection.Forward, 1.0, this.sensorService, this.elevatorSubsystem), 5.0);
 
         // Off ramp forward
         this.addSequential(new DriveStraightCommand("B-L1-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "B-P1-Storm-Hatch", 
@@ -57,8 +58,12 @@ public class AutoDeliverHatchToRocket extends CommandGroup implements KillableAu
 
         // Turn toward rocket
         String turnPrefName = this.stationPosition == StationPosition.Left ? "B-A1-Storm-Hatch" : "B-A1-Right-Storm-Hatch";
+        //String turnPrefName = "pit.turnCommand.angle";
         this.addSequential(new TurnCommand(turnPrefName, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay, 
           "B-A1P-Storm-Hatch"));
+
+        // Run Elevator down
+        this.addParallel(new ElevatorCommand("rocketHatch.lowerLevel", "rocketHatch.elevator.power", this.sensorService, this.elevatorSubsystem));
 
         // Travel toward rocket
         this.addSequential(new DriveStraightCommand("B-L2-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "B-P2-Storm-Hatch", 

@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class ElevatorSubsystem extends Subsystem {
+    public static final double DOWN_POWER_SCALING_FACTOR = 0.5;
     private final Logger logger = LogManager.getLogger(getClass());
     
     private WPI_TalonSRX elevatorGearBoxMaster = new WPI_TalonSRX(RobotConfigConstants.ELEVATOR_GEARBOX_CIM_1_ID);    
@@ -111,12 +112,12 @@ public class ElevatorSubsystem extends Subsystem {
 
     // TODO: check this
     public boolean isGoingForward() {
-        return this.mastSlideGearBoxMaster.get() > 0.0;
+        return this.mastSlideGearBoxMaster.get() < 0.0;
     }
 
     // TODO: check this
     public boolean isGoingBackward() {
-        return this.mastSlideGearBoxMaster.get() < 0.0;
+        return this.mastSlideGearBoxMaster.get() > 0.0;
     }
     
     public boolean isGoingUp() {
@@ -173,8 +174,7 @@ public class ElevatorSubsystem extends Subsystem {
     }
     
     public void elevatorUp(double power) {
-        double adjustedPower = power > 0.0 ? power * -1 : power;
-
+        double adjustedPower = power > 0.0 ? power : power * -1;// : power;
         logger.trace("ElevatorUP power: {}, adjustedPower: {}, topLimitTripped? {}", power, adjustedPower, this.isTopLimitSwitchTripped());
         if (Math.abs(adjustedPower) > .05 && ! this.isTopLimitSwitchTripped()) {
             logger.trace("Elevator UP, running motor: {}", adjustedPower);
@@ -188,7 +188,9 @@ public class ElevatorSubsystem extends Subsystem {
     }
     
     public void elevatorDown(double power) {
-        double adjustedPower = power > 0.0 ? power : power * -1;
+        double adjustedPower = power > 0.0 ? power * -1 : power;// * -1
+        // Down is too fast, scale it back
+        adjustedPower = adjustedPower * DOWN_POWER_SCALING_FACTOR;
         logger.trace("Elevator DOWN power: {}, adjustedPower: {}, bottomLimitTripped? {}", power, adjustedPower, this.isBottomLimitSwitchTripped());
         if (Math.abs(adjustedPower) > .05 && ! this.isBottomLimitSwitchTripped()) {
             logger.trace("Elevator DOWN, running motor: {}", adjustedPower);

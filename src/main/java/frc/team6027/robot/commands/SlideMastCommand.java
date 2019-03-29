@@ -69,6 +69,10 @@ public class SlideMastCommand extends Command {
         super.cancel();
     }
     
+    protected void reset() {
+
+    }
+
     protected boolean isForwardMaxAmpsExceededWithDelay() {
         long elapsedTime = System.currentTimeMillis() - this.execStartTime;
         
@@ -100,8 +104,9 @@ public class SlideMastCommand extends Command {
          
         boolean backwardSwitchTripped = this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.MastSlideBackward);
         boolean forwardSwitchTripped = this.limitSwitches.isLimitSwitchTripped(LimitSwitchId.MastSlideForward);
-        logger.trace(">>>>> Mast slide command checking isFinished. forwardSwitchTripped: {}, backwardSwitchTripped: {}, isGoingForward: {}", 
-          forwardSwitchTripped, backwardSwitchTripped, this.elevator.isGoingForward());
+        logger.trace(">>>>> Mast slide command checking isFinished. forwardSwitchTripped: {}, backwardSwitchTripped: {}," +
+           "isGoingForward: {}, isGoingBackward(): {}, direction: {}", 
+          forwardSwitchTripped, backwardSwitchTripped, this.elevator.isGoingForward(), this.elevator.isGoingBackward(), this.direction);
 
         // Checking isGoingUp/Down may be affecting communication
         boolean done = (
