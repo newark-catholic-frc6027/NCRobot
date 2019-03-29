@@ -63,12 +63,15 @@ public class AutoDeliverHatchToRocket extends CommandGroup implements KillableAu
           "B-A1P-Storm-Hatch"));
 
         // Run Elevator down
-        this.addParallel(new ElevatorCommand("rocketHatch.lowerLevel", "rocketHatch.elevator.power", this.sensorService, this.elevatorSubsystem));
+        this.addSequential(new ElevatorCommand("rocketHatch.lowerLevel", "rocketHatch.elevator.power", this.sensorService, this.elevatorSubsystem));
 
         // Travel toward rocket
         this.addSequential(new DriveStraightCommand("B-L2-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "B-P2-Storm-Hatch", 
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay)
         );
+
+        // Let Vison settle down
+        this.addSequential(new DelayCommand(500));
 
         this.addSequential(new VisionTurnCommand(this.sensorService, this.drivetrainSubsystem, this.operatorDisplay), 1.0);
 
