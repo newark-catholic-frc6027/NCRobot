@@ -87,9 +87,15 @@ public class TurnCommand extends Command implements PIDOutput {
 		this.setName(NAME);
 	}
 
+	protected void closePidController() {
+		this.pidController.disable();
+		this.pidController.close();
+		this.pidController = null;
+	}
+
 	protected void initPIDController() {
 		if (this.pidController != null) {
-			this.pidController.disable();
+			this.closePidController();
 		}
 		this.pidLoopCalculationOutput = 0.0;
 		this.pidController = new PIDController(this.prefs.getDouble("turnCommand.pCoeff", PID_PROPORTIONAL_COEFFICIENT),
@@ -136,7 +142,7 @@ public class TurnCommand extends Command implements PIDOutput {
 			logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Turn done, angle={}, stopTurnNow? {}, pidController.onTarget? {}, pidController setpoint: {}, gyro rate: {}, pidAngleStopThreshold: {} ", 
 			      this.sensorService.getGyroSensor().getYawAngle(), this.stopTurnNow, this.pidController.onTarget(), this.pidController.getSetpoint(), this.gyro.getRate(), this.pidAngleStopThreshold);
 	        
-			pidController.disable();
+			this.closePidController();
 			this.isReset = false;
 			this.stopTurnNow = false;
             return true;
@@ -152,9 +158,7 @@ public class TurnCommand extends Command implements PIDOutput {
 		this.isReset = false;
 		this.stopTurnNow = false;
 
-		if (this.pidController != null) {
-			this.pidController.disable();
-		}
+		this.closePidController();
 		super.cancel();
 	}
 
@@ -164,9 +168,7 @@ public class TurnCommand extends Command implements PIDOutput {
 		this.isReset = false;
 		this.stopTurnNow = false;
 
-		if (this.pidController != null) {
-			this.pidController.disable();
-		}
+		this.closePidController();
         super.interrupted();
     }
 
