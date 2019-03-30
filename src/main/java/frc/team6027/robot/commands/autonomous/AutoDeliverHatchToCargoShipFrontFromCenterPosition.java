@@ -82,10 +82,12 @@ public class AutoDeliverHatchToCargoShipFrontFromCenterPosition extends CommandG
         );
 
         
+        /*
         this.addSequential(new ToggleKickHatchCommand(this.pneumaticSubsystem));
         this.addSequential(new DriveStraightCommand("D-L5-Storm-Hatch", DriveDistanceMode.DistanceReadingOnEncoder, "D-P5-Storm-Hatch", 
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
         this.addSequential(new ToggleKickHatchCommand(this.pneumaticSubsystem));
+        */
     }
 
     

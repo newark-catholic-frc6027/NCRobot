@@ -91,7 +91,7 @@ public class AutoDeliverHatchToRocket extends CommandGroup implements KillableAu
         this.addSequential(new DriveStraightCommand("B-L5-Storm-Hatch", 
             DriveStraightCommand.DriveDistanceMode.DistanceFromObject, 
             "B-P5-Storm-Hatch", null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
-
+/*
         // Kick the hatch
         this.addSequential(new ToggleKickHatchCommand(this.pneumaticSubsystem));
         // Back up from rocket
@@ -99,7 +99,7 @@ public class AutoDeliverHatchToRocket extends CommandGroup implements KillableAu
             null, this.sensorService, this.drivetrainSubsystem, this.operatorDisplay));
         // Retract kickers
         this.addSequential(new ToggleKickHatchCommand(this.pneumaticSubsystem));
-
+*/
     }
     
     @Override
