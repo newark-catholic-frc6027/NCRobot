@@ -54,7 +54,7 @@ public class TurnWhileDrivingCommand extends DriveStraightCommand implements PID
     protected boolean isFinished() {
         if (this.currentTargetVectorIndex >= this.targetVectors.length) {
             this.drivetrainSubsystem.stopMotor();
-            this.disablePidControllers();
+            this.closePidControllers();
             logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TurnWhileDrivingCommand FINISHED, distance={}", this.encoderSensors.getLeftEncoder().getDistance());
             this.isReset = false;
             return true;

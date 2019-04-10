@@ -131,7 +131,7 @@ public class DriveStraightCommand extends Command implements PIDOutput {
 	@Override
 	public void cancel() {
         this.isReset = false;
-        this.disablePidControllers();
+        this.closePidControllers();
 		super.cancel();
 	}
 
@@ -262,13 +262,17 @@ public class DriveStraightCommand extends Command implements PIDOutput {
         gyroPidController.enable();
     }
     
-    protected void disablePidControllers() {
+    protected void closePidControllers() {
         if (this.distancePidController != null) {
             this.distancePidController.disable();
+            this.distancePidController.close();
+            this.distancePidController = null;
         }
 
         if (this.gyroPidController != null) {
             this.gyroPidController.disable();
+            this.gyroPidController.close();
+            this.gyroPidController = null;
         }
 
     }
@@ -298,7 +302,6 @@ public class DriveStraightCommand extends Command implements PIDOutput {
                 // TODO put distance constant in preference
                 if (distanceToObject != null && distanceToObject <= this.driveDistance) {
                     this.drivetrainSubsystem.stopMotor();
-                    this.disablePidControllers();
                     logger.info(">>>>>>>>>>>>>>>>> NON-PID >>>>>>>>>>>>>>>>>>> DriveStraight done, distance from object={}", this.getUltrasonic().getDistanceInches());
                     finished = true;
                 }
@@ -326,7 +329,7 @@ public class DriveStraightCommand extends Command implements PIDOutput {
         }
 
         if (finished) {
-            this.disablePidControllers();
+            this.closePidControllers();
             this.isReset = false;
         }
 

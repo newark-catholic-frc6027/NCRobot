@@ -99,6 +99,7 @@ double "/Preferences/elevator.driving.height"=9.8
 double "/Preferences/elevatorCommand.height"=36
 double "/Preferences/elevatorCommand.power"=1
 double "/Preferences/elevatorSubystem.maxMotorAmps"=30
+<<<<<<< HEAD
 double "/Preferences/pit.turnCommand.angle"=0
 double "/Preferences/rocketBall.lowerLevel"=-7
 double "/Preferences/rocketBall.middleLevel"=21
@@ -107,6 +108,15 @@ double "/Preferences/rocketHatch.elevator.power"=0.6
 double "/Preferences/rocketHatch.lowerLevel"=-15
 double "/Preferences/rocketHatch.middleLevel"=13
 double "/Preferences/rocketHatch.upperLevel"=42
+=======
+double "/Preferences/rocketBall.lowerLevel"=10
+double "/Preferences/rocketBall.middleLevel"=38.5
+double "/Preferences/rocketBall.upperLevel"=66
+double "/Preferences/rocketHatch.elevator.power"=0.5
+double "/Preferences/rocketHatch.lowerLevel"=-17
+double "/Preferences/rocketHatch.middleLevel"=29.3
+double "/Preferences/rocketHatch.upperLevel"=58
+>>>>>>> 2c005f57ca6cd8975d3907007ab41477e69ed7fc
 double "/Preferences/teleop.turnPowerScaleFactor"=0.6
 double "/Preferences/teleopMotorPower"=1
 double "/Preferences/turnButton.angle"=45
@@ -127,4 +137,8 @@ double "/Preferences/ultrasonic.inRange.lower"=11
 double "/Preferences/ultrasonic.inRange.upper"=13
 double "/Preferences/visionTurnCommand.adjustedPower"=0.21
 double "/Preferences/visionTurnCommand.minPower"=0.2
+<<<<<<< HEAD
 double "/Preferences/visionTurnCommand.power"=0.5
+=======
+double "/Preferences/visionTurnCommand.power"=0.45
+>>>>>>> 2c005f57ca6cd8975d3907007ab41477e69ed7fc
