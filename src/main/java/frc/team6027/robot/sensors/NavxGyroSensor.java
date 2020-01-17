@@ -55,7 +55,6 @@ public class NavxGyroSensor implements PIDCapableGyro {
     	//return 0;
     }
 
-    @Override
     public void free() {
         
     }

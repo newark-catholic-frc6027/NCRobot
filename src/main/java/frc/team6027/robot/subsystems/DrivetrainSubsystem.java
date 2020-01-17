@@ -54,9 +54,11 @@ public class DrivetrainSubsystem extends Subsystem {
 
     public DrivetrainSubsystem(OperatorInterface operatorInterface, SensorService sensorService) {
         this.operatorInterface = operatorInterface;
+        /*
         if (sensorService != null) {
             this.registerMotorEncoders(sensorService);
-        }        
+        } 
+        */       
         this.initialize();
     }
 
@@ -165,8 +167,8 @@ public class DrivetrainSubsystem extends Subsystem {
         CANError resultLeftMaster = this.leftGearBoxMasterMotor.setIdleMode(IdleMode.kCoast);
         CANError resultLeftSlave1 = this.leftGearBoxSlave1.setIdleMode(IdleMode.kCoast);
 
-        netResultSuccess = resultRightMaster == CANError.kOK && resultRightSlave1 == CANError.kOK
-                    && resultLeftMaster == CANError.kOK && resultLeftSlave1 == CANError.kOK;
+        netResultSuccess = resultRightMaster == CANError.kOk && resultRightSlave1 == CANError.kOk
+                    && resultLeftMaster == CANError.kOk && resultLeftSlave1 == CANError.kOk;
 
         if (! netResultSuccess) {
             logger.warn("COAST MODE FAILED to put all motors into COAST mode.  Results: " + 
@@ -188,8 +190,8 @@ public class DrivetrainSubsystem extends Subsystem {
         CANError resultLeftMaster = this.leftGearBoxMasterMotor.setIdleMode(IdleMode.kBrake);
         CANError resultLeftSlave1 = this.leftGearBoxSlave1.setIdleMode(IdleMode.kBrake);
 
-        netResultSuccess = resultRightMaster == CANError.kOK && resultRightSlave1 == CANError.kOK
-                    && resultLeftMaster == CANError.kOK && resultLeftSlave1 == CANError.kOK;
+        netResultSuccess = resultRightMaster == CANError.kOk && resultRightSlave1 == CANError.kOk
+                    && resultLeftMaster == CANError.kOk && resultLeftSlave1 == CANError.kOk;
 
         if (! netResultSuccess) {
             logger.warn("BRAKE MODE FAILED to put all motors into BRAKE mode.  Results: " + 

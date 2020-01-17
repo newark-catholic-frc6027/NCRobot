@@ -1,6 +1,6 @@
 package frc.team6027.robot;
 
-import edu.wpi.first.wpilibj.NamedSendable;
+import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
@@ -50,7 +50,7 @@ public interface OperatorDisplay {
 
 //    public void setNumericFieldValue(String fieldName, int numValue);
 
-    void setData(NamedSendable sendable);
+    void setData(Sendable sendable);
     void setData(String name, Command command);
 
     void setFieldValue(String fieldName, Double numValue);

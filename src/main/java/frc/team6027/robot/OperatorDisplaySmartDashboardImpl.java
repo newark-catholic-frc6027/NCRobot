@@ -6,7 +6,7 @@ import java.util.Map;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
-import edu.wpi.first.wpilibj.NamedSendable;
+import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -48,7 +48,7 @@ public class OperatorDisplaySmartDashboardImpl implements OperatorDisplay {
     }
 
     @Override
-    public void setData(NamedSendable sendable) {
+    public void setData(Sendable sendable) {
         SmartDashboard.putData(sendable);
     }
 

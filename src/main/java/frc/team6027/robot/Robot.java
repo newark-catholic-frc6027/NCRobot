@@ -15,7 +15,7 @@ import com.sun.management.OperatingSystemMXBean;
 import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.commands.TeleopManager;
 import frc.team6027.robot.commands.autonomous.AutoCommandHelper;
-import frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
+// import frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
 import frc.team6027.robot.commands.autonomous.NoOpCommand;
 import frc.team6027.robot.commands.autonomous.AutonomousPreference;
 import frc.team6027.robot.data.Datahub;
@@ -54,15 +54,15 @@ public class Robot extends TimedRobot {
     private DrivetrainSubsystem drivetrain;
 
 
-    private PneumaticSubsystem pneumaticSubsystem;
-    private ElevatorSubsystem elevatorSubsystem;
-    private ArmSubsystem armSubsystem;
+//    private PneumaticSubsystem pneumaticSubsystem;
+//    private ElevatorSubsystem elevatorSubsystem;
+//    private ArmSubsystem armSubsystem;
     
     private SensorService sensorService;
 
     private Field field = new Field();
     private Preferences prefs = Preferences.getInstance();
-    private AutonomousCommandManager autoCommandManager;
+//    private AutonomousCommandManager autoCommandManager;
 
     private int teleopExecCount = 0;
     private int autoExecCount = 0;
@@ -87,7 +87,7 @@ public class Robot extends TimedRobot {
         logger.info("******************* ROBOT INIT STARTING *******************");
 
         outputBanner();
-        this.autoCommandManager = AutonomousCommandManager.instance();
+//        this.autoCommandManager = AutonomousCommandManager.instance();
 
         this.setSensorService(new SensorService());
         this.setOperatorDisplay(new OperatorDisplaySmartDashboardImpl());
@@ -95,11 +95,11 @@ public class Robot extends TimedRobot {
         this.setDrivetrain(
             new DrivetrainSubsystem(this.getOperatorInterface(), this.getSensorService())
         );
-        this.drivetrain.registerMotorEncoders(this.sensorService);
+//        this.drivetrain.registerMotorEncoders(this.sensorService);
 
-        this.setArmSubsystem(new ArmSubsystem(this.getOperatorInterface()));
-        this.setElevatorSubsystem(new ElevatorSubsystem(this.getSensorService().getLimitSwitchSensors(), this.getOperatorDisplay()));
-        this.setPneumaticSubsystem(new PneumaticSubsystem(this.getOperatorDisplay()));
+//        this.setArmSubsystem(new ArmSubsystem(this.getOperatorInterface()));
+//        this.setElevatorSubsystem(new ElevatorSubsystem(this.getSensorService().getLimitSwitchSensors(), this.getOperatorDisplay()));
+//        this.setPneumaticSubsystem(new PneumaticSubsystem(this.getOperatorDisplay()));
         //this.visionData = new DatahubNetworkTableImpl(VisionDataConstants.VISION_DATA_KEY);
         this.visionData = new DatahubRobotServerImpl(VisionDataConstants.VISION_DATA_KEY);
         DatahubRegistry.instance().register(this.visionData);
@@ -107,10 +107,10 @@ public class Robot extends TimedRobot {
         // This ensures that the Teleop command is running whenever we are not in
         // autonomous mode
         this.teleopManager = new TeleopManager(this.operatorInterface, this.sensorService,
-                this.getDrivetrain(), this.getArmSubsystem(), this.pneumaticSubsystem, 
-                this.getElevatorSubsystem(), this.getOperatorDisplay(), this.getField());
+                this.getDrivetrain(), null /*this.getArmSubsystem()*/, null /*this.pneumaticSubsystem*/, 
+                null /*this.getElevatorSubsystem()*/, this.getOperatorDisplay(), this.getField());
         this.getDrivetrain().setDefaultCommand(teleopManager);
-
+/*
         this.autoCommandManager.initialize(
             AutonomousPreference.Rocket,
             this.getField(),
@@ -120,10 +120,12 @@ public class Robot extends TimedRobot {
             this.getElevatorSubsystem(),
             this.getOperatorDisplay()
         );
-
+*/
+/*
         this.autoCommandManager.initOperatorDisplayCommands();
+*/
         this.sensorService.resetAll();
-        this.elevatorSubsystem.initialize();
+//        this.elevatorSubsystem.initialize();
 
 //        this.drivetrain.enableBrakeMode();
 
@@ -132,8 +134,8 @@ public class Robot extends TimedRobot {
         this.robotStatusServer = new RobotStatusServer();
         this.robotStatusServer.start();
 
-        AutonomousCommandManager.initAutoScenarioDisplayValues(this.getOperatorDisplay());
-        displayAutoRunning(false);
+//        AutonomousCommandManager.initAutoScenarioDisplayValues(this.getOperatorDisplay());
+//        displayAutoRunning(false);
         this.outputMemoryUsage();
         logger.info("******************* ROBOT INIT COMPLETE *******************");
 
@@ -171,8 +173,8 @@ public class Robot extends TimedRobot {
         Scheduler.getInstance().run();
         
         this.getDrivetrain().stopMotor();
-        this.getElevatorSubsystem().elevatorStop();
-        this.getElevatorSubsystem().mastSlideStop();
+//        this.getElevatorSubsystem().elevatorStop();
+//        this.getElevatorSubsystem().mastSlideStop();
 
     }
 
@@ -195,13 +197,14 @@ public class Robot extends TimedRobot {
         logger.info("******************* AUTONOMOUS INIT STARTING *******************");
         // TODO: Reset pneumatics
         // TODO: ensure drivetrain in low gear
-        StationPosition pos = this.applyStationPosition();
+//        StationPosition pos = this.applyStationPosition();
         AutonomousPreference autoPref = AutonomousPreference.fromDisplayName(this.getOperatorDisplay().getSelectedAutoScenario());
-        this.autoCommandManager.setPreferredScenario(autoPref);
+//        this.autoCommandManager.setPreferredScenario(autoPref);
 
 //        this.drivetrain.enableBrakeMode();
 
         this.sensorService.resetAll();
+/*        
         boolean autoStarted = false;
         if (pos != null) {
             this.autonomousCommand = this.autoCommandManager.chooseCommand();
@@ -217,6 +220,7 @@ public class Robot extends TimedRobot {
         }
 
         displayAutoRunning(autoStarted);
+*/        
     }
 
     /**
@@ -246,8 +250,8 @@ public class Robot extends TimedRobot {
         outputMemoryUsage();
 
         // If elevatorSubsystem is already initialized, this will do nothing
-        this.elevatorSubsystem.initialize();
-        this.getPneumaticSubsystem().reset();
+//        this.elevatorSubsystem.initialize();
+//        this.getPneumaticSubsystem().reset();
     }
 
     protected void displayAutoRunning(boolean isAutoRunning) {
@@ -277,7 +281,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void testPeriodic() {
-        LiveWindow.run();
+//        LiveWindow.run();
     }
 
     public OperatorInterface getOperatorInterface() {
@@ -303,7 +307,7 @@ public class Robot extends TimedRobot {
     public void setDrivetrain(DrivetrainSubsystem drivetrain) {
         this.drivetrain = drivetrain;
     }
-
+/*
     public void setArmSubsystem(ArmSubsystem armSubsystem) {
         this.armSubsystem = armSubsystem;
     }
@@ -328,7 +332,7 @@ public class Robot extends TimedRobot {
     public void setElevatorSubsystem(ElevatorSubsystem elevatorSubsystem) {
         this.elevatorSubsystem = elevatorSubsystem;
     }
-
+*/
     public SensorService getSensorService() {
         return sensorService;
     }
@@ -363,6 +367,7 @@ public class Robot extends TimedRobot {
     public void updateOperatorDisplay() {
         try {
             OperatorDisplay disp = this.getOperatorDisplay();
+/*
             disp.setFieldValue("Center of Contours", this.visionData.getDouble(VisionDataConstants.CONTOURS_CENTER_X_KEY, -1.0) );
             disp.setFieldValue("# of Contours", this.visionData.getDouble(VisionDataConstants.NUM_CONTOURS_KEY, 0.0));
             disp.setFieldValue("Elevator Dist", this.sensorService.getElevatorHeightInches());
@@ -374,19 +379,23 @@ public class Robot extends TimedRobot {
                 this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorRight).getRelativeDistance());
             disp.setFieldValue("Avg Motor Dist",
                 this.sensorService.getEncoderSensors().getAvgEncoderRelativeDistance());
-            disp.setFieldValue("Elev topLimitTripped?", this.elevatorSubsystem.isTopLimitSwitchTripped());
-            disp.setFieldValue("Elev bottomLimitTripped?", this.elevatorSubsystem.isBottomLimitSwitchTripped());
-        
+//            disp.setFieldValue("Elev topLimitTripped?", this.elevatorSubsystem.isTopLimitSwitchTripped());
+//            disp.setFieldValue("Elev bottomLimitTripped?", this.elevatorSubsystem.isBottomLimitSwitchTripped());
+*/        
                 
             disp.setFieldValue("Gyro Angle", this.sensorService.getGyroSensor().getAngle());
             disp.setFieldValue("Gyro Yaw Angle", this.sensorService.getGyroSensor().getYawAngle());
-            
+/*            
             Double dist = this.sensorService.getUltrasonicSensor(UltrasonicSensorKey.Front).getDistanceInches();
+*/            
+/*
             disp.setFieldValue("Ultrasonic Front Dist", dist != null ? dist + "" : "INFINITY");
             disp.setFieldValue("Level Selection", this.autoCommandManager.getLevelSelection().name());
             disp.setFieldValue("Object Selection", this.autoCommandManager.getObjectSelection().name());
             disp.setFieldValue("Operation Selection", this.autoCommandManager.getOperationSelection().name());
     //        disp.setFieldValue("Drivetrain Mode", this.drivetrain.isBrakeModeEnabled() ? "BRAKE" : "COAST");
+*/    
+/*    
             Double ultrasonicInches = this.sensorService.getUltrasonicSensor(UltrasonicSensorKey.Front).getDistanceInches();
             if (ultrasonicInches != null) {
                 disp.setFieldValue("In range", 
@@ -396,6 +405,7 @@ public class Robot extends TimedRobot {
                 );
             }
             disp.setFieldValue("Auto", this.autoCommandManager.isAutoCommandRunning());
+*/
         } catch (Exception ex) {
             logger.error("Failure in updateOperatorDisplay. Error: {}, {} ", ex.getClass().getName(), ex.getMessage());
         }

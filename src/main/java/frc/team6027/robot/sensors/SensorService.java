@@ -17,19 +17,19 @@ public class SensorService {
 
     private EncoderSensors encoderSensors;
     private PIDCapableGyro gyroSensor;
-    private AirPressureSensor airPressureSensor;
-    private UltrasonicSensorManager ultrasonicSensorManager;
-    private CameraSensors cameraSensor;
-    private LimitSwitchSensors limitSwitchSensors;
+//    private AirPressureSensor airPressureSensor;
+//    private UltrasonicSensorManager ultrasonicSensorManager;
+//    private CameraSensors cameraSensor;
+//    private LimitSwitchSensors limitSwitchSensors;
     protected Datahub visionData;
 
     public SensorService() {
         this.encoderSensors = new EncoderSensors();
         this.gyroSensor = new NavxGyroSensor();
-        this.airPressureSensor = new AirPressureSensor();
-        this.ultrasonicSensorManager = new UltrasonicSensorManager();
-        this.cameraSensor = new CameraSensors();
-        this.limitSwitchSensors = new LimitSwitchSensors();
+//        this.airPressureSensor = new AirPressureSensor();
+//        this.ultrasonicSensorManager = new UltrasonicSensorManager();
+//        this.cameraSensor = new CameraSensors();
+//        this.limitSwitchSensors = new LimitSwitchSensors();
     }
 
     public void addMotorEncoders(Map<EncoderKey, MotorEncoder> encoders) {
@@ -43,7 +43,7 @@ public class SensorService {
     public PIDCapableGyro getGyroSensor() {
         return gyroSensor;
     }
-
+/*
     public AirPressureSensor getAirPressureSensor() {
         return airPressureSensor;
     }
@@ -59,18 +59,18 @@ public class SensorService {
     public LimitSwitchSensors getLimitSwitchSensors() {
         return limitSwitchSensors;
     }
-
+*/
     public void resetAll() {
         logger.info("SensorService is resetting all sensors...");
-        this.getGyroSensor().reset();
+//        this.getGyroSensor().reset();
         logger.info("GYRO RESET");
-        this.getEncoderSensors().reset();
-        logger.info("MOTOR ENCODERS RESET");
-        this.getEncoderSensors().getElevatorEncoder().reset();
-        logger.info("ELEVATOR STRING ENCODER RESET");
+//        this.getEncoderSensors().reset();
+//        logger.info("MOTOR ENCODERS RESET");
+//        this.getEncoderSensors().getElevatorEncoder().reset();
+//        logger.info("ELEVATOR STRING ENCODER RESET");
     }
 
-
+/*
     public double getElevatorHeightInches() {
         double elevatorEncoderRawValue = this.encoderSensors.getElevatorEncoder().getRaw();
         double heightInches = (EncoderSensors.ELEVATOR_ENCODER_EQUATION_M_FACTOR * elevatorEncoderRawValue) 
@@ -126,7 +126,7 @@ public class SensorService {
 
         return distance;
     }
-
+*/
     protected Datahub getVisionDatahub() {
         if (this.visionData == null) {
             this.visionData = DatahubRegistry.instance().get(VisionDataConstants.VISION_DATA_KEY);

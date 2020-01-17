@@ -1,7 +1,10 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2019.4.1"
+    id "edu.wpi.first.GradleRIO" version "2020.1.2"
 }
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 def ROBOT_MAIN_CLASS = "frc.team6027.robot.Main"
 
@@ -39,7 +42,7 @@ deploy {
 
 // Set this to true to enable desktop support.
 def includeDesktopSupport = false
-
+/*
 // Maven central needed for JUnit
 repositories {
     mavenCentral()
@@ -49,61 +52,73 @@ repositories {
     }
 
 }
-
+*/
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 4.
 dependencies {
-    compile wpi.deps.wpilib()
-    compile wpi.deps.vendor.java()
-    compile 'com.ctre.phoenix:api-java:5.12.0'
-    compile 'com.ctre.phoenix:wpiapi-java:5.12.0'
-    compile 'com.revrobotics.frc:SparkMax-java:1.1.8'
-    compile 'com.kauailabs.navx.frc:navx-java:3.1.344'
-    compile 'org.apache.logging.log4j:log4j-api:2.11.2'
-    compile 'org.apache.logging.log4j:log4j-core:2.11.2'
-    compile 'commons-io:commons-io:2.6'
+    implementation wpi.deps.wpilib()
+    nativeZip wpi.deps.wpilibJni(wpi.platforms.roborio)
+    nativeDesktopZip wpi.deps.wpilibJni(wpi.platforms.desktop)
+    // implementation 'edu.wpi.first.wpilibOldCommands:wpilibOldCommands-java:2020.1.2'
+
+    implementation wpi.deps.vendor.java()
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
-    testCompile 'junit:junit:4.12'
+
+    testImplementation 'junit:junit:4.12'
+
+    // Enable simulation gui support. Must check the box in vscode to enable support
+    // upon debugging
+    simulation wpi.deps.sim.gui(wpi.platforms.desktop, false)
+
+    implementation 'com.ctre.phoenix:api-java:5.17.3'
+    implementation 'com.ctre.phoenix:wpiapi-java:5.17.3'
+    implementation 'com.kauailabs.navx.frc:navx-java:3.1.400'
+    // TODO: need to update sparkmax
+    // implementation 'com.revrobotics.frc:SparkMax-java:1.1.8'
+    implementation 'org.apache.logging.log4j:log4j-api:2.11.2'
+    implementation 'org.apache.logging.log4j:log4j-core:2.11.2'
+    implementation 'commons-io:commons-io:2.6'
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
 // in order to make them all available at runtime. Also adding the manifest so WPILib
 // knows where to look for our Robot Class.
 jar {
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
 }
 
 
-task copyWpiSourceJar( type: Copy ) {
-  def sources = configurations.runtime.resolvedConfiguration.resolvedArtifacts.findAll{ a -> a.name == 'wpilibj-java'}.collect { artifact ->
-        project.dependencies.create( [
-            group: artifact.moduleVersion.id.group,
-            name: artifact.moduleVersion.id.name,
-            version: artifact.moduleVersion.id.version,
-            classifier: 'sources'
-        ] )
-  }
-  from zipTree(configurations.detachedConfiguration( sources as Dependency[] )
-    .resolvedConfiguration.lenientConfiguration.getFiles( Specs.SATISFIES_ALL )[0])
-  into file( 'wpi-sources/')
+// task copyWpiSourceJar( type: Copy ) {
+//   def sources = configurations.runtime.resolvedConfiguration.resolvedArtifacts.findAll{ a -> a.name == 'wpilibj-java'}.collect { artifact ->
+//         project.dependencies.create( [
+//             group: artifact.moduleVersion.id.group,
+//             name: artifact.moduleVersion.id.name,
+//             version: artifact.moduleVersion.id.version,
+//             classifier: 'sources'
+//         ] )
+//   }
 
-  doLast {
-    delete fileTree('wpi-sources') {
-        include '**/*.jar'
-    }
-  }
-}
+//   from zipTree(configurations.detachedConfiguration( sources as Dependency[] )
+//     .resolvedConfiguration.lenientConfiguration.getFiles( Specs.SATISFIES_ALL )[0])
+//   into file( 'wpi-sources/')
 
-task wpiJavadoc(type: Javadoc) {
-    dependsOn copyWpiSourceJar
-    source = file 'wpi-sources'
-    destinationDir = file 'wpi-doc'
-    classpath = sourceSets.main.runtimeClasspath
-    options.addStringOption('--frames')
+//   doLast {
+//     delete fileTree('wpi-sources') {
+//         include '**/*.jar'
+//     }
+//   }
+// }
 
-}
+// task wpiJavadoc(type: Javadoc) {
+//     dependsOn copyWpiSourceJar
+//     source = file 'wpi-sources'
+//     destinationDir = file 'wpi-doc'
+//     classpath = sourceSets.main.runtimeClasspath
+//     options.addStringOption('--frames')
+
+// }
 
 task(runRobotServer, dependsOn: 'classes', type: JavaExec) {
     main = 'frc.team6027.robot.server.RobotStatusServer'

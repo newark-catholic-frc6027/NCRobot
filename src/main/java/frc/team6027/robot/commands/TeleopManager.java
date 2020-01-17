@@ -5,10 +5,12 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.OperatorInterface;
+/*
 import frc.team6027.robot.commands.autonomous.AutonomousCommandManager;
 import frc.team6027.robot.commands.autonomous.DriverAssistHatchDeliveryCommand;
 import frc.team6027.robot.commands.autonomous.KillCurrentAutoCommand;
 import frc.team6027.robot.commands.autonomous.ScheduleCommand;
+*/
 
 import frc.team6027.robot.controls.XboxJoystick;
 import frc.team6027.robot.field.Field;
@@ -77,7 +79,7 @@ public class TeleopManager extends Command {
         // command
         // only
         requires(drivetrain);
-        requires(armSubsystem);
+    //    requires(armSubsystem);
 
         // Hang onto references of the components we will need during teleop
         this.sensorService = sensorService;
@@ -99,6 +101,7 @@ public class TeleopManager extends Command {
 
     protected void initializeJoystick() {
         // **** Right bumper button - spins arm motor IN
+/*
         this.rightBumperButton = new JoystickButton(this.joystick, this.joystick.getRightBumperButtonNumber());   
         this.rightBumperButton.whileHeld(new ArmMotorCommand(this.armSubsystem, MotorDirection.In));
 
@@ -146,12 +149,13 @@ public class TeleopManager extends Command {
             )
 
         );
+*/        
     }
     
    
    
     protected void initializeJoystick2() {
-
+/*
         // **** Y button - Selects Upper Level
         this.yButton2 = new JoystickButton(this.joystick2, this.joystick2.getYButtonNumber());  
         this.yButton2.whenPressed(new SelectionCommand(LevelSelection.Upper));
@@ -179,7 +183,7 @@ public class TeleopManager extends Command {
         // **** Back button - Toggle hatch kicker
         this.backButton2 = new JoystickButton(this.joystick2, this.joystick2.getBackButtonNumber());   
         this.backButton2.whenPressed(new ToggleKickHatchCommand(this.pneumaticSubsystem));
-
+*/
     } 
 
     @Override
@@ -220,9 +224,9 @@ public class TeleopManager extends Command {
     protected void execute() {
         this.execCount++;
         this.drive();
-        this.runMastSlideIfRequired();
-        this.runElevatorIfRequired();
-        this.updateDriverAssistSelections();
+//        this.runMastSlideIfRequired();
+//        this.runElevatorIfRequired();
+//        this.updateDriverAssistSelections();
 
     }
 
@@ -262,10 +266,10 @@ public class TeleopManager extends Command {
         if (leftAxisValue >= 0.09) {
             AutonomousCommandManager.instance().setOperationSelection(OperationSelection.Pickup);
         }
-        */
         if (rightAxisValue >= 0.09) {
             AutonomousCommandManager.instance().setObjectSelection(ObjectSelection.Ball);
         }
+        */
 
     }
 
