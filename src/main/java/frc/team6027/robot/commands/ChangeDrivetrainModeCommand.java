@@ -24,7 +24,7 @@ public class ChangeDrivetrainModeCommand extends Command {
     public ChangeDrivetrainModeCommand(DrivetrainMode mode, DrivetrainSubsystem drivetrain) {
         this.drivetrain = drivetrain;
         this.mode = mode;
-        requires(drivetrain);
+//        requires(drivetrain);
     }
     
     protected void reset() {

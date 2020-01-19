@@ -49,7 +49,7 @@ public class FlexCommand extends Command {
         private String name;
 
         public DummyCommand(DrivetrainSubsystem drivetrain, String name) {
-            requires(drivetrain);
+//            requires(drivetrain);
             this.name = name;
         }
 

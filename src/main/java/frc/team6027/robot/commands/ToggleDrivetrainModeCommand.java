@@ -22,7 +22,7 @@ public class ToggleDrivetrainModeCommand extends Command {
 
     public ToggleDrivetrainModeCommand(DrivetrainSubsystem drivetrain) {
         this.drivetrain = drivetrain;
-        requires(drivetrain);
+//        requires(drivetrain);
     }
     
     protected void reset() {

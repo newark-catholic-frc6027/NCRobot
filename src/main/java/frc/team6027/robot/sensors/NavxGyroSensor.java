@@ -41,6 +41,7 @@ public class NavxGyroSensor implements PIDCapableGyro {
         yawRateDegreesPerSecond = 0.0;
         ahrs.reset();
         ahrs.zeroYaw();
+        
     }
 
     @Override

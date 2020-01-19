@@ -22,8 +22,10 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class DrivetrainSubsystem extends Subsystem {
+public class DrivetrainSubsystem extends SubsystemBase {
     public enum MotorKey {
         MotorLeft,
         MotorRight
@@ -54,6 +56,8 @@ public class DrivetrainSubsystem extends Subsystem {
 
     public DrivetrainSubsystem(OperatorInterface operatorInterface, SensorService sensorService) {
         this.operatorInterface = operatorInterface;
+        CommandScheduler.getInstance().registerSubsystem(this);
+
         /*
         if (sensorService != null) {
             this.registerMotorEncoders(sensorService);
@@ -104,14 +108,6 @@ public class DrivetrainSubsystem extends Subsystem {
     public void periodic() {
     }
 
-    @Override
-    protected void initDefaultCommand() {
-    }
-
-    @Override
-    public void setDefaultCommand(Command command) {
-        super.setDefaultCommand(command);
-    }
 
     public void doArcadeDrive(double forwardValue, double rotateValue) {
         getRobotDrive().arcadeDrive(forwardValue, -1 * rotateValue);

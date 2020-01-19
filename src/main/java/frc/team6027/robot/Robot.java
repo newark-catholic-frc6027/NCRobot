@@ -6,6 +6,8 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
 import org.apache.logging.log4j.Logger;
 
 import java.lang.management.ManagementFactory;
@@ -95,7 +97,7 @@ public class Robot extends TimedRobot {
         this.setDrivetrain(
             new DrivetrainSubsystem(this.getOperatorInterface(), this.getSensorService())
         );
-//        this.drivetrain.registerMotorEncoders(this.sensorService);
+        this.drivetrain.registerMotorEncoders(this.sensorService);
 
 //        this.setArmSubsystem(new ArmSubsystem(this.getOperatorInterface()));
 //        this.setElevatorSubsystem(new ElevatorSubsystem(this.getSensorService().getLimitSwitchSensors(), this.getOperatorDisplay()));
@@ -141,6 +143,10 @@ public class Robot extends TimedRobot {
 
     }
 
+    @Override
+    public void robotPeriodic() {
+        CommandScheduler.getInstance().run();
+    }
 
     protected void outputBanner() {
         logger.info(">>>>> Newark Catholic Team 6027 Robot started! <<<<<");
@@ -372,16 +378,17 @@ public class Robot extends TimedRobot {
             disp.setFieldValue("# of Contours", this.visionData.getDouble(VisionDataConstants.NUM_CONTOURS_KEY, 0.0));
             disp.setFieldValue("Elevator Dist", this.sensorService.getElevatorHeightInches());
             disp.setFieldValue("Elevator Raw", this.sensorService.getEncoderSensors().getElevatorEncoder().getRaw());
-
+*/
             disp.setFieldValue("Left Motor Dist",
                 this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorLeft).getRelativeDistance());
             disp.setFieldValue("Right Motor Dist",
                 this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorRight).getRelativeDistance());
             disp.setFieldValue("Avg Motor Dist",
                 this.sensorService.getEncoderSensors().getAvgEncoderRelativeDistance());
+
 //            disp.setFieldValue("Elev topLimitTripped?", this.elevatorSubsystem.isTopLimitSwitchTripped());
 //            disp.setFieldValue("Elev bottomLimitTripped?", this.elevatorSubsystem.isBottomLimitSwitchTripped());
-*/        
+        
                 
             disp.setFieldValue("Gyro Angle", this.sensorService.getGyroSensor().getAngle());
             disp.setFieldValue("Gyro Yaw Angle", this.sensorService.getGyroSensor().getYawAngle());

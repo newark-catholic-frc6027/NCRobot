@@ -25,10 +25,12 @@ import frc.team6027.robot.subsystems.PneumaticSubsystem;
 import frc.team6027.robot.subsystems.ArmSubsystem.MotorDirection;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+// import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
-public class TeleopManager extends Command {
+public class TeleopManager extends CommandBase {
     private final Logger logger = LogManager.getLogger(getClass());
     protected static final int LOG_REDUCTION_MOD = 10;
 
@@ -78,8 +80,8 @@ public class TeleopManager extends Command {
         // Identify the subsystems we will be using in this command and this
         // command
         // only
-        requires(drivetrain);
-    //    requires(armSubsystem);
+        this.drivetrain = drivetrain;
+        this.addRequirements(this.drivetrain);
 
         // Hang onto references of the components we will need during teleop
         this.sensorService = sensorService;
@@ -101,7 +103,7 @@ public class TeleopManager extends Command {
 
     protected void initializeJoystick() {
         // **** Right bumper button - spins arm motor IN
-/*
+/**
         this.rightBumperButton = new JoystickButton(this.joystick, this.joystick.getRightBumperButtonNumber());   
         this.rightBumperButton.whileHeld(new ArmMotorCommand(this.armSubsystem, MotorDirection.In));
 
@@ -150,6 +152,9 @@ public class TeleopManager extends Command {
 
         );
 */        
+        this.aButton = new JoystickButton(this.joystick, this.joystick.getAButtonNumber());
+        this.aButton.whenPressed(new TurnCommand("turnCommand.targetAngle", this.sensorService, this.drivetrain, this.getOperatorDisplay()));
+
     }
     
    
@@ -187,23 +192,23 @@ public class TeleopManager extends Command {
     } 
 
     @Override
-    public void start() {
+    public void schedule() {
         updatePreferences();
-        super.start();
+        super.schedule(true);
     }
 
     public void updatePreferences() {
         this.turnPowerScaleFactor = this.prefs.getDouble("teleop.turnPowerScaleFactor", 1.0);
     }
 
-    @Override
-    protected boolean isFinished() {
-        return false;
-    }
 
     @Override
-    protected void end() {
-        this.clearRequirements();
+    public void end(boolean interrupted) {
+        if (interrupted) {
+            logger.info("Teleop interrupted");
+            this.updatePreferences();
+        }
+//        this.clearRequirements();
         // This will only get called if isFinished returns true
         // this.drivetrain.stopArcadeDrive();
     }
@@ -214,14 +219,9 @@ public class TeleopManager extends Command {
         super.cancel();
     }
 
-    @Override
-    protected void interrupted() {
-        logger.info("Teleop interrupted");
-        this.updatePreferences();
-    }
 
     @Override
-    protected void execute() {
+    public void execute() {
         this.execCount++;
         this.drive();
 //        this.runMastSlideIfRequired();
