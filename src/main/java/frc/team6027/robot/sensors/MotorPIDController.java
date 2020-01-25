@@ -1,10 +1,33 @@
 package frc.team6027.robot.sensors;
 
-import edu.wpi.first.wpilibj.PIDInterface;
+public interface MotorPIDController<T> {
 
-public interface MotorPIDController<T> extends PIDInterface {
+    double getP();
+    boolean setP(double gain);
 
-    public void setOutputRange(double min, double max);
+    double getI();
+    boolean setI(double gain);
 
-	public void setFeedForward(double ff);
+    double getIZone();
+    boolean setIZone(double izone);
+
+    double getD();
+    boolean setD(double gain);
+
+    default void setPID(double p, double i, double d) {
+        this.setP(p);
+        this.setI(i);
+        this.setD(d);
+    }
+
+    double getFF();
+    boolean setFF(double gain);
+
+    boolean setOutputRange(double min, double max);
+    double	getOutputMax();	
+    double	getOutputMin();
+
+    boolean setSetpoint(double setpoint);
+    double getSetpoint();
+
 }

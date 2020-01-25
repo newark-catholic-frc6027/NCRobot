@@ -1,22 +1,21 @@
 package frc.team6027.robot.sensors;
 
+import com.revrobotics.CANError;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.ControlType;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class MotorPIDControllerCANImpl implements MotorPIDController<CANPIDController> {
+    private final Logger logger = LogManager.getLogger(getClass());
+
 
     private CANPIDController pid;
     private double setpoint;
 
     public MotorPIDControllerCANImpl(CANPIDController pid) {
         this.pid = pid;
-    }
-
-    @Override
-    public void setPID(double p, double i, double d) {
-        pid.setP(p);
-        pid.setI(i);
-        pid.setD(d);
     }
 
     @Override
@@ -35,9 +34,10 @@ public class MotorPIDControllerCANImpl implements MotorPIDController<CANPIDContr
     }
 
     @Override
-    public void setSetpoint(double setpoint) {
+    public boolean setSetpoint(double setpoint) {
         this.setpoint = setpoint;
-        pid.setReference(setpoint, ControlType.kPosition);
+        CANError err = pid.setReference(setpoint, ControlType.kPosition);
+        return err == CANError.kOk;
     }
 
     @Override
@@ -45,24 +45,71 @@ public class MotorPIDControllerCANImpl implements MotorPIDController<CANPIDContr
         return this.setpoint;
     }
 
-    @Override
-    public double getError() {
-        return 0;
-    }
-
+/*
     @Override
     public void reset() {
         // TODO;
     }
+*/
 
     @Override
-    public void setOutputRange(double min, double max) {
-        pid.setOutputRange(min, max);
+    public boolean setOutputRange(double min, double max) {
+        return check(pid.setOutputRange(min, max));
     }
 
     @Override
-    public void setFeedForward(double ff) {
-        pid.setFF(ff);
+    public boolean setFF(double ff) {
+        return check(pid.setFF(ff));
+    }
+
+
+    protected boolean check(CANError error) {
+        if (error != null && error != CANError.kOk) {
+            logger.warn("CANError: {}", error.toString());
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean setP(double gain) {
+        return check(pid.setP(gain));
+    }
+
+    @Override
+    public boolean setI(double gain) {
+        return check(pid.setI(gain));
+    }
+
+    @Override
+    public double getIZone() {
+        return pid.getIZone();
+    }
+
+    @Override
+    public boolean setIZone(double izone) {
+        return check(pid.setIZone(izone));
+    }
+
+    @Override
+    public boolean setD(double gain) {
+        return check(pid.setD(gain));
+    }
+
+    @Override
+    public double getFF() {
+        return pid.getFF();
+    }
+
+    @Override
+    public double getOutputMax() {
+        return pid.getOutputMax();
+    }
+
+    @Override
+    public double getOutputMin() {
+        return pid.getOutputMin();
     }
 
 }

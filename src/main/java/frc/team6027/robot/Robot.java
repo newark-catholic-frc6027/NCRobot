@@ -30,7 +30,7 @@ import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.sensors.EncoderSensors.EncoderKey;
 import frc.team6027.robot.sensors.UltrasonicSensorManager.UltrasonicSensorKey;
 import frc.team6027.robot.server.RobotStatusServer;
-import frc.team6027.robot.subsystems.ArmSubsystem;
+import frc.team6027.robot.subsystems.BallpickupSubsystem;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import frc.team6027.robot.subsystems.ElevatorSubsystem;
 import frc.team6027.robot.subsystems.PneumaticSubsystem;
@@ -54,6 +54,7 @@ public class Robot extends TimedRobot {
     private Command autonomousCommand;
 
     private DrivetrainSubsystem drivetrain;
+    private BallpickupSubsystem ballpickupSubsystem;
 
 
 //    private PneumaticSubsystem pneumaticSubsystem;
@@ -97,6 +98,8 @@ public class Robot extends TimedRobot {
         this.setDrivetrain(
             new DrivetrainSubsystem(this.getOperatorInterface(), this.getSensorService())
         );
+        this.setBallpickupSubsystem(new BallpickupSubsystem());
+        
         this.drivetrain.registerMotorEncoders(this.sensorService);
 
 //        this.setArmSubsystem(new ArmSubsystem(this.getOperatorInterface()));
@@ -109,7 +112,7 @@ public class Robot extends TimedRobot {
         // This ensures that the Teleop command is running whenever we are not in
         // autonomous mode
         this.teleopManager = new TeleopManager(this.operatorInterface, this.sensorService,
-                this.getDrivetrain(), null /*this.getArmSubsystem()*/, null /*this.pneumaticSubsystem*/, 
+                this.getDrivetrain(), this.getBallpickupSubsystem(), null /*this.pneumaticSubsystem*/, 
                 null /*this.getElevatorSubsystem()*/, this.getOperatorDisplay(), this.getField());
         this.getDrivetrain().setDefaultCommand(teleopManager);
 /*
@@ -141,6 +144,14 @@ public class Robot extends TimedRobot {
         this.outputMemoryUsage();
         logger.info("******************* ROBOT INIT COMPLETE *******************");
 
+    }
+
+    public BallpickupSubsystem getBallpickupSubsystem() {
+        return this.ballpickupSubsystem;
+    }
+
+    public void setBallpickupSubsystem(BallpickupSubsystem ballpickupSubsystem) {
+        this.ballpickupSubsystem = ballpickupSubsystem;
     }
 
     @Override

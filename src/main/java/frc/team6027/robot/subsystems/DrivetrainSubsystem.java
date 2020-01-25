@@ -20,7 +20,6 @@ import com.revrobotics.CANError;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -74,7 +73,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         sensorService.addMotorEncoders(encoderMap);
 	}
 
-    public MotorPIDController getPIDController(MotorKey key) {
+    public MotorPIDController<?> getPIDController(MotorKey key) {
         if (key == MotorKey.MotorLeft) {
             return new MotorPIDControllerCANImpl(this.leftGearBoxMasterMotor.getPIDController());
         } else if (key == MotorKey.MotorRight) {

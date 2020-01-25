@@ -18,11 +18,12 @@ import frc.team6027.robot.field.LevelSelection;
 import frc.team6027.robot.field.ObjectSelection;
 import frc.team6027.robot.field.OperationSelection;
 import frc.team6027.robot.sensors.SensorService;
-import frc.team6027.robot.subsystems.ArmSubsystem;
+import frc.team6027.robot.subsystems.BallpickupSubsystem;
+//import frc.team6027.robot.subsystems.ArmSubsystem;
 import frc.team6027.robot.subsystems.DrivetrainSubsystem;
 import frc.team6027.robot.subsystems.ElevatorSubsystem;
 import frc.team6027.robot.subsystems.PneumaticSubsystem;
-import frc.team6027.robot.subsystems.ArmSubsystem.MotorDirection;
+//import frc.team6027.robot.subsystems.ArmSubsystem.MotorDirection;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -42,7 +43,8 @@ public class TeleopManager extends CommandBase {
     private Preferences prefs = Preferences.getInstance();
     private PneumaticSubsystem pneumaticSubsystem;
     private ElevatorSubsystem elevatorSubsystem;
-    private ArmSubsystem armSubsystem;
+    private BallpickupSubsystem ballpickupSubsystem;
+//    private ArmSubsystem armSubsystem;
     private OperatorDisplay operatorDisplay;
     private JoystickButton leftBumperButton;
     private JoystickButton rightBumperButton;
@@ -75,7 +77,7 @@ public class TeleopManager extends CommandBase {
     private Field field;
 
     public TeleopManager(OperatorInterface operatorInterface, SensorService sensorService,
-            DrivetrainSubsystem drivetrain, ArmSubsystem armSubsystem, PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevator,
+            DrivetrainSubsystem drivetrain, BallpickupSubsystem ballpickupSubsystem, PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevator,
             OperatorDisplay operatorDisplay, Field field) {
         // Identify the subsystems we will be using in this command and this
         // command
@@ -93,7 +95,7 @@ public class TeleopManager extends CommandBase {
         this.drivetrain = drivetrain;
         this.pneumaticSubsystem = pneumaticSubsystem;
         this.elevatorSubsystem = elevator;
-        this.armSubsystem = armSubsystem;
+        this.ballpickupSubsystem = ballpickupSubsystem;
         this.operatorDisplay = operatorDisplay;
 
         // Set up the commands on the Joystick buttons
@@ -275,6 +277,14 @@ public class TeleopManager extends CommandBase {
 
     public OperatorDisplay getOperatorDisplay() {
         return this.operatorInterface.getOperatorDisplay();
+    }
+
+    public BallpickupSubsystem getBallpickupSubsystem() {
+        return ballpickupSubsystem;
+    }
+
+    public void setBallpickupSubsystem(BallpickupSubsystem ballpickupSubsystem) {
+        this.ballpickupSubsystem = ballpickupSubsystem;
     }
 
 }
