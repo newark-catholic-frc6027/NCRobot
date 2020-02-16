@@ -42,17 +42,17 @@ deploy {
 
 // Set this to true to enable desktop support.
 def includeDesktopSupport = false
-/*
-// Maven central needed for JUnit
 repositories {
+    jcenter()
     mavenCentral()
+    /*
     maven {
         name 'frcHome'
         url gradle.ext.frcHomeMaven
     }
-
+    */
 }
-*/
+
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 4.
 dependencies {
@@ -74,6 +74,10 @@ dependencies {
     implementation 'com.ctre.phoenix:api-java:5.17.3'
     implementation 'com.ctre.phoenix:wpiapi-java:5.17.3'
     implementation 'com.kauailabs.navx.frc:navx-java:3.1.400'
+
+    implementation 'com.hazelcast:hazelcast:3.12.6'
+    implementation 'com.hazelcast:hazelcast-client:3.12.6'
+
     // TODO: need to update sparkmax
     // implementation 'com.revrobotics.frc:SparkMax-java:1.1.8'
     implementation 'org.apache.logging.log4j:log4j-api:2.11.2'
@@ -120,8 +124,8 @@ jar {
 
 // }
 
-task(runRobotServer, dependsOn: 'classes', type: JavaExec) {
-    main = 'frc.team6027.robot.server.RobotStatusServer'
+task(runDataClient, dependsOn: 'classes', type: JavaExec) {
+    main = 'frc.team6027.robot.client.DataClient'
     classpath = sourceSets.main.runtimeClasspath
     systemProperty 'log4j.configurationFile', './src/main/resources/log4j2-local.xml'
 }
