@@ -72,10 +72,15 @@ public class EncoderSensors {
 
 
     public void reset() {
-        this.encoderRegistry.get(EncoderKey.DriveMotorLeft).reset();
-        logger.info("LEFT MOTOR ENCODER RESET");
-        this.encoderRegistry.get(EncoderKey.DriveMotorRight).reset();
-        logger.info("RIGHT MOTOR ENCODER RESET");
+        if (this.encoderRegistry.containsKey(EncoderKey.DriveMotorLeft)) {
+            this.encoderRegistry.get(EncoderKey.DriveMotorLeft).reset();
+            logger.info("LEFT MOTOR ENCODER RESET");
+        }
+
+        if (this.encoderRegistry.containsKey(EncoderKey.DriveMotorRight)) {
+            this.encoderRegistry.get(EncoderKey.DriveMotorRight).reset();
+            logger.info("RIGHT MOTOR ENCODER RESET");
+        }
     }
     
     public MotorEncoder getLeftEncoder() {      

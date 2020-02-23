@@ -9,7 +9,7 @@ import frc.team6027.robot.commands.PneumaticsInitializationCommand;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
-public class PneumaticSubsystem extends Subsystem {
+public class Pneumatics extends Subsystem {
     private final Logger logger = LogManager.getLogger(getClass());
 
     private OperatorDisplay operatorDisplay;
@@ -19,7 +19,7 @@ public class PneumaticSubsystem extends Subsystem {
 
     private PneumaticsInitializationCommand pneumaticsInitializationCommand = null;
 
-    public PneumaticSubsystem(OperatorDisplay operatorDisplay) {
+    public Pneumatics(OperatorDisplay operatorDisplay) {
         this.operatorDisplay = operatorDisplay;
 
         this.driveSolenoid = new StatefulSolenoid(RobotConfigConstants.PCM_1_ID_NUMBER,

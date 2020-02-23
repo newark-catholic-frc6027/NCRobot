@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
-import frc.team6027.robot.subsystems.DrivetrainSubsystem;
+import frc.team6027.robot.subsystems.Drive;
 
 public class FlexCommand extends Command {
     protected final Logger logger = LogManager.getLogger(getClass());
@@ -48,7 +48,7 @@ public class FlexCommand extends Command {
 
         private String name;
 
-        public DummyCommand(DrivetrainSubsystem drivetrain, String name) {
+        public DummyCommand(Drive drivetrain, String name) {
 //            requires(drivetrain);
             this.name = name;
         }

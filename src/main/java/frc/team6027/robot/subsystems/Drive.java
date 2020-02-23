@@ -24,11 +24,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class DrivetrainSubsystem extends SubsystemBase {
-    public enum MotorKey {
-        MotorLeft,
-        MotorRight
-    }
+public class Drive extends SubsystemBase {
 
     @SuppressWarnings("unused")
     private final Logger logger = LogManager.getLogger(getClass());
@@ -49,28 +45,31 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     private OperatorInterface operatorInterface;
 
-    public DrivetrainSubsystem(OperatorInterface operatorInterface) {
+    public Drive(OperatorInterface operatorInterface) {
         this(operatorInterface, null);
     }
 
-    public DrivetrainSubsystem(OperatorInterface operatorInterface, SensorService sensorService) {
+    public Drive(OperatorInterface operatorInterface, SensorService sensorService) {
         this.operatorInterface = operatorInterface;
         CommandScheduler.getInstance().registerSubsystem(this);
 
-        /*
+        
         if (sensorService != null) {
             this.registerMotorEncoders(sensorService);
         } 
-        */       
+               
         this.initialize();
     }
 
 	public void registerMotorEncoders(SensorService sensorService) {
         Map<EncoderKey, MotorEncoder> encoderMap = new HashMap<>();
-        encoderMap.put(EncoderKey.DriveMotorLeft, new MotorEncoderCANImpl(this.leftGearBoxMasterMotor.getEncoder()));
-        // Right motor needs negated
-        encoderMap.put(EncoderKey.DriveMotorRight, new MotorEncoderCANImpl(this.rightGearBoxMasterMotor.getEncoder(), true));
-        sensorService.addMotorEncoders(encoderMap);
+        if (this.leftGearBoxMasterMotor != null && this.rightGearBoxMasterMotor != null) {
+
+            encoderMap.put(EncoderKey.DriveMotorLeft, new MotorEncoderCANImpl(this.leftGearBoxMasterMotor.getEncoder()));
+            // Right motor needs negated
+            encoderMap.put(EncoderKey.DriveMotorRight, new MotorEncoderCANImpl(this.rightGearBoxMasterMotor.getEncoder(), true));
+            sensorService.addMotorEncoders(encoderMap);
+        }
 	}
 
     public MotorPIDController<?> getPIDController(MotorKey key) {
@@ -83,11 +82,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
         }
     }
     protected void initialize() {
-        this.rightGearBoxSlave1.follow(this.rightGearBoxMasterMotor);
-        this.leftGearBoxSlave1.follow(this.leftGearBoxMasterMotor);
+//        if (this.leftGearBoxMasterMotor != null && this.rightGearBoxMasterMotor != null) {
 
-        this.robotDrive = new DifferentialDrive(leftGearBoxMasterMotor, rightGearBoxMasterMotor);
+            this.rightGearBoxSlave1.follow(this.rightGearBoxMasterMotor);
+            this.leftGearBoxSlave1.follow(this.leftGearBoxMasterMotor);
 
+            this.robotDrive = new DifferentialDrive(leftGearBoxMasterMotor, rightGearBoxMasterMotor);
+//        }
         // Setting the speed controllers forward for our drivetrain
         boolean invert = RobotConfigConstants.OPTIONAL_DRIVETRAIN_DIRECTION_INVERSION == -1;
 
@@ -109,12 +110,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 
     public void doArcadeDrive(double forwardValue, double rotateValue) {
-        getRobotDrive().arcadeDrive(forwardValue, -1 * rotateValue);
+//        if (this.leftGearBoxMasterMotor != null && this.rightGearBoxMasterMotor != null) {
+            getRobotDrive().arcadeDrive(forwardValue, -1 * rotateValue);
+//        }
     }
 
     public void stopArcadeDrive() {
-        getRobotDrive().arcadeDrive(0, 0);
-        getRobotDrive().stopMotor();
+        if (this.leftGearBoxMasterMotor != null && this.rightGearBoxMasterMotor != null) {
+            getRobotDrive().arcadeDrive(0, 0);
+            getRobotDrive().stopMotor();
+        }
     }
 
     public OperatorInterface getOperatorInterface() {
@@ -135,22 +140,41 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void tankDrive(double leftValue, double rightValue) {
-        getRobotDrive().tankDrive(leftValue, rightValue);
-
+        if (this.leftGearBoxMasterMotor != null && this.rightGearBoxMasterMotor != null) {
+            getRobotDrive().tankDrive(leftValue, rightValue);
+        }
     }
 
     public void stopMotor() {
-        this.leftGearBoxMasterMotor.stopMotor();
-        this.rightGearBoxMasterMotor.stopMotor();
-        getRobotDrive().stopMotor();
+        if (this.leftGearBoxMasterMotor != null) {
+            this.leftGearBoxMasterMotor.stopMotor();
+        }
+
+        if (this.rightGearBoxMasterMotor != null) {
+            this.rightGearBoxMasterMotor.stopMotor();
+        }
+
+        if (this.leftGearBoxMasterMotor != null && this.rightGearBoxMasterMotor != null) {
+            getRobotDrive().stopMotor();
+        }
     }
 
     public boolean isCoastModeEnabled() {
-        return this.rightGearBoxMasterMotor.getIdleMode() == IdleMode.kCoast;
+        if (this.rightGearBoxMasterMotor != null) {
+            return this.rightGearBoxMasterMotor.getIdleMode() == IdleMode.kCoast;
+        } else {
+            return false;
+        }
+
     }
 
     public boolean isBrakeModeEnabled() {
-        return this.rightGearBoxMasterMotor.getIdleMode() == IdleMode.kBrake;
+        if (this.rightGearBoxMasterMotor != null) {
+            return this.rightGearBoxMasterMotor.getIdleMode() == IdleMode.kBrake;
+        } else {
+            return false;
+        }
+
     }
 
     public boolean enableCoastMode() {

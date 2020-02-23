@@ -13,7 +13,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
-public class ElevatorSubsystem extends Subsystem {
+public class Elevator extends Subsystem {
     public static final double DOWN_POWER_SCALING_FACTOR = 0.5;
     private final Logger logger = LogManager.getLogger(getClass());
     
@@ -28,7 +28,7 @@ public class ElevatorSubsystem extends Subsystem {
     
     private boolean initialized = false;
     
-    public ElevatorSubsystem(LimitSwitchSensors limitSwitches, OperatorDisplay operatorDisplay) {
+    public Elevator(LimitSwitchSensors limitSwitches, OperatorDisplay operatorDisplay) {
         this.limitSwitches = limitSwitches;
         this.operatorDisplay = operatorDisplay;
     }

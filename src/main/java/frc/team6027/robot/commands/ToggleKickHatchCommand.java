@@ -2,7 +2,7 @@ package frc.team6027.robot.commands;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import frc.team6027.robot.subsystems.PneumaticSubsystem;
+import frc.team6027.robot.subsystems.Pneumatics;
 
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
@@ -19,16 +19,16 @@ public class ToggleKickHatchCommand extends Command {
     
     private final Logger logger = LogManager.getLogger(getClass());
 
-    private PneumaticSubsystem pneumaticSubsystem;
+    private Pneumatics pneumaticSubsystem;
     private long timeStarted = 0;
     protected boolean isReset = false;
     protected boolean retracted = false;
     
-    public ToggleKickHatchCommand(PneumaticSubsystem pneumaticSubsystem) {
+    public ToggleKickHatchCommand(Pneumatics pneumaticSubsystem) {
         this(pneumaticSubsystem, true);
     }
     
-    public ToggleKickHatchCommand(PneumaticSubsystem pneumaticSubsystem, boolean inAutonomous) {
+    public ToggleKickHatchCommand(Pneumatics pneumaticSubsystem, boolean inAutonomous) {
         requires(pneumaticSubsystem);
         this.pneumaticSubsystem = pneumaticSubsystem;
     }

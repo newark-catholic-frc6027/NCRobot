@@ -8,8 +8,8 @@ import frc.team6027.robot.commands.PneumaticsInitializationCommand;
 import frc.team6027.robot.commands.ResetSensorsCommand;
 import frc.team6027.robot.commands.ChangeDrivetrainModeCommand.DrivetrainMode;
 import frc.team6027.robot.sensors.SensorService;
-import frc.team6027.robot.subsystems.DrivetrainSubsystem;
-import frc.team6027.robot.subsystems.PneumaticSubsystem;
+import frc.team6027.robot.subsystems.Drive;
+import frc.team6027.robot.subsystems.Pneumatics;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.CommandGroup;
@@ -22,7 +22,7 @@ public class AutoCommandHelper {
         return ds.getMatchNumber() > 0 || ds.getMatchTime() > -0.1;
     }
 
-    public static void addAutoInitCommands(CommandGroup group, DrivetrainSubsystem drivetrain, PneumaticSubsystem pneumaticSubsystem,
+    public static void addAutoInitCommands(CommandGroup group, Drive drivetrain, Pneumatics pneumaticSubsystem,
         SensorService sensorService) {
         group.addSequential(new PneumaticsInitializationCommand(pneumaticSubsystem));
         group.addSequential(new ResetSensorsCommand(sensorService));

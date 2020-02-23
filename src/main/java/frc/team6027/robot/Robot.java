@@ -30,10 +30,11 @@ import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.sensors.EncoderSensors.EncoderKey;
 import frc.team6027.robot.sensors.UltrasonicSensorManager.UltrasonicSensorKey;
 import frc.team6027.robot.server.RobotStatusServer;
-import frc.team6027.robot.subsystems.BallpickupSubsystem;
-import frc.team6027.robot.subsystems.DrivetrainSubsystem;
-import frc.team6027.robot.subsystems.ElevatorSubsystem;
-import frc.team6027.robot.subsystems.PneumaticSubsystem;
+import frc.team6027.robot.subsystems.Ballpickup;
+import frc.team6027.robot.subsystems.Drive;
+import frc.team6027.robot.subsystems.Elevator;
+import frc.team6027.robot.subsystems.Pneumatics;
+import frc.team6027.robot.subsystems.Shooter;
 
 /**
  * The Virtual Machine is configured to automatically run this class, and to
@@ -53,19 +54,19 @@ public class Robot extends TimedRobot {
 
     private Command autonomousCommand;
 
-    private DrivetrainSubsystem drivetrain;
-    private BallpickupSubsystem ballpickupSubsystem;
+    private Drive drivetrain;
+    private Ballpickup ballpickupSubsystem;
+    private Shooter shooterSubsystem;
 
+    // private PneumaticSubsystem pneumaticSubsystem;
+    // private ElevatorSubsystem elevatorSubsystem;
+    // private ArmSubsystem armSubsystem;
 
-//    private PneumaticSubsystem pneumaticSubsystem;
-//    private ElevatorSubsystem elevatorSubsystem;
-//    private ArmSubsystem armSubsystem;
-    
     private SensorService sensorService;
 
     private Field field = new Field();
     private Preferences prefs = Preferences.getInstance();
-//    private AutonomousCommandManager autoCommandManager;
+    // private AutonomousCommandManager autoCommandManager;
 
     private int teleopExecCount = 0;
     private int autoExecCount = 0;
@@ -73,7 +74,7 @@ public class Robot extends TimedRobot {
     private Datahub visionData;
     private RobotStatusServer robotStatusServer;
     private TeleopManager teleopManager;
-   
+
     private OperatingSystemMXBean osbean = null;
     private long totalPhysicalMemorySize;
 
@@ -81,6 +82,8 @@ public class Robot extends TimedRobot {
         addShutdownHook();
         initOsBean();
     }
+
+
     /**
      * This function is run when the robot is first started up and should be used
      * for any initialization code.
@@ -96,10 +99,10 @@ public class Robot extends TimedRobot {
         this.setOperatorDisplay(new OperatorDisplaySmartDashboardImpl());
         this.setOperatorInterface(new OperatorInterface(this.getOperatorDisplay()));
         this.setDrivetrain(
-            new DrivetrainSubsystem(this.getOperatorInterface(), this.getSensorService())
+            new Drive(this.getOperatorInterface(), this.getSensorService())
         );
-        this.setBallpickupSubsystem(new BallpickupSubsystem());
-        
+        this.setBallpickupSubsystem(new Ballpickup());
+        this.setShooterSubsystem(new Shooter());
         this.drivetrain.registerMotorEncoders(this.sensorService);
 
 //        this.setArmSubsystem(new ArmSubsystem(this.getOperatorInterface()));
@@ -112,8 +115,8 @@ public class Robot extends TimedRobot {
         // This ensures that the Teleop command is running whenever we are not in
         // autonomous mode
         this.teleopManager = new TeleopManager(this.operatorInterface, this.sensorService,
-                this.getDrivetrain(), this.getBallpickupSubsystem(), null /*this.pneumaticSubsystem*/, 
-                null /*this.getElevatorSubsystem()*/, this.getOperatorDisplay(), this.getField());
+                this.getDrivetrain(), this.getBallpickupSubsystem(), null /*this.pneumaticSubsystem*/, null,
+                this.getShooterSubsystem(), this.getOperatorDisplay(), this.getField());
         this.getDrivetrain().setDefaultCommand(teleopManager);
 /*
         this.autoCommandManager.initialize(
@@ -146,11 +149,11 @@ public class Robot extends TimedRobot {
 
     }
 
-    public BallpickupSubsystem getBallpickupSubsystem() {
+    public Ballpickup getBallpickupSubsystem() {
         return this.ballpickupSubsystem;
     }
 
-    public void setBallpickupSubsystem(BallpickupSubsystem ballpickupSubsystem) {
+    public void setBallpickupSubsystem(Ballpickup ballpickupSubsystem) {
         this.ballpickupSubsystem = ballpickupSubsystem;
     }
 
@@ -317,13 +320,22 @@ public class Robot extends TimedRobot {
         this.operatorDisplay = operatorDisplay;
     }
 
-    public DrivetrainSubsystem getDrivetrain() {
+    public Drive getDrivetrain() {
         return drivetrain;
     }
 
-    public void setDrivetrain(DrivetrainSubsystem drivetrain) {
+    public void setDrivetrain(Drive drivetrain) {
         this.drivetrain = drivetrain;
     }
+
+    public Shooter getShooterSubsystem() {
+        return shooterSubsystem;
+    }
+
+    public void setShooterSubsystem(Shooter shooterSubsystem) {
+        this.shooterSubsystem = shooterSubsystem;
+    }
+
 /*
     public void setArmSubsystem(ArmSubsystem armSubsystem) {
         this.armSubsystem = armSubsystem;
@@ -390,12 +402,17 @@ public class Robot extends TimedRobot {
             disp.setFieldValue("Elevator Dist", this.sensorService.getElevatorHeightInches());
             disp.setFieldValue("Elevator Raw", this.sensorService.getEncoderSensors().getElevatorEncoder().getRaw());
 */
-            disp.setFieldValue("Left Motor Dist",
-                this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorLeft).getRelativeDistance());
-            disp.setFieldValue("Right Motor Dist",
-                this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorRight).getRelativeDistance());
-            disp.setFieldValue("Avg Motor Dist",
+            if (this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorLeft) != null) {
+                disp.setFieldValue("Left Motor Dist",
+                    this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorLeft).getRelativeDistance());
+            }
+
+            if (this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorRight) != null) {
+                disp.setFieldValue("Right Motor Dist",
+                    this.sensorService.getEncoderSensors().getMotorEncoder(EncoderKey.DriveMotorRight).getRelativeDistance());
+                disp.setFieldValue("Avg Motor Dist",
                 this.sensorService.getEncoderSensors().getAvgEncoderRelativeDistance());
+            }
 
 //            disp.setFieldValue("Elev topLimitTripped?", this.elevatorSubsystem.isTopLimitSwitchTripped());
 //            disp.setFieldValue("Elev bottomLimitTripped?", this.elevatorSubsystem.isBottomLimitSwitchTripped());

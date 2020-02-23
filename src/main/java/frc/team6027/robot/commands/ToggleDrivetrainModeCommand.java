@@ -3,7 +3,7 @@ package frc.team6027.robot.commands;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
-import frc.team6027.robot.subsystems.DrivetrainSubsystem;
+import frc.team6027.robot.subsystems.Drive;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class ToggleDrivetrainModeCommand extends Command {
@@ -15,12 +15,12 @@ public class ToggleDrivetrainModeCommand extends Command {
     private final Logger logger = LogManager.getLogger(getClass());
     public static final int MAX_RUN_TIME_MS = 200;
 
-    protected DrivetrainSubsystem drivetrain;
+    protected Drive drivetrain;
 
     protected boolean done = false;
     protected Long startTime = null;
 
-    public ToggleDrivetrainModeCommand(DrivetrainSubsystem drivetrain) {
+    public ToggleDrivetrainModeCommand(Drive drivetrain) {
         this.drivetrain = drivetrain;
 //        requires(drivetrain);
     }

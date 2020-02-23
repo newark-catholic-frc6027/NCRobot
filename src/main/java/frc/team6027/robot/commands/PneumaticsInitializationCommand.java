@@ -2,7 +2,7 @@ package frc.team6027.robot.commands;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import frc.team6027.robot.subsystems.PneumaticSubsystem;
+import frc.team6027.robot.subsystems.Pneumatics;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.Command;
@@ -19,8 +19,8 @@ public class PneumaticsInitializationCommand extends Command {
     private boolean hatchSolenoidInitialized = false;
     
     
-    private PneumaticSubsystem pneumaticSubsystem;
-    public PneumaticsInitializationCommand(PneumaticSubsystem subsys) {
+    private Pneumatics pneumaticSubsystem;
+    public PneumaticsInitializationCommand(Pneumatics subsys) {
         this.pneumaticSubsystem = subsys;
         requires(subsys);
     }

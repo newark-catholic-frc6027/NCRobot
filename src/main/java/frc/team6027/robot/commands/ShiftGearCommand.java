@@ -2,7 +2,7 @@ package frc.team6027.robot.commands;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import frc.team6027.robot.subsystems.PneumaticSubsystem;
+import frc.team6027.robot.subsystems.Pneumatics;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -23,14 +23,14 @@ public class ShiftGearCommand extends Command {
     
     private final Logger logger = LogManager.getLogger(getClass());
 
-    private PneumaticSubsystem pneumaticSubsystem;
+    private Pneumatics pneumaticSubsystem;
     private long timeStarted;
     private DoubleSolenoid shifterSolenoid;
     private Value initialShifterState;
     private ShiftGearMode mode;
 
 
-    public ShiftGearCommand(PneumaticSubsystem pneumaticSubsystem) {
+    public ShiftGearCommand(Pneumatics pneumaticSubsystem) {
         requires(pneumaticSubsystem);
         this.pneumaticSubsystem = pneumaticSubsystem;
         this.shifterSolenoid = this.pneumaticSubsystem.getDriveSolenoid();
@@ -38,7 +38,7 @@ public class ShiftGearCommand extends Command {
 
     }
     
-    public ShiftGearCommand(PneumaticSubsystem pneumaticSubsystem, ShiftGearMode mode) {
+    public ShiftGearCommand(Pneumatics pneumaticSubsystem, ShiftGearMode mode) {
         this(pneumaticSubsystem);
         this.mode = mode;
     }

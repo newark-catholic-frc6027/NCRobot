@@ -2,16 +2,16 @@ package frc.team6027.robot.commands;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import frc.team6027.robot.subsystems.DrivetrainSubsystem;
+import frc.team6027.robot.subsystems.Drive;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class StopMotorsCommand extends Command {
     private final Logger logger = LogManager.getLogger(getClass());
 
-    private DrivetrainSubsystem drivetrain;
+    private Drive drivetrain;
     boolean done = false;
 
-    public StopMotorsCommand(DrivetrainSubsystem drivetrain) {
+    public StopMotorsCommand(Drive drivetrain) {
         this.drivetrain = drivetrain;
     }
     

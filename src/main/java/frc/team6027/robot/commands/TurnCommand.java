@@ -5,7 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.sensors.PIDCapableGyro;
 import frc.team6027.robot.sensors.SensorService;
-import frc.team6027.robot.subsystems.DrivetrainSubsystem;
+import frc.team6027.robot.subsystems.Drive;
 
 /*
 import edu.wpi.first.wpilibj.PIDController;
@@ -37,7 +37,7 @@ public class TurnCommand extends CommandBase {
 	protected SensorService sensorService;
 	protected PIDCapableGyro gyro;
 
-	protected DrivetrainSubsystem drivetrain;
+	protected Drive drivetrain;
 	protected Double targetAngle;
 
 	protected double pidLoopCalculationOutput;
@@ -55,30 +55,30 @@ public class TurnCommand extends CommandBase {
 	protected long unchangedYawStartMs = -1;
 	protected boolean stopTurnNow = false;
 
-	public TurnCommand(String anglePrefName, SensorService sensorService, DrivetrainSubsystem drivetrain,
+	public TurnCommand(String anglePrefName, SensorService sensorService, Drive drivetrain,
 		OperatorDisplay operatorDisplay) {
 		this(sensorService, drivetrain, operatorDisplay);
 		this.anglePrefName = anglePrefName;
 	}
 
-	public TurnCommand(String anglePrefName, SensorService sensorService, DrivetrainSubsystem drivetrain,
+	public TurnCommand(String anglePrefName, SensorService sensorService, Drive drivetrain,
 		OperatorDisplay operatorDisplay, String powerPrefName) {
 		this(sensorService, drivetrain, operatorDisplay);
 		this.anglePrefName = anglePrefName;
 		this.turnPowerPrefName = powerPrefName;
 	}
 
-	public TurnCommand(SensorService sensorService, DrivetrainSubsystem drivetrain,
+	public TurnCommand(SensorService sensorService, Drive drivetrain,
 		OperatorDisplay operatorDisplay) {
 		this(-1, sensorService, drivetrain, operatorDisplay);
 	}
 
-	public TurnCommand(double angle, SensorService sensorService, DrivetrainSubsystem drivetrain,
+	public TurnCommand(double angle, SensorService sensorService, Drive drivetrain,
 			OperatorDisplay operatorDisplay) {
 		this(angle, sensorService, drivetrain, operatorDisplay, null);
 	}
 	
-	public TurnCommand(double angle, SensorService sensorService, DrivetrainSubsystem drivetrain,
+	public TurnCommand(double angle, SensorService sensorService, Drive drivetrain,
 			OperatorDisplay operatorDisplay, Double power) {
 	    this.addRequirements(drivetrain);
 		this.sensorService = sensorService;

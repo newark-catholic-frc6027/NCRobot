@@ -18,11 +18,13 @@ import frc.team6027.robot.field.LevelSelection;
 import frc.team6027.robot.field.ObjectSelection;
 import frc.team6027.robot.field.OperationSelection;
 import frc.team6027.robot.sensors.SensorService;
-import frc.team6027.robot.subsystems.BallpickupSubsystem;
+import frc.team6027.robot.subsystems.Ballpickup;
 //import frc.team6027.robot.subsystems.ArmSubsystem;
-import frc.team6027.robot.subsystems.DrivetrainSubsystem;
-import frc.team6027.robot.subsystems.ElevatorSubsystem;
-import frc.team6027.robot.subsystems.PneumaticSubsystem;
+import frc.team6027.robot.subsystems.Drive;
+import frc.team6027.robot.subsystems.Elevator;
+import frc.team6027.robot.subsystems.MotorDirection;
+import frc.team6027.robot.subsystems.Pneumatics;
+import frc.team6027.robot.subsystems.Shooter;
 //import frc.team6027.robot.subsystems.ArmSubsystem.MotorDirection;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Preferences;
@@ -39,11 +41,12 @@ public class TeleopManager extends CommandBase {
     private SensorService sensorService;
     private XboxJoystick joystick;
     private XboxJoystick joystick2;
-    private DrivetrainSubsystem drivetrain;
+    private Drive drivetrain;
     private Preferences prefs = Preferences.getInstance();
-    private PneumaticSubsystem pneumaticSubsystem;
-    private ElevatorSubsystem elevatorSubsystem;
-    private BallpickupSubsystem ballpickupSubsystem;
+    private Pneumatics pneumaticSubsystem;
+    private Elevator elevatorSubsystem;
+    private Ballpickup ballpickupSubsystem;
+    private Shooter shooterSubsystem;
 //    private ArmSubsystem armSubsystem;
     private OperatorDisplay operatorDisplay;
     private JoystickButton leftBumperButton;
@@ -77,7 +80,9 @@ public class TeleopManager extends CommandBase {
     private Field field;
 
     public TeleopManager(OperatorInterface operatorInterface, SensorService sensorService,
-            DrivetrainSubsystem drivetrain, BallpickupSubsystem ballpickupSubsystem, PneumaticSubsystem pneumaticSubsystem, ElevatorSubsystem elevator,
+            Drive drivetrain, Ballpickup ballpickupSubsystem, 
+            Pneumatics pneumaticSubsystem, Elevator elevator,
+            Shooter shooterSubsystem,
             OperatorDisplay operatorDisplay, Field field) {
         // Identify the subsystems we will be using in this command and this
         // command
@@ -96,6 +101,7 @@ public class TeleopManager extends CommandBase {
         this.pneumaticSubsystem = pneumaticSubsystem;
         this.elevatorSubsystem = elevator;
         this.ballpickupSubsystem = ballpickupSubsystem;
+        this.shooterSubsystem = shooterSubsystem;
         this.operatorDisplay = operatorDisplay;
 
         // Set up the commands on the Joystick buttons
@@ -226,6 +232,8 @@ public class TeleopManager extends CommandBase {
     public void execute() {
         this.execCount++;
         this.drive();
+        this.runBallPickupIfRequired();
+        this.runShooterIfRequired();
 //        this.runMastSlideIfRequired();
 //        this.runElevatorIfRequired();
 //        this.updateDriverAssistSelections();
@@ -253,14 +261,30 @@ public class TeleopManager extends CommandBase {
         }
     }
 
+    protected void runBallPickupIfRequired() {
+        if (this.joystick.getTriggerAxis(Hand.kLeft) > .05) {
+            this.ballpickupSubsystem.spin(this.joystick.getTriggerAxis(Hand.kLeft), MotorDirection.Forward);
+        } else {
+            this.ballpickupSubsystem.spin(this.joystick.getTriggerAxis(Hand.kRight), MotorDirection.Reverse);
+        }
+    }
+
     protected void runElevatorIfRequired() {
+        /*
         if (this.joystick.getTriggerAxis(Hand.kLeft) > .05) {
             this.elevatorSubsystem.elevatorDown(this.joystick.getTriggerAxis(Hand.kLeft));
         } else {
             this.elevatorSubsystem.elevatorUp(this.joystick.getTriggerAxis(Hand.kRight));
         }
+        */
     }
 
+    protected void runShooterIfRequired() {
+        if (this.joystick.getTriggerAxis(Hand.kRight) > .05) {
+            logger.info("Right trigger: {}", this.joystick.getTriggerAxis(Hand.kRight));
+            this.shooterSubsystem.spin(this.joystick.getTriggerAxis(Hand.kRight), MotorDirection.Forward);
+        }
+    }
     protected void updateDriverAssistSelections() {
         double leftAxisValue = this.joystick2.getTriggerAxis(Hand.kLeft);
         double rightAxisValue = this.joystick2.getTriggerAxis(Hand.kRight);
@@ -279,11 +303,11 @@ public class TeleopManager extends CommandBase {
         return this.operatorInterface.getOperatorDisplay();
     }
 
-    public BallpickupSubsystem getBallpickupSubsystem() {
+    public Ballpickup getBallpickupSubsystem() {
         return ballpickupSubsystem;
     }
 
-    public void setBallpickupSubsystem(BallpickupSubsystem ballpickupSubsystem) {
+    public void setBallpickupSubsystem(Ballpickup ballpickupSubsystem) {
         this.ballpickupSubsystem = ballpickupSubsystem;
     }
 
