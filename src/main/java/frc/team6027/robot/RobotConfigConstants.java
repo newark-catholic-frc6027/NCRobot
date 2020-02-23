@@ -84,7 +84,7 @@ public class RobotConfigConstants {
      *     1 2
      * </pre>
      */
-    public static final int LEFT_GEARBOX_MASTER_CIM_1_ID = 21;
+    public static final int LEFT_GEARBOX_MASTER_CIM_1_ID = 20;
 
     /**
      * The device identifier for the Talon SRX speed controller left gear box
@@ -95,7 +95,7 @@ public class RobotConfigConstants {
      *     1 2
      * </pre>
      */
-    public static final int LEFT_GEARBOX_SLAVE_CIM_2_ID = 20;
+    public static final int LEFT_GEARBOX_SLAVE_CIM_2_ID = 21;
 
     /**
      * The device identifier for the Talon SRX speed controller left gear box
