@@ -6,34 +6,34 @@ import frc.team6027.robot.subsystems.Pneumatics;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /**
  * Toggles the drivetain shifter from HIGH to LOW or LOW to HIGH.
  */
-public class ShiftGearCommand extends Command {
+public class ShiftGearCommand extends CommandBase {
     public enum ShiftGearMode {
         Low,
         High
     }
     /** The delay in milliseconds before we allow the command to finish.  This builds in a small delay to allow the
      * solenoid to finish toggling before we turn it back off. */
-    public final static int DELAY_TO_OFF_MS = 250;
+    public final static double DELAY_TO_OFF_MS = .250;
     public boolean executionComplete = false;
     
     private final Logger logger = LogManager.getLogger(getClass());
 
-    private Pneumatics pneumaticSubsystem;
+    private Pneumatics pneumatics;
     private long timeStarted;
     private DoubleSolenoid shifterSolenoid;
     private Value initialShifterState;
     private ShiftGearMode mode;
 
 
-    public ShiftGearCommand(Pneumatics pneumaticSubsystem) {
-        requires(pneumaticSubsystem);
-        this.pneumaticSubsystem = pneumaticSubsystem;
-        this.shifterSolenoid = this.pneumaticSubsystem.getDriveSolenoid();
+    public ShiftGearCommand(Pneumatics pneumatics) {
+        this.addRequirements(pneumatics);
+        this.pneumatics = pneumatics;
+        this.shifterSolenoid = this.pneumatics.getDriveSolenoid();
         this.initialShifterState = this.shifterSolenoid.get();
 
     }
@@ -44,8 +44,9 @@ public class ShiftGearCommand extends Command {
     }
     
     @Override
-    protected void initialize() {
-        this.setTimeout(DELAY_TO_OFF_MS);
+    public void initialize() {
+        // cannot set timeout in command initialization since command framework was rewritten
+        // this.setTimeout(DELAY_TO_OFF_MS);
     }
     
     
@@ -54,11 +55,11 @@ public class ShiftGearCommand extends Command {
         if (! executionComplete) {
             logger.trace("Running ShiftGearCommand");
             if (this.mode == null) {
-                this.pneumaticSubsystem.toggleDriveSolenoid();
+                this.pneumatics.toggleDriveSolenoid();
             } else if (this.mode == ShiftGearMode.High) {
-                this.pneumaticSubsystem.toggleDriveSolenoidReverse();
+                this.pneumatics.toggleDriveSolenoidReverse();
             } else if (this.mode == ShiftGearMode.Low) {
-                this.pneumaticSubsystem.toggleDriveSolenoidForward();
+                this.pneumatics.toggleDriveSolenoidForward();
             } else {
                 logger.warn("Shift Gear doing nothing");
             }
@@ -71,7 +72,7 @@ public class ShiftGearCommand extends Command {
     
     
     @Override
-    protected boolean isFinished() {
+    public boolean isFinished() {
         long timeElapsedMs = System.currentTimeMillis() - this.timeStarted;
         if (this.shifterSolenoid.get() != this.initialShifterState || timeElapsedMs >= DELAY_TO_OFF_MS) {
             logger.trace("ShiftGearCommand finished");
@@ -82,10 +83,10 @@ public class ShiftGearCommand extends Command {
     }
     
     @Override
-    protected void end() {
+    public void end(boolean interrupted) {
         // Reset our state for when we run again
         this.executionComplete = false;
-        this.pneumaticSubsystem.toggleDriveSolenoidOff();
+        this.pneumatics.toggleDriveSolenoidOff();
     }
 
 }

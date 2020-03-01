@@ -43,7 +43,7 @@ public class TeleopManager extends CommandBase {
     private XboxJoystick joystick2;
     private Drive drivetrain;
     private Preferences prefs = Preferences.getInstance();
-    private Pneumatics pneumaticSubsystem;
+    private Pneumatics pneumatics;
     private Elevator elevatorSubsystem;
     private Ballpickup ballpickupSubsystem;
     private Shooter shooterSubsystem;
@@ -66,8 +66,6 @@ public class TeleopManager extends CommandBase {
     private JoystickButton rightBumperButton2;
     private JoystickButton startButton2;
     private JoystickButton backButton2;
-
-
     
 
     private ShiftGearCommand shiftGearCommand;
@@ -81,7 +79,7 @@ public class TeleopManager extends CommandBase {
 
     public TeleopManager(OperatorInterface operatorInterface, SensorService sensorService,
             Drive drivetrain, Ballpickup ballpickupSubsystem, 
-            Pneumatics pneumaticSubsystem, Elevator elevator,
+            Pneumatics pneumatics, Elevator elevator,
             Shooter shooterSubsystem,
             OperatorDisplay operatorDisplay, Field field) {
         // Identify the subsystems we will be using in this command and this
@@ -98,7 +96,7 @@ public class TeleopManager extends CommandBase {
         this.joystick = this.operatorInterface.getJoystick1();
         this.joystick2 = this.operatorInterface.getJoystick2();
         this.drivetrain = drivetrain;
-        this.pneumaticSubsystem = pneumaticSubsystem;
+        this.pneumatics = pneumatics;
         this.elevatorSubsystem = elevator;
         this.ballpickupSubsystem = ballpickupSubsystem;
         this.shooterSubsystem = shooterSubsystem;
@@ -133,10 +131,6 @@ public class TeleopManager extends CommandBase {
             )
         );
 
-        // **** X button - Kicks the hatch
-        this.xButton = new JoystickButton(this.joystick, this.joystick.getXButtonNumber());   
-        this.xButton.whenPressed(new ToggleKickHatchCommand(this.pneumaticSubsystem));    
-        this.xButton.whenReleased(new ToggleKickHatchCommand(this.pneumaticSubsystem));    
 
         // **** B button - Executes driver assist command
         this.bButton = new JoystickButton(this.joystick, this.joystick.getBButtonNumber());   
@@ -161,7 +155,15 @@ public class TeleopManager extends CommandBase {
         );
 */        
         this.aButton = new JoystickButton(this.joystick, this.joystick.getAButtonNumber());
-        this.aButton.whenPressed(new TurnCommand("turnCommand.targetAngle", this.sensorService, this.drivetrain, this.getOperatorDisplay()));
+
+        // **** X button - toggles the ball latch
+        this.xButton = new JoystickButton(this.joystick, this.joystick.getXButtonNumber());   
+        this.xButton.whenPressed(new ToggleBallLatchCommand(this.pneumatics));    
+
+        /*this.aButton.whenPressed(new TurnCommand("turnCommand.targetAngle", this.sensorService, this.drivetrain, this.getOperatorDisplay()));*/
+
+        this.startButton = new JoystickButton(this.joystick, this.joystick.getStartButtonNumber());
+        this.startButton.whenPressed(new ShiftGearCommand(this.pneumatics));
 
     }
     
@@ -280,14 +282,15 @@ public class TeleopManager extends CommandBase {
     }
 
     protected void runShooterIfRequired() {
-        if (this.joystick.getTriggerAxis(Hand.kRight) > .05) {
-            logger.info("Right trigger: {}", this.joystick.getTriggerAxis(Hand.kRight));
-            this.shooterSubsystem.spin(this.joystick.getTriggerAxis(Hand.kRight), MotorDirection.Forward);
+        if (this.joystick2.getTriggerAxis(Hand.kRight) > .05) {
+            /*logger.info("Right trigger: {}", this.joystick2.getTriggerAxis(Hand.kRight));*/
+            this.shooterSubsystem.spin(this.joystick2.getTriggerAxis(Hand.kRight), MotorDirection.Forward);
+        } else {
+            this.shooterSubsystem.stopMotor();
         }
     }
     protected void updateDriverAssistSelections() {
-        double leftAxisValue = this.joystick2.getTriggerAxis(Hand.kLeft);
-        double rightAxisValue = this.joystick2.getTriggerAxis(Hand.kRight);
+        
         /*
         if (leftAxisValue >= 0.09) {
             AutonomousCommandManager.instance().setOperationSelection(OperationSelection.Pickup);
@@ -310,5 +313,11 @@ public class TeleopManager extends CommandBase {
     public void setBallpickupSubsystem(Ballpickup ballpickupSubsystem) {
         this.ballpickupSubsystem = ballpickupSubsystem;
     }
+    public Shooter getShooterSubsystem() {
+        return shooterSubsystem;
+    }
 
+    public void setShooterSubsystem(Shooter shooterSubsystem) {
+        this.shooterSubsystem = shooterSubsystem;
+    }
 }

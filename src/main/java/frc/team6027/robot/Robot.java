@@ -58,7 +58,7 @@ public class Robot extends TimedRobot {
     private Ballpickup ballpickupSubsystem;
     private Shooter shooterSubsystem;
 
-    // private PneumaticSubsystem pneumaticSubsystem;
+    private Pneumatics pneumatics;
     // private ElevatorSubsystem elevatorSubsystem;
     // private ArmSubsystem armSubsystem;
 
@@ -107,7 +107,7 @@ public class Robot extends TimedRobot {
 
 //        this.setArmSubsystem(new ArmSubsystem(this.getOperatorInterface()));
 //        this.setElevatorSubsystem(new ElevatorSubsystem(this.getSensorService().getLimitSwitchSensors(), this.getOperatorDisplay()));
-//        this.setPneumaticSubsystem(new PneumaticSubsystem(this.getOperatorDisplay()));
+        this.setPneumatics(new Pneumatics(this.getOperatorDisplay()));
         //this.visionData = new DatahubNetworkTableImpl(VisionDataConstants.VISION_DATA_KEY);
         this.visionData = new DatahubRobotServerImpl(VisionDataConstants.VISION_DATA_KEY);
         DatahubRegistry.instance().register(this.visionData);
@@ -115,8 +115,8 @@ public class Robot extends TimedRobot {
         // This ensures that the Teleop command is running whenever we are not in
         // autonomous mode
         this.teleopManager = new TeleopManager(this.operatorInterface, this.sensorService,
-                this.getDrivetrain(), this.getBallpickupSubsystem(), null /*this.pneumaticSubsystem*/, null,
-                this.getShooterSubsystem(), this.getOperatorDisplay(), this.getField());
+                this.getDrivetrain(), this.getBallpickupSubsystem(), this.getPneumatics(), 
+                null, this.getShooterSubsystem(), this.getOperatorDisplay(), this.getField());
         this.getDrivetrain().setDefaultCommand(teleopManager);
 /*
         this.autoCommandManager.initialize(
@@ -271,7 +271,7 @@ public class Robot extends TimedRobot {
 
         // If elevatorSubsystem is already initialized, this will do nothing
 //        this.elevatorSubsystem.initialize();
-//        this.getPneumaticSubsystem().reset();
+        this.getPneumatics().reset();
     }
 
     protected void displayAutoRunning(boolean isAutoRunning) {
@@ -304,6 +304,13 @@ public class Robot extends TimedRobot {
 //        LiveWindow.run();
     }
 
+    public Pneumatics getPneumatics() {
+        return pneumatics;
+    }
+
+    public void setPneumatics(Pneumatics pneumatics) {
+        this.pneumatics = pneumatics;
+    }
     public OperatorInterface getOperatorInterface() {
         return operatorInterface;
     }
@@ -343,14 +350,6 @@ public class Robot extends TimedRobot {
 
     public ArmSubsystem getArmSubsystem() {
         return this.armSubsystem;
-    }
-
-    public PneumaticSubsystem getPneumaticSubsystem() {
-        return pneumaticSubsystem;
-    }
-
-    public void setPneumaticSubsystem(PneumaticSubsystem pneumaticSubsystem) {
-        this.pneumaticSubsystem = pneumaticSubsystem;
     }
 
     public ElevatorSubsystem getElevatorSubsystem() {

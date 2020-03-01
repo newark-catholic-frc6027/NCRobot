@@ -5,13 +5,13 @@ import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.subsystems.Pneumatics;
 
 import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class ToggleKickHatchCommand extends Command {
+public class ToggleBallLatchCommand extends CommandBase {
     
     /** The delay in milliseconds before we allow the command to finish.  This builds in a small delay to allow the
      * solenoid to finish toggling before we turn it back off. */
-    public final static int DELAY_TO_OFF_MS = 350;
+    public final static double DELAY_TO_OFF_S = .350;
 
     private Preferences prefs = Preferences.getInstance();
 
@@ -19,24 +19,25 @@ public class ToggleKickHatchCommand extends Command {
     
     private final Logger logger = LogManager.getLogger(getClass());
 
-    private Pneumatics pneumaticSubsystem;
+    private Pneumatics pneumatics;
     private long timeStarted = 0;
     protected boolean isReset = false;
     protected boolean retracted = false;
     
-    public ToggleKickHatchCommand(Pneumatics pneumaticSubsystem) {
+    public ToggleBallLatchCommand(Pneumatics pneumaticSubsystem) {
         this(pneumaticSubsystem, true);
     }
     
-    public ToggleKickHatchCommand(Pneumatics pneumaticSubsystem, boolean inAutonomous) {
-        requires(pneumaticSubsystem);
-        this.pneumaticSubsystem = pneumaticSubsystem;
+    public ToggleBallLatchCommand(Pneumatics pneumatics, boolean inAutonomous) {
+        this.addRequirements(pneumatics);
+        this.pneumatics = pneumatics;
     }
     
     @Override
-    protected void initialize() {
+    public void initialize() {
         reset();
-        this.setTimeout(DELAY_TO_OFF_MS);
+        // cannot set timeout in command initialization since command framework was rewritten
+        // this.withTimeout(DELAY_TO_OFF_S);
     }
     
 	@Override
@@ -45,23 +46,16 @@ public class ToggleKickHatchCommand extends Command {
 		super.cancel();
 	}
 
-
-    @Override
-    public void start() {
-        this.reset();
-        logger.trace("Running KickHatchCommand");
-        super.start();
-    }
-    
     protected void reset() {
         this.timeStarted = 0;
         this.isReset = true;
         this.retracted = false;
     }
+
     @Override 
     public void execute() {
         if (! executionComplete) {
-            this.pneumaticSubsystem.toggleHatchSolenoid();
+            this.pneumatics.toggleBallLatchSolenoid();
             this.timeStarted = System.currentTimeMillis();
             // We only want to run once, so keep a boolean to make sure we don't run again until 
             // the delay period has expired
@@ -71,10 +65,10 @@ public class ToggleKickHatchCommand extends Command {
     
     
     @Override
-    protected boolean isFinished() {
+    public boolean isFinished() {
         long timeElapsedMs = System.currentTimeMillis() - this.timeStarted;
-        if (timeElapsedMs >= DELAY_TO_OFF_MS) {
-            logger.trace("KickHatchCommand finished");
+        if (timeElapsedMs >= DELAY_TO_OFF_S * 1000) {
+            logger.trace("BallLatchCommand finished");
             this.isReset = false;
             return true;
         } else {
@@ -83,11 +77,11 @@ public class ToggleKickHatchCommand extends Command {
     }
     
     @Override
-    protected void end() {
+    public void end(boolean interrupted) {
         // Reset our state for when we run again
         this.executionComplete = false;
         this.isReset = false;
-        this.pneumaticSubsystem.toggleHatchSolenoidOff();
+        this.pneumatics.toggleBallLatchSolenoidOff();
         this.retracted = false;
     }
 

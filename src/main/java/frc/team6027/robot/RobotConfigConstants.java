@@ -51,7 +51,7 @@ public class RobotConfigConstants {
      *     1 2
      * </pre>
      */
-    public static final int RIGHT_GEARBOX_MASTER_CIM_1_ID = 32;
+    public static final int RIGHT_GEARBOX_MASTER_CIM_1_ID = 22;
 
     /**
      * The device identifier for the Talon SRX speed controller right gear box
@@ -62,7 +62,7 @@ public class RobotConfigConstants {
      *     1 2
      * </pre>
      */
-    public static final int RIGHT_GEARBOX_SLAVE_CIM_2_ID = 34;
+    public static final int RIGHT_GEARBOX_SLAVE_CIM_2_ID = 23;
 
     /**
      * The device identifier for the Talon SRX speed controller right gear box
@@ -84,7 +84,7 @@ public class RobotConfigConstants {
      *     1 2
      * </pre>
      */
-    public static final int LEFT_GEARBOX_MASTER_CIM_1_ID = 30;
+    public static final int LEFT_GEARBOX_MASTER_CIM_1_ID = 20;
 
     /**
      * The device identifier for the Talon SRX speed controller left gear box
@@ -95,7 +95,7 @@ public class RobotConfigConstants {
      *     1 2
      * </pre>
      */
-    public static final int LEFT_GEARBOX_SLAVE_CIM_2_ID = 31;
+    public static final int LEFT_GEARBOX_SLAVE_CIM_2_ID = 21;
 
     /**
      * The device identifier for the Talon SRX speed controller left gear box
@@ -111,13 +111,15 @@ public class RobotConfigConstants {
     /**
      * The motor controller identifier for the shooter motor.
      */
-    public static final int SHOOTER_MOTOR_CIM_ID = 40;
+    public static final int SHOOTER_MOTOR_CIM_ID = 35;
 
     public static final int ELEVATOR_GEARBOX_CIM_1_ID = 32;
 
     public static final int MAST_SLIDE_GEARBOX_CIM_1_ID = 31;
 
-    public static final int BALL_INTAKE_MOTOR_CIM_ID = 30;
+    public static final int BALL_ELEVATOR_MOTOR_CIM_ID = 38;
+
+    public static final int BALL_INTAKE_MOTOR_CIM_ID = 39;
 
     /**
      * The joystick port number corresponds to the 'USB Order' serial number on
@@ -183,7 +185,7 @@ public class RobotConfigConstants {
     /*
      * SOLENOID constants
      */
-    public static final int PCM_1_ID_NUMBER = 0;
+    public static final int PCM_1_ID_NUMBER = 1;
 
     /** Controlled by PCM_1 */
     public static final int SOLENOID_1_PORT_A = 0;

@@ -24,7 +24,7 @@ public class AutoCommandHelper {
 
     public static void addAutoInitCommands(CommandGroup group, Drive drivetrain, Pneumatics pneumaticSubsystem,
         SensorService sensorService) {
-        group.addSequential(new PneumaticsInitializationCommand(pneumaticSubsystem));
+//        group.addSequential(new PneumaticsInitializationCommand(pneumaticSubsystem));
         group.addSequential(new ResetSensorsCommand(sensorService));
 //        group.addSequential(new ChangeDrivetrainModeCommand(DrivetrainMode.Brake, drivetrain));
     }

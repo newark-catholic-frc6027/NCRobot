@@ -7,15 +7,16 @@ import frc.team6027.robot.RobotConfigConstants;
 import frc.team6027.robot.commands.PneumaticsInitializationCommand;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Pneumatics extends Subsystem {
+public class Pneumatics extends SubsystemBase {
     private final Logger logger = LogManager.getLogger(getClass());
 
     private OperatorDisplay operatorDisplay;
 
     private StatefulSolenoid driveSolenoid;
-    private StatefulSolenoid hatchSolenoid;
+    private StatefulSolenoid ballLatchSolenoid;
 
     private PneumaticsInitializationCommand pneumaticsInitializationCommand = null;
 
@@ -25,28 +26,17 @@ public class Pneumatics extends Subsystem {
         this.driveSolenoid = new StatefulSolenoid(RobotConfigConstants.PCM_1_ID_NUMBER,
             RobotConfigConstants.SOLENOID_1_PORT_A, RobotConfigConstants.SOLENOID_1_PORT_B);
 
-        this.hatchSolenoid = new StatefulSolenoid(RobotConfigConstants.PCM_1_ID_NUMBER,
+        this.ballLatchSolenoid = new StatefulSolenoid(RobotConfigConstants.PCM_1_ID_NUMBER,
             RobotConfigConstants.SOLENOID_2_PORT_A, RobotConfigConstants.SOLENOID_2_PORT_B);
     }
 
-    @Override
-    public void initDefaultCommand() {
-    }
-
-    /**
-     * When the run method of the scheduler is called this method will be
-     * called.
-     */
-    @Override
-    public void periodic() {
-    }
 
     public StatefulSolenoid getDriveSolenoid() {
         return driveSolenoid;
     }
 
-    public StatefulSolenoid getHatchSolenoid() {
-        return hatchSolenoid;
+    public StatefulSolenoid getBallLatchSolenoid() {
+        return ballLatchSolenoid;
     }
 
     public void toggleDriveSolenoid() {
@@ -66,37 +56,37 @@ public class Pneumatics extends Subsystem {
         }
     }
 
-    public void toggleHatchSolenoidIn() {
-        logger.trace("Running toggleHatchSolenoidIn");
-        this.hatchSolenoid.toggleForward();
-        this.operatorDisplay.setFieldValue("Hatch", "IN");
+    public void toggleBallLatchSolenoidIn() {
+        logger.trace("Running toggleBallLatchSolenoidIn");
+        this.ballLatchSolenoid.toggleReverse();
+        this.operatorDisplay.setFieldValue("Ball Latch", "IN");
     }
 
-    public void toggleHatchSolenoidOut() {
-        logger.trace("Running toggleHatchSolenoidOut");
-        this.hatchSolenoid.toggleReverse();
-        this.operatorDisplay.setFieldValue("Hatch", "OUT");
+    public void toggleBallLatchSolenoidOut() {
+        logger.trace("Running toggleBallLatchSolenoidOut");
+        this.ballLatchSolenoid.toggleForward();
+        this.operatorDisplay.setFieldValue("Ball Latch", "OUT");
     }
 
-    public void toggleHatchSolenoidOff() {
-        logger.trace("Running toggleHatchSolenoidOff");
-        this.hatchSolenoid.toggleOff();
+    public void toggleBallLatchSolenoidOff() {
+        logger.trace("Running toggleBallLatchSolenoidOff");
+        this.ballLatchSolenoid.toggleOff();
     }
 
-    public void toggleHatchSolenoid() {
-        if (this.hatchSolenoid.getState() == null) {
-            logger.warn("Don't know hatch solenoid state yet, can't toggle hatch solenoid");
+    public void toggleBallLatchSolenoid() {
+        if (this.ballLatchSolenoid.getState() == null) {
+            logger.warn("Don't know ball latch solenoid state yet, can't toggle ball latch solenoid");
             return;
         }
 
-        this.operatorDisplay.setFieldValue("Hatch Sol. State", this.hatchSolenoid.getState().name());
+        this.operatorDisplay.setFieldValue("Ball Latch Sol. State", this.ballLatchSolenoid.getState().name());
 
-        if (this.hatchSolenoid.getState() == DoubleSolenoid.Value.kReverse) {
-            logger.trace("Calling toggleHatchSolenoidIn");
-            toggleHatchSolenoidIn();
+        if (this.ballLatchSolenoid.getState() == DoubleSolenoid.Value.kReverse) {
+            logger.trace("Calling toggleBallLatchSolenoidOut");
+            toggleBallLatchSolenoidOut();
         } else {
-            logger.trace("Calling toggleHatchSolenoidOut");
-            toggleHatchSolenoidOut();
+            logger.trace("Calling toggleBallLatchSolenoidIn");
+            toggleBallLatchSolenoidIn();
         }
     }
 
@@ -116,18 +106,13 @@ public class Pneumatics extends Subsystem {
         logger.trace("Running toggleDriveSolenoidOff");
         this.driveSolenoid.toggleOff();
     }
-
-    public boolean isReset() {
-        return this.pneumaticsInitializationCommand != null && !this.pneumaticsInitializationCommand.isRunning()
-                && this.pneumaticsInitializationCommand.isCompleted();
-    }
-
+    
     public void reset() {
         if (this.pneumaticsInitializationCommand == null) {
             pneumaticsInitializationCommand = new PneumaticsInitializationCommand(this);
         }
 
-        pneumaticsInitializationCommand.start();
+        CommandScheduler.getInstance().schedule(pneumaticsInitializationCommand);
     }
 
 }

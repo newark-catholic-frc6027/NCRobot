@@ -5,9 +5,9 @@ import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.subsystems.Pneumatics;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class PneumaticsInitializationCommand extends Command {
+public class PneumaticsInitializationCommand extends CommandBase {
     private final Logger logger = LogManager.getLogger(getClass());
 
     private boolean initialized = false;
@@ -15,61 +15,62 @@ public class PneumaticsInitializationCommand extends Command {
     private boolean driveSolenoidToggled = false;
     private boolean driveSolenoidInitialized = false;
     
-    private boolean hatchSolenoidToggled = false;
-    private boolean hatchSolenoidInitialized = false;
+    private boolean ballLatchSolenoidToggled = false;
+    private boolean ballLatchSolenoidInitialized = false;
     
     
-    private Pneumatics pneumaticSubsystem;
+    private Pneumatics pneumatics;
     public PneumaticsInitializationCommand(Pneumatics subsys) {
-        this.pneumaticSubsystem = subsys;
-        requires(subsys);
+        this.pneumatics = subsys;
+        this.addRequirements(subsys);
     }
             
     @Override
-    protected void initialize() {
-        logger.info("Pneumatics initialize method called, but initialize doesn't do anything.");
+    public void initialize() {
     }
     
     @Override
-    protected void execute() {
+    public void execute() {
         if (this.initialized) {
             logger.info("Pneumatics already initialized, nothing to do.");
             return;
         }
         
+        
         if (! driveSolenoidToggled) {
             logger.trace("Initializing Drive Solenoid...");
-            this.pneumaticSubsystem.toggleDriveSolenoidForward();
+            this.pneumatics.toggleDriveSolenoidForward();
             this.driveSolenoidToggled = true;
         } else {
-            if (this.pneumaticSubsystem.getDriveSolenoid().get() == DoubleSolenoid.Value.kForward) {
+            if (this.pneumatics.getDriveSolenoid().get() == DoubleSolenoid.Value.kForward) {
                 driveSolenoidInitialized = true;
-                this.pneumaticSubsystem.toggleDriveSolenoidOff();
+                this.pneumatics.toggleDriveSolenoidOff();
                 logger.trace("Drive Solenoid initialized.");
             } else {
                 logger.trace("Drive Solenoid not initialized yet");
             }
         }
+        
 
-        if (! hatchSolenoidToggled) {
-            logger.trace("Initializing Hatch Solenoid...");
-            this.pneumaticSubsystem.toggleHatchSolenoidIn();
-            this.hatchSolenoidToggled = true;
+        if (! ballLatchSolenoidToggled) {
+            logger.trace("Initializing ball latch Solenoid...");
+            this.pneumatics.toggleBallLatchSolenoidIn();
+            this.ballLatchSolenoidToggled = true;
         } else {
-            if (this.pneumaticSubsystem.getHatchSolenoid().get() == DoubleSolenoid.Value.kForward) {
-                hatchSolenoidInitialized = true;
-                this.pneumaticSubsystem.toggleHatchSolenoidOff();
-                logger.trace("Hatch Solenoid initialized.");
+            if (this.pneumatics.getBallLatchSolenoid().get() == DoubleSolenoid.Value.kReverse) {
+                ballLatchSolenoidInitialized = true;
+                this.pneumatics.toggleBallLatchSolenoidOff();
+                logger.trace("Ball latch Solenoid initialized.");
             } else {
-                logger.trace("Hatch Solenoid not initialized yet");
+                logger.trace("Ball latch Solenoid not initialized yet");
             }
         }
         
-        this.initialized = driveSolenoidInitialized && hatchSolenoidInitialized;
+        this.initialized = driveSolenoidInitialized && ballLatchSolenoidInitialized;
     }
     
     @Override
-    protected boolean isFinished() {
+    public boolean isFinished() {
         return this.initialized;
     }
     
@@ -77,7 +78,7 @@ public class PneumaticsInitializationCommand extends Command {
         logger.info("Pneumatics end method called");
         this.initialized = 
             this.driveSolenoidInitialized = this.driveSolenoidToggled = 
-            this.hatchSolenoidInitialized = this.hatchSolenoidToggled = false;
+            this.ballLatchSolenoidInitialized = this.ballLatchSolenoidToggled = false;
     }
     
 }
