@@ -53,13 +53,28 @@ public class DatahubNetworkTableImpl implements Datahub {
     public Double getDouble(String key) {
         return this.getDouble(key, -1.0);
     }
-
+    
     @Override
     public Double getDouble(String key, Double defaultValue) {
         NetworkTableEntry entry = this.getEntry(key);
         Double returnValue = defaultValue;
         if (entry != null) {
             returnValue =  entry.getDouble(defaultValue);
+        }
+        return returnValue;
+    }
+
+    @Override
+    public Number getNumber(String key) {
+        return this.getNumber(key, -1.0);
+    }
+
+    @Override
+    public Number getNumber(String key, Number defaultValue) {
+        NetworkTableEntry entry = this.getEntry(key);
+        Number returnValue = defaultValue;
+        if (entry != null) {
+            returnValue =  entry.getNumber(defaultValue);
         }
         return returnValue;
     }
@@ -91,25 +106,30 @@ public class DatahubNetworkTableImpl implements Datahub {
 
     @Override
     public Map<String,Object> getAll() {
-        // TODO
-        return null;
+        throw new UnsupportedOperationException("getAll not implemented yet");
     }
 
     @Override
     public void put(String key, String value) {
-        // TODO
-
+        NetworkTableEntry entry = this.getEntry(key);
+        entry.setString(value);
     }
 
     @Override
     public void put(String key, Double value) {
-        // TODO
+        NetworkTableEntry entry = this.getEntry(key);
+        entry.setDouble(value);
+    }
 
+    @Override
+    public void put(String key, Number value) {
+        NetworkTableEntry entry = this.getEntry(key);
+        entry.setNumber(value);
     }
 
     @Override
     public void put(Map<String, Object> values, boolean replace) {
-        // TODO
+        throw new UnsupportedOperationException("put(Map, boolean) not implemented yet");
     }
 
     @Override

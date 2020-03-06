@@ -32,8 +32,12 @@ public class SensorService {
 //        this.limitSwitchSensors = new LimitSwitchSensors();
     }
 
-    public void addMotorEncoders(Map<EncoderKey, MotorEncoder> encoders) {
+    public void addMotorEncoders(Map<EncoderKey, MotorEncoder<?>> encoders) {
         this.encoderSensors.registerEncoders(encoders);
+    }
+
+    public void addEncoder(EncoderKey key, MotorEncoder<?> encoder) {
+        this.encoderSensors.registerEncoder(key, encoder);
     }
     
     public EncoderSensors getEncoderSensors() {

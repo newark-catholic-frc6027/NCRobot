@@ -19,7 +19,6 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANError;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -62,7 +61,7 @@ public class Drive extends SubsystemBase {
     }
 
 	public void registerMotorEncoders(SensorService sensorService) {
-        Map<EncoderKey, MotorEncoder> encoderMap = new HashMap<>();
+        Map<EncoderKey, MotorEncoder<?>> encoderMap = new HashMap<>();
         if (this.leftGearBoxMasterMotor != null && this.rightGearBoxMasterMotor != null) {
 
             encoderMap.put(EncoderKey.DriveMotorLeft, new MotorEncoderCANImpl(this.leftGearBoxMasterMotor.getEncoder()));

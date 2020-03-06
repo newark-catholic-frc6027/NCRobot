@@ -19,4 +19,8 @@ public interface MotorEncoder<T> extends PIDSource {
     double getVelocity();
 
 
+    public int getMinValue();
+    public int getMaxValue();
+    public int getTotalUnits();
+
 }

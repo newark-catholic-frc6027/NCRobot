@@ -12,6 +12,7 @@ public class MotorEncoderCANImpl implements MotorEncoder<CANEncoder> {
 
     public MotorEncoderCANImpl(CANEncoder encoder) {
         this.encoder = encoder;
+        this.mark = this.getPosition();
     }
 
     public MotorEncoderCANImpl(CANEncoder encoder, boolean negate) {
@@ -79,4 +80,19 @@ public class MotorEncoderCANImpl implements MotorEncoder<CANEncoder> {
     public double pidGet() {
         return this.getPosition();
 	}
+
+    @Override
+    public int getMinValue() {
+        throw new UnsupportedOperationException("getMinValue not implemented yet");
+    }
+
+    @Override
+    public int getMaxValue() {
+        throw new UnsupportedOperationException("getMinValue not implemented yet");
+    }
+
+    @Override
+    public int getTotalUnits() {
+        throw new UnsupportedOperationException("getMinValue not implemented yet");
+    }
 }

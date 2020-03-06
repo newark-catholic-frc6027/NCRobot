@@ -21,8 +21,10 @@ import frc.team6027.robot.commands.autonomous.AutoCommandHelper;
 import frc.team6027.robot.commands.autonomous.NoOpCommand;
 import frc.team6027.robot.commands.autonomous.AutonomousPreference;
 import frc.team6027.robot.data.Datahub;
+import frc.team6027.robot.data.DatahubNetworkTableImpl;
 import frc.team6027.robot.data.DatahubRegistry;
 import frc.team6027.robot.data.DatahubRobotServerImpl;
+import frc.team6027.robot.data.LimelightDataConstants;
 import frc.team6027.robot.data.VisionDataConstants;
 import frc.team6027.robot.field.Field;
 import frc.team6027.robot.field.StationPosition;
@@ -32,9 +34,10 @@ import frc.team6027.robot.sensors.UltrasonicSensorManager.UltrasonicSensorKey;
 import frc.team6027.robot.server.RobotStatusServer;
 import frc.team6027.robot.subsystems.Ballpickup;
 import frc.team6027.robot.subsystems.Drive;
-import frc.team6027.robot.subsystems.Elevator;
+//import frc.team6027.robot.subsystems.Elevator;
 import frc.team6027.robot.subsystems.Pneumatics;
 import frc.team6027.robot.subsystems.Shooter;
+import frc.team6027.robot.subsystems.Turret;
 
 /**
  * The Virtual Machine is configured to automatically run this class, and to
@@ -55,10 +58,11 @@ public class Robot extends TimedRobot {
     private Command autonomousCommand;
 
     private Drive drivetrain;
-    private Ballpickup ballpickupSubsystem;
+    private Ballpickup ballpickup;
     private Shooter shooterSubsystem;
 
     private Pneumatics pneumatics;
+    private Turret turret;
     // private ElevatorSubsystem elevatorSubsystem;
     // private ArmSubsystem armSubsystem;
 
@@ -71,7 +75,7 @@ public class Robot extends TimedRobot {
     private int teleopExecCount = 0;
     private int autoExecCount = 0;
 
-    private Datahub visionData;
+    private Datahub limelightData;
     private RobotStatusServer robotStatusServer;
     private TeleopManager teleopManager;
 
@@ -101,22 +105,26 @@ public class Robot extends TimedRobot {
         this.setDrivetrain(
             new Drive(this.getOperatorInterface(), this.getSensorService())
         );
-        this.setBallpickupSubsystem(new Ballpickup());
+        this.setBallpickup(new Ballpickup());
         this.setShooterSubsystem(new Shooter());
+        this.setTurret(new Turret());
+
         this.drivetrain.registerMotorEncoders(this.sensorService);
+        this.sensorService.addEncoder(EncoderKey.Turret, this.turret.getEncoder());
 
 //        this.setArmSubsystem(new ArmSubsystem(this.getOperatorInterface()));
 //        this.setElevatorSubsystem(new ElevatorSubsystem(this.getSensorService().getLimitSwitchSensors(), this.getOperatorDisplay()));
         this.setPneumatics(new Pneumatics(this.getOperatorDisplay()));
         //this.visionData = new DatahubNetworkTableImpl(VisionDataConstants.VISION_DATA_KEY);
-        this.visionData = new DatahubRobotServerImpl(VisionDataConstants.VISION_DATA_KEY);
-        DatahubRegistry.instance().register(this.visionData);
+        this.limelightData = new DatahubNetworkTableImpl(LimelightDataConstants.LIMELIGHT_DATAHUB_KEY);
+        DatahubRegistry.instance().register(this.limelightData);
+//        DatahubRegistry.instance().register(this.visionData);
 
         // This ensures that the Teleop command is running whenever we are not in
         // autonomous mode
         this.teleopManager = new TeleopManager(this.operatorInterface, this.sensorService,
-                this.getDrivetrain(), this.getBallpickupSubsystem(), this.getPneumatics(), 
-                null, this.getShooterSubsystem(), this.getOperatorDisplay(), this.getField());
+                this.getDrivetrain(), this.getBallpickup(), this.getPneumatics(), 
+                this.getTurret(), this.getShooterSubsystem(), this.getOperatorDisplay(), this.getField());
         this.getDrivetrain().setDefaultCommand(teleopManager);
 /*
         this.autoCommandManager.initialize(
@@ -149,12 +157,12 @@ public class Robot extends TimedRobot {
 
     }
 
-    public Ballpickup getBallpickupSubsystem() {
-        return this.ballpickupSubsystem;
+    public Ballpickup getBallpickup() {
+        return this.ballpickup;
     }
 
-    public void setBallpickupSubsystem(Ballpickup ballpickupSubsystem) {
-        this.ballpickupSubsystem = ballpickupSubsystem;
+    public void setBallpickup(Ballpickup ballpickup) {
+        this.ballpickup = ballpickup;
     }
 
     @Override
@@ -164,12 +172,13 @@ public class Robot extends TimedRobot {
 
     protected void outputBanner() {
         logger.info(">>>>> Newark Catholic Team 6027 Robot started! <<<<<");
-        logger.info("	     ___  ________    ___   _____  ");
-        logger.info("	    /   |/_  __/ /   /   | / ___/ ");
-        logger.info("	   / /| | / / / /   / /| | |__ | ");
-        logger.info("	  / ___ |/ / / /___/ ___ |___/ / ");
-        logger.info("	 /_/  |_/_/ /_____/_/  |_/____/   ");
-        logger.info("	  "); 
+        logger.info(" ____          ___               __  __      ____      ");
+        logger.info("/\\  _`\\      /'___`\\            /\\ \\/\\ \\    /\\  _`\\    ");
+        logger.info("\\ \\ \\L\\ \\   /\\_\\ /\\ \\           \\ \\ `\\\\ \\   \\ \\ \\/\\_\\  ");
+        logger.info(" \\ \\ ,  /   \\/_/// /__  _______  \\ \\ , ` \\   \\ \\ \\/_/_ ");
+        logger.info("  \\ \\ \\\\ \\     // /_\\ \\/\\______\\  \\ \\ \\`\\ \\   \\ \\ \\L\\ \\");
+        logger.info("   \\ \\_\\ \\_\\  /\\______/\\/______/   \\ \\_\\ \\_\\   \\ \\____/");
+        logger.info("    \\/_/\\/ /  \\/_____/              \\/_/\\/_/    \\/___/ ");    
     }
 
     /**
@@ -335,6 +344,14 @@ public class Robot extends TimedRobot {
         this.drivetrain = drivetrain;
     }
 
+    public void setTurret(Turret turret) {
+        this.turret = turret;
+    }
+
+    public Turret getTurret() {
+        return this.turret;
+    }
+
     public Shooter getShooterSubsystem() {
         return shooterSubsystem;
     }
@@ -419,6 +436,9 @@ public class Robot extends TimedRobot {
                 
             disp.setFieldValue("Gyro Angle", this.sensorService.getGyroSensor().getAngle());
             disp.setFieldValue("Gyro Yaw Angle", this.sensorService.getGyroSensor().getYawAngle());
+
+            disp.setFieldValue("Turret position", this.sensorService.getEncoderSensors().getTurretEncoder().getPosition());
+            
 /*            
             Double dist = this.sensorService.getUltrasonicSensor(UltrasonicSensorKey.Front).getDistanceInches();
 */            

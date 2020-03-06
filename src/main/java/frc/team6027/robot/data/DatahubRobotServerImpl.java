@@ -105,12 +105,28 @@ public class DatahubRobotServerImpl implements Datahub {
     }
 
     @Override
+    public Number getNumber(String key, Number defaultValue) {
+        throw new UnsupportedOperationException("getNumber not implemeted yet");
+    }
+
+    @Override
+    public Number getNumber(String key) {
+        throw new UnsupportedOperationException("getNumber not implemeted yet");
+    }
+
+
+    @Override
     public void put(String key, String value) {
         this.putObj(key, value);
     }
 
     @Override
     public void put(String key, Double value) {
+        this.putObj(key, value);
+    }
+
+    @Override
+    public void put(String key, Number value) {
         this.putObj(key, value);
     }
 
@@ -150,5 +166,6 @@ public class DatahubRobotServerImpl implements Datahub {
             this.entries.putAll(values);
         }
     }
+
 
 }

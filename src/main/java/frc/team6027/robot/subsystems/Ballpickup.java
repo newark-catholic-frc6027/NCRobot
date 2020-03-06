@@ -7,14 +7,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.team6027.robot.OperatorInterface;
 import frc.team6027.robot.RobotConfigConstants;
 
 public class Ballpickup extends SubsystemBase {
     private final Logger logger = LogManager.getLogger(getClass());
 
-    private WPI_TalonSRX mainMotor = new WPI_TalonSRX(RobotConfigConstants.BALL_INTAKE_MOTOR_CIM_ID);
-    private WPI_TalonSRX secondMotor = new WPI_TalonSRX(RobotConfigConstants.BALL_ELEVATOR_MOTOR_CIM_ID);
+    private WPI_TalonSRX ballIntakeMotor = new WPI_TalonSRX(RobotConfigConstants.BALL_INTAKE_MOTOR_CIM_ID);
+    private WPI_TalonSRX ballElevatorMotor = new WPI_TalonSRX(RobotConfigConstants.BALL_ELEVATOR_MOTOR_CIM_ID);
 
     public Ballpickup() {
         this.initialize();
@@ -29,25 +28,18 @@ public class Ballpickup extends SubsystemBase {
     }
 
     public void stopMotor() {
-        if (this.mainMotor != null) {
-            mainMotor.set(ControlMode.PercentOutput, 0);
-            secondMotor.set(ControlMode.PercentOutput, 0);
-            this.mainMotor.stopMotor();
-            this.secondMotor.stopMotor();
+        if (this.ballIntakeMotor != null) {
+            ballIntakeMotor.set(ControlMode.PercentOutput, 0);
+            ballElevatorMotor.set(ControlMode.PercentOutput, 0);
+            this.ballIntakeMotor.stopMotor();
+            this.ballElevatorMotor.stopMotor();
         }
     }
 
     public void spin(double power, MotorDirection spinDirection) {
-        if (this.mainMotor != null) {
-            this.mainMotor.set(spinDirection == MotorDirection.Reverse ? power * -1 : power);
-            this.secondMotor.set(spinDirection == MotorDirection.Forward ? power * -1 : power);
-/*
-            if (power > .10) {
-                this.secondMotor.set(spinDirection == MotorDirection.Forward ? power * -1 : power);
-            } else {
-                this.secondMotor.set(ControlMode.PercentOutput, 0);
-            }
-            */
+        if (this.ballIntakeMotor != null) {
+            this.ballIntakeMotor.set(spinDirection == MotorDirection.Reverse ? power * -1 : power);
+            this.ballElevatorMotor.set(spinDirection == MotorDirection.Forward ? power * -1 : power);
         }
     }
 

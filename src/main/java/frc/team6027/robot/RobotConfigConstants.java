@@ -113,6 +113,11 @@ public class RobotConfigConstants {
      */
     public static final int SHOOTER_MOTOR_CIM_ID = 35;
 
+    /**
+     * The motor controller identifier for the turret motor;
+     */
+    public static final int TURRET_CIM_ID = 34;
+
     public static final int ELEVATOR_GEARBOX_CIM_1_ID = 32;
 
     public static final int MAST_SLIDE_GEARBOX_CIM_1_ID = 31;

@@ -18,6 +18,7 @@ public class EncoderSensors {
     public enum EncoderKey {
         DriveMotorLeft,
         DriveMotorRight,
+        Turret,
         Elevator
     }
     public static final  double DISTANCE_PER_REVOLUTION =  3.0 * Math.PI * 5.9575;// 3 revolutions of the wheel per 1 encoder revolution, wheel is 5.9575" dia
@@ -35,7 +36,7 @@ public class EncoderSensors {
 
     //public   double DISTANCE_PER_PULSE = DISTANCE_PER_REVOLUTION / PULSE_PER_REVOLUTION;
 
-    private Map<EncoderKey, MotorEncoder> encoderRegistry = new HashMap<>();
+    private Map<EncoderKey, MotorEncoder<?>> encoderRegistry = new HashMap<>();
 
     private Encoder elevatorEncoder = new Encoder(
         RobotConfigConstants.ELEVATOR_ENCODER_DIO_CHANNEL_A,
@@ -46,15 +47,19 @@ public class EncoderSensors {
     public EncoderSensors() {
     }
 
-    public void registerEncoder(EncoderKey key, MotorEncoder encoder) {
+    public void registerEncoder(EncoderKey key, MotorEncoder<?> encoder) {
         this.encoderRegistry.put(key, encoder);
     }
 
-    public void registerEncoders(Map<EncoderKey, MotorEncoder> encoders) {
+    public void registerEncoders(Map<EncoderKey, MotorEncoder<?>> encoders) {
         this.encoderRegistry.putAll(encoders);
     }
 
-    public MotorEncoder getMotorEncoder(EncoderKey key) {
+    public MotorEncoder<?> getTurretEncoder() {
+        return this.encoderRegistry.get(EncoderKey.Turret);
+    }
+    
+    public MotorEncoder<?> getMotorEncoder(EncoderKey key) {
         return this.encoderRegistry.get(key);
     }
 
@@ -66,7 +71,7 @@ public class EncoderSensors {
         this.reset();
     }
     
-    public MotorEncoder getRightEncoder() {      
+    public MotorEncoder<?> getRightEncoder() {      
         return this.encoderRegistry.get(EncoderKey.DriveMotorRight);
     }
 
@@ -81,9 +86,13 @@ public class EncoderSensors {
             this.encoderRegistry.get(EncoderKey.DriveMotorRight).reset();
             logger.info("RIGHT MOTOR ENCODER RESET");
         }
+
+        if (this.encoderRegistry.containsKey(EncoderKey.Turret)) {
+            this.encoderRegistry.get(EncoderKey.Turret).reset();
+        }
     }
     
-    public MotorEncoder getLeftEncoder() {      
+    public MotorEncoder<?> getLeftEncoder() {      
         return this.encoderRegistry.get(EncoderKey.DriveMotorLeft);
     }
     

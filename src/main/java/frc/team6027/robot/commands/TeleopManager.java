@@ -11,7 +11,7 @@ import frc.team6027.robot.commands.autonomous.DriverAssistHatchDeliveryCommand;
 import frc.team6027.robot.commands.autonomous.KillCurrentAutoCommand;
 import frc.team6027.robot.commands.autonomous.ScheduleCommand;
 */
-
+import frc.team6027.robot.commands.TurretTurnCommand.TurretTurnDirection;
 import frc.team6027.robot.controls.XboxJoystick;
 import frc.team6027.robot.field.Field;
 import frc.team6027.robot.field.LevelSelection;
@@ -21,10 +21,11 @@ import frc.team6027.robot.sensors.SensorService;
 import frc.team6027.robot.subsystems.Ballpickup;
 //import frc.team6027.robot.subsystems.ArmSubsystem;
 import frc.team6027.robot.subsystems.Drive;
-import frc.team6027.robot.subsystems.Elevator;
+//import frc.team6027.robot.subsystems.Elevator;
 import frc.team6027.robot.subsystems.MotorDirection;
 import frc.team6027.robot.subsystems.Pneumatics;
 import frc.team6027.robot.subsystems.Shooter;
+import frc.team6027.robot.subsystems.Turret;
 //import frc.team6027.robot.subsystems.ArmSubsystem.MotorDirection;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Preferences;
@@ -44,9 +45,10 @@ public class TeleopManager extends CommandBase {
     private Drive drivetrain;
     private Preferences prefs = Preferences.getInstance();
     private Pneumatics pneumatics;
-    private Elevator elevatorSubsystem;
-    private Ballpickup ballpickupSubsystem;
-    private Shooter shooterSubsystem;
+//    private Elevator elevatorSubsystem;
+    private Ballpickup ballpickup;
+    private Shooter shooter;
+    private Turret turret;
 //    private ArmSubsystem armSubsystem;
     private OperatorDisplay operatorDisplay;
     private JoystickButton leftBumperButton;
@@ -78,8 +80,8 @@ public class TeleopManager extends CommandBase {
     private Field field;
 
     public TeleopManager(OperatorInterface operatorInterface, SensorService sensorService,
-            Drive drivetrain, Ballpickup ballpickupSubsystem, 
-            Pneumatics pneumatics, Elevator elevator,
+            Drive drivetrain, Ballpickup ballpickup, 
+            Pneumatics pneumatics, Turret turret,
             Shooter shooterSubsystem,
             OperatorDisplay operatorDisplay, Field field) {
         // Identify the subsystems we will be using in this command and this
@@ -97,9 +99,10 @@ public class TeleopManager extends CommandBase {
         this.joystick2 = this.operatorInterface.getJoystick2();
         this.drivetrain = drivetrain;
         this.pneumatics = pneumatics;
-        this.elevatorSubsystem = elevator;
-        this.ballpickupSubsystem = ballpickupSubsystem;
-        this.shooterSubsystem = shooterSubsystem;
+//        this.elevatorSubsystem = elevator;
+        this.ballpickup = ballpickup;
+        this.turret = turret;
+        this.shooter = shooterSubsystem;
         this.operatorDisplay = operatorDisplay;
 
         // Set up the commands on the Joystick buttons
@@ -170,6 +173,17 @@ public class TeleopManager extends CommandBase {
    
    
     protected void initializeJoystick2() {
+        // **** Left Bumper button - Select operation (Deliver only)
+        this.leftBumperButton2 = new JoystickButton(this.joystick2, this.joystick2.getLeftBumperButtonNumber());   
+        this.leftBumperButton2.whileHeld(new TurretTurnCommand(this.turret, TurretTurnDirection.CounterClockwise));
+
+        // **** Right Bumper button - Select Object (Hatch only)
+        this.rightBumperButton2 = new JoystickButton(this.joystick2, this.joystick2.getRightBumperButtonNumber());
+        this.rightBumperButton2.whileHeld(new TurretTurnCommand(this.turret, TurretTurnDirection.Clockwise));
+
+        this.xButton2 = new JoystickButton(this.joystick2, this.joystick2.getXButtonNumber());   
+        this.xButton2.whenPressed(new TurretTurnToPositionCommand(this.turret, 2100));
+        
 /*
         // **** Y button - Selects Upper Level
         this.yButton2 = new JoystickButton(this.joystick2, this.joystick2.getYButtonNumber());  
@@ -187,13 +201,6 @@ public class TeleopManager extends CommandBase {
         this.xButton2 = new JoystickButton(this.joystick2, this.joystick2.getXButtonNumber());   
         this.xButton2.whenPressed(new SelectionCommand(LevelSelection.Cargo));
 
-        // **** Left Bumper button - Select operation (Deliver only)
-        this.leftBumperButton2 = new JoystickButton(this.joystick2, this.joystick2.getLeftBumperButtonNumber());   
-        this.leftBumperButton2.whenPressed(new SelectionCommand(OperationSelection.Deliver));
-
-        // **** Right Bumper button - Select Object (Hatch only)
-        this.rightBumperButton2 = new JoystickButton(this.joystick2, this.joystick2.getRightBumperButtonNumber());
-        this.rightBumperButton2.whenPressed(new SelectionCommand(ObjectSelection.Hatch));
 
         // **** Back button - Toggle hatch kicker
         this.backButton2 = new JoystickButton(this.joystick2, this.joystick2.getBackButtonNumber());   
@@ -247,27 +254,28 @@ public class TeleopManager extends CommandBase {
         this.drivetrain.doArcadeDrive(this.joystick.getLeftAxis(), this.joystick.getRightAxis() * this.turnPowerScaleFactor);
     }
 
+    /*
     protected void runMastSlideIfRequired() {
         logger.trace("POV0: {}", this.joystick.getPOV(0));
         // POV(0) return an angle for the pad based on which direction was pressed   
         int povValue = this.joystick.getPOV(0);
-        /* Disabling ability to move mast backward
-        if (povValue >= 225 && povValue <= 315) {
-            logger.info("Mast Backward: {}", povValue);
-            this.elevatorSubsystem.mastBackward(1.0);
-        } else
-        */
-        if (povValue >= 45 && povValue <= 135) {
-            logger.info("Mast Forward: {}", povValue);
-            this.elevatorSubsystem.mastForward(1.0);
-        }
+        Disabling ability to move mast backward
+        //if (povValue >= 225 && povValue <= 315) {
+        //    logger.info("Mast Backward: {}", povValue);
+        //    this.elevatorSubsystem.mastBackward(1.0);
+        //} else
+        
+       // if (povValue >= 45 && povValue <= 135) {
+       //     logger.info("Mast Forward: {}", povValue);
+       //     this.elevatorSubsystem.mastForward(1.0);
+       // }
     }
-
+*/
     protected void runBallPickupIfRequired() {
         if (this.joystick.getTriggerAxis(Hand.kLeft) > .05) {
-            this.ballpickupSubsystem.spin(this.joystick.getTriggerAxis(Hand.kLeft), MotorDirection.Forward);
+            this.ballpickup.spin(this.joystick.getTriggerAxis(Hand.kLeft), MotorDirection.Forward);
         } else {
-            this.ballpickupSubsystem.spin(this.joystick.getTriggerAxis(Hand.kRight), MotorDirection.Reverse);
+            this.ballpickup.spin(this.joystick.getTriggerAxis(Hand.kRight), MotorDirection.Reverse);
         }
     }
 
@@ -284,9 +292,9 @@ public class TeleopManager extends CommandBase {
     protected void runShooterIfRequired() {
         if (this.joystick2.getTriggerAxis(Hand.kRight) > .05) {
             /*logger.info("Right trigger: {}", this.joystick2.getTriggerAxis(Hand.kRight));*/
-            this.shooterSubsystem.spin(this.joystick2.getTriggerAxis(Hand.kRight), MotorDirection.Forward);
+            this.shooter.spin(this.joystick2.getTriggerAxis(Hand.kRight), MotorDirection.Forward);
         } else {
-            this.shooterSubsystem.stopMotor();
+            this.shooter.stopMotor();
         }
     }
     protected void updateDriverAssistSelections() {
@@ -307,17 +315,17 @@ public class TeleopManager extends CommandBase {
     }
 
     public Ballpickup getBallpickupSubsystem() {
-        return ballpickupSubsystem;
+        return ballpickup;
     }
 
     public void setBallpickupSubsystem(Ballpickup ballpickupSubsystem) {
-        this.ballpickupSubsystem = ballpickupSubsystem;
+        this.ballpickup = ballpickupSubsystem;
     }
     public Shooter getShooterSubsystem() {
-        return shooterSubsystem;
+        return shooter;
     }
 
     public void setShooterSubsystem(Shooter shooterSubsystem) {
-        this.shooterSubsystem = shooterSubsystem;
+        this.shooter = shooterSubsystem;
     }
 }
