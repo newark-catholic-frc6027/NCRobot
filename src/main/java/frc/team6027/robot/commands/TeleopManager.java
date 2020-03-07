@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 // import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class TeleopManager extends CommandBase {
     private final Logger logger = LogManager.getLogger(getClass());
@@ -181,8 +182,12 @@ public class TeleopManager extends CommandBase {
         this.rightBumperButton2 = new JoystickButton(this.joystick2, this.joystick2.getRightBumperButtonNumber());
         this.rightBumperButton2.whileHeld(new TurretTurnCommand(this.turret, TurretTurnDirection.Clockwise));
 
+        TurretTurnToPositionCommand turretCmd = new TurretTurnToPositionCommand(this.turret, 2100);
         this.xButton2 = new JoystickButton(this.joystick2, this.joystick2.getXButtonNumber());   
-        this.xButton2.whenPressed(new TurretTurnToPositionCommand(this.turret, 2100));
+        this.xButton2.whenPressed(turretCmd);
+
+        this.backButton2 = new JoystickButton(this.joystick2, this.joystick2.getBackButtonNumber());
+        this.backButton2.whenPressed(new InstantCommand(() -> turretCmd.stop()));
         
 /*
         // **** Y button - Selects Upper Level

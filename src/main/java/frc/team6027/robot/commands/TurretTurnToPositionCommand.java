@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.team6027.robot.data.Datahub;
 import frc.team6027.robot.data.DatahubRegistry;
 import frc.team6027.robot.data.LimelightDataConstants;
+import frc.team6027.robot.sensors.MotorEncoder;
 import frc.team6027.robot.subsystems.MotorDirection;
 import frc.team6027.robot.subsystems.Turret;
 
@@ -22,7 +23,7 @@ public class TurretTurnToPositionCommand extends PIDCommand {
     public final static String TURRET_PID_FF = "turret.pid.ff";
     public final static String TURRET_PID_TOLERANCE = "turret.pid.tolerance";
 
-    public static final String TURRET_SETPOINT_KEY = "turret.setpoint";
+    public static final String TURRET_DEFAULT_SETPOINT_KEY = "turret.setpoint";
 
     private Preferences prefs = Preferences.getInstance();
     protected boolean isReset = false;
@@ -38,11 +39,14 @@ public class TurretTurnToPositionCommand extends PIDCommand {
     private Datahub limelightData;
 
     private Double currentSetpoint;
+    private Double turretMin;
+    private Double turretMax;
+    private boolean stopped = false;
 
     public TurretTurnToPositionCommand(Turret turret, double ticks) {
         super(new PIDController(0, 0, 0), 
             () -> turret.getEncoder().getPosition(),
-            () -> Preferences.getInstance().getDouble(TURRET_SETPOINT_KEY, 0.0),
+            () -> Preferences.getInstance().getDouble(TURRET_DEFAULT_SETPOINT_KEY, 2100),
             (value) -> {},
             turret
         );
@@ -55,19 +59,30 @@ public class TurretTurnToPositionCommand extends PIDCommand {
         this.m_measurement = 
         () -> {
             double position = turret.getEncoder().getPosition();
-            logger.trace("Turret position: {}", position);
+            if (executionCount % 20 == 0) {
+                logger.trace("Turret position: {}", position);
+            }
             return position;
         };
 
+        turretMin = prefs.getDouble(Turret.TURRET_MAX_CCW_KEY, 1200);
+        turretMax = prefs.getDouble(Turret.TURRET_MAX_CW_KEY, 2900);
         this.m_setpoint = 
         () -> {
-            return currentSetpoint != null ? currentSetpoint :
-                  Preferences.getInstance().getDouble(TURRET_SETPOINT_KEY, 0.0);
+//            Double currentPosition = turret.getEncoder().getPosition();
+//            if (currentPosition != null && currentPosition >= turretMin && currentPosition <= turretMax) {
+                return currentSetpoint != null ? currentSetpoint :
+                  Preferences.getInstance().getDouble(TURRET_DEFAULT_SETPOINT_KEY, 2100);
+//            } else {
+//                return  Preferences.getInstance().getDouble(TURRET_DEFAULT_SETPOINT_KEY, 2100);
+//            }
         };
         
         this.m_useOutput = 
         (pidOutput) -> {
-            logger.trace("Turret PID output: {}", pidOutput);
+            if (executionCount % 20 == 0) {
+                logger.trace("Turret PID output: {}", pidOutput);
+            }
             turret.turn(pidOutput);
         };
 
@@ -80,10 +95,12 @@ public class TurretTurnToPositionCommand extends PIDCommand {
             prefs.getDouble(TURRET_PID_D, 0)
         );
 
-        this.controller.setTolerance(prefs.getDouble(TURRET_PID_TOLERANCE, 50.0));
+        double tolerance = prefs.getDouble(TURRET_PID_TOLERANCE, 50.0);
+        this.controller.setTolerance(tolerance);
 
-        logger.debug("Turret PID settings. Setpoint: {} P: {}, I: {}, D: {},", 
-            prefs.getDouble(TURRET_SETPOINT_KEY, 0.0), this.controller.getP(), this.controller.getI(), this.controller.getD()
+        logger.debug("Turret PID settings. Setpoint: {} P: {}, I: {}, D: {}, tolerance: {}", 
+            prefs.getDouble(TURRET_DEFAULT_SETPOINT_KEY, 0.0), this.controller.getP(), this.controller.getI(), this.controller.getD(),
+            tolerance
         );
         /*
         this.controller.enableContinuousInput(
@@ -103,12 +120,14 @@ public class TurretTurnToPositionCommand extends PIDCommand {
     
 	@Override
 	public void cancel() {
-		this.isReset = false;
+        this.isReset = false;
+        this.stopped = true;
 		super.cancel();
 	}
 
     protected void reset() {
         this.isReset = true;
+        this.stopped = false;
         this.executionCount = 0;
     }
 
@@ -120,8 +139,14 @@ public class TurretTurnToPositionCommand extends PIDCommand {
         Double newPosition = null;
         if (tx != null) {
             encoderUnitsToMove = (tx/360.0) * this.turret.getEncoder().getTotalUnits();
-            newPosition = this.turret.getEncoder().getPosition() + encoderUnitsToMove;
-            this.currentSetpoint = newPosition;
+            Double currentPosition = this.turret.getEncoder().getPosition();
+            newPosition = currentPosition + encoderUnitsToMove;
+            // Don't change the setpoint if we are out of range
+            if (newPosition >= turretMin && newPosition <= turretMax) {
+                this.currentSetpoint = newPosition;
+            } else {
+                this.currentSetpoint = currentPosition;
+            }
         }
         super.execute();
 
@@ -157,13 +182,20 @@ public class TurretTurnToPositionCommand extends PIDCommand {
 //        return this.turret.atSetpoint();
     }
     
+    public void stop() {
+        this.stopped = true;
+    }
+
     @Override
     public boolean isFinished() {
+        return this.stopped;
+        /*
         boolean done = this.executionCount >= 50 * 120;//this.controller.atSetpoint();
         if (done) {
             logger.info("TurretTurnToPositionCommand finished");
         }
         return done;
+        */
     }
     
     @Override
