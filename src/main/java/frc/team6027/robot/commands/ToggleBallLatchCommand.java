@@ -23,12 +23,15 @@ public class ToggleBallLatchCommand extends CommandBase {
     private long timeStarted = 0;
     protected boolean isReset = false;
     protected boolean retracted = false;
+    protected Boolean toggleOpen;
     
-    public ToggleBallLatchCommand(Pneumatics pneumaticSubsystem) {
-        this(pneumaticSubsystem, true);
+
+    public ToggleBallLatchCommand(Pneumatics pneumaticSubsystem, boolean toggleOpen) {
+        this(pneumaticSubsystem);
+        this.toggleOpen = toggleOpen;
     }
     
-    public ToggleBallLatchCommand(Pneumatics pneumatics, boolean inAutonomous) {
+    public ToggleBallLatchCommand(Pneumatics pneumatics) {
         this.addRequirements(pneumatics);
         this.pneumatics = pneumatics;
     }
@@ -55,7 +58,15 @@ public class ToggleBallLatchCommand extends CommandBase {
     @Override 
     public void execute() {
         if (! executionComplete) {
-            this.pneumatics.toggleBallLatchSolenoid();
+            if (toggleOpen != null) {
+                if (toggleOpen) {
+                    this.pneumatics.toggleBallLatchSolenoidOut();
+                 } else {
+                    this.pneumatics.toggleBallLatchSolenoidIn();
+                 } 
+            } else {
+                this.pneumatics.toggleBallLatchSolenoid();
+            }
             this.timeStarted = System.currentTimeMillis();
             // We only want to run once, so keep a boolean to make sure we don't run again until 
             // the delay period has expired

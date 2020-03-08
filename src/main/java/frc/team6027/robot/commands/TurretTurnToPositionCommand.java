@@ -21,6 +21,9 @@ import frc.team6027.robot.subsystems.Turret;
 public class TurretTurnToPositionCommand extends PIDCommand {
     private static final Logger logger = LogManager.getLogger(TurretTurnToPositionCommand.class);
 
+    private final static int MAX_INVALID_CONSECUTIVE_POS = 25;
+    private final static double INVALID_POS_OVERAGE_FACTOR = 4096 * .10;
+
     public final static String TURRET_PID_P = "turret.pid.p";
     public final static String TURRET_PID_I = "turret.pid.i";
     public final static String TURRET_PID_D = "turret.pid.d";
@@ -44,8 +47,13 @@ public class TurretTurnToPositionCommand extends PIDCommand {
     private Double currentSetpoint;
     private Double turretMin;
     private Double turretMax;
+    private double absoluteTurretMin;
+    private double absoluteTurretMax;
+
     private boolean stopped = false;
-    private List<Double> consecutiveInvalidPositions = new ArrayList<>();
+
+    private int consecutiveInvalidPosCount = 0;
+//    private List<Double> consecutiveInvalidPositions = new ArrayList<>();
 
     public TurretTurnToPositionCommand(Turret turret) {
         // Set up a No-op, default PID controller, then set up real values in initPidController
@@ -71,7 +79,9 @@ public class TurretTurnToPositionCommand extends PIDCommand {
         };
 
         turretMin = prefs.getDouble(Turret.TURRET_MAX_CCW_KEY, 1200);
+        absoluteTurretMin = turretMin - INVALID_POS_OVERAGE_FACTOR;
         turretMax = prefs.getDouble(Turret.TURRET_MAX_CW_KEY, 2900);
+        absoluteTurretMax = turretMax + INVALID_POS_OVERAGE_FACTOR;
         this.m_setpoint = 
         () -> {
 //            Double currentPosition = turret.getEncoder().getPosition();
@@ -126,7 +136,7 @@ public class TurretTurnToPositionCommand extends PIDCommand {
         // to not allow manual override until it is needed again.
         this.turret.setManualOverrideAllowed(false);
 
-        this.consecutiveInvalidPositions.clear();
+        this.consecutiveInvalidPosCount = 0;
 
         reset();
     }
@@ -192,17 +202,17 @@ public class TurretTurnToPositionCommand extends PIDCommand {
     }
 */    
     private boolean isLimitExceeded() {
-        Double currentPosition = this.turret.getEncoder().getPosition();
+        double currentPosition = this.turret.getEncoder().getPosition();
         boolean limitExceeded = false;
-        if (currentPosition > 0 && (currentPosition < turretMin || currentPosition > turretMax)) {
-            if (this.consecutiveInvalidPositions.size() >= 20) {
+        if (currentPosition > 0 && (currentPosition < absoluteTurretMin || currentPosition > absoluteTurretMax)) {
+            if (this.consecutiveInvalidPosCount >= MAX_INVALID_CONSECUTIVE_POS) {
                 limitExceeded = true;
-                this.consecutiveInvalidPositions.clear();
+                this.consecutiveInvalidPosCount = 0;
             } else {
-                this.consecutiveInvalidPositions.add(currentPosition);
+                this.consecutiveInvalidPosCount++;
             }
         } else {
-            this.consecutiveInvalidPositions.clear();
+            this.consecutiveInvalidPosCount = 0;
         }
 
         return limitExceeded;

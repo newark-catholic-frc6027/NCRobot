@@ -42,6 +42,8 @@ public class AutoCommandFactory {
         SpinShooterCommand spinCommand = new SpinShooterCommand(shooter, 1.0);
 
         return new ParallelCommandGroup(
+            // Parallel command 1: get turret on target.
+            // TODO: Needs a little more testing
             turretCommand.withInterrupt(() -> {
                 boolean onTarget = turretCommand.isOnTarget();
                 if (onTarget) {
@@ -50,9 +52,15 @@ public class AutoCommandFactory {
                 return onTarget; 
             }),  // get on target, turn off light
 
-            new ToggleBallLatchCommand(pneumatics),
+            // Parallel command 2: Open ball latch
+            new ToggleBallLatchCommand(pneumatics, true),
+
+            // Parallel command 3: Spin ball shooter until told to stop
             spinCommand.withInterrupt(() -> spinCommand.isStopped()),
+
+            // Parallel command group 4: shoot the balls
             new SequentialCommandGroup(
+                // Sequential 4a: Wait for shooter to reach max RPM
                 new RunCommand(() -> {}).withInterrupt(() -> {
                     boolean atMaxRpm = shooter.isAtMaxRPM();
                     if (atMaxRpm) {
@@ -60,12 +68,20 @@ public class AutoCommandFactory {
                     }
                     return atMaxRpm;
                 }),
+                // Sequential 4b: Back drive ballpickup just a hair
                 new RunCommand( () -> ballpickup.spin(ballpickupPower, MotorDirection.Forward), ballpickup).withTimeout(ballpickupBackdriveMs),
+                // Sequential 4c: Drive ballpickup to shoot balls
+                // TODO: once limit switch is wired up, stop this command on timeout OR when counts 3 balls
                 new RunCommand( () -> ballpickup.spin(ballpickupPower, MotorDirection.Reverse), ballpickup).withTimeout(ballpickupForwardDriveMs),
+                // Sequential 4d: Stop shooter spin
                 new InstantCommand(() -> {
                     logger.debug("Stopping shooter"); 
                     spinCommand.stop();
                 })
+                //,
+                // Parallel command 4e: Open ball latch
+                //new ToggleBallLatchCommand(pneumatics, false)
+
             )
 
 

@@ -159,18 +159,37 @@ public class TeleopManager extends CommandBase {
 
         );
 */        
+
+        // **** Left Bumper button - turn turret ccw
+        this.leftBumperButton = new JoystickButton(this.joystick, this.joystick.getLeftBumperButtonNumber());   
+        this.leftBumperButton.whileHeld(new TurretTurnCommand(this.turret, TurretTurnDirection.CounterClockwise));
+
+        // **** Right Bumper button - turn turret cw
+        this.rightBumperButton = new JoystickButton(this.joystick, this.joystick.getRightBumperButtonNumber());
+        this.rightBumperButton.whileHeld(new TurretTurnCommand(this.turret, TurretTurnDirection.Clockwise));
+
         this.aButton = new JoystickButton(this.joystick, this.joystick.getAButtonNumber());
 
         // **** X button - toggles the ball latch
         this.xButton = new JoystickButton(this.joystick, this.joystick.getXButtonNumber());   
         this.xButton.whenPressed(new ToggleBallLatchCommand(this.pneumatics));    
 
+        // B - target
+        // stop targetting with toggle
+        TurretTurnToPositionCommand turretCmd = new TurretTurnToPositionCommand(this.turret);
+        this.bButton = new JoystickButton(this.joystick, this.joystick.getBButtonNumber());   
+        this.bButton.toggleWhenPressed(turretCmd);
+        
+
+        // A - switch camera view
+    
         // **** Y button - empty ball mag
         this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());   
         this.yButton.whenPressed(AutoCommandFactory.emptyBallMagCommand(this.shooter, this.pneumatics, this.ballpickup, this.turret));    
 
         /*this.aButton.whenPressed(new TurnCommand("turnCommand.targetAngle", this.sensorService, this.drivetrain, this.getOperatorDisplay()));*/
 
+        // Shifting of Gearbox
         this.startButton = new JoystickButton(this.joystick, this.joystick.getStartButtonNumber());
         this.startButton.whenPressed(new ShiftGearCommand(this.pneumatics));
 
@@ -179,20 +198,24 @@ public class TeleopManager extends CommandBase {
    
    
     protected void initializeJoystick2() {
-        // **** Left Bumper button - Select operation (Deliver only)
+        // **** Left Bumper button - turn turret ccw
         this.leftBumperButton2 = new JoystickButton(this.joystick2, this.joystick2.getLeftBumperButtonNumber());   
         this.leftBumperButton2.whileHeld(new TurretTurnCommand(this.turret, TurretTurnDirection.CounterClockwise));
 
-        // **** Right Bumper button - Select Object (Hatch only)
+        // **** Right Bumper button - turn turret cw
         this.rightBumperButton2 = new JoystickButton(this.joystick2, this.joystick2.getRightBumperButtonNumber());
         this.rightBumperButton2.whileHeld(new TurretTurnCommand(this.turret, TurretTurnDirection.Clockwise));
 
-        TurretTurnToPositionCommand turretCmd = new TurretTurnToPositionCommand(this.turret);
+        // **** X button - toggles the ball latch
         this.xButton2 = new JoystickButton(this.joystick2, this.joystick2.getXButtonNumber());   
-        this.xButton2.whenPressed(turretCmd);
+        this.xButton2.whenPressed(new ToggleBallLatchCommand(this.pneumatics)); 
 
-        this.backButton2 = new JoystickButton(this.joystick2, this.joystick2.getBackButtonNumber());
-        this.backButton2.whenPressed(new InstantCommand(() -> turretCmd.stop()));
+
+        // **** B Button - toggles turret targeting
+        TurretTurnToPositionCommand turretCmd = new TurretTurnToPositionCommand(this.turret);
+        this.bButton2 = new JoystickButton(this.joystick2, this.joystick2.getBButtonNumber());   
+        this.bButton2.toggleWhenPressed(turretCmd);
+
         
 /*
         // **** Y button - Selects Upper Level
@@ -300,12 +323,13 @@ public class TeleopManager extends CommandBase {
     }
 
     protected void runShooterIfRequired() {
+        /*
         if (this.joystick2.getTriggerAxis(Hand.kRight) > .05) {
-            /*logger.info("Right trigger: {}", this.joystick2.getTriggerAxis(Hand.kRight));*/
-            this.shooter.spin(this.joystick2.getTriggerAxis(Hand.kRight), MotorDirection.Forward);
+            this.shooter.spin(this.joystick.getTriggerAxis(Hand.kRight), MotorDirection.Forward);
         } else {
             this.shooter.stopMotor();
         }
+        */
     }
     protected void updateDriverAssistSelections() {
         
