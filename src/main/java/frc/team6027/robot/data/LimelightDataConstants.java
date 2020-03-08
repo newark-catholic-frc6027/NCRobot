@@ -15,8 +15,10 @@ public class LimelightDataConstants {
 
     public static final String TARGET_AREA_IMAGE_PCT_KEY = "ta";
 
+    public static final String LED_MODE_KEY = "ledMode";
 
-    enum LedMode {
+
+    public enum LedMode {
         Default(0),
         Off(1),
         Blink(2),

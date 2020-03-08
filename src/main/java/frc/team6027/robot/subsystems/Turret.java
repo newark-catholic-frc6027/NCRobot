@@ -41,7 +41,9 @@ public class Turret extends SubsystemBase {
     private WPI_TalonSRX turretCtrl = new WPI_TalonSRX(RobotConfigConstants.TURRET_CIM_ID);
     private MotorEncoderAS5600Impl encoder = new MotorEncoderAS5600Impl(turretCtrl.getSensorCollection());
     private final SimpleMotorFeedforward ff = new SimpleMotorFeedforward(0.1, .1);
-                               
+                            
+    private boolean manualOverrideAllowed = false;
+    private long executionCount = 0;
 //    private PIDController controller;
     public Turret() {
 //        super(new PIDController(0, 0 ,0));
@@ -129,14 +131,24 @@ public class Turret extends SubsystemBase {
     }
 */
 
+    public boolean isManualOverrideAllowed() {
+        return this.manualOverrideAllowed;
+    }
+
     public void turn(double power, MotorDirection turnDirection) {
 //        this.disable();  // disable pid control
         if (this.turretCtrl != null) {
             this.turretCtrl.set(turnDirection == MotorDirection.Reverse ? power * -1 : power);
 //            logger.trace("Raw encoder position: {}", this.turretMotor.getEncoder(EncoderType.kQuadrature, 128).getPosition());
+
             logger.trace("Raw encoder position: {}", encoder.getPosition());
         }
     }
+
+	public void setManualOverrideAllowed(boolean overrideAllowed) {
+        this.manualOverrideAllowed = overrideAllowed;
+
+	}
 
     /*
     public boolean atSetpoint() {

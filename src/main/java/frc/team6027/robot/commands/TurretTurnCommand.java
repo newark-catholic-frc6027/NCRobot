@@ -75,13 +75,27 @@ public class TurretTurnCommand extends CommandBase {
         boolean done = (curPosition >= this.maxClockwiseSetpoint && this.direction == TurretTurnDirection.Clockwise)
             || (curPosition <= this.maxCounterClockwiseSetpoint && this.direction == TurretTurnDirection.CounterClockwise);
 
-        logger.trace("curPosition: {}, done? {}", curPosition, done);
+        if (executionCount % 20 == 0) {
+            logger.trace("curPosition: {}, done? {}", curPosition, done);
+        }
+        if (done) {
+            logger.info("Limit exceeded!  Current position: {}", curPosition);
+        }
         return done;
     }
     
     @Override
     public boolean isFinished() {
-        return this.isLimitExceeded();
+        boolean limitExceeded = this.isLimitExceeded();
+        if (limitExceeded) {
+            if (turret.isManualOverrideAllowed()) {
+                logger.info("Limit exceeded, but manual override is allowed. Not terminating command.");
+                return false;
+            }
+            return true;
+        }
+
+        return false;
     }
     
     @Override

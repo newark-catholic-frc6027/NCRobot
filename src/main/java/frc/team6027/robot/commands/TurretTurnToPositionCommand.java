@@ -1,6 +1,10 @@
 package frc.team6027.robot.commands;
 
 import org.apache.logging.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 
 import edu.wpi.first.wpilibj.Preferences;
@@ -33,7 +37,6 @@ public class TurretTurnToPositionCommand extends PIDCommand {
     protected long executionCount = 0;
 
     private Turret turret;
-    private double ticks;
     private double pidPower;
     private PIDController controller;
     private Datahub limelightData;
@@ -42,8 +45,10 @@ public class TurretTurnToPositionCommand extends PIDCommand {
     private Double turretMin;
     private Double turretMax;
     private boolean stopped = false;
+    private List<Double> consecutiveInvalidPositions = new ArrayList<>();
 
-    public TurretTurnToPositionCommand(Turret turret, double ticks) {
+    public TurretTurnToPositionCommand(Turret turret) {
+        // Set up a No-op, default PID controller, then set up real values in initPidController
         super(new PIDController(0, 0, 0), 
             () -> turret.getEncoder().getPosition(),
             () -> Preferences.getInstance().getDouble(TURRET_DEFAULT_SETPOINT_KEY, 2100),
@@ -99,7 +104,7 @@ public class TurretTurnToPositionCommand extends PIDCommand {
         this.controller.setTolerance(tolerance);
 
         logger.debug("Turret PID settings. Setpoint: {} P: {}, I: {}, D: {}, tolerance: {}", 
-            prefs.getDouble(TURRET_DEFAULT_SETPOINT_KEY, 0.0), this.controller.getP(), this.controller.getI(), this.controller.getD(),
+            prefs.getDouble(TURRET_DEFAULT_SETPOINT_KEY, 2100), this.controller.getP(), this.controller.getI(), this.controller.getD(),
             tolerance
         );
         /*
@@ -113,8 +118,16 @@ public class TurretTurnToPositionCommand extends PIDCommand {
     public void initialize() {
         super.initialize();
         logger.trace("TurretTurnToPositionCommand initializing...");
+
         initPidController();
         this.limelightData = DatahubRegistry.instance().get(LimelightDataConstants.LIMELIGHT_DATAHUB_KEY);
+        this.limelightData.put(LimelightDataConstants.LED_MODE_KEY, LimelightDataConstants.LedMode.On.value);
+        // For the case when manual override (of turret limits) has been triggered, ensure we are back in to a state
+        // to not allow manual override until it is needed again.
+        this.turret.setManualOverrideAllowed(false);
+
+        this.consecutiveInvalidPositions.clear();
+
         reset();
     }
     
@@ -160,6 +173,7 @@ public class TurretTurnToPositionCommand extends PIDCommand {
         }
 
     }
+
 /*
     @Override 
     public void execute() {
@@ -178,16 +192,48 @@ public class TurretTurnToPositionCommand extends PIDCommand {
     }
 */    
     private boolean isLimitExceeded() {
-        return false;
-//        return this.turret.atSetpoint();
+        Double currentPosition = this.turret.getEncoder().getPosition();
+        boolean limitExceeded = false;
+        if (currentPosition > 0 && (currentPosition < turretMin || currentPosition > turretMax)) {
+            if (this.consecutiveInvalidPositions.size() >= 20) {
+                limitExceeded = true;
+                this.consecutiveInvalidPositions.clear();
+            } else {
+                this.consecutiveInvalidPositions.add(currentPosition);
+            }
+        } else {
+            this.consecutiveInvalidPositions.clear();
+        }
+
+        return limitExceeded;
     }
     
     public void stop() {
         this.stopped = true;
     }
 
+    public boolean isOnTarget() {
+        return isOnTarget(false);
+    }
+
+    /**
+     * @param turnOffLight Causes LED to turn off when on target
+     */
+    public boolean isOnTarget(boolean turnOffLight) {
+        boolean onTarget = this.controller.atSetpoint();
+        if (onTarget && turnOffLight) {
+            this.limelightData.put(LimelightDataConstants.LED_MODE_KEY, LimelightDataConstants.LedMode.Off.value);
+        }
+        return onTarget;
+    }
+    
     @Override
     public boolean isFinished() {
+        if (this.isLimitExceeded()) {
+            logger.error("Killing {} command due to turret limit exceeded!", this.getClass().getSimpleName());
+            this.turret.setManualOverrideAllowed(true);
+            return true;
+        }
         return this.stopped;
         /*
         boolean done = this.executionCount >= 50 * 120;//this.controller.atSetpoint();

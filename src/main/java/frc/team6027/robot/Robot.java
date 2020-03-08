@@ -438,7 +438,7 @@ public class Robot extends TimedRobot {
             disp.setFieldValue("Gyro Yaw Angle", this.sensorService.getGyroSensor().getYawAngle());
 
             disp.setFieldValue("Turret position", this.sensorService.getEncoderSensors().getTurretEncoder().getPosition());
-            
+            disp.setFieldValue("Shooter RPM", this.shooterSubsystem.getCurrentRPM());
 /*            
             Double dist = this.sensorService.getUltrasonicSensor(UltrasonicSensorKey.Front).getDistanceInches();
 */            

@@ -12,6 +12,7 @@ import frc.team6027.robot.commands.autonomous.KillCurrentAutoCommand;
 import frc.team6027.robot.commands.autonomous.ScheduleCommand;
 */
 import frc.team6027.robot.commands.TurretTurnCommand.TurretTurnDirection;
+import frc.team6027.robot.commands.autonomous.AutoCommandFactory;
 import frc.team6027.robot.controls.XboxJoystick;
 import frc.team6027.robot.field.Field;
 import frc.team6027.robot.field.LevelSelection;
@@ -164,6 +165,10 @@ public class TeleopManager extends CommandBase {
         this.xButton = new JoystickButton(this.joystick, this.joystick.getXButtonNumber());   
         this.xButton.whenPressed(new ToggleBallLatchCommand(this.pneumatics));    
 
+        // **** Y button - empty ball mag
+        this.yButton = new JoystickButton(this.joystick, this.joystick.getYButtonNumber());   
+        this.yButton.whenPressed(AutoCommandFactory.emptyBallMagCommand(this.shooter, this.pneumatics, this.ballpickup, this.turret));    
+
         /*this.aButton.whenPressed(new TurnCommand("turnCommand.targetAngle", this.sensorService, this.drivetrain, this.getOperatorDisplay()));*/
 
         this.startButton = new JoystickButton(this.joystick, this.joystick.getStartButtonNumber());
@@ -182,7 +187,7 @@ public class TeleopManager extends CommandBase {
         this.rightBumperButton2 = new JoystickButton(this.joystick2, this.joystick2.getRightBumperButtonNumber());
         this.rightBumperButton2.whileHeld(new TurretTurnCommand(this.turret, TurretTurnDirection.Clockwise));
 
-        TurretTurnToPositionCommand turretCmd = new TurretTurnToPositionCommand(this.turret, 2100);
+        TurretTurnToPositionCommand turretCmd = new TurretTurnToPositionCommand(this.turret);
         this.xButton2 = new JoystickButton(this.joystick2, this.joystick2.getXButtonNumber());   
         this.xButton2.whenPressed(turretCmd);
 
