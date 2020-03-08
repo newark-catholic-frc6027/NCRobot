@@ -117,6 +117,7 @@ public class Robot extends TimedRobot {
         this.setPneumatics(new Pneumatics(this.getOperatorDisplay()));
         //this.visionData = new DatahubNetworkTableImpl(VisionDataConstants.VISION_DATA_KEY);
         this.limelightData = new DatahubNetworkTableImpl(LimelightDataConstants.LIMELIGHT_DATAHUB_KEY);
+        initLimelight();
         DatahubRegistry.instance().register(this.limelightData);
 //        DatahubRegistry.instance().register(this.visionData);
 
@@ -154,6 +155,11 @@ public class Robot extends TimedRobot {
 //        displayAutoRunning(false);
         this.outputMemoryUsage();
         logger.info("******************* ROBOT INIT COMPLETE *******************");
+
+    }
+
+    private void initLimelight() {
+        this.limelightData.put(LimelightDataConstants.LED_MODE_KEY, LimelightDataConstants.LedMode.Blink.value());
 
     }
 
@@ -224,6 +230,8 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         logger.info("******************* AUTONOMOUS INIT STARTING *******************");
+        this.limelightData.put(LimelightDataConstants.LED_MODE_KEY, LimelightDataConstants.LedMode.On.value());
+
         // TODO: Reset pneumatics
         // TODO: ensure drivetrain in low gear
 //        StationPosition pos = this.applyStationPosition();
@@ -266,6 +274,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        pneumatics.enableAutomaticCompressorControl();
+
         logger.info("******************* TELEOP INIT STARTING *******************");
         // This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to

@@ -5,7 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import frc.team6027.robot.OperatorDisplay;
 import frc.team6027.robot.RobotConfigConstants;
 import frc.team6027.robot.commands.PneumaticsInitializationCommand;
-
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -20,6 +20,8 @@ public class Pneumatics extends SubsystemBase {
 
     private PneumaticsInitializationCommand pneumaticsInitializationCommand = null;
 
+    private Compressor compressor;
+
     public Pneumatics(OperatorDisplay operatorDisplay) {
         this.operatorDisplay = operatorDisplay;
 
@@ -28,6 +30,9 @@ public class Pneumatics extends SubsystemBase {
 
         this.ballLatchSolenoid = new StatefulSolenoid(RobotConfigConstants.PCM_1_ID_NUMBER,
             RobotConfigConstants.SOLENOID_2_PORT_A, RobotConfigConstants.SOLENOID_2_PORT_B);
+
+        this.compressor = new Compressor(RobotConfigConstants.PCM_1_ID_NUMBER);
+
     }
 
 
@@ -105,6 +110,20 @@ public class Pneumatics extends SubsystemBase {
     public void toggleDriveSolenoidOff() {
         logger.trace("Running toggleDriveSolenoidOff");
         this.driveSolenoid.toggleOff();
+    }
+    
+    public boolean isAutomaticCompressorControlEnabled() {
+        return this.compressor.getClosedLoopControl();
+    }
+
+    public void enableAutomaticCompressorControl() {
+        this.logger.debug("Compressor ON");
+        this.compressor.setClosedLoopControl(true);
+    }
+
+    public void disableAutomaticCompressorControl() {
+        this.logger.debug("Compressor OFF");
+        this.compressor.setClosedLoopControl(false);
     }
     
     public void reset() {

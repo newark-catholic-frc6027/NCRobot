@@ -22,14 +22,35 @@ public class LimelightDataConstants {
         Default(0),
         Off(1),
         Blink(2),
-        On(3);
+        On(3)
+        ;
 
-        public final int value;
+        private final int value;
 
         private LedMode(int value) {
             this.value = value;
         }
 
+        public int value() {
+            return value;
+        }
+
+    }
+
+    public enum SnapshotMode {
+        Stop(0),
+        TwoPerSecond(1)
+        ;
+
+        private final int value;
+
+        private SnapshotMode(int value) {
+            this.value = value;
+        }
+
+        public int value() {
+            return value;
+        }
 
     }
 

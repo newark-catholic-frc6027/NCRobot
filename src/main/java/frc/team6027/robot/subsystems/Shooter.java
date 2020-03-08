@@ -14,13 +14,13 @@ import frc.team6027.robot.RobotConfigConstants;
 
 public class Shooter extends SubsystemBase {
     private final Logger logger = LogManager.getLogger(getClass());
-    public final static String SHOOTER_MAX_RPM_KEY = "shooter.maxRPM";
+    public final static String SHOOTER_MIN_RPM_KEY = "shooter.minShootRPM";
 
     private CANSparkMax mainMotor = new CANSparkMax(RobotConfigConstants.SHOOTER_MOTOR_CIM_ID, MotorType.kBrushless);
     
     private Preferences prefs = Preferences.getInstance();
 
-    private Double maxRpm = null;
+    private Double minShootRpm = null;
 
 //    private OperatorInterface operatorInterface;
 
@@ -51,22 +51,22 @@ public class Shooter extends SubsystemBase {
             this.mainMotor.set(0);           
             this.mainMotor.stopMotor();
         }
-        this.maxRpm = null;
+        this.minShootRpm = null;
     }
 
     public void spin(double power, MotorDirection spinDirection) {
         if (mainMotor != null) {
-            logger.debug("Setting motor power to: {}, direction: {}", power, spinDirection);
+            // logger.trace("Setting motor power to: {}, direction: {}", power, spinDirection);
             this.mainMotor.set(spinDirection == MotorDirection.Reverse ? power : -1 * power);
         }
     }
 
-    public Double getMaxRPM() {
-        if (maxRpm == null) {
-            this.maxRpm = prefs.getDouble(SHOOTER_MAX_RPM_KEY, 5700);
+    public Double getMinShootRPM() {
+        if (minShootRpm == null) {
+            this.minShootRpm = prefs.getDouble(SHOOTER_MIN_RPM_KEY, 5400);
         }
 
-        return this.maxRpm;
+        return this.minShootRpm;
     }
 
     public boolean isNotRunning() {
@@ -84,9 +84,9 @@ public class Shooter extends SubsystemBase {
             return 0.0;
         }
     }
-    public boolean isAtMaxRPM() {
+    public boolean isAtShootingRPM() {
         if (mainMotor != null) {
-            return getCurrentRPM() >= getMaxRPM();
+            return getCurrentRPM() >= getMinShootRPM();
         } else {
             return false;
         }

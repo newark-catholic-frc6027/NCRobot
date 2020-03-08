@@ -112,11 +112,9 @@ public class Turret extends SubsystemBase {
 
     }
 
-    public void turn(int encoderTicks) {
-        this.turn((double) encoderTicks);
 
-    }
     public void turn(double power) {
+        this.executionCount++;
         this.turretCtrl.set(power);
     }
 
@@ -136,12 +134,14 @@ public class Turret extends SubsystemBase {
     }
 
     public void turn(double power, MotorDirection turnDirection) {
+        this.executionCount++;
 //        this.disable();  // disable pid control
         if (this.turretCtrl != null) {
             this.turretCtrl.set(turnDirection == MotorDirection.Reverse ? power * -1 : power);
 //            logger.trace("Raw encoder position: {}", this.turretMotor.getEncoder(EncoderType.kQuadrature, 128).getPosition());
-
-            logger.trace("Raw encoder position: {}", encoder.getPosition());
+            if (executionCount % 20 == 0) {
+                logger.trace("Raw encoder position: {}", encoder.getPosition());
+            }
         }
     }
 

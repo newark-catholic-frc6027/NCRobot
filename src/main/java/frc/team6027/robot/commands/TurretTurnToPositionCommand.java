@@ -131,7 +131,7 @@ public class TurretTurnToPositionCommand extends PIDCommand {
 
         initPidController();
         this.limelightData = DatahubRegistry.instance().get(LimelightDataConstants.LIMELIGHT_DATAHUB_KEY);
-        this.limelightData.put(LimelightDataConstants.LED_MODE_KEY, LimelightDataConstants.LedMode.On.value);
+        this.limelightData.put(LimelightDataConstants.LED_MODE_KEY, LimelightDataConstants.LedMode.On.value());
         // For the case when manual override (of turret limits) has been triggered, ensure we are back in to a state
         // to not allow manual override until it is needed again.
         this.turret.setManualOverrideAllowed(false);
@@ -232,7 +232,7 @@ public class TurretTurnToPositionCommand extends PIDCommand {
     public boolean isOnTarget(boolean turnOffLight) {
         boolean onTarget = this.controller.atSetpoint();
         if (onTarget && turnOffLight) {
-            this.limelightData.put(LimelightDataConstants.LED_MODE_KEY, LimelightDataConstants.LedMode.Off.value);
+            this.limelightData.put(LimelightDataConstants.LED_MODE_KEY, LimelightDataConstants.LedMode.Off.value());
         }
         return onTarget;
     }
@@ -259,6 +259,7 @@ public class TurretTurnToPositionCommand extends PIDCommand {
         // this.turret.stop();
         // Reset our state for when we run again
         this.isReset = false;
+        this.limelightData.put(LimelightDataConstants.LED_MODE_KEY, LimelightDataConstants.LedMode.Off.value());
         this.turret.stop();
     }
 

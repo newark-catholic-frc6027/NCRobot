@@ -26,15 +26,22 @@ public class ToggleBallLatchCommand extends CommandBase {
     protected Boolean toggleOpen;
     
 
-    public ToggleBallLatchCommand(Pneumatics pneumaticSubsystem, boolean toggleOpen) {
-        this(pneumaticSubsystem);
+    public ToggleBallLatchCommand(Pneumatics pneumatics, Boolean toggleOpen, boolean skipAddRequirements) {
+        if (! skipAddRequirements) {
+            this.addRequirements(pneumatics);
+        }
+        this.pneumatics = pneumatics;
         this.toggleOpen = toggleOpen;
+    }
+
+    public ToggleBallLatchCommand(Pneumatics pneumatics, Boolean toggleOpen) {
+        this(pneumatics, toggleOpen, false);
     }
     
     public ToggleBallLatchCommand(Pneumatics pneumatics) {
-        this.addRequirements(pneumatics);
-        this.pneumatics = pneumatics;
+        this(pneumatics, null, false);
     }
+
     
     @Override
     public void initialize() {

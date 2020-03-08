@@ -23,11 +23,16 @@ public class SpinShooterCommand extends CommandBase {
 
     @Override
     public void execute() {
-        this.shooter.spin(this.speed, MotorDirection.Forward);
+        if (! this.done) {
+            this.shooter.spin(this.speed, MotorDirection.Forward);
+        } else {
+            this.shooter.stop();
+        }
     }
 
     public void stop() {
         this.done = true;
+        this.shooter.stop();
     }
 
     public boolean isStopped() {
@@ -36,6 +41,6 @@ public class SpinShooterCommand extends CommandBase {
     
     @Override
     public boolean isFinished() {
-        return done;
+        return this.done;
     }
 }
